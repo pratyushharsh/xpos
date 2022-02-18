@@ -7,12 +7,12 @@ import 'base_entity.dart';
   Index(value: ['skuCode'], unique: true)
 ])
 class ProductEntity {
-  @PrimaryKey(autoGenerate: true)
-  final int? productId;
+  @primaryKey
+  String? productId;
 
   final String description;
-  final double listPrice;
-  final double salePrice;
+  final double? listPrice;
+  final double? salePrice;
   final double? purchasePrice;
   final String? uom;
   final bool enable;

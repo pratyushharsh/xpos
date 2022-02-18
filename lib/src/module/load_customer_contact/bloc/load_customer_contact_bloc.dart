@@ -1,7 +1,5 @@
-import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';

@@ -90,7 +90,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `product` (`productId` INTEGER PRIMARY KEY AUTOINCREMENT, `description` TEXT NOT NULL, `listPrice` REAL NOT NULL, `salePrice` REAL NOT NULL, `purchasePrice` REAL, `uom` TEXT, `enable` INTEGER NOT NULL, `brand` TEXT, `skuCode` TEXT, `hsn` TEXT, `tax` REAL, `imageUrl` TEXT)');
+            'CREATE TABLE IF NOT EXISTS `product` (`productId` TEXT, `description` TEXT NOT NULL, `listPrice` REAL, `salePrice` REAL, `purchasePrice` REAL, `uom` TEXT, `enable` INTEGER NOT NULL, `brand` TEXT, `skuCode` TEXT, `hsn` TEXT, `tax` REAL, `imageUrl` TEXT, PRIMARY KEY (`productId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `trn_header` (`transId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `businessDate` INTEGER NOT NULL, `beginDatetime` INTEGER NOT NULL, `endDateTime` INTEGER, `total` REAL NOT NULL, `taxTotal` REAL NOT NULL, `subtotal` REAL NOT NULL, `roundTotal` REAL NOT NULL, `status` TEXT NOT NULL, `customerId` TEXT, `customerPhone` TEXT, `customerAddress` TEXT, `customerName` TEXT)');
         await database.execute(
@@ -192,10 +192,10 @@ class _$ProductDao extends ProductDao {
   Future<List<ProductEntity>> findAllProducts() async {
     return _queryAdapter.queryList('SELECT * FROM product',
         mapper: (Map<String, Object?> row) => ProductEntity(
-            productId: row['productId'] as int?,
+            productId: row['productId'] as String?,
             description: row['description'] as String,
-            listPrice: row['listPrice'] as double,
-            salePrice: row['salePrice'] as double,
+            listPrice: row['listPrice'] as double?,
+            salePrice: row['salePrice'] as double?,
             purchasePrice: row['purchasePrice'] as double?,
             uom: row['uom'] as String?,
             enable: (row['enable'] as int) != 0,
@@ -210,10 +210,10 @@ class _$ProductDao extends ProductDao {
   Future<ProductEntity?> findProductById(String productId) async {
     return _queryAdapter.query('SELECT * FROM product where productId = ?1',
         mapper: (Map<String, Object?> row) => ProductEntity(
-            productId: row['productId'] as int?,
+            productId: row['productId'] as String?,
             description: row['description'] as String,
-            listPrice: row['listPrice'] as double,
-            salePrice: row['salePrice'] as double,
+            listPrice: row['listPrice'] as double?,
+            salePrice: row['salePrice'] as double?,
             purchasePrice: row['purchasePrice'] as double?,
             uom: row['uom'] as String?,
             enable: (row['enable'] as int) != 0,
@@ -229,7 +229,7 @@ class _$ProductDao extends ProductDao {
   Future<List<ProductEntity>> findAllProductsByText(String filter) async {
     return _queryAdapter.queryList(
         'SELECT * FROM product where description like ?1 or productId like ?1  limit 10',
-        mapper: (Map<String, Object?> row) => ProductEntity(productId: row['productId'] as int?, description: row['description'] as String, listPrice: row['listPrice'] as double, salePrice: row['salePrice'] as double, purchasePrice: row['purchasePrice'] as double?, uom: row['uom'] as String?, enable: (row['enable'] as int) != 0, brand: row['brand'] as String?, skuCode: row['skuCode'] as String?, hsn: row['hsn'] as String?, tax: row['tax'] as double?, imageUrl: row['imageUrl'] as String?),
+        mapper: (Map<String, Object?> row) => ProductEntity(productId: row['productId'] as String?, description: row['description'] as String, listPrice: row['listPrice'] as double?, salePrice: row['salePrice'] as double?, purchasePrice: row['purchasePrice'] as double?, uom: row['uom'] as String?, enable: (row['enable'] as int) != 0, brand: row['brand'] as String?, skuCode: row['skuCode'] as String?, hsn: row['hsn'] as String?, tax: row['tax'] as double?, imageUrl: row['imageUrl'] as String?),
         arguments: [filter]);
   }
 

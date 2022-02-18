@@ -1,5 +1,3 @@
-import 'package:floor/floor.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
 
 // @Entity(
 //   tableName: 'sku',

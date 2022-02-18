@@ -412,7 +412,7 @@ class ReceiptLineItem extends StatelessWidget {
         Expanded(
             flex: 2,
             child: Text(
-              "${lineItem.productId}",
+              lineItem.productId,
             )),
         Expanded(
             flex: 5,

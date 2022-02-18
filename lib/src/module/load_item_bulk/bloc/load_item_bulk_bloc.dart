@@ -22,6 +22,8 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
   void _onLoadFile(ProcessFile event, Emitter<LoadItemBulkState> emit) async {
     try {
       emit(state.copyWith(status: LoadItemBulkStatus.loading));
+
+      await Future.delayed(const Duration(seconds: 3));
       final input = File(event.path).openRead();
       final fields = await input
           .transform(utf8.decoder)
@@ -30,18 +32,26 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
 
       for (var i = 1; i < fields.length; i++) {
         var e = fields[i];
+
+        var productId = e[6].toString();
+        if (productId.isNotEmpty) {
+          productId = 'SKU${(await db.sequenceDao.getNextSequence("PRODUCT_ID")).nextSeq}';
+        }
+
         var entity = ProductEntity(
             description: e[0],
             listPrice: e[1].toString().isNotEmpty ? double.parse(e[1].toString()) : 0,
             salePrice: e[2].toString().isNotEmpty ? double.parse(e[2].toString()) : 0,
             purchasePrice: e[3].toString().isNotEmpty ? double.parse(e[3].toString()) : 0,
-            uom: e[4],
-            brand: e[5],
-            skuCode: e[6],
-            hsn: e[7],
+            uom: e[4].toString(),
+            brand: e[5].toString(),
+            skuCode: e[6].toString(),
+            hsn: e[7].toString(),
             tax: e[8].toString().isNotEmpty ? double.parse(e[8].toString()) / 100 : 0,
-            imageUrl: e[9],
-            enable: true);
+            imageUrl: e[9].toString(),
+            enable: true,
+          productId: productId
+        );
         await db.productDao.insertBulk(entity);
       }
       emit(state.copyWith(status: LoadItemBulkStatus.success));

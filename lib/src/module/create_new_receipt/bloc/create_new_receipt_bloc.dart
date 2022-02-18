@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +40,7 @@ class CreateNewReceiptBloc
     SaleLine newLine = SaleLine(
         seq: state.lineItem.length + 1,
         product: event.product,
-        price: event.product.listPrice);
+        price: event.product.listPrice!);
     List<SaleLine> newList = [...state.lineItem, newLine];
     emit(state.copyWith(lineItem: newList));
   }

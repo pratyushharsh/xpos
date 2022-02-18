@@ -41,7 +41,7 @@ class _MyAppViewState extends State<MyAppView> {
     return MaterialApp(
       theme: ThemeData(
           primarySwatch: Colors.blue,
-          textTheme: GoogleFonts.robotoTextTheme(
+          textTheme: GoogleFonts.latoTextTheme(
               Theme.of(context).textTheme
           ),
       ),

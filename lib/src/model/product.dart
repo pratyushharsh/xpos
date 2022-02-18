@@ -3,10 +3,10 @@ import 'package:receipt_generator/src/entity/entity.dart';
 
 @immutable
 class Product {
-  final int? productId;
+  final String? productId;
   final String description;
-  final double listPrice;
-  final double salePrice;
+  final double? listPrice;
+  final double? salePrice;
   final double? purchasePrice;
   final String? uom;
   final bool enable;
@@ -31,7 +31,7 @@ class Product {
       this.imageUrl});
 
   Product copyWith(
-      {int? productId,
+      {String? productId,
       String? description,
       double? listPrice,
       double? salePrice,
@@ -59,7 +59,7 @@ class Product {
 
   ProductEntity toEntity() {
     return ProductEntity(
-        productId: productId,
+        productId: skuCode ?? productId,
         description: description,
         listPrice: listPrice,
         salePrice: salePrice,

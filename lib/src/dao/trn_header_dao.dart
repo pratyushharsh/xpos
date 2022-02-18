@@ -31,7 +31,6 @@ abstract class TransactionDao {
   Future<void> createNewSale(TransactionHeaderEntity header,
       List<TransactionLineItemEntity> lineItems) async {
     await insertTransaction(header);
-    var trans = await insertTransactionLineItems(lineItems);
   }
 
   @Query('SELECT * FROM trn_header order by beginDatetime desc')

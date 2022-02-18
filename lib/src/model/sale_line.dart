@@ -41,7 +41,7 @@ class SaleLine {
     return TransactionLineItemEntity(
         transId: transId,
         transSeq: seq,
-        productId: product.skuCode ?? product.productId!.toString(),
+        productId: product.skuCode ?? product.productId.toString(),
         productDescription: product.description,
         qty: qty,
         price: price,

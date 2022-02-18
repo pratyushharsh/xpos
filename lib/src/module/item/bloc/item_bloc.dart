@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:receipt_generator/src/entity/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 
@@ -24,7 +25,9 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
   void _onAddItem(AddItem event, Emitter<ItemState> emit) async {
     try {
       emit(state.copyWith(status: ItemStatus.addingProduct));
-      await db.productDao.insertItem(event.product.toEntity());
+      ProductEntity e = event.product.toEntity();
+      e.productId ??= 'SKU${(await db.sequenceDao.getNextSequence("PRODUCT_ID")).nextSeq}';
+      await db.productDao.insertItem(e);
       emit(state.copyWith(status: ItemStatus.addingSuccess));
     } catch (e) {
       log.severe(e);

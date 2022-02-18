@@ -12,20 +12,17 @@ class AllCustomerView extends StatelessWidget {
       lazy: false,
       create: (context) => AllCustomerBloc(db: RepositoryProvider.of(context))
         ..add(LoadAllCustomer()),
-      child: Scaffold(
-        appBar: AppBar(),
-        body: BlocBuilder<AllCustomerBloc, AllCustomerState>(
-          builder: (context, state) {
-            if (state.status == AllCustomerStatus.loading) {
-              return const CircularProgressIndicator();
-            }
-            return ListView.builder(
-                itemCount: state.customers.length,
-                itemBuilder: (ctx, idx) {
-                  return CustomerViewCard(contact: state.customers[idx]);
-                });
-          },
-        ),
+      child: BlocBuilder<AllCustomerBloc, AllCustomerState>(
+        builder: (context, state) {
+          if (state.status == AllCustomerStatus.loading) {
+            return const CircularProgressIndicator();
+          }
+          return ListView.builder(
+              itemCount: state.customers.length,
+              itemBuilder: (ctx, idx) {
+                return CustomerViewCard(contact: state.customers[idx]);
+              });
+        },
       ),
     );
   }
