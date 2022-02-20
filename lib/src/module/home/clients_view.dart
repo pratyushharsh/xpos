@@ -2,8 +2,15 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/module/create_new_customer/new_customer_view.dart';
+import 'package:receipt_generator/src/widgets/search_bar.dart';
 
 import '../all_customer/all_customer_view.dart';
+
+const List<String> sortOptions = [
+  'Sort By Name',
+  'Sort By Last',
+  'Sort By Date'
+];
 
 class ClientsView extends StatelessWidget {
   const ClientsView({Key? key}) : super(key: key);
@@ -12,7 +19,13 @@ class ClientsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const AllCustomerView(),
+        const Positioned(
+          top: 50,
+          bottom: 0,
+          left: 10,
+          right: 10,
+          child: AllCustomerView(),
+        ),
         Positioned(
           bottom: 90,
           right: 10,
@@ -42,6 +55,12 @@ class ClientsView extends StatelessWidget {
               );
             },
           ),
+        ),
+        const Positioned(
+          top: 5,
+          left: 14,
+          right: 14,
+          child: SearchBar(),
         ),
       ],
     );

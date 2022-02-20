@@ -78,9 +78,9 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Card(
+    return Card(
+      child: InkWell(
+        onTap: () {},
         child: Container(
           padding: const EdgeInsets.all(8),
           child: Row(

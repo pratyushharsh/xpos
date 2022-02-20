@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:receipt_generator/src/widgets/search_bar.dart';
 
 import '../list_all_receipt/list_all_receipt_view.dart';
 
@@ -7,6 +8,22 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ListAllReceiptView();
+    return Stack(
+      children: const [
+        Positioned(
+          top: 5,
+          left: 14,
+          right: 14,
+          child: SearchBar(),
+        ),
+        Positioned(
+          top: 50,
+          bottom: 0,
+          left: 10,
+          right: 10,
+          child: ListAllReceiptView(),
+        ),
+      ],
+    );
   }
 }

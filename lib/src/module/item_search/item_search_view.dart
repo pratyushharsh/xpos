@@ -35,7 +35,7 @@ class SearchItemView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SearchBar(),
+              const SearchSaleProductBar(),
               BlocBuilder<ItemSearchBloc, ItemSearchState>(builder: (context, state) {
                 return Column(
                   children: state.products.map((e) => buildItemCard(context, e)).toList(),
@@ -49,8 +49,8 @@ class SearchItemView extends StatelessWidget {
   }
 }
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({Key? key}) : super(key: key);
+class SearchSaleProductBar extends StatelessWidget {
+  const SearchSaleProductBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
