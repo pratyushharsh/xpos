@@ -9,8 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
+import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
 
+import '../../widgets/appbar_leading.dart';
 import 'bloc/receipt_display_bloc.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -75,44 +77,69 @@ class ReceiptDisplayView extends StatelessWidget {
       create: (context) => ReceiptDisplayBloc(
           transId: transactionId, db: RepositoryProvider.of(context))
         ..add(FetchReceiptDataEvent()),
-      child: MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          textTheme:
-              GoogleFonts.robotoMonoTextTheme(Theme.of(context).textTheme),
-        ),
-        home: Scaffold(
-          backgroundColor: Colors.grey,
-          appBar: AppBar(),
-          body: BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
-            builder: (context, state) {
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (state.status == ReceiptDisplayStatus.success)
-                    SingleChildScrollView(
-                      child: ReceiptBlock(
-                        printKey: _printKey,
-                      ),
-                    ),
-                  Positioned(
-                    bottom: 40,
-                    left: 10,
-                    right: 10,
-                    child: MyBottomAppBar(
-                      onShare: _shareReceipt,
-                      onPrint: _printReceipt,
-                    ),
-                  )
-                ],
-              );
-            },
+      child: Container(
+        color: AppColor.background,
+        child: Material(
+          textStyle: GoogleFonts.robotoMono(),
+          child: SafeArea(
+            child: Scaffold(
+              backgroundColor: AppColor.background,
+              body: BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
+                builder: (context, state) {
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      if (state.status == ReceiptDisplayStatus.success)
+                        InteractiveViewer(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 80,),
+                                ReceiptBlock(
+                                  printKey: _printKey,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (state.status == ReceiptDisplayStatus.success)
+                        Positioned(
+                          top: 20,
+                          left: 16,
+                          child: AppBarLeading(
+                            heading: "Receipt #${state.header!.transId}",
+                            icon: Icons.arrow_back,
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      Positioned(
+                        bottom: 40,
+                        left: 10,
+                        right: 10,
+                        child: MyBottomAppBar(
+                          onShare: _shareReceipt,
+                          onPrint: _printReceipt,
+                        ),
+                      )
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+// theme: ThemeData(
+// primarySwatch: Colors.blue,
+// textTheme:
+// GoogleFonts.robotoMonoTextTheme(Theme.of(context).textTheme),
+// ),
 
 class MyBottomAppBar extends StatelessWidget {
   final VoidCallback? onShare;
@@ -189,8 +216,11 @@ class ReceiptBlock extends StatelessWidget {
         children: [
           Container(
             margin: const EdgeInsets.all(10),
-            width: double.infinity,
-            color: Colors.white,
+            width: math.min(MediaQuery.of(context).size.width, 380),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border.symmetric(vertical: BorderSide(color: Colors.black))
+            ),
             child: Column(
               children: [
                 CustomPaint(
@@ -350,12 +380,12 @@ class ReceiptCustomerDetail extends StatelessWidget {
           children: [
             if (state.header!.customerName != null)
               Text("Customer Name: ${state.header!.customerName}"),
-            if (state.header!.customerAddress != null)
-              Text("Address: ${state.header!.customerAddress}"),
+            if (state.header!.shippingAddress != null)
+              Text("Address: ${state.header!.shippingAddress}"),
             if (state.header!.customerPhone != null)
               Text("Phone: ${state.header!.customerPhone}"),
             if (state.header!.customerName != null ||
-                state.header!.customerAddress != null ||
+                state.header!.shippingAddress != null ||
                 state.header!.customerPhone != null)
               const SizedBox(
                 height: 10,
@@ -564,13 +594,19 @@ class DrawDottedHorizontalLine extends CustomPainter {
 
 class DrawCircularArcLine extends CustomPainter {
   late Paint _paint;
+  late Paint _dotPaint;
   final String direction;
   DrawCircularArcLine({this.direction = "TOP"}) {
     _paint = Paint();
-    _paint.color = Colors.grey; //dots color
+    _paint.color = Colors.black; //dots color
     _paint.strokeWidth = 0.8; //dots thickness
-    _paint.style = PaintingStyle.fill;
+    _paint.style = PaintingStyle.stroke;
     _paint.strokeCap = StrokeCap.round; //dots corner edges
+
+    _dotPaint = Paint();
+    _dotPaint.color = AppColor.background;
+    _dotPaint.style = PaintingStyle.fill;
+    _dotPaint.strokeCap = StrokeCap.round;
   }
 
   @override
@@ -582,8 +618,23 @@ class DrawCircularArcLine extends CustomPainter {
       mulFactor = -1;
     }
 
-    for (double i = gap; i <= size.width; i += (size.height + gap)) {
-      if (i + size.height < size.width) {
+    double y = 0.0;
+    if (direction == bottom) {
+      y = size.height;
+    }
+
+    for (double i = 0; i <= size.width; i += (size.height)) {
+
+      canvas.drawLine(Offset(i, y), Offset(math.min(i + gap, size.width), y), _paint);
+      i += gap;
+      if (i + size.height <= size.width) {
+        canvas.drawArc(
+            Rect.fromLTWH(
+                i, mulFactor * -size.height / 2, size.height, size.height),
+            0,
+            mulFactor * 3.14,
+            false,
+            _dotPaint);
         canvas.drawArc(
             Rect.fromLTWH(
                 i, mulFactor * -size.height / 2, size.height, size.height),
@@ -591,6 +642,8 @@ class DrawCircularArcLine extends CustomPainter {
             mulFactor * 3.14,
             false,
             _paint);
+      } else {
+        canvas.drawLine(Offset(i, y), Offset(math.min(i + gap, size.width), y), _paint);
       }
     }
   }

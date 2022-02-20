@@ -5,6 +5,7 @@ import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/module/item/bloc/item_bloc.dart';
 import 'package:receipt_generator/src/module/load_item_bulk/bloc/load_item_bulk_bloc.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
+import 'package:receipt_generator/src/repositories/contact_repository.dart';
 
 class MyApp extends StatelessWidget {
   final AppDatabase database;
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MultiRepositoryProvider(
         providers: [
           RepositoryProvider(lazy: false, create: (context) => database),
+          RepositoryProvider(create: (context) => ContactRepository())
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(

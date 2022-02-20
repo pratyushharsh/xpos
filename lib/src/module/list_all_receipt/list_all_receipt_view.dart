@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/currency.dart';
+import 'package:receipt_generator/src/config/formatter.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
@@ -16,20 +17,23 @@ class ListAllReceiptView extends StatelessWidget {
       create: (context) =>
           ListAllReceiptBloc(db: RepositoryProvider.of(context))
             ..add(LoadAllReceipt()),
-      child: Scaffold(
-        appBar: AppBar(),
-        body: BlocBuilder<ListAllReceiptBloc, ListAllReceiptState>(
-          builder: (context, state) {
-            if (state.status == ListAllReceiptStatus.loading) {
-              return const CircularProgressIndicator();
-            }
-            return ListView.builder(
+      child: BlocBuilder<ListAllReceiptBloc, ListAllReceiptState>(
+        builder: (context, state) {
+          if (state.status == ListAllReceiptStatus.loading) {
+            return const CircularProgressIndicator();
+          }
+          return RefreshIndicator(
+            onRefresh: () async {
+              BlocProvider.of<ListAllReceiptBloc>(context)
+                  .add(LoadAllReceipt());
+            },
+            child: ListView.builder(
                 itemCount: state.receipts.length,
                 itemBuilder: (ctx, idx) {
                   return ReceiptHeaderCard(receipt: state.receipts[idx]);
-                });
-          },
-        ),
+                }),
+          );
+        },
       ),
     );
   }
@@ -55,7 +59,7 @@ class ReceiptHeaderCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${receipt.customerName}',
+                    receipt.customerName ?? 'Sale Receipt',
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   Text(
@@ -83,14 +87,21 @@ class ReceiptHeaderCard extends StatelessWidget {
                   if (receipt.customerPhone != null)
                     Text('${receipt.customerPhone}'),
                   if (receipt.customerPhone != null &&
-                      receipt.customerAddress != null)
+                      receipt.shippingAddress != null)
                     const Text(' | '),
-                  if (receipt.customerAddress != null)
+                  if (receipt.shippingAddress != null)
                     Expanded(
                         child: Text(
-                      '${receipt.customerAddress}',
+                      '${receipt.shippingAddress}',
                       overflow: TextOverflow.ellipsis,
                     ))
+                ],
+              ),
+              Row(
+                children: [
+                  Text(AppFormatter.dateFormatter.format(
+                      DateTime.fromMicrosecondsSinceEpoch(
+                          receipt.businessDate)))
                 ],
               )
             ],
@@ -107,7 +118,7 @@ class HeaderStatusChip extends StatelessWidget {
 
   String getStatus() {
     if (status == SaleStatus.pending) {
-      return "Payment Pending";
+      return "Unpaid";
     } else if (status == SaleStatus.cancelled) {
       return "Cancelled";
     } else if (status == SaleStatus.completed) {

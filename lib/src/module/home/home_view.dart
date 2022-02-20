@@ -215,7 +215,7 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
           left: 0,
           right: 0,
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 250),
+            duration: const Duration(milliseconds: 150),
             transitionBuilder: (Widget child, Animation<double> animation) =>
                 ScaleTransition(
               alignment: Alignment.bottomCenter,

@@ -1,5 +1,6 @@
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
@@ -24,6 +25,7 @@ class ReceiptDisplayBloc extends Bloc<ReceiptDisplayEvent, ReceiptDisplayState> 
       emit(state.copyWith(status: ReceiptDisplayStatus.loading));
       TransactionHeaderEntity? header = await db.transactionDao.findHeaderByTransactionSeq(transId);
       List<TransactionLineItemEntity> lineItem = await db.transactionDao.findLineItemByTransactionSeq(transId);
+      List<TransactionLineItemEntity> tmp = await db.transactionDao.getAllTransactionLineItem();
       if (header != null) {
         emit(state.copyWith(header: header, lineItems: lineItem, status: ReceiptDisplayStatus.success));
       } else {

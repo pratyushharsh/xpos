@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 
 class MyLoader extends StatefulWidget {
-  const MyLoader({Key? key}) : super(key: key);
+  final Color color;
+  const MyLoader({Key? key, this.color = AppColor.color8}) : super(key: key);
 
   @override
   _MyLoaderState createState() => _MyLoaderState();
@@ -99,6 +100,7 @@ class _MyLoaderState extends State<MyLoader>
                 ),
                 child: Dot(
                   radius: r1,
+                  color: widget.color,
                 ),
               ),
               Transform.translate(
@@ -108,6 +110,7 @@ class _MyLoaderState extends State<MyLoader>
                 ),
                 child: Dot(
                   radius: r2,
+                  color: widget.color,
                 ),
               ),
               Transform.translate(
@@ -117,6 +120,7 @@ class _MyLoaderState extends State<MyLoader>
                 ),
                 child: Dot(
                   radius: r3,
+                  color: widget.color,
                 ),
               ),
               Transform.translate(
@@ -126,6 +130,7 @@ class _MyLoaderState extends State<MyLoader>
                 ),
                 child: Dot(
                   radius: r4,
+                  color: widget.color,
                 ),
               ),
               Transform.translate(
@@ -135,6 +140,7 @@ class _MyLoaderState extends State<MyLoader>
                 ),
                 child: Dot(
                   radius: r5,
+                  color: widget.color,
                 ),
               ),
               Transform.translate(
@@ -144,6 +150,7 @@ class _MyLoaderState extends State<MyLoader>
                 ),
                 child: Dot(
                   radius: r6,
+                  color: widget.color,
                 ),
               ),
               Transform.translate(
@@ -153,6 +160,7 @@ class _MyLoaderState extends State<MyLoader>
                 ),
                 child: Dot(
                   radius: r7,
+                  color: widget.color,
                 ),
               ),
               Transform.translate(
@@ -162,6 +170,7 @@ class _MyLoaderState extends State<MyLoader>
                 ),
                 child: Dot(
                   radius: r8,
+                  color: widget.color,
                 ),
               ),
             ],
@@ -174,7 +183,8 @@ class _MyLoaderState extends State<MyLoader>
 
 class Dot extends StatelessWidget {
   final double radius;
-  const Dot({Key? key, required this.radius}) : super(key: key);
+  final Color color;
+  const Dot({Key? key, required this.radius, required this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +193,7 @@ class Dot extends StatelessWidget {
         height: radius,
         width: radius,
         decoration:
-            const BoxDecoration(color: AppColor.color8, shape: BoxShape.circle),
+            BoxDecoration(color: color, shape: BoxShape.circle),
       ),
     );
   }

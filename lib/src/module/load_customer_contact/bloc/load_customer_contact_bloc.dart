@@ -21,34 +21,34 @@ class LoadCustomerContactBloc
 
   void _loadCustomerContactFromPhone(LoadCustomerContactFromPhone event,
       Emitter<LoadCustomerContactState> emit) async {
-    emit(state.copyWith(status: LoadCustomerContactStatus.loading));
-
-    if (!await FlutterContacts.requestPermission(readonly: true)) {
-      emit(state.copyWith(status: LoadCustomerContactStatus.permissionDenied));
-    } else {
-      try {
-
-        final contacts = await FlutterContacts.getContacts(withProperties: true);
-        for (var i = 0; i < contacts.length; i++) {
-          var e = contacts[i];
-          var entity = ContactEntity(
-              contactId: e.id,
-              firstName: e.name.first,
-              address: e.addresses.isNotEmpty ? e.addresses[0].state : null,
-              city: e.addresses.isNotEmpty ? e.addresses[0].state : null,
-              country: e.addresses.isNotEmpty ? e.addresses[0].state : null,
-              email: e.emails.isNotEmpty ? e.emails[0].address  : null,
-              lastName: e.name.last,
-              phoneNumber: e.phones.isNotEmpty ? e.phones[0].number.replaceAll(RegExp('[^+0-9]'), '') : null,
-              postalCode: e.addresses.isNotEmpty ? e.addresses[0].postalCode : null,
-              state: e.addresses.isNotEmpty ? e.addresses[0].state : null
-          );
-          await db.contactDao.insertBulk(entity);
-        }
-        emit(state.copyWith(status: LoadCustomerContactStatus.success));
-      } catch (e) {
-        emit(state.copyWith(status: LoadCustomerContactStatus.failure));
-      }
-    }
+    // emit(state.copyWith(status: LoadCustomerContactStatus.loading));
+    //
+    // if (!await FlutterContacts.requestPermission(readonly: true)) {
+    //   emit(state.copyWith(status: LoadCustomerContactStatus.permissionDenied));
+    // } else {
+    //   try {
+    //
+    //     final contacts = await FlutterContacts.getContacts(withProperties: true);
+    //     for (var i = 0; i < contacts.length; i++) {
+    //       var e = contacts[i];
+    //       var entity = ContactEntity(
+    //           contactId: e.id,
+    //           firstName: e.name.first,
+    //           address: e.addresses.isNotEmpty ? e.addresses[0].state : null,
+    //           city: e.addresses.isNotEmpty ? e.addresses[0].state : null,
+    //           country: e.addresses.isNotEmpty ? e.addresses[0].state : null,
+    //           email: e.emails.isNotEmpty ? e.emails[0].address  : null,
+    //           lastName: e.name.last,
+    //           phoneNumber: e.phones.isNotEmpty ? e.phones[0].number.replaceAll(RegExp('[^+0-9]'), '') : null,
+    //           postalCode: e.addresses.isNotEmpty ? e.addresses[0].postalCode : null,
+    //           state: e.addresses.isNotEmpty ? e.addresses[0].state : null
+    //       );
+    //       await db.contactDao.insertBulk(entity);
+    //     }
+    //     emit(state.copyWith(status: LoadCustomerContactStatus.success));
+    //   } catch (e) {
+    //     emit(state.copyWith(status: LoadCustomerContactStatus.failure));
+    //   }
+    // }
   }
 }

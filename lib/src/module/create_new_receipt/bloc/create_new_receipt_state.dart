@@ -10,24 +10,24 @@ enum CreateNewReceiptStatus {
   error
 }
 
-class CreateNewReceiptState {
-  final String? customerId;
-  final String? customerPhone;
-  final String? customerAddress;
-  final String? customerName;
-  final List<SaleLine> lineItem;
+enum CustomerSearchState { initial, searching, selected }
+
+class CreateNewReceiptState extends Equatable {
   final int transSeq;
+  final List<SaleLine> lineItem;
+  final ContactEntity? selectedCustomer;
   final CreateNewReceiptStatus status;
   final List<ContactEntity> customerSuggestion;
+  final List<ContactEntity> phoneContactSuggestion;
+  final CustomerSearchState customerSearchState;
 
-  CreateNewReceiptState(
+  const CreateNewReceiptState(
       {this.lineItem = const [],
       this.transSeq = -1,
       required this.status,
-      this.customerId,
-      this.customerPhone,
-      this.customerAddress,
-      this.customerName,
+      this.selectedCustomer,
+      this.customerSearchState = CustomerSearchState.initial,
+      this.phoneContactSuggestion = const [],
       this.customerSuggestion = const []});
 
   double get subTotal {
@@ -56,20 +56,30 @@ class CreateNewReceiptState {
       String? customerId,
       String? customerPhone,
       String? customerAddress,
-      String? customerName, List<ContactEntity>? customerSuggestion}) {
+      String? customerName,
+      ContactEntity? selectedCustomer,
+      CustomerSearchState? customerSearchState,
+      List<ContactEntity>? customerSuggestion,
+      List<ContactEntity>? phoneContactSuggestion}) {
     return CreateNewReceiptState(
         lineItem: lineItem ?? this.lineItem,
         transSeq: transSeq ?? this.transSeq,
         status: status ?? this.status,
-        customerId: customerId ?? this.customerId,
-        customerPhone: customerPhone ?? this.customerPhone,
-        customerAddress: customerAddress ?? this.customerAddress,
-        customerName: customerName ?? this.customerName,
-    customerSuggestion: customerSuggestion ?? this.customerSuggestion);
+        selectedCustomer: selectedCustomer ?? this.selectedCustomer,
+        customerSearchState: customerSearchState ?? this.customerSearchState,
+        customerSuggestion: customerSuggestion ?? this.customerSuggestion,
+        phoneContactSuggestion:
+            phoneContactSuggestion ?? this.phoneContactSuggestion);
   }
 
   @override
-  String toString() {
-    return 'CreateNewReceiptState{customerId: $customerId, customerPhone: $customerPhone, customerAddress: $customerAddress, customerName: $customerName, transSeq: $transSeq, status: $status}';
-  }
+  List<Object?> get props => [
+        lineItem,
+        transSeq,
+        status,
+        customerSuggestion,
+        selectedCustomer,
+        phoneContactSuggestion,
+        customerSearchState
+      ];
 }

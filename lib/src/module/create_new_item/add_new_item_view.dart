@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/model/product.dart';
-import 'package:receipt_generator/src/module/add_new_item/product_field_validator.dart';
+import 'package:receipt_generator/src/module/create_new_item/product_field_validator.dart';
 import 'package:receipt_generator/src/module/item/bloc/item_bloc.dart';
 import 'package:receipt_generator/src/widgets/appbar_leading.dart';
+import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/custom_dropdown.dart';
 import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 import 'package:receipt_generator/src/widgets/loading.dart';
@@ -109,7 +110,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
             backgroundColor: Colors.red,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        } else if ( state.status == ItemStatus.addingSuccess) {
+        } else if (state.status == ItemStatus.addingSuccess) {
           Navigator.of(context).pop();
           const snackBar = SnackBar(
             content: Text('Successfully Created Product'),
@@ -311,45 +312,17 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: ElevatedButton(
-                                onPressed: () {},
-                                child: const Text(
-                                  "Cancel",
-                                  style: TextStyle(
-                                      color: AppColor.textColorPrimary),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 14),
-                                  primary: AppColor.color8,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(12.0)),
-                                )),
+                            child:
+                                RejectButton(label: "Cancel", onPressed: () {}),
                           ),
                           const SizedBox(
                             width: 12,
                           ),
                           Expanded(
-                            child: ElevatedButton(
-                                // onPressed: null,
-                                onPressed: _formValid ? _onSubmit : null,
-                                child: const Text(
-                                  "Save",
-                                  style: TextStyle(
-                                      color: AppColor.textColorSecondary),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 14),
-                                  primary: AppColor.primary,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(12.0)),
-                                )),
-                          ),
+                              child: AcceptButton(
+                            label: "Save",
+                            onPressed: _formValid ? _onSubmit : null,
+                          ))
                         ],
                       ),
                     ),

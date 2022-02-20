@@ -1,5 +1,4 @@
 import 'package:validators/validators.dart';
-import 'package:validators/sanitizers.dart';
 
 
 class NewProductFieldValidator {

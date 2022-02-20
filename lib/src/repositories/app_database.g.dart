@@ -71,6 +71,8 @@ class _$AppDatabase extends AppDatabase {
 
   ContactDao? _contactDaoInstance;
 
+  RetailLocationDao? _retailLocationDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -92,19 +94,25 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `product` (`productId` TEXT, `description` TEXT NOT NULL, `listPrice` REAL, `salePrice` REAL, `purchasePrice` REAL, `uom` TEXT, `enable` INTEGER NOT NULL, `brand` TEXT, `skuCode` TEXT, `hsn` TEXT, `tax` REAL, `imageUrl` TEXT, PRIMARY KEY (`productId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `trn_header` (`transId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `businessDate` INTEGER NOT NULL, `beginDatetime` INTEGER NOT NULL, `endDateTime` INTEGER, `total` REAL NOT NULL, `taxTotal` REAL NOT NULL, `subtotal` REAL NOT NULL, `roundTotal` REAL NOT NULL, `status` TEXT NOT NULL, `customerId` TEXT, `customerPhone` TEXT, `customerAddress` TEXT, `customerName` TEXT)');
+            'CREATE TABLE IF NOT EXISTS `trn_header` (`transId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `transactionType` TEXT NOT NULL, `businessDate` INTEGER NOT NULL, `beginDatetime` INTEGER NOT NULL, `endDateTime` INTEGER, `total` REAL NOT NULL, `taxTotal` REAL NOT NULL, `subtotal` REAL NOT NULL, `roundTotal` REAL NOT NULL, `status` TEXT NOT NULL, `customerId` TEXT, `customerPhone` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, `customerName` TEXT)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `trn_line_item` (`transId` INTEGER, `transSeq` INTEGER NOT NULL, `productId` TEXT NOT NULL, `productDescription` TEXT NOT NULL, `qty` REAL NOT NULL, `price` REAL NOT NULL, `amount` REAL NOT NULL, `discount` REAL NOT NULL, `createDate` INTEGER NOT NULL, `updateDate` INTEGER NOT NULL, FOREIGN KEY (`transId`) REFERENCES `trn_header` (`transId`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`transId`, `transSeq`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `sequence` (`name` TEXT NOT NULL, `nextSeq` INTEGER NOT NULL, PRIMARY KEY (`name`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `customer` (`contactId` TEXT NOT NULL, `firstName` TEXT NOT NULL, `lastName` TEXT, `phoneNumber` TEXT, `email` TEXT, `address` TEXT, `city` TEXT, `state` TEXT, `country` TEXT, `postalCode` TEXT, PRIMARY KEY (`contactId`))');
+            'CREATE TABLE IF NOT EXISTS `customer` (`contactId` TEXT NOT NULL, `name` TEXT NOT NULL, `phoneNumber` TEXT, `email` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, PRIMARY KEY (`contactId`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `rtl_loc` (`rtlLocId` TEXT NOT NULL, `storeName` TEXT, `storeContact` TEXT, `storeNumber` TEXT, `currencyId` TEXT, `locale` TEXT, `address1` TEXT, `address2` TEXT, `city` TEXT, `country` TEXT, `postalCode` TEXT, PRIMARY KEY (`rtlLocId`))');
         await database.execute(
             'CREATE INDEX `index_product_description` ON `product` (`description`)');
         await database.execute(
             'CREATE UNIQUE INDEX `index_product_skuCode` ON `product` (`skuCode`)');
         await database.execute(
-            'CREATE INDEX `index_customer_firstName_lastName_phoneNumber` ON `customer` (`firstName`, `lastName`, `phoneNumber`)');
+            'CREATE INDEX `index_customer_name` ON `customer` (`name`)');
+        await database.execute(
+            'CREATE INDEX `index_customer_phoneNumber` ON `customer` (`phoneNumber`)');
+        await database.execute(
+            'CREATE INDEX `index_customer_email` ON `customer` (`email`)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -136,6 +144,12 @@ class _$AppDatabase extends AppDatabase {
   @override
   ContactDao get contactDao {
     return _contactDaoInstance ??= _$ContactDao(database, changeListener);
+  }
+
+  @override
+  RetailLocationDao get retailLocationDao {
+    return _retailLocationDaoInstance ??=
+        _$RetailLocationDao(database, changeListener);
   }
 }
 
@@ -266,6 +280,7 @@ class _$TransactionDao extends TransactionDao {
             'trn_header',
             (TransactionHeaderEntity item) => <String, Object?>{
                   'transId': item.transId,
+                  'transactionType': item.transactionType,
                   'businessDate': item.businessDate,
                   'beginDatetime': item.beginDatetime,
                   'endDateTime': item.endDateTime,
@@ -276,7 +291,8 @@ class _$TransactionDao extends TransactionDao {
                   'status': item.status,
                   'customerId': item.customerId,
                   'customerPhone': item.customerPhone,
-                  'customerAddress': item.customerAddress,
+                  'shippingAddress': item.shippingAddress,
+                  'billingAddress': item.billingAddress,
                   'customerName': item.customerName
                 }),
         _transactionLineItemEntityInsertionAdapter = InsertionAdapter(
@@ -300,6 +316,7 @@ class _$TransactionDao extends TransactionDao {
             ['transId'],
             (TransactionHeaderEntity item) => <String, Object?>{
                   'transId': item.transId,
+                  'transactionType': item.transactionType,
                   'businessDate': item.businessDate,
                   'beginDatetime': item.beginDatetime,
                   'endDateTime': item.endDateTime,
@@ -310,7 +327,8 @@ class _$TransactionDao extends TransactionDao {
                   'status': item.status,
                   'customerId': item.customerId,
                   'customerPhone': item.customerPhone,
-                  'customerAddress': item.customerAddress,
+                  'shippingAddress': item.shippingAddress,
+                  'billingAddress': item.billingAddress,
                   'customerName': item.customerName
                 }),
         _transactionLineItemEntityUpdateAdapter = UpdateAdapter(
@@ -363,6 +381,7 @@ class _$TransactionDao extends TransactionDao {
             transId: row['transId'] as int,
             businessDate: row['businessDate'] as int,
             beginDatetime: row['beginDatetime'] as int,
+            transactionType: row['transactionType'] as String,
             endDateTime: row['endDateTime'] as int?,
             total: row['total'] as double,
             taxTotal: row['taxTotal'] as double,
@@ -371,7 +390,8 @@ class _$TransactionDao extends TransactionDao {
             status: row['status'] as String,
             customerId: row['customerId'] as String?,
             customerPhone: row['customerPhone'] as String?,
-            customerAddress: row['customerAddress'] as String?,
+            shippingAddress: row['shippingAddress'] as String?,
+            billingAddress: row['billingAddress'] as String?,
             customerName: row['customerName'] as String?));
   }
 
@@ -383,6 +403,7 @@ class _$TransactionDao extends TransactionDao {
             transId: row['transId'] as int,
             businessDate: row['businessDate'] as int,
             beginDatetime: row['beginDatetime'] as int,
+            transactionType: row['transactionType'] as String,
             endDateTime: row['endDateTime'] as int?,
             total: row['total'] as double,
             taxTotal: row['taxTotal'] as double,
@@ -391,7 +412,8 @@ class _$TransactionDao extends TransactionDao {
             status: row['status'] as String,
             customerId: row['customerId'] as String?,
             customerPhone: row['customerPhone'] as String?,
-            customerAddress: row['customerAddress'] as String?,
+            shippingAddress: row['shippingAddress'] as String?,
+            billingAddress: row['billingAddress'] as String?,
             customerName: row['customerName'] as String?),
         arguments: [transSeq]);
   }
@@ -413,6 +435,22 @@ class _$TransactionDao extends TransactionDao {
             createDate: row['createDate'] as int,
             updateDate: row['updateDate'] as int),
         arguments: [transSeq]);
+  }
+
+  @override
+  Future<List<TransactionLineItemEntity>> getAllTransactionLineItem() async {
+    return _queryAdapter.queryList('SELECT * FROM trn_line_item',
+        mapper: (Map<String, Object?> row) => TransactionLineItemEntity(
+            transId: row['transId'] as int?,
+            transSeq: row['transSeq'] as int,
+            productId: row['productId'] as String,
+            productDescription: row['productDescription'] as String,
+            qty: row['qty'] as double,
+            price: row['price'] as double,
+            amount: row['amount'] as double,
+            discount: row['discount'] as double,
+            createDate: row['createDate'] as int,
+            updateDate: row['updateDate'] as int));
   }
 
   @override
@@ -572,15 +610,11 @@ class _$ContactDao extends ContactDao {
             'customer',
             (ContactEntity item) => <String, Object?>{
                   'contactId': item.contactId,
-                  'firstName': item.firstName,
-                  'lastName': item.lastName,
+                  'name': item.name,
                   'phoneNumber': item.phoneNumber,
                   'email': item.email,
-                  'address': item.address,
-                  'city': item.city,
-                  'state': item.state,
-                  'country': item.country,
-                  'postalCode': item.postalCode
+                  'shippingAddress': item.shippingAddress,
+                  'billingAddress': item.billingAddress
                 }),
         _contactEntityUpdateAdapter = UpdateAdapter(
             database,
@@ -588,15 +622,11 @@ class _$ContactDao extends ContactDao {
             ['contactId'],
             (ContactEntity item) => <String, Object?>{
                   'contactId': item.contactId,
-                  'firstName': item.firstName,
-                  'lastName': item.lastName,
+                  'name': item.name,
                   'phoneNumber': item.phoneNumber,
                   'email': item.email,
-                  'address': item.address,
-                  'city': item.city,
-                  'state': item.state,
-                  'country': item.country,
-                  'postalCode': item.postalCode
+                  'shippingAddress': item.shippingAddress,
+                  'billingAddress': item.billingAddress
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -614,22 +644,18 @@ class _$ContactDao extends ContactDao {
     return _queryAdapter.queryList('SELECT * FROM customer',
         mapper: (Map<String, Object?> row) => ContactEntity(
             contactId: row['contactId'] as String,
-            firstName: row['firstName'] as String,
-            lastName: row['lastName'] as String?,
+            name: row['name'] as String,
             phoneNumber: row['phoneNumber'] as String?,
             email: row['email'] as String?,
-            address: row['address'] as String?,
-            city: row['city'] as String?,
-            state: row['state'] as String?,
-            country: row['country'] as String?,
-            postalCode: row['postalCode'] as String?));
+            shippingAddress: row['shippingAddress'] as String?,
+            billingAddress: row['billingAddress'] as String?));
   }
 
   @override
   Future<List<ContactEntity>> findAllProductsByName(String filter) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM customer where firstName like ?1 or lastName like ?1 limit 10',
-        mapper: (Map<String, Object?> row) => ContactEntity(contactId: row['contactId'] as String, firstName: row['firstName'] as String, lastName: row['lastName'] as String?, phoneNumber: row['phoneNumber'] as String?, email: row['email'] as String?, address: row['address'] as String?, city: row['city'] as String?, state: row['state'] as String?, country: row['country'] as String?, postalCode: row['postalCode'] as String?),
+        'SELECT * FROM customer where name like ?1 or phoneNumber like ?1 or email like ?1 limit 10',
+        mapper: (Map<String, Object?> row) => ContactEntity(contactId: row['contactId'] as String, name: row['name'] as String, phoneNumber: row['phoneNumber'] as String?, email: row['email'] as String?, shippingAddress: row['shippingAddress'] as String?, billingAddress: row['billingAddress'] as String?),
         arguments: [filter]);
   }
 
@@ -647,6 +673,91 @@ class _$ContactDao extends ContactDao {
   @override
   Future<void> updateItem(ContactEntity item) async {
     await _contactEntityUpdateAdapter.update(item, OnConflictStrategy.replace);
+  }
+}
+
+class _$RetailLocationDao extends RetailLocationDao {
+  _$RetailLocationDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _retailLocationEntityInsertionAdapter = InsertionAdapter(
+            database,
+            'rtl_loc',
+            (RetailLocationEntity item) => <String, Object?>{
+                  'rtlLocId': item.rtlLocId,
+                  'storeName': item.storeName,
+                  'storeContact': item.storeContact,
+                  'storeNumber': item.storeNumber,
+                  'currencyId': item.currencyId,
+                  'locale': item.locale,
+                  'address1': item.address1,
+                  'address2': item.address2,
+                  'city': item.city,
+                  'country': item.country,
+                  'postalCode': item.postalCode
+                }),
+        _retailLocationEntityUpdateAdapter = UpdateAdapter(
+            database,
+            'rtl_loc',
+            ['rtlLocId'],
+            (RetailLocationEntity item) => <String, Object?>{
+                  'rtlLocId': item.rtlLocId,
+                  'storeName': item.storeName,
+                  'storeContact': item.storeContact,
+                  'storeNumber': item.storeNumber,
+                  'currencyId': item.currencyId,
+                  'locale': item.locale,
+                  'address1': item.address1,
+                  'address2': item.address2,
+                  'city': item.city,
+                  'country': item.country,
+                  'postalCode': item.postalCode
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<RetailLocationEntity>
+      _retailLocationEntityInsertionAdapter;
+
+  final UpdateAdapter<RetailLocationEntity> _retailLocationEntityUpdateAdapter;
+
+  @override
+  Future<RetailLocationEntity?> findRetailLocById(String rtlLocId) async {
+    return _queryAdapter.query('SELECT * FROM rtl_loc where rtlLocId = ?1',
+        mapper: (Map<String, Object?> row) => RetailLocationEntity(
+            rtlLocId: row['rtlLocId'] as String,
+            storeName: row['storeName'] as String?,
+            storeContact: row['storeContact'] as String?,
+            storeNumber: row['storeNumber'] as String?,
+            currencyId: row['currencyId'] as String?,
+            locale: row['locale'] as String?,
+            address1: row['address1'] as String?,
+            address2: row['address2'] as String?,
+            city: row['city'] as String?,
+            country: row['country'] as String?,
+            postalCode: row['postalCode'] as String?),
+        arguments: [rtlLocId]);
+  }
+
+  @override
+  Future<void> insertItem(RetailLocationEntity item) async {
+    await _retailLocationEntityInsertionAdapter.insert(
+        item, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> insertBulk(RetailLocationEntity item) async {
+    await _retailLocationEntityInsertionAdapter.insert(
+        item, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> updateItem(RetailLocationEntity item) async {
+    await _retailLocationEntityUpdateAdapter.update(
+        item, OnConflictStrategy.replace);
   }
 }
 

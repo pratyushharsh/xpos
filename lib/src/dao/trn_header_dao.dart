@@ -31,6 +31,7 @@ abstract class TransactionDao {
   Future<void> createNewSale(TransactionHeaderEntity header,
       List<TransactionLineItemEntity> lineItems) async {
     await insertTransaction(header);
+    await insertTransactionLineItems(lineItems);
   }
 
   @Query('SELECT * FROM trn_header order by beginDatetime desc')
@@ -42,6 +43,9 @@ abstract class TransactionDao {
   @Query('SELECT * FROM trn_line_item where transId = :transSeq')
   Future<List<TransactionLineItemEntity>> findLineItemByTransactionSeq(
       int transSeq);
+
+  @Query('SELECT * FROM trn_line_item')
+  Future<List<TransactionLineItemEntity>> getAllTransactionLineItem();
 
   @transaction
   Future<bool> updateTransactionStatus(int transId, String status) async {

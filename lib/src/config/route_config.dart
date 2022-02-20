@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:receipt_generator/src/module/add_new_item/add_new_item_view.dart';
 import 'package:receipt_generator/src/module/all_customer/all_customer_view.dart';
+import 'package:receipt_generator/src/module/business/business_view.dart';
+import 'package:receipt_generator/src/module/create_new_item/add_new_item_view.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_view.dart';
 import 'package:receipt_generator/src/module/home/home_view.dart';
 import 'package:receipt_generator/src/module/invoice/invoice_view.dart';
@@ -20,6 +21,7 @@ class RouteConfig {
   static const String createReceiptScreen = "/create-receipt";
   static const String receiptDisplayScreen = "/receipt-display";
   static const String invoiceViewScreen = "/invoice-view";
+  static const String businessViewScreen = "/business-view";
 
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -40,6 +42,8 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => const NewReceiptView());
       case invoiceViewScreen:
         return MaterialPageRoute(builder: (_) => const InvoiceView());
+      case businessViewScreen:
+        return MaterialPageRoute(builder: (_) => const BusinessView());
       case receiptDisplayScreen:
         var transId = settings.arguments as int;
         return MaterialPageRoute(builder: (_) => ReceiptDisplayView(transactionId: transId,));

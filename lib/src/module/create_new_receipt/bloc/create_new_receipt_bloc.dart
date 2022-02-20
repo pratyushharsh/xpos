@@ -1,5 +1,5 @@
-
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
@@ -7,6 +7,7 @@ import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
+import 'package:receipt_generator/src/repositories/contact_repository.dart';
 
 part 'create_new_receipt_event.dart';
 part 'create_new_receipt_state.dart';
@@ -15,9 +16,11 @@ class CreateNewReceiptBloc
     extends Bloc<CreateNewReceiptEvent, CreateNewReceiptState> {
   final log = Logger('CreateNewReceiptBloc');
   final AppDatabase db;
+  final ContactRepository contactDb;
 
-  CreateNewReceiptBloc({required this.db})
-      : super(CreateNewReceiptState(status: CreateNewReceiptStatus.initial)) {
+  CreateNewReceiptBloc({required this.db, required this.contactDb})
+      : super(const CreateNewReceiptState(
+            status: CreateNewReceiptStatus.initial)) {
     on<AddItemToReceipt>(_onAddNewLineItem);
     on<OnQuantityUpdate>(_onQuantityUpdate);
     on<OnUnitPriceUpdate>(_onPriceUpdate);
@@ -40,7 +43,7 @@ class CreateNewReceiptBloc
     SaleLine newLine = SaleLine(
         seq: state.lineItem.length + 1,
         product: event.product,
-        price: event.product.listPrice!);
+        price: event.product.listPrice ?? 0.00);
     List<SaleLine> newList = [...state.lineItem, newLine];
     emit(state.copyWith(lineItem: newList));
   }
@@ -76,17 +79,27 @@ class CreateNewReceiptBloc
         transId: state.transSeq,
         businessDate: DateTime.now().microsecondsSinceEpoch,
         beginDatetime: DateTime.now().microsecondsSinceEpoch,
+        transactionType: TransactionType.cashSale,
         total: state.grandTotal,
         taxTotal: state.tax,
         subtotal: state.subTotal,
         roundTotal: 0.00,
         status: SaleStatus.pending,
-        customerId: state.customerId,
-        customerName: state.customerName,
-        customerPhone: state.customerPhone,
-        customerAddress: state.customerAddress);
+        customerId: state.selectedCustomer?.contactId,
+        customerName: state.selectedCustomer?.name,
+        customerPhone: state.selectedCustomer?.phoneNumber,
+        shippingAddress: state.selectedCustomer?.shippingAddress);
     List<TransactionLineItemEntity> lineItems =
         state.lineItem.map((e) => e.toEntity(state.transSeq)).toList();
+
+    // Create If Contact Does not exist else override
+    if (state.selectedCustomer != null) {
+      try {
+        await db.contactDao.insertBulk(state.selectedCustomer!);
+      } catch (e) {
+        log.severe(e);
+      }
+    }
 
     try {
       await db.transactionDao.createNewSale(header, lineItems);
@@ -103,12 +116,30 @@ class CreateNewReceiptBloc
       if (event.name != null && event.name!.isNotEmpty) {
         var customer =
             await db.contactDao.findAllProductsByName('%${event.name}%');
-        emit(state.copyWith(customerSuggestion: customer));
+        var x = (await contactDb.getContact())
+            .where((con) {
+              if (event.name != null) {
+                if (con.name
+                        .toLowerCase()
+                        .contains(event.name!.toLowerCase())) {
+                  return true;
+                }
+                return false;
+              } else {
+                return true;
+              }
+            })
+            .take(5)
+            .toList();
+        emit(state.copyWith(
+            customerSuggestion: customer,
+            selectedCustomer: null,
+            customerSearchState: CustomerSearchState.searching,
+            phoneContactSuggestion: x));
       }
     } catch (e) {
       log.severe(e);
     }
-    emit(state.copyWith(customerName: event.name));
   }
 
   void _onCustomerPhoneChange(
@@ -124,11 +155,12 @@ class CreateNewReceiptBloc
   void _onSuggestedCustomerSelectEvent(OnSuggestedCustomerSelect event,
       Emitter<CreateNewReceiptState> emit) async {
     emit(state.copyWith(
-      customerSuggestion: List.empty(),
-      customerId: event.contact.contactId,
-      customerPhone: event.contact.phoneNumber,
-      customerName: '${event.contact.firstName} ${event.contact.lastName ?? ''}',
-      customerAddress: event.contact.address
-    ));
+        customerSuggestion: List.empty(),
+        customerId: event.contact.contactId,
+        customerPhone: event.contact.phoneNumber,
+        customerName: event.contact.name,
+        selectedCustomer: event.contact,
+        customerSearchState: CustomerSearchState.selected,
+        customerAddress: event.contact.shippingAddress));
   }
 }

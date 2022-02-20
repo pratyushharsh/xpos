@@ -5,6 +5,7 @@ class TransactionHeaderEntity {
   @PrimaryKey(autoGenerate: true)
   final int transId;
 
+  final String transactionType;
   final int businessDate;
   final int beginDatetime;
   final int? endDateTime;
@@ -15,13 +16,15 @@ class TransactionHeaderEntity {
   final String status;
   final String? customerId;
   final String? customerPhone;
-  final String? customerAddress;
+  final String? shippingAddress;
+  final String? billingAddress;
   final String? customerName;
 
   TransactionHeaderEntity(
       {required this.transId,
       required this.businessDate,
       required this.beginDatetime,
+      required this.transactionType,
       this.endDateTime,
       required this.total,
       required this.taxTotal,
@@ -30,7 +33,8 @@ class TransactionHeaderEntity {
       required this.status,
       this.customerId,
       this.customerPhone,
-      this.customerAddress,
+      this.shippingAddress,
+        this.billingAddress,
       this.customerName});
 
   TransactionHeaderEntity copyWith(
@@ -38,6 +42,7 @@ class TransactionHeaderEntity {
       double? taxTotal,
       double? subtotal,
       double? roundTotal,
+      String? transactionType,
       int? endDateTime,
       String? status}) {
     return TransactionHeaderEntity(
@@ -45,11 +50,13 @@ class TransactionHeaderEntity {
         businessDate: businessDate,
         beginDatetime: beginDatetime,
         total: total ?? this.total,
+        transactionType: transactionType ?? this.transactionType,
         taxTotal: taxTotal ?? this.taxTotal,
         subtotal: subtotal ?? this.subtotal,
         roundTotal: roundTotal ?? this.roundTotal,
         status: status ?? this.status,
-        customerAddress: customerAddress,
+        shippingAddress: shippingAddress,
+        billingAddress: billingAddress,
         customerName: customerName,
         customerPhone: customerPhone,
         customerId: customerId,

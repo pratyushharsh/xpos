@@ -22,8 +22,6 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
   void _onLoadFile(ProcessFile event, Emitter<LoadItemBulkState> emit) async {
     try {
       emit(state.copyWith(status: LoadItemBulkStatus.loading));
-
-      await Future.delayed(const Duration(seconds: 3));
       final input = File(event.path).openRead();
       final fields = await input
           .transform(utf8.decoder)

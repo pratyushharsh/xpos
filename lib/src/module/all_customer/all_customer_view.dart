@@ -17,11 +17,16 @@ class AllCustomerView extends StatelessWidget {
           if (state.status == AllCustomerStatus.loading) {
             return const CircularProgressIndicator();
           }
-          return ListView.builder(
-              itemCount: state.customers.length,
-              itemBuilder: (ctx, idx) {
-                return CustomerViewCard(contact: state.customers[idx]);
-              });
+          return RefreshIndicator(
+            onRefresh: () async {
+              BlocProvider.of<AllCustomerBloc>(context).add(LoadAllCustomer());
+            },
+            child: ListView.builder(
+                itemCount: state.customers.length,
+                itemBuilder: (ctx, idx) {
+                  return CustomerViewCard(contact: state.customers[idx]);
+                }),
+          );
         },
       ),
     );
@@ -41,14 +46,14 @@ class CustomerViewCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${contact.firstName} ${contact.lastName}',
+              contact.name,
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             if (contact.phoneNumber != null) Text('${contact.phoneNumber}'),
             if (contact.email != null) Text('${contact.email}'),
-            if (contact.address != null || contact.state != null || contact.city != null || contact.country != null )
+            if (contact.billingAddress != null )
             Text(
-                '${contact.address ?? ''} ${contact.state ?? ''} ${contact.city ?? ''} ${contact.country ?? ''}'),
+                '${contact.billingAddress}'),
           ],
         ),
       ),

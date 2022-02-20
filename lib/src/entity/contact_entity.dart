@@ -1,28 +1,30 @@
 import 'package:floor/floor.dart';
 
-@Entity(tableName: 'customer', indices: [Index(value: ['firstName', 'lastName', 'phoneNumber'])])
+@Entity(tableName: 'customer', indices: [
+  Index(
+    value: ['name'],
+  ),
+  Index(
+    value: ['phoneNumber'],
+  ),
+  Index(
+    value: ['email'],
+  ),
+])
 class ContactEntity {
   @PrimaryKey()
   final String contactId;
-  final String firstName;
-  final String? lastName;
+  final String name;
   final String? phoneNumber;
   final String? email;
-  final String? address;
-  final String? city;
-  final String? state;
-  final String? country;
-  final String? postalCode;
+  final String? shippingAddress;
+  final String? billingAddress;
 
   ContactEntity(
       {required this.contactId,
-      required this.firstName,
-      this.lastName,
+      required this.name,
       this.phoneNumber,
       this.email,
-      this.address,
-      this.city,
-      this.state,
-      this.country,
-      this.postalCode});
+      this.shippingAddress,
+      this.billingAddress});
 }

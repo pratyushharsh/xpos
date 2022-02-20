@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/model/model.dart';
-import 'package:receipt_generator/src/module/add_new_item/add_new_item_view.dart';
 import 'package:receipt_generator/src/module/list_all_item/bloc/list_all_item_bloc.dart';
+
+import '../create_new_item/add_new_item_view.dart';
 
 
 class AllProductsList extends StatelessWidget {

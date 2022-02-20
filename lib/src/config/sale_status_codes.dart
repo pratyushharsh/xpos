@@ -5,3 +5,8 @@ class SaleStatus {
   static const String cancelled = "CANCELLED";
   static const String pending = "PENDING";
 }
+
+class TransactionType {
+  static const String cashSale = "CASH_SALE";
+  static const String saleReturn = "RETURN";
+}
