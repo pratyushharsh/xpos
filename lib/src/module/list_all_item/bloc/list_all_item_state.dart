@@ -4,14 +4,14 @@ enum ListAllItemStatus { initial, loading, success, failure }
 
 class ListAllItemState {
   final ListAllItemStatus status;
-  final List<Product> products;
+  final List<ProductModel> products;
 
   ListAllItemState(
       {this.status = ListAllItemStatus.initial,
-      this.products = const <Product>[]});
+      this.products = const <ProductModel>[]});
 
   ListAllItemState copyWith(
-      {ListAllItemStatus? status, List<Product>? products}) {
+      {ListAllItemStatus? status, List<ProductModel>? products}) {
     return ListAllItemState(
         status: status ?? this.status, products: products ?? this.products);
   }

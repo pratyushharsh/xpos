@@ -11,3 +11,21 @@ class DateTimeConverter extends TypeConverter<DateTime, int> {
     return value.millisecondsSinceEpoch;
   }
 }
+
+class DateTimeNullConverter extends TypeConverter<DateTime?, int?> {
+  @override
+  DateTime? decode(int? databaseValue) {
+    if (databaseValue != null) {
+      return DateTime.fromMillisecondsSinceEpoch(databaseValue);
+    }
+    return null;
+  }
+
+  @override
+  int? encode(DateTime? value) {
+    if (value != null) {
+      return value.microsecondsSinceEpoch;
+    }
+    return null;
+  }
+}

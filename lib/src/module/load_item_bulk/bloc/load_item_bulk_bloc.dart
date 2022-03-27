@@ -48,7 +48,7 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
             tax: e[8].toString().isNotEmpty ? double.parse(e[8].toString()) / 100 : 0,
             imageUrl: e[9].toString(),
             enable: true,
-          productId: productId
+          productId: productId, storeId: '', createTime: DateTime.now(),
         );
         await db.productDao.insertBulk(entity);
       }

@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 
 class AppBarLeading extends StatelessWidget {
-  final String heading;
+  final String? heading;
   final IconData icon;
   final GestureTapCallback? onTap;
-  const AppBarLeading({Key? key, required this.heading, required this.icon, this.onTap,}) : super(key: key);
+  const AppBarLeading({
+    Key? key,
+    this.heading,
+    required this.icon,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +20,9 @@ class AppBarLeading extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-                color: AppColor.primary,
-                borderRadius: BorderRadius.circular(10)),
+              color: AppColor.primary,
+              borderRadius: BorderRadius.circular(10),
+            ),
             height: 40,
             width: 40,
             child: Icon(
@@ -28,11 +34,11 @@ class AppBarLeading extends StatelessWidget {
         const SizedBox(
           width: 15,
         ),
-        Text(
-          heading,
-          style: const TextStyle(
-              fontWeight: FontWeight.w500, fontSize: 26),
-        )
+        if (heading != null)
+          Text(
+            heading!,
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 26),
+          )
       ],
     );
   }

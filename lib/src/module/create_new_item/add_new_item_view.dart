@@ -68,7 +68,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
     // );
     // BlocProvider.of<ItemBloc>(context).add(AddItem(prod));
     if (_formKey.currentState!.validate()) {
-      var prod = Product(
+      var prod = ProductModel(
           description: _productNameController.text,
           listPrice: _listPriceController.text.isNotEmpty
               ? toFloat(_listPriceController.text)

@@ -1,31 +1,66 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
+import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
+import 'package:receipt_generator/src/module/business/business_view.dart';
+import 'package:receipt_generator/src/module/home/home_view.dart';
 import 'package:receipt_generator/src/module/item/bloc/item_bloc.dart';
 import 'package:receipt_generator/src/module/load_item_bulk/bloc/load_item_bulk_bloc.dart';
+import 'package:receipt_generator/src/module/login/bloc/login_bloc.dart';
+import 'package:receipt_generator/src/module/login/login_view.dart';
+import 'package:receipt_generator/src/module/login/verify_user_view.dart';
+import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
 
 class MyApp extends StatelessWidget {
   final AppDatabase database;
-  const MyApp({Key? key, required this.database}) : super(key: key);
+  final CognitoUserPool userPool;
+  const MyApp({Key? key, required this.database, required this.userPool})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
         providers: [
           RepositoryProvider(lazy: false, create: (context) => database),
-          RepositoryProvider(create: (context) => ContactRepository())
+          RepositoryProvider(create: (context) => ContactRepository()),
+          RepositoryProvider(create: (context) => userPool)
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(
             lazy: false,
-            create: (context) => ItemBloc(db: RepositoryProvider.of(context)),
+            create: (context) => AuthenticationBloc(
+              userPool: RepositoryProvider.of(context),
+              db: RepositoryProvider.of(context),
+            )..add(
+                InitialAuthEvent(),
+              ),
           ),
           BlocProvider(
-              create: (context) =>
-                  LoadItemBulkBloc(db: RepositoryProvider.of(context)))
+            create: (context) => LoginBloc(
+                userPool: RepositoryProvider.of(context),
+                authenticationBloc: BlocProvider.of(context)),
+          ),
+          BlocProvider(
+            lazy: false,
+            create: (context) => ItemBloc(
+              db: RepositoryProvider.of(context),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => LoadItemBulkBloc(
+              db: RepositoryProvider.of(context),
+            ),
+          ),
+          BlocProvider(
+            lazy: false,
+            create: (context) => BackgroundSyncBloc(
+              db: RepositoryProvider.of(context),
+            )..add(StartSyncEvent()),
+          )
         ], child: const MyAppView()));
   }
 }
@@ -38,15 +73,49 @@ class MyAppView extends StatefulWidget {
 }
 
 class _MyAppViewState extends State<MyAppView> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
+  NavigatorState get _navigator => _navigatorKey.currentState!;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: _navigatorKey,
       theme: ThemeData(
-          primarySwatch: Colors.blue,
-          textTheme: GoogleFonts.latoTextTheme(
-              Theme.of(context).textTheme
-          ),
+        primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
       ),
+      builder: (context, child) {
+        return BlocListener<AuthenticationBloc, AuthenticationState>(
+          listener: (context, state) {
+            switch (state.status) {
+              case AuthenticationStatus.authenticated:
+                _navigator.pushAndRemoveUntil<void>(
+                  HomeScreen.route(),
+                  (route) => false,
+                );
+                break;
+              case AuthenticationStatus.unauthenticated:
+                _navigator.pushAndRemoveUntil<void>(
+                  LoginView.route(),
+                  (route) => false,
+                );
+                break;
+              case AuthenticationStatus.verifyUser:
+                _navigator.push(VerifyUserView.route());
+                break;
+              case AuthenticationStatus.newUser:
+                _navigator.push<void>(
+                  BusinessView.route(),
+                );
+                break;
+              default:
+                break;
+            }
+          },
+          child: child,
+        );
+      },
       onGenerateRoute: RouteConfig.onGenerateRoute,
     );
   }

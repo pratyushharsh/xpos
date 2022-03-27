@@ -29,7 +29,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     emit(state.copyWith(status: BusinessStatus.loading));
     try {
       var data = await db.retailLocationDao.findRetailLocById(dummyBusinessId);
-      data ??= const RetailLocationEntity(rtlLocId: dummyBusinessId);
+      data ??= RetailLocationEntity(rtlLocId: dummyBusinessId, createTime: DateTime.now());
       emit(state.copyWith(status: BusinessStatus.success, entity: data));
     } catch (e) {
       log.severe(e);

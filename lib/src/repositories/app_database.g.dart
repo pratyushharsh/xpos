@@ -92,17 +92,17 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `product` (`productId` TEXT, `description` TEXT NOT NULL, `listPrice` REAL, `salePrice` REAL, `purchasePrice` REAL, `uom` TEXT, `enable` INTEGER NOT NULL, `brand` TEXT, `skuCode` TEXT, `hsn` TEXT, `tax` REAL, `imageUrl` TEXT, PRIMARY KEY (`productId`))');
+            'CREATE TABLE IF NOT EXISTS `product` (`productId` TEXT, `storeId` TEXT NOT NULL, `description` TEXT NOT NULL, `listPrice` REAL, `salePrice` REAL, `purchasePrice` REAL, `uom` TEXT, `enable` INTEGER NOT NULL, `brand` TEXT, `skuCode` TEXT, `hsn` TEXT, `tax` REAL, `imageUrl` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`productId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `trn_header` (`transId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `transactionType` TEXT NOT NULL, `businessDate` INTEGER NOT NULL, `beginDatetime` INTEGER NOT NULL, `endDateTime` INTEGER, `total` REAL NOT NULL, `taxTotal` REAL NOT NULL, `subtotal` REAL NOT NULL, `roundTotal` REAL NOT NULL, `status` TEXT NOT NULL, `customerId` TEXT, `customerPhone` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, `customerName` TEXT)');
+            'CREATE TABLE IF NOT EXISTS `trn_header` (`transId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `storeId` TEXT NOT NULL, `transactionType` TEXT NOT NULL, `businessDate` INTEGER NOT NULL, `beginDatetime` INTEGER NOT NULL, `endDateTime` INTEGER, `total` REAL NOT NULL, `taxTotal` REAL NOT NULL, `subtotal` REAL NOT NULL, `roundTotal` REAL NOT NULL, `status` TEXT NOT NULL, `customerId` TEXT, `customerPhone` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, `customerName` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `trn_line_item` (`transId` INTEGER, `transSeq` INTEGER NOT NULL, `productId` TEXT NOT NULL, `productDescription` TEXT NOT NULL, `qty` REAL NOT NULL, `price` REAL NOT NULL, `amount` REAL NOT NULL, `discount` REAL NOT NULL, `createDate` INTEGER NOT NULL, `updateDate` INTEGER NOT NULL, FOREIGN KEY (`transId`) REFERENCES `trn_header` (`transId`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`transId`, `transSeq`))');
+            'CREATE TABLE IF NOT EXISTS `trn_line_item` (`transId` INTEGER, `transSeq` INTEGER NOT NULL, `productId` TEXT NOT NULL, `productDescription` TEXT NOT NULL, `qty` REAL NOT NULL, `price` REAL NOT NULL, `amount` REAL NOT NULL, `discount` REAL NOT NULL, FOREIGN KEY (`transId`) REFERENCES `trn_header` (`transId`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`transId`, `transSeq`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `sequence` (`name` TEXT NOT NULL, `nextSeq` INTEGER NOT NULL, PRIMARY KEY (`name`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `customer` (`contactId` TEXT NOT NULL, `name` TEXT NOT NULL, `phoneNumber` TEXT, `email` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, PRIMARY KEY (`contactId`))');
+            'CREATE TABLE IF NOT EXISTS `customer` (`contactId` TEXT NOT NULL, `storeId` TEXT NOT NULL, `name` TEXT NOT NULL, `phoneNumber` TEXT, `email` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`contactId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `rtl_loc` (`rtlLocId` TEXT NOT NULL, `storeName` TEXT, `storeContact` TEXT, `storeNumber` TEXT, `currencyId` TEXT, `locale` TEXT, `address1` TEXT, `address2` TEXT, `city` TEXT, `country` TEXT, `postalCode` TEXT, PRIMARY KEY (`rtlLocId`))');
+            'CREATE TABLE IF NOT EXISTS `rtl_loc` (`rtlLocId` TEXT NOT NULL, `storeName` TEXT, `storeContact` TEXT, `storeNumber` TEXT, `currencyId` TEXT, `locale` TEXT, `address1` TEXT, `address2` TEXT, `city` TEXT, `country` TEXT, `postalCode` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`rtlLocId`))');
         await database.execute(
             'CREATE INDEX `index_product_description` ON `product` (`description`)');
         await database.execute(
@@ -161,6 +161,7 @@ class _$ProductDao extends ProductDao {
             'product',
             (ProductEntity item) => <String, Object?>{
                   'productId': item.productId,
+                  'storeId': item.storeId,
                   'description': item.description,
                   'listPrice': item.listPrice,
                   'salePrice': item.salePrice,
@@ -171,7 +172,12 @@ class _$ProductDao extends ProductDao {
                   'skuCode': item.skuCode,
                   'hsn': item.hsn,
                   'tax': item.tax,
-                  'imageUrl': item.imageUrl
+                  'imageUrl': item.imageUrl,
+                  'createTime': _dateTimeConverter.encode(item.createTime),
+                  'updateTime': _dateTimeNullConverter.encode(item.updateTime),
+                  'lastChangedAt':
+                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'version': item.version
                 }),
         _productEntityUpdateAdapter = UpdateAdapter(
             database,
@@ -179,6 +185,7 @@ class _$ProductDao extends ProductDao {
             ['productId'],
             (ProductEntity item) => <String, Object?>{
                   'productId': item.productId,
+                  'storeId': item.storeId,
                   'description': item.description,
                   'listPrice': item.listPrice,
                   'salePrice': item.salePrice,
@@ -189,7 +196,12 @@ class _$ProductDao extends ProductDao {
                   'skuCode': item.skuCode,
                   'hsn': item.hsn,
                   'tax': item.tax,
-                  'imageUrl': item.imageUrl
+                  'imageUrl': item.imageUrl,
+                  'createTime': _dateTimeConverter.encode(item.createTime),
+                  'updateTime': _dateTimeNullConverter.encode(item.updateTime),
+                  'lastChangedAt':
+                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'version': item.version
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -207,6 +219,7 @@ class _$ProductDao extends ProductDao {
     return _queryAdapter.queryList('SELECT * FROM product',
         mapper: (Map<String, Object?> row) => ProductEntity(
             productId: row['productId'] as String?,
+            storeId: row['storeId'] as String,
             description: row['description'] as String,
             listPrice: row['listPrice'] as double?,
             salePrice: row['salePrice'] as double?,
@@ -217,7 +230,13 @@ class _$ProductDao extends ProductDao {
             skuCode: row['skuCode'] as String?,
             hsn: row['hsn'] as String?,
             tax: row['tax'] as double?,
-            imageUrl: row['imageUrl'] as String?));
+            imageUrl: row['imageUrl'] as String?,
+            createTime: _dateTimeConverter.decode(row['createTime'] as int),
+            version: row['version'] as int,
+            lastChangedAt:
+                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            updateTime:
+                _dateTimeNullConverter.decode(row['updateTime'] as int?)));
   }
 
   @override
@@ -225,6 +244,7 @@ class _$ProductDao extends ProductDao {
     return _queryAdapter.query('SELECT * FROM product where productId = ?1',
         mapper: (Map<String, Object?> row) => ProductEntity(
             productId: row['productId'] as String?,
+            storeId: row['storeId'] as String,
             description: row['description'] as String,
             listPrice: row['listPrice'] as double?,
             salePrice: row['salePrice'] as double?,
@@ -235,7 +255,13 @@ class _$ProductDao extends ProductDao {
             skuCode: row['skuCode'] as String?,
             hsn: row['hsn'] as String?,
             tax: row['tax'] as double?,
-            imageUrl: row['imageUrl'] as String?),
+            imageUrl: row['imageUrl'] as String?,
+            createTime: _dateTimeConverter.decode(row['createTime'] as int),
+            version: row['version'] as int,
+            lastChangedAt:
+                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            updateTime:
+                _dateTimeNullConverter.decode(row['updateTime'] as int?)),
         arguments: [productId]);
   }
 
@@ -243,7 +269,7 @@ class _$ProductDao extends ProductDao {
   Future<List<ProductEntity>> findAllProductsByText(String filter) async {
     return _queryAdapter.queryList(
         'SELECT * FROM product where description like ?1 or productId like ?1  limit 10',
-        mapper: (Map<String, Object?> row) => ProductEntity(productId: row['productId'] as String?, description: row['description'] as String, listPrice: row['listPrice'] as double?, salePrice: row['salePrice'] as double?, purchasePrice: row['purchasePrice'] as double?, uom: row['uom'] as String?, enable: (row['enable'] as int) != 0, brand: row['brand'] as String?, skuCode: row['skuCode'] as String?, hsn: row['hsn'] as String?, tax: row['tax'] as double?, imageUrl: row['imageUrl'] as String?),
+        mapper: (Map<String, Object?> row) => ProductEntity(productId: row['productId'] as String?, storeId: row['storeId'] as String, description: row['description'] as String, listPrice: row['listPrice'] as double?, salePrice: row['salePrice'] as double?, purchasePrice: row['purchasePrice'] as double?, uom: row['uom'] as String?, enable: (row['enable'] as int) != 0, brand: row['brand'] as String?, skuCode: row['skuCode'] as String?, hsn: row['hsn'] as String?, tax: row['tax'] as double?, imageUrl: row['imageUrl'] as String?, createTime: _dateTimeConverter.decode(row['createTime'] as int), version: row['version'] as int, lastChangedAt: _dateTimeNullConverter.decode(row['lastChangedAt'] as int?), updateTime: _dateTimeNullConverter.decode(row['updateTime'] as int?)),
         arguments: [filter]);
   }
 
@@ -280,6 +306,7 @@ class _$TransactionDao extends TransactionDao {
             'trn_header',
             (TransactionHeaderEntity item) => <String, Object?>{
                   'transId': item.transId,
+                  'storeId': item.storeId,
                   'transactionType': item.transactionType,
                   'businessDate': item.businessDate,
                   'beginDatetime': item.beginDatetime,
@@ -293,7 +320,12 @@ class _$TransactionDao extends TransactionDao {
                   'customerPhone': item.customerPhone,
                   'shippingAddress': item.shippingAddress,
                   'billingAddress': item.billingAddress,
-                  'customerName': item.customerName
+                  'customerName': item.customerName,
+                  'createTime': _dateTimeConverter.encode(item.createTime),
+                  'updateTime': _dateTimeNullConverter.encode(item.updateTime),
+                  'lastChangedAt':
+                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'version': item.version
                 }),
         _transactionLineItemEntityInsertionAdapter = InsertionAdapter(
             database,
@@ -306,9 +338,7 @@ class _$TransactionDao extends TransactionDao {
                   'qty': item.qty,
                   'price': item.price,
                   'amount': item.amount,
-                  'discount': item.discount,
-                  'createDate': item.createDate,
-                  'updateDate': item.updateDate
+                  'discount': item.discount
                 }),
         _transactionHeaderEntityUpdateAdapter = UpdateAdapter(
             database,
@@ -316,6 +346,7 @@ class _$TransactionDao extends TransactionDao {
             ['transId'],
             (TransactionHeaderEntity item) => <String, Object?>{
                   'transId': item.transId,
+                  'storeId': item.storeId,
                   'transactionType': item.transactionType,
                   'businessDate': item.businessDate,
                   'beginDatetime': item.beginDatetime,
@@ -329,7 +360,12 @@ class _$TransactionDao extends TransactionDao {
                   'customerPhone': item.customerPhone,
                   'shippingAddress': item.shippingAddress,
                   'billingAddress': item.billingAddress,
-                  'customerName': item.customerName
+                  'customerName': item.customerName,
+                  'createTime': _dateTimeConverter.encode(item.createTime),
+                  'updateTime': _dateTimeNullConverter.encode(item.updateTime),
+                  'lastChangedAt':
+                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'version': item.version
                 }),
         _transactionLineItemEntityUpdateAdapter = UpdateAdapter(
             database,
@@ -343,9 +379,7 @@ class _$TransactionDao extends TransactionDao {
                   'qty': item.qty,
                   'price': item.price,
                   'amount': item.amount,
-                  'discount': item.discount,
-                  'createDate': item.createDate,
-                  'updateDate': item.updateDate
+                  'discount': item.discount
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -379,6 +413,7 @@ class _$TransactionDao extends TransactionDao {
         'SELECT * FROM trn_header order by beginDatetime desc',
         mapper: (Map<String, Object?> row) => TransactionHeaderEntity(
             transId: row['transId'] as int,
+            storeId: row['storeId'] as String,
             businessDate: row['businessDate'] as int,
             beginDatetime: row['beginDatetime'] as int,
             transactionType: row['transactionType'] as String,
@@ -392,7 +427,13 @@ class _$TransactionDao extends TransactionDao {
             customerPhone: row['customerPhone'] as String?,
             shippingAddress: row['shippingAddress'] as String?,
             billingAddress: row['billingAddress'] as String?,
-            customerName: row['customerName'] as String?));
+            customerName: row['customerName'] as String?,
+            createTime: _dateTimeConverter.decode(row['createTime'] as int),
+            version: row['version'] as int,
+            lastChangedAt:
+                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            updateTime:
+                _dateTimeNullConverter.decode(row['updateTime'] as int?)));
   }
 
   @override
@@ -401,6 +442,7 @@ class _$TransactionDao extends TransactionDao {
     return _queryAdapter.query('SELECT * FROM trn_header where transId = ?1',
         mapper: (Map<String, Object?> row) => TransactionHeaderEntity(
             transId: row['transId'] as int,
+            storeId: row['storeId'] as String,
             businessDate: row['businessDate'] as int,
             beginDatetime: row['beginDatetime'] as int,
             transactionType: row['transactionType'] as String,
@@ -414,7 +456,13 @@ class _$TransactionDao extends TransactionDao {
             customerPhone: row['customerPhone'] as String?,
             shippingAddress: row['shippingAddress'] as String?,
             billingAddress: row['billingAddress'] as String?,
-            customerName: row['customerName'] as String?),
+            customerName: row['customerName'] as String?,
+            createTime: _dateTimeConverter.decode(row['createTime'] as int),
+            version: row['version'] as int,
+            lastChangedAt:
+                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            updateTime:
+                _dateTimeNullConverter.decode(row['updateTime'] as int?)),
         arguments: [transSeq]);
   }
 
@@ -431,9 +479,7 @@ class _$TransactionDao extends TransactionDao {
             qty: row['qty'] as double,
             price: row['price'] as double,
             amount: row['amount'] as double,
-            discount: row['discount'] as double,
-            createDate: row['createDate'] as int,
-            updateDate: row['updateDate'] as int),
+            discount: row['discount'] as double),
         arguments: [transSeq]);
   }
 
@@ -448,9 +494,7 @@ class _$TransactionDao extends TransactionDao {
             qty: row['qty'] as double,
             price: row['price'] as double,
             amount: row['amount'] as double,
-            discount: row['discount'] as double,
-            createDate: row['createDate'] as int,
-            updateDate: row['updateDate'] as int));
+            discount: row['discount'] as double));
   }
 
   @override
@@ -610,11 +654,17 @@ class _$ContactDao extends ContactDao {
             'customer',
             (ContactEntity item) => <String, Object?>{
                   'contactId': item.contactId,
+                  'storeId': item.storeId,
                   'name': item.name,
                   'phoneNumber': item.phoneNumber,
                   'email': item.email,
                   'shippingAddress': item.shippingAddress,
-                  'billingAddress': item.billingAddress
+                  'billingAddress': item.billingAddress,
+                  'createTime': _dateTimeConverter.encode(item.createTime),
+                  'updateTime': _dateTimeNullConverter.encode(item.updateTime),
+                  'lastChangedAt':
+                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'version': item.version
                 }),
         _contactEntityUpdateAdapter = UpdateAdapter(
             database,
@@ -622,11 +672,17 @@ class _$ContactDao extends ContactDao {
             ['contactId'],
             (ContactEntity item) => <String, Object?>{
                   'contactId': item.contactId,
+                  'storeId': item.storeId,
                   'name': item.name,
                   'phoneNumber': item.phoneNumber,
                   'email': item.email,
                   'shippingAddress': item.shippingAddress,
-                  'billingAddress': item.billingAddress
+                  'billingAddress': item.billingAddress,
+                  'createTime': _dateTimeConverter.encode(item.createTime),
+                  'updateTime': _dateTimeNullConverter.encode(item.updateTime),
+                  'lastChangedAt':
+                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'version': item.version
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -645,17 +701,24 @@ class _$ContactDao extends ContactDao {
         mapper: (Map<String, Object?> row) => ContactEntity(
             contactId: row['contactId'] as String,
             name: row['name'] as String,
+            storeId: row['storeId'] as String,
             phoneNumber: row['phoneNumber'] as String?,
             email: row['email'] as String?,
             shippingAddress: row['shippingAddress'] as String?,
-            billingAddress: row['billingAddress'] as String?));
+            billingAddress: row['billingAddress'] as String?,
+            createTime: _dateTimeConverter.decode(row['createTime'] as int),
+            version: row['version'] as int,
+            lastChangedAt:
+                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            updateTime:
+                _dateTimeNullConverter.decode(row['updateTime'] as int?)));
   }
 
   @override
   Future<List<ContactEntity>> findAllProductsByName(String filter) async {
     return _queryAdapter.queryList(
         'SELECT * FROM customer where name like ?1 or phoneNumber like ?1 or email like ?1 limit 10',
-        mapper: (Map<String, Object?> row) => ContactEntity(contactId: row['contactId'] as String, name: row['name'] as String, phoneNumber: row['phoneNumber'] as String?, email: row['email'] as String?, shippingAddress: row['shippingAddress'] as String?, billingAddress: row['billingAddress'] as String?),
+        mapper: (Map<String, Object?> row) => ContactEntity(contactId: row['contactId'] as String, name: row['name'] as String, storeId: row['storeId'] as String, phoneNumber: row['phoneNumber'] as String?, email: row['email'] as String?, shippingAddress: row['shippingAddress'] as String?, billingAddress: row['billingAddress'] as String?, createTime: _dateTimeConverter.decode(row['createTime'] as int), version: row['version'] as int, lastChangedAt: _dateTimeNullConverter.decode(row['lastChangedAt'] as int?), updateTime: _dateTimeNullConverter.decode(row['updateTime'] as int?)),
         arguments: [filter]);
   }
 
@@ -693,7 +756,12 @@ class _$RetailLocationDao extends RetailLocationDao {
                   'address2': item.address2,
                   'city': item.city,
                   'country': item.country,
-                  'postalCode': item.postalCode
+                  'postalCode': item.postalCode,
+                  'createTime': _dateTimeConverter.encode(item.createTime),
+                  'updateTime': _dateTimeNullConverter.encode(item.updateTime),
+                  'lastChangedAt':
+                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'version': item.version
                 }),
         _retailLocationEntityUpdateAdapter = UpdateAdapter(
             database,
@@ -710,7 +778,12 @@ class _$RetailLocationDao extends RetailLocationDao {
                   'address2': item.address2,
                   'city': item.city,
                   'country': item.country,
-                  'postalCode': item.postalCode
+                  'postalCode': item.postalCode,
+                  'createTime': _dateTimeConverter.encode(item.createTime),
+                  'updateTime': _dateTimeNullConverter.encode(item.updateTime),
+                  'lastChangedAt':
+                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'version': item.version
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -738,7 +811,13 @@ class _$RetailLocationDao extends RetailLocationDao {
             address2: row['address2'] as String?,
             city: row['city'] as String?,
             country: row['country'] as String?,
-            postalCode: row['postalCode'] as String?),
+            postalCode: row['postalCode'] as String?,
+            createTime: _dateTimeConverter.decode(row['createTime'] as int),
+            version: row['version'] as int,
+            lastChangedAt:
+                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            updateTime:
+                _dateTimeNullConverter.decode(row['updateTime'] as int?)),
         arguments: [rtlLocId]);
   }
 
@@ -763,3 +842,4 @@ class _$RetailLocationDao extends RetailLocationDao {
 
 // ignore_for_file: unused_element
 final _dateTimeConverter = DateTimeConverter();
+final _dateTimeNullConverter = DateTimeNullConverter();

@@ -1,14 +1,33 @@
+import 'package:receipt_generator/src/entity/types.dart';
 
-class BaseEntity {
+abstract class BaseEntity {
 
-  final DateTime createTime;
-  final DateTime updateTime;
+  Map<String, dynamic> toMap();
 
-  BaseEntity(
-      this.updateTime, {
-        DateTime? createTime,
-      }) : createTime = createTime ?? DateTime.now();
+  String getPK();
 
-  @override
-  List<Object> get props => [];
+  String getSK();
+
+  String getStoreId();
+
+  EntityType type();
+
+  String lastUpdatedAtISOString();
+
+  Map<String, String> getKeys() {
+    return {
+      "PK": getPK(),
+      "SK": getSK(),
+      "GPK1": "${getStoreId()}#${type().type}",
+      "GSK1": lastUpdatedAtISOString()
+    };
+  }
+
+  Map<String, dynamic> toDaoJson() {
+    Map<String, dynamic> res = {};
+    res.addAll(toMap());
+    res.addAll(getKeys());
+    return res;
+  }
+
 }

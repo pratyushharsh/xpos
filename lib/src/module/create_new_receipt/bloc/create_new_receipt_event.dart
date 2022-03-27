@@ -4,7 +4,7 @@ part of 'create_new_receipt_bloc.dart';
 abstract class CreateNewReceiptEvent {}
 
 class AddItemToReceipt extends CreateNewReceiptEvent {
-  final Product product;
+  final ProductModel product;
 
   AddItemToReceipt(this.product);
 }

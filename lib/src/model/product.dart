@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
 
 @immutable
-class Product {
+class ProductModel {
   final String? productId;
   final String description;
   final double? listPrice;
@@ -16,7 +16,7 @@ class Product {
   final double? tax;
   final String? imageUrl;
 
-  const Product(
+  const ProductModel(
       {this.productId,
       required this.description,
       required this.listPrice,
@@ -30,7 +30,7 @@ class Product {
       this.tax,
       this.imageUrl});
 
-  Product copyWith(
+  ProductModel copyWith(
       {String? productId,
       String? description,
       double? listPrice,
@@ -43,7 +43,7 @@ class Product {
       String? hsn,
       double? tax,
       String? imageUrl}) {
-    return Product(
+    return ProductModel(
         productId: productId ?? this.productId,
         description: description ?? this.description,
         listPrice: listPrice ?? this.listPrice,
@@ -70,11 +70,11 @@ class Product {
         hsn: hsn,
         purchasePrice: purchasePrice,
         tax: tax,
-        uom: uom);
+        uom: uom, createTime: DateTime.now(), storeId: '');
   }
 
-  static Product fromEntity(ProductEntity entity) {
-    return Product(
+  static ProductModel fromEntity(ProductEntity entity) {
+    return ProductModel(
         productId: entity.productId,
         description: entity.description,
         listPrice: entity.listPrice,

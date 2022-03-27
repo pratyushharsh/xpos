@@ -88,7 +88,7 @@ class CreateNewReceiptBloc
         customerId: state.selectedCustomer?.contactId,
         customerName: state.selectedCustomer?.name,
         customerPhone: state.selectedCustomer?.phoneNumber,
-        shippingAddress: state.selectedCustomer?.shippingAddress);
+        shippingAddress: state.selectedCustomer?.shippingAddress, storeId: '', createTime: DateTime.now());
     List<TransactionLineItemEntity> lineItems =
         state.lineItem.map((e) => e.toEntity(state.transSeq)).toList();
 

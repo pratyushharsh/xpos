@@ -9,10 +9,12 @@ import 'package:receipt_generator/src/module/list_all_item/list_all_item_view.da
 import 'package:receipt_generator/src/module/list_all_receipt/list_all_receipt_view.dart';
 import 'package:receipt_generator/src/module/load_item_bulk/load_item_bulk_view.dart';
 import 'package:receipt_generator/src/module/receipt_display/receipt_display_view.dart';
+import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.dart';
 
 class RouteConfig {
 
-  static const String homeScreen = "/";
+  static const String splashScreen = "/";
+  static const String homeScreen = "/home";
   static const String addItemScreen = "/add-item";
   static const String allItemsScreen = "/list-items";
   static const String allReceiptScreen = "/list-receipt";
@@ -26,6 +28,8 @@ class RouteConfig {
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case splashScreen:
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case homeScreen:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case addItemScreen:

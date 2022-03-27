@@ -1,6 +1,8 @@
 import 'package:floor/floor.dart';
 import 'package:receipt_generator/src/entity/trn_header_entity.dart';
 
+import 'base_entity.dart';
+
 @Entity(
   tableName: 'trn_line_item',
   primaryKeys: ['transId', 'transSeq'],
@@ -21,8 +23,6 @@ class TransactionLineItemEntity {
   final double price;
   final double amount;
   final double discount;
-  final int createDate;
-  final int updateDate;
 
   TransactionLineItemEntity(
       {this.transId,
@@ -32,7 +32,5 @@ class TransactionLineItemEntity {
       required this.qty,
       required this.price,
       required this.amount,
-      required this.discount,
-      required this.createDate,
-      required this.updateDate});
+      required this.discount,});
 }

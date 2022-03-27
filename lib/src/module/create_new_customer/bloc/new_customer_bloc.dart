@@ -30,7 +30,9 @@ class NewCustomerBloc extends Bloc<NewCustomerEvent, NewCustomerState> {
         email: event.customer.email,
         phoneNumber: event.customer.phoneNumber,
         billingAddress: event.customer.billingAddress,
-        shippingAddress: event.customer.shippingAddress
+        shippingAddress: event.customer.shippingAddress,
+        storeId: '',
+        createTime: DateTime.now(),
       );
       await db.contactDao.insertItem(ce);
       emit(state.copyWith(status: NewCustomerStatus.addingSuccess));

@@ -10,7 +10,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 
 part 'app_database.g.dart'; // the generated code will be there
 
-@TypeConverters([DateTimeConverter])
+@TypeConverters([DateTimeConverter, DateTimeNullConverter])
 @Database(version: 1, entities: [
   ProductEntity,
   // SkuEntity,

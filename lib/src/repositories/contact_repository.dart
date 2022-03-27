@@ -31,7 +31,7 @@ class ContactRepository {
                 contactId: 'P${e.id}',
                 name: '${e.name.first} ${e.name.last}',
                 phoneNumber: ph?.number,
-                email: em?.address
+                email: em?.address, storeId: '', createTime: DateTime.now()
               );
         },)
             .toList();

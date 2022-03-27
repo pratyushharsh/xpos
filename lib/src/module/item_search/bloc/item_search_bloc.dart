@@ -23,7 +23,7 @@ class ItemSearchBloc extends Bloc<ItemSearchEvent, ItemSearchState> {
       emit(state.copyWith(status: ItemSearchStatus.loading));
       var prod = await db.productDao.findAllProductsByText('%${event.filter}%');
       log.info(prod);
-      var newProd = prod.map((e) => Product.fromEntity(e)).toList();
+      var newProd = prod.map((e) => ProductModel.fromEntity(e)).toList();
       emit(state.copyWith(products: newProd, status: ItemSearchStatus.success));
     } catch (e) {
       log.severe(e);

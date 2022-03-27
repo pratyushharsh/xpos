@@ -8,7 +8,7 @@ import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 class SearchItemView extends StatelessWidget {
   const SearchItemView({Key? key}) : super(key: key);
 
-  Widget buildItemCard(BuildContext context, Product product) {
+  Widget buildItemCard(BuildContext context, ProductModel product) {
     return InkWell(
       onTap: () {
         Navigator.of(context).pop(product);

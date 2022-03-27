@@ -8,6 +8,11 @@ import '../../widgets/appbar_leading.dart';
 import 'bloc/business_bloc.dart';
 
 class BusinessView extends StatelessWidget {
+
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => const BusinessView());
+  }
+
   const BusinessView({Key? key}) : super(key: key);
 
   @override

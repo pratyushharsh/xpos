@@ -3,7 +3,7 @@ import 'package:receipt_generator/src/model/model.dart';
 
 class SaleLine {
   final int seq;
-  final Product product;
+  final ProductModel product;
   final double qty;
   final double price;
   final double discount;
@@ -25,7 +25,7 @@ class SaleLine {
 
   SaleLine copyWith(
       {int? seq,
-      Product? product,
+      ProductModel? product,
       double? qty,
       double? price,
       double? discount}) {
@@ -47,8 +47,9 @@ class SaleLine {
         price: price,
         amount: amount,
         discount: discount,
-        createDate: DateTime.now().microsecondsSinceEpoch,
-        updateDate: DateTime.now().microsecondsSinceEpoch);
+        // createDate: DateTime.now().microsecondsSinceEpoch,
+        // updateDate: DateTime.now().microsecondsSinceEpoch
+    );
   }
 
   // static SaleLine fromEntity(TransactionLineItemEntity lineItem) {

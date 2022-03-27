@@ -11,7 +11,7 @@ abstract class ItemEvent extends Equatable {
 class LoadItems extends ItemEvent{}
 
 class AddItem extends ItemEvent {
-  final Product product;
+  final ProductModel product;
 
   const AddItem(this.product);
 }

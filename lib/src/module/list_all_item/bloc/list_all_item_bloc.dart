@@ -1,7 +1,9 @@
 
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:receipt_generator/models/Product.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 
@@ -21,7 +23,7 @@ class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
     try {
       emit(state.copyWith(status: ListAllItemStatus.loading));
       var prod = await db.productDao.findAllProducts();
-      var newProd = prod.map((e) => Product.fromEntity(e)).toList();
+      var newProd = prod.map((e) => ProductModel.fromEntity(e)).toList();
       emit(state.copyWith(products: newProd, status: ListAllItemStatus.success));
     } catch (e) {
       log.severe(e);

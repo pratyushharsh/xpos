@@ -1,6 +1,11 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
+import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
+
+import '../../widgets/custom_button.dart';
 
 const String dummyImage =
     'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1650499200&v=beta&t=f3QRa7swHNX0eWlIK6TT00OhoWBusgZaAqcOiIpRHsE';
@@ -45,6 +50,13 @@ class SettingsScreen extends StatelessWidget {
               subtitle: "Modify your forms as required",
               icon: Icons.settings,
               children: [
+                SettingsItem(text: "Sync Data", onTap: () async {
+                  try{
+                    await Amplify.DataStore.start();
+                  } catch(e) {
+                    print(e);
+                  }
+                }),
                 SettingsItem(text: "Invoice Setting", onTap: () {}),
                 SettingsItem(text: "Receipt Setting", onTap: () {}),
               ],
@@ -65,8 +77,15 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(
+            height: 50,
+          ),
+          RejectButton(
+              label: "Log Out", onPressed: () {
+                BlocProvider.of<AuthenticationBloc>(context).add(LogOutUserEvent());
+          }),
+          const SizedBox(
             height: 300,
-          )
+          ),
         ],
       ),
     );
