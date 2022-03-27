@@ -5,8 +5,10 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/custom_storage.dart';
+import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 import 'bloc_observer.dart';
 import 'firebase_options.dart';
@@ -14,6 +16,8 @@ import 'log.dart';
 import 'models/ModelProvider.dart';
 import 'my_app.dart';
 import 'amplifyconfiguration.dart';
+
+final log = Logger('Main');
 
 Future<void> main() {
   return BlocOverrides.runZoned(() async {
@@ -35,7 +39,12 @@ Future<void> main() {
       storage: customStorage,
     );
 
-    runApp(MyApp(database: db, userPool: userPool,));
+    final restClient = RestApiClient(
+        userPool: userPool,
+        baseUrl:
+        "https://3lw9rlveu5.execute-api.ap-south-1.amazonaws.com/dev");
+
+    runApp(MyApp(database: db, userPool: userPool, restClient: restClient,));
   }, blocObserver: InvoicingBlocObserver());
 }
 
@@ -44,17 +53,17 @@ Future<void> _initAmplifyFlutter() async {
     AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance,
         syncInterval: 10,
         errorHandler: (er) => {
-      print(er)
+      log.severe(er)
     });
     await Amplify.addPlugin(datastorePlugin);
     await Amplify.addPlugin(AmplifyAPI());
     await Amplify.configure(amplifyconfig);
-    print('Aws Configured');
+    log.info('Aws Configured');
   } on AmplifyAlreadyConfiguredException {
-    print(
+    log.severe(
         "Amplify was already configured. Looks like app restarted on android.");
   } catch (e) {
-    print('Error configuring amplify');
-    print(e);
+    log.severe('Error configuring amplify');
+    log.severe(e);
   }
 }

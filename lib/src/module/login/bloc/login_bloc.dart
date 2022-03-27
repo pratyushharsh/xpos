@@ -58,12 +58,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final cognitoUser = CognitoUser(event.phoneNumber, userPool, deviceName: deviceName);
       cognitoUser.setAuthenticationFlowType('CUSTOM_AUTH');
       emit(state.copyWith(user: cognitoUser));
-      var data = await cognitoUser.initiateAuth(AuthenticationDetails(authParameters: List.empty()));
+      await cognitoUser.initiateAuth(AuthenticationDetails(authParameters: List.empty()));
 
       //
     } on CognitoUserCustomChallengeException catch(e) {
       // log.severe(e);
-      log.severe('Custom Challange exception');
+      log.info('Custom Challange exception', e);
       authenticationBloc.add(VerifyUser());
       emit(state.copyWith(status: LoginStatus.verifyOtp));
     } catch (e) {
@@ -80,12 +80,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(retryCount: state.retryCount + 1));
       CognitoUser user = state.user!;
       var res = await user.sendCustomChallengeAnswer(event.otp);
-      log.severe(res);
+      log.info(res);
       var tmp = await userPool.getCurrentUser();
       await user.getSession();
       var userAttribute = await user.getUserAttributes();
-
-      var x = userAttribute?.firstWhere((element) => element.name == "");
       log.info(tmp);
       if (tmp != null && userAttribute != null) {
         CognitoUserAttribute? stores;
@@ -99,7 +97,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       }
     } on CognitoUserCustomChallengeException catch(e) {
       // log.severe(e);
-      log.severe('Custom Challenge exception');
+      log.severe('Custom Challenge exception', e);
     } catch (e) {
       log.severe(e);
     }

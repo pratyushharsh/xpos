@@ -1,8 +1,6 @@
 import 'package:floor/floor.dart';
 import 'package:receipt_generator/src/entity/trn_header_entity.dart';
 
-import 'base_entity.dart';
-
 @Entity(
   tableName: 'trn_line_item',
   primaryKeys: ['transId', 'transSeq'],

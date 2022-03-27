@@ -124,6 +124,7 @@ class TransactionHeaderEntity extends BaseEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'transId': transId,

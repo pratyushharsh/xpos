@@ -87,7 +87,6 @@ class _VerifyUserViewState extends State<VerifyUserView> {
                           outlineBorderRadius: 15,
                           style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                           onChanged: (pin) {
-                            print("Changed: " + pin);
                           },
                           onCompleted: (pin) {
                             BlocProvider.of<LoginBloc>(context)

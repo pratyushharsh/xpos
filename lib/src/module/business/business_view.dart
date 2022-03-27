@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
+import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
@@ -8,17 +9,20 @@ import '../../widgets/appbar_leading.dart';
 import 'bloc/business_bloc.dart';
 
 class BusinessView extends StatelessWidget {
+  final BusinessOperation operation;
 
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => const BusinessView());
   }
 
-  const BusinessView({Key? key}) : super(key: key);
+  const BusinessView({Key? key, this.operation = BusinessOperation.create})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BusinessBloc(db: RepositoryProvider.of(context))
+      create: (context) => BusinessBloc(
+          repo: RepositoryProvider.of(context), operation: operation)
         ..add(LoadBusinessDetail()),
       child: Container(
         color: Colors.white,
@@ -59,11 +63,17 @@ class BusinessView extends StatelessWidget {
                   top: 20,
                   left: 16,
                   child: AppBarLeading(
-                    heading: "Modify Business",
-                    icon: Icons.arrow_back,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
+                    heading: operation == BusinessOperation.update
+                        ? "Modify Business"
+                        : "Create Business",
+                    icon: operation == BusinessOperation.update
+                        ? Icons.arrow_back
+                        : null,
+                    onTap: operation == BusinessOperation.update
+                        ? () {
+                            Navigator.of(context).pop();
+                          }
+                        : null,
                   ),
                 ),
                 BlocBuilder<BusinessBloc, BusinessState>(
@@ -74,7 +84,13 @@ class BusinessView extends StatelessWidget {
                         right: 16,
                         child: ElevatedButton(
                           onPressed: () {
-                            BlocProvider.of<BusinessBloc>(context).add(OnSaveBusiness());
+                            if (BusinessOperation.create == state.operation) {
+                              BlocProvider.of<BusinessBloc>(context)
+                                  .add(OnCreateNewBusiness());
+                            } else {
+                              BlocProvider.of<BusinessBloc>(context)
+                                  .add(OnSaveBusiness());
+                            }
                           },
                           child: const Text(
                             "Save",
@@ -133,7 +149,12 @@ class _BusinessDetailState extends State<BusinessDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BusinessBloc, BusinessState>(
+    return BlocConsumer<BusinessBloc, BusinessState>(
+      listener: (context, state) {
+        if (BusinessStatus.newBusinessCreated == state.status) {
+          BlocProvider.of<AuthenticationBloc>(context).add(InitialAuthEvent());
+        }
+      },
       builder: (context, state) {
         if (BusinessStatus.loading == state.status) {
           return const MyLoader(
@@ -141,9 +162,9 @@ class _BusinessDetailState extends State<BusinessDetail> {
           );
         }
         if (BusinessStatus.success == state.status) {
-          _businessNameController.text = state.entity?.storeName ?? '';
-          _businessContactController.text = state.entity?.storeContact ?? '';
-          _businessAddressController.text =  state.entity?.address1 ?? '';
+          _businessNameController.text = state.businessName;
+          _businessContactController.text = state.businessContact;
+          _businessAddressController.text = state.businessAddress;
         }
         return Column(
           children: [

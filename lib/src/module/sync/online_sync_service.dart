@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'dart:isolate';
 import '../../repositories/app_database.dart';
 
 class BackgroundSyncService {

@@ -23,4 +23,6 @@ class OnBusinessAddressChange extends BusinessEvent {
   OnBusinessAddressChange(this.address);
 }
 
+class OnCreateNewBusiness extends BusinessEvent {}
+
 class OnSaveBusiness extends BusinessEvent {}

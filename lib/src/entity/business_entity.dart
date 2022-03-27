@@ -65,6 +65,7 @@ class RetailLocationEntity extends BaseEntity {
     return EntityType.store;
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'rtlLocId': rtlLocId,

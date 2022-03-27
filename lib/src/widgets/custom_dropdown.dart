@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:receipt_generator/src/config/theme_settings.dart';
 
 class CustomDropDown<T> extends StatelessWidget {
   final String label;

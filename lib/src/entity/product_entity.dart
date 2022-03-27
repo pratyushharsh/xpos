@@ -74,6 +74,7 @@ class ProductEntity extends BaseEntity {
     return EntityType.product;
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'productId': productId,

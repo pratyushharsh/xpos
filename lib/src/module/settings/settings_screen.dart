@@ -1,4 +1,3 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
@@ -51,11 +50,7 @@ class SettingsScreen extends StatelessWidget {
               icon: Icons.settings,
               children: [
                 SettingsItem(text: "Sync Data", onTap: () async {
-                  try{
-                    await Amplify.DataStore.start();
-                  } catch(e) {
-                    print(e);
-                  }
+
                 }),
                 SettingsItem(text: "Invoice Setting", onTap: () {}),
                 SettingsItem(text: "Receipt Setting", onTap: () {}),

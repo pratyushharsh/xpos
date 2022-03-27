@@ -13,12 +13,15 @@ import 'package:receipt_generator/src/module/login/login_view.dart';
 import 'package:receipt_generator/src/module/login/verify_user_view.dart';
 import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
+import 'package:receipt_generator/src/repositories/business_repository.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
+import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 class MyApp extends StatelessWidget {
   final AppDatabase database;
   final CognitoUserPool userPool;
-  const MyApp({Key? key, required this.database, required this.userPool})
+  final RestApiClient restClient;
+  const MyApp({Key? key, required this.database, required this.userPool, required this.restClient})
       : super(key: key);
 
   @override
@@ -27,7 +30,8 @@ class MyApp extends StatelessWidget {
         providers: [
           RepositoryProvider(lazy: false, create: (context) => database),
           RepositoryProvider(create: (context) => ContactRepository()),
-          RepositoryProvider(create: (context) => userPool)
+          RepositoryProvider(create: (context) => userPool),
+          RepositoryProvider(create: (context) => BusinessRepository(db: database, restClient: restClient,))
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(

@@ -1,11 +1,8 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:receipt_generator/src/model/user_model.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 
 part 'authentication_event.dart';
@@ -20,28 +17,28 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   final AppDatabase db;
 
   AuthenticationBloc({required this.userPool, required this.db}) : super(const AuthenticationState.unauthenticated()) {
-    signInIfSessionAvailable();
+    // signInIfSessionAvailable();
     on<AuthenticationUserChanged>(_onUserChanged);
     on<InitialAuthEvent>(_onInitialAuth);
     on<VerifyUser>(_onVerifyUser);
     on<LogOutUserEvent>(_logOutUser);
   }
-  signInIfSessionAvailable() async {
-    print('Getting if user already present');
-    // final session = await Amplify.Auth.fetchAuthSession();
-    // if (session.isSignedIn) {
-    //   print('User Alreadu Present');
-    // }
-    // try {
-    //   CognitoAuthSession res = await Amplify.Auth.fetchAuthSession(
-    //       options: CognitoSessionOptions(getAWSCredentials: true));
-    //   print(res.userSub);
-    //   print(res.identityId);
-    // } on AmplifyException catch (e) {
-    //
-    //   print(e);
-    // }
-  }
+  // signInIfSessionAvailable() async {
+  //   log.info('Getting if user already present');
+  //   // final session = await Amplify.Auth.fetchAuthSession();
+  //   // if (session.isSignedIn) {
+  //   //   print('User Alreadu Present');
+  //   // }
+  //   // try {
+  //   //   CognitoAuthSession res = await Amplify.Auth.fetchAuthSession(
+  //   //       options: CognitoSessionOptions(getAWSCredentials: true));
+  //   //   print(res.userSub);
+  //   //   print(res.identityId);
+  //   // } on AmplifyException catch (e) {
+  //   //
+  //   //   print(e);
+  //   // }
+  // }
 
   void _onInitialAuth(InitialAuthEvent event, Emitter<AuthenticationState> emit) async {
     try {

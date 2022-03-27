@@ -1,5 +1,4 @@
 import 'package:floor/floor.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
 
 @dao
 abstract class SkuDao {

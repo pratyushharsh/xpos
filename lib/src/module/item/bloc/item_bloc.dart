@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
