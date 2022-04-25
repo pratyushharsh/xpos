@@ -23,14 +23,15 @@ class ProductEntity extends BaseEntity {
   final String? hsn;
   final double? tax;
   final String? imageUrl;
+  final int syncState;
   late DateTime createTime;
   late DateTime? updateTime;
-  late DateTime? lastChangedAt;
+  late DateTime? lastSyncAt;
   late int version;
 
   ProductEntity(
       {this.productId,
-        required this.storeId,
+      required this.storeId,
       required this.description,
       required this.listPrice,
       required this.salePrice,
@@ -44,9 +45,9 @@ class ProductEntity extends BaseEntity {
       this.imageUrl,
       required this.createTime,
       this.version = 1,
-      this.lastChangedAt,
+      this.syncState = 100,
+      this.lastSyncAt,
       this.updateTime});
-
 
   @override
   String getPK() {
@@ -77,44 +78,44 @@ class ProductEntity extends BaseEntity {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'productId': productId,
-      'storeId': storeId,
+      'product_id': productId,
+      'store_id': storeId,
       'description': description,
-      'listPrice': listPrice,
-      'salePrice': salePrice,
-      'purchasePrice': purchasePrice,
+      'list_price': listPrice,
+      'sale_price': salePrice,
+      'purchase_price': purchasePrice,
       'uom': uom,
       'enable': enable,
       'brand': brand,
       'skuCode': skuCode,
       'hsn': hsn,
       'tax': tax,
-      'imageUrl': imageUrl,
-      'createTime': createTime,
-      'updateTime': updateTime,
-      'lastChangedAt': lastChangedAt,
+      'image_url': imageUrl,
+      'create_date': createTime.toUtc().toIso8601String(),
+      'update_date': updateTime?.toUtc().toIso8601String(),
+      'last_sync_at': lastSyncAt?.toUtc().toIso8601String(),
       'version': version,
     };
   }
 
   factory ProductEntity.fromMap(Map<String, dynamic> map) {
     return ProductEntity(
-      productId: map['productId'] as String,
-      storeId: map['storeId'] as String,
+      productId: map['product_id'] as String,
+      storeId: map['store_id'] as String,
       description: map['description'] as String,
-      listPrice: map['listPrice'] as double,
-      salePrice: map['salePrice'] as double,
-      purchasePrice: map['purchasePrice'] as double,
+      listPrice: map['list_price'] as double,
+      salePrice: map['sale_price'] as double,
+      purchasePrice: map['purchase_price'] as double,
       uom: map['uom'] as String,
       enable: map['enable'] as bool,
       brand: map['brand'] as String,
       skuCode: map['skuCode'] as String,
       hsn: map['hsn'] as String,
       tax: map['tax'] as double,
-      imageUrl: map['imageUrl'] as String,
-      createTime: map['createTime'] as DateTime,
-      updateTime: map['updateTime'] as DateTime,
-      lastChangedAt: map['lastChangedAt'] as DateTime,
+      imageUrl: map['image_url'] as String,
+      createTime: map['create_date'] as DateTime,
+      updateTime: map['update_date'] as DateTime,
+      lastSyncAt: map['last_sync_at'] as DateTime,
       version: map['version'] as int,
     );
   }

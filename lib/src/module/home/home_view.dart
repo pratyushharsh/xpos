@@ -333,53 +333,6 @@ class SaleOptionButton extends StatelessWidget {
   }
 }
 
-class HomeScreenOld extends StatelessWidget {
-  const HomeScreenOld({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed(RouteConfig.addItemScreen);
-        },
-        child: const Icon(Icons.add),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(RouteConfig.createReceiptScreen);
-                },
-                child: const Text("Create New Receipt")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(RouteConfig.allReceiptScreen);
-                },
-                child: const Text("List Previous Receipts")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(RouteConfig.invoiceViewScreen);
-                },
-                child: const Text("Invoice View Screen")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(RouteConfig.allCustomerScreen);
-                },
-                child: const Text("All Customer View")),
-            const LoadCustomerFromPhoneButton()
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class LoadCustomerFromPhoneButton extends StatelessWidget {
   const LoadCustomerFromPhoneButton({Key? key}) : super(key: key);
 

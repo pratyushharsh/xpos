@@ -15,13 +15,18 @@ import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart
 import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
+import 'package:receipt_generator/src/repositories/sync_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 class MyApp extends StatelessWidget {
   final AppDatabase database;
   final CognitoUserPool userPool;
   final RestApiClient restClient;
-  const MyApp({Key? key, required this.database, required this.userPool, required this.restClient})
+  const MyApp(
+      {Key? key,
+      required this.database,
+      required this.userPool,
+      required this.restClient})
       : super(key: key);
 
   @override
@@ -31,15 +36,32 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(lazy: false, create: (context) => database),
           RepositoryProvider(create: (context) => ContactRepository()),
           RepositoryProvider(create: (context) => userPool),
-          RepositoryProvider(create: (context) => BusinessRepository(db: database, restClient: restClient,))
+          RepositoryProvider(
+              create: (context) => BusinessRepository(
+                    db: database,
+                    restClient: restClient,
+                  )),
+          RepositoryProvider(
+              create: (context) => SyncRepository(
+                    db: database,
+                    restClient: restClient,
+                  )),
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(
             lazy: false,
+            create: (context) => BackgroundSyncBloc(
+              syncRepository: RepositoryProvider.of(context),
+            ),
+          ),
+          BlocProvider(
+            lazy: false,
             create: (context) => AuthenticationBloc(
-              userPool: RepositoryProvider.of(context),
-              db: RepositoryProvider.of(context),
-            )..add(
+                userPool: RepositoryProvider.of(context),
+                db: RepositoryProvider.of(context),
+                businessRepository: RepositoryProvider.of(context),
+                sync: BlocProvider.of(context))
+              ..add(
                 InitialAuthEvent(),
               ),
           ),
@@ -49,22 +71,11 @@ class MyApp extends StatelessWidget {
                 authenticationBloc: BlocProvider.of(context)),
           ),
           BlocProvider(
-            lazy: false,
-            create: (context) => ItemBloc(
-              db: RepositoryProvider.of(context),
-            ),
-          ),
-          BlocProvider(
             create: (context) => LoadItemBulkBloc(
               db: RepositoryProvider.of(context),
+              auth: BlocProvider.of(context)
             ),
           ),
-          BlocProvider(
-            lazy: false,
-            create: (context) => BackgroundSyncBloc(
-              db: RepositoryProvider.of(context),
-            )..add(StartSyncEvent()),
-          )
         ], child: const MyAppView()));
   }
 }

@@ -3,7 +3,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:receipt_generator/src/entity/business_entity.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
+import 'package:receipt_generator/src/repositories/business_repository.dart';
+
+import '../../sync/bloc/background_sync_bloc.dart';
+
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -12,11 +17,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   final log = Logger('AuthenticationBloc');
 
-
   final CognitoUserPool userPool;
   final AppDatabase db;
+  final BusinessRepository businessRepository;
+  final BackgroundSyncBloc sync;
 
-  AuthenticationBloc({required this.userPool, required this.db}) : super(const AuthenticationState.unauthenticated()) {
+  AuthenticationBloc({required this.userPool, required this.db, required this.businessRepository, required this.sync}) : super(AuthenticationState.unauthenticated()) {
     // signInIfSessionAvailable();
     on<AuthenticationUserChanged>(_onUserChanged);
     on<InitialAuthEvent>(_onInitialAuth);
@@ -49,7 +55,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         // He is new user need to register for a business.
         // He owns multiple business need to choose which one to login. @TODO
         // Only one business directly login to system.
-        var ses = await user.getSession();
+        await user.getSession();
         var attrib = await user.getUserAttributes();
 
         CognitoUserAttribute? stores;
@@ -62,41 +68,52 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           }
         }
 
-        if (stores != null) {
-          emit(AuthenticationState.authenticated(user, stores.value!));
+        if (stores != null && stores.value != null) {
+          String tmp = stores.value!;
+          List<String> userStores = tmp.split(";");
+
+          var rtlLoc = await businessRepository.getBusinessById(userStores[0].split(":")[1]);
+          sync.add(StartSyncEvent());
+          emit(AuthenticationState.authenticated(user, tmp, rtlLoc));
         } else {
           emit(AuthenticationState.newUser(user));
         }
-
       } else {
-        emit(const AuthenticationState.unauthenticated());
+        emit(AuthenticationState.unauthenticated());
       }
     } catch (e) {
       log.severe(e);
-      emit(const AuthenticationState.unauthenticated());
+      emit(AuthenticationState.unauthenticated());
     }
   }
 
   void _onUserChanged(AuthenticationUserChanged event, Emitter<AuthenticationState> emit) async {
     if (event.stores != null) {
-      emit(AuthenticationState.authenticated(event.user, event.stores!.value!));
+      String tmp = event.stores!.value!;
+      List<String> userStores = tmp.split(";");
+
+      var rtlLoc = await businessRepository.getBusinessById(userStores[0].split(":")[1]);
+      sync.add(StartSyncEvent());
+      emit(AuthenticationState.authenticated(event.user, tmp, rtlLoc));
     } else {
+      sync.add(StopSyncEvent());
       emit(AuthenticationState.newUser(event.user));
     }
 
   }
 
   void _onVerifyUser(VerifyUser event, Emitter<AuthenticationState> emit) async {
-    emit(const AuthenticationState.verifyUser());
+    emit(AuthenticationState.verifyUser());
   }
 
   void _logOutUser(LogOutUserEvent event, Emitter<AuthenticationState> emit) async {
     var tmp = await userPool.getCurrentUser();
+    sync.add(StopSyncEvent());
     if (tmp != null) {
       await tmp.signOut();
-      emit(const AuthenticationState.unauthenticated());
+      emit(AuthenticationState.unauthenticated());
     } else {
-      emit(const AuthenticationState.unauthenticated());
+      emit(AuthenticationState.unauthenticated());
     }
   }
 }

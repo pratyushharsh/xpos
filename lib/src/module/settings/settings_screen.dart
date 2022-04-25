@@ -7,7 +7,7 @@ import 'package:receipt_generator/src/module/authentication/bloc/authentication_
 import '../../widgets/custom_button.dart';
 
 const String dummyImage =
-    'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1650499200&v=beta&t=f3QRa7swHNX0eWlIK6TT00OhoWBusgZaAqcOiIpRHsE';
+    'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1656547200&v=beta&t=73Ztd907MxvHLxmQV6Pb-TShp6qj4mGOKN4ckWWjvuQ';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -53,7 +53,9 @@ class SettingsScreen extends StatelessWidget {
 
                 }),
                 SettingsItem(text: "Invoice Setting", onTap: () {}),
-                SettingsItem(text: "Receipt Setting", onTap: () {}),
+                SettingsItem(text: "Receipt Setting", onTap: () {
+                  Navigator.of(context).pushNamed(RouteConfig.receiptSettingViewScreen);
+                }),
               ],
             ),
           ),
@@ -76,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           RejectButton(
               label: "Log Out", onPressed: () {
-                BlocProvider.of<AuthenticationBloc>(context).add(LogOutUserEvent());
+            BlocProvider.of<AuthenticationBloc>(context).add(LogOutUserEvent());
           }),
           const SizedBox(
             height: 300,
@@ -92,38 +94,43 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: () {
-            Navigator.of(context).pushNamed(RouteConfig.businessViewScreen);
-          },
-          child: const Hero(
-            tag: "business-logo",
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1650499200&v=beta&t=f3QRa7swHNX0eWlIK6TT00OhoWBusgZaAqcOiIpRHsE'),
-              maxRadius: 60,
-              child: Text(
-                "",
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pushNamed(RouteConfig.businessViewScreen, arguments: state.store?.storeNumber);
+              },
+              child: const Hero(
+                tag: "business-logo",
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1656547200&v=beta&t=73Ztd907MxvHLxmQV6Pb-TShp6qj4mGOKN4ckWWjvuQ'),
+                  maxRadius: 60,
+                  child: Text(
+                    "",
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        const Text(
-          "Pratyush Kirana Store",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
-        ),
-      ],
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              "${state.store?.storeName}",
+              style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+            ),
+          ],
+        );
+      },
     );
   }
 }
 
 class SectionWidget extends StatelessWidget {
   final Detail data;
+
   const SectionWidget({Key? key, required this.data}) : super(key: key);
 
   Widget _buildButton(SettingsItem item) {
@@ -193,7 +200,7 @@ class SectionWidget extends StatelessWidget {
         ),
         Card(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
           elevation: 0,
           margin: const EdgeInsets.all(0),
           child: Container(
@@ -222,6 +229,7 @@ class SectionWidget extends StatelessWidget {
 
 class AccountWidget extends StatelessWidget {
   final Detail data;
+
   const AccountWidget({Key? key, required this.data}) : super(key: key);
 
   Widget _buildButton(SettingsItem item) {
@@ -305,7 +313,7 @@ class AccountWidget extends StatelessWidget {
         ),
         Card(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
           elevation: 0,
           margin: const EdgeInsets.all(0),
           child: InkWell(
@@ -320,10 +328,17 @@ class AccountWidget extends StatelessWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            dummyImage,
-                            width: 50,
-                            height: 50,
+                          child: FadeInImage(
+                            height: 40,
+                            width: 40,
+                            placeholder: const AssetImage("assets/image/logo-dummy.png"),
+                            image: const NetworkImage(dummyImage),
+                            imageErrorBuilder: (ctx, err, trace) {
+                              return const CircleAvatar(
+                                backgroundColor: Colors.red,
+                                child: Icon(Icons.person, color: Colors.white,),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(
@@ -383,11 +398,10 @@ class Detail {
   final String subtitle;
   final List<SettingsItem> children;
 
-  Detail(
-      {required this.icon,
-      required this.title,
-      required this.subtitle,
-      this.children = const []});
+  Detail({required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.children = const []});
 }
 
 class SettingsItem {

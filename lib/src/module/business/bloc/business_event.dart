@@ -3,7 +3,11 @@ part of 'business_bloc.dart';
 @immutable
 abstract class BusinessEvent {}
 
-class LoadBusinessDetail extends BusinessEvent {}
+class LoadBusinessDetail extends BusinessEvent {
+  final String? businessId;
+
+  LoadBusinessDetail(this.businessId);
+}
 
 class OnBusinessNameChange extends BusinessEvent {
   final String name;

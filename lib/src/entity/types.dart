@@ -12,5 +12,4 @@ class EntityType {
   String toString() {
     return type;
   }
-
 }

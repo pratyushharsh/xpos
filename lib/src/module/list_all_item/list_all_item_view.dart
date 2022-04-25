@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/list_all_item/bloc/list_all_item_bloc.dart';
@@ -81,6 +82,9 @@ class ItemCard extends StatelessWidget {
     return Card(
       child: InkWell(
         onTap: () {},
+        onLongPress: () {
+          Navigator.of(context).pushNamed(RouteConfig.editItemScreen, arguments: product.productId);
+        },
         child: Container(
           padding: const EdgeInsets.all(8),
           child: Row(

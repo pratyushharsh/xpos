@@ -31,7 +31,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _signUpUser(String phoneNumber) async {
     try {
-      var data = await userPool.signUp(phoneNumber, phoneNumber);
+      await userPool.signUp(phoneNumber, phoneNumber);
       add(LoginUserWithPhone(phoneNumber));
     } catch (e) {
       log.severe(e);

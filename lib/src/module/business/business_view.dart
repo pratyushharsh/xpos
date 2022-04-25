@@ -10,12 +10,13 @@ import 'bloc/business_bloc.dart';
 
 class BusinessView extends StatelessWidget {
   final BusinessOperation operation;
+  final String? businessId;
 
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => const BusinessView());
   }
 
-  const BusinessView({Key? key, this.operation = BusinessOperation.create})
+  const BusinessView({Key? key, this.operation = BusinessOperation.create, this.businessId})
       : super(key: key);
 
   @override
@@ -23,7 +24,7 @@ class BusinessView extends StatelessWidget {
     return BlocProvider(
       create: (context) => BusinessBloc(
           repo: RepositoryProvider.of(context), operation: operation)
-        ..add(LoadBusinessDetail()),
+        ..add(LoadBusinessDetail(businessId)),
       child: Container(
         color: Colors.white,
         child: SafeArea(
@@ -45,7 +46,7 @@ class BusinessView extends StatelessWidget {
                             tag: "business-logo",
                             child: CircleAvatar(
                               backgroundImage: NetworkImage(
-                                  'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1650499200&v=beta&t=f3QRa7swHNX0eWlIK6TT00OhoWBusgZaAqcOiIpRHsE'),
+                                  'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1656547200&v=beta&t=73Ztd907MxvHLxmQV6Pb-TShp6qj4mGOKN4ckWWjvuQ'),
                               maxRadius: 60,
                               child: Text(
                                 "",

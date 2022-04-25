@@ -15,7 +15,7 @@ class ReceiptDisplayBloc extends Bloc<ReceiptDisplayEvent, ReceiptDisplayState> 
   final int transId;
   final AppDatabase db;
 
-  ReceiptDisplayBloc({ required this.transId, required this.db }) : super(ReceiptDisplayState()) {
+  ReceiptDisplayBloc({ required this.transId, required this.db }) : super(const ReceiptDisplayState()) {
     on<FetchReceiptDataEvent>(_onFetchReceiptData);
     on<UpdateReceiptStatusEvent>(_onUpdateReceiptStatusEvent);
   }
@@ -25,7 +25,7 @@ class ReceiptDisplayBloc extends Bloc<ReceiptDisplayEvent, ReceiptDisplayState> 
       emit(state.copyWith(status: ReceiptDisplayStatus.loading));
       TransactionHeaderEntity? header = await db.transactionDao.findHeaderByTransactionSeq(transId);
       List<TransactionLineItemEntity> lineItem = await db.transactionDao.findLineItemByTransactionSeq(transId);
-      List<TransactionLineItemEntity> tmp = await db.transactionDao.getAllTransactionLineItem();
+      // List<TransactionLineItemEntity> tmp = await db.transactionDao.getAllTransactionLineItem();
       if (header != null) {
         emit(state.copyWith(header: header, lineItems: lineItem, status: ReceiptDisplayStatus.success));
       } else {

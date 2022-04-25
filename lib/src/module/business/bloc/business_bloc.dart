@@ -29,7 +29,10 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
       LoadBusinessDetail event, Emitter<BusinessState> emit) async {
     emit(state.copyWith(status: BusinessStatus.loading));
     try {
-      var data = await repo.getBusinessById(dummyBusinessId);
+      if (event.businessId == null) {
+        throw "No BusinessId to fetch.";
+      }
+      var data = await repo.getBusinessById(event.businessId!);
       emit(state.copyWith(
           status: BusinessStatus.success,
           entity: data,

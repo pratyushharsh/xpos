@@ -16,12 +16,48 @@ class BusinessRepository {
 
   BusinessRepository({required this.db, required this.restClient});
 
+
+  Future<RetailLocationEntity> _findAndPersistBusiness(String businessId) async {
+    try {
+      var option =
+      RestOptions(path: '/business/$businessId');
+      var rawResp = await restClient.get(restOptions: option);
+      if (rawResp.statusCode == 200) {
+        try {
+          var resp = CreateBusinessResponse.fromMap(
+              restClient.parsedResponse(rawResp));
+
+          var entity = RetailLocationEntity(
+              rtlLocId: resp.businessId,
+              version: 1,
+              createTime: DateTime.parse(resp.createdAt),
+              storeName: resp.name,
+              storeNumber: resp.businessId,
+              storeContact: resp.phone,
+              address1: resp.address
+          );
+          await db.retailLocationDao.insertBulk(entity);
+          return entity;
+        } catch (e) {
+          log.severe(e);
+          throw 'Error While Parsing business';
+        }
+      } else {
+        throw 'Unable to create new business. Contact Admin';
+      }
+    } catch (e) {
+      log.severe(e);
+      throw 'Error while creating business';
+    }
+  }
+
   Future<RetailLocationEntity> getBusinessById(String businessId) async {
     try {
       var data = await db.retailLocationDao.findRetailLocById(businessId);
 
       if (data == null) {
-        throw 'Cannot find business in the database';
+        log.info('Cannot find business in the database');
+        data = await _findAndPersistBusiness(businessId);
       }
 
       return data;
@@ -59,6 +95,7 @@ class BusinessRepository {
             createTime: DateTime.parse(resp.createdAt),
             storeName: resp.name,
             storeNumber: resp.businessId,
+            storeContact: resp.phone,
             address1: resp.address
           );
           await db.retailLocationDao.insertBulk(entity);

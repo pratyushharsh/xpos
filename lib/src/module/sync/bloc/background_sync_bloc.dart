@@ -3,34 +3,54 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:receipt_generator/src/repositories/app_database.dart';
+import 'package:receipt_generator/src/repositories/sync_repository.dart';
 
 part 'background_sync_event.dart';
 part 'background_sync_state.dart';
 
-void isolateFunction(int store) async {
-  final db =
-      await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-  Timer timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-    var data = await db.productDao.findAllProducts();
-    print(data);
-  });
-}
-
-
 class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> {
-  final log = Logger('LoadItemBulkBloc');
-  final AppDatabase db;
+
+  final log = Logger('BackgroundSyncBloc');
+  final SyncRepository syncRepository;
+  Timer? _timer;
 
 
-  BackgroundSyncBloc({required this.db}) : super(BackgroundSyncInitial()) {
+  @override
+  Future<void> close() async {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+    return super.close();
+  }
+
+  BackgroundSyncBloc({required this.syncRepository,}) : super(BackgroundSyncInitial()) {
     on<StartSyncEvent>(_onStartSyncEvent);
+    on<SyncAllDataEvent>(_onSyncAllDataEvent);
+    on<StopSyncEvent>(_onStopSyncEvent);
   }
 
   void _onStartSyncEvent(StartSyncEvent event, Emitter<BackgroundSyncState> emit) async {
-    Timer timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-      var data = await db.productDao.findAllProducts();
-      print(data);
-    });
+    if (_timer != null) {
+      _timer!.cancel();
+    } else {
+      _timer = Timer.periodic(const Duration(seconds: 30), (t) async {
+        add(SyncAllDataEvent());
+      });
+    }
+  }
+
+  void _onStopSyncEvent(StopSyncEvent event, Emitter<BackgroundSyncState> emit) async {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+  }
+
+  void _onSyncAllDataEvent(SyncAllDataEvent event, Emitter<BackgroundSyncState> emit) async {
+    DateTime start = DateTime.now();
+    log.info("Starting Sync for all the Data");
+    await syncRepository.startSync();
+    DateTime end = DateTime.now();
+    Duration diff = end.difference(start);
+    log.info("${diff.inSeconds} Seconds elapsed in syncing the data");
   }
 }

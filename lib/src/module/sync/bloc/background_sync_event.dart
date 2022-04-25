@@ -4,3 +4,6 @@ part of 'background_sync_bloc.dart';
 abstract class BackgroundSyncEvent {}
 
 class StartSyncEvent extends BackgroundSyncEvent {}
+class StopSyncEvent extends BackgroundSyncEvent {}
+
+class SyncAllDataEvent extends BackgroundSyncEvent {}

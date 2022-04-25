@@ -15,6 +15,8 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final FocusNode? focusNode;
   final FormFieldValidator<String>? validator;
+  final TextStyle style;
+  final TextAlign textAlign;
 
   const CustomTextField(
       {Key? key,
@@ -31,6 +33,10 @@ class CustomTextField extends StatelessWidget {
       this.focusNode,
       this.validator,
       this.obscureText = false,
+      this.style = const TextStyle(
+        fontWeight: FontWeight.w600,
+      ),
+      this.textAlign = TextAlign.start,
       this.prefixIconConstraint =
           const BoxConstraints(minWidth: 40, minHeight: 40)})
       : super(key: key);
@@ -69,11 +75,11 @@ class CustomTextField extends StatelessWidget {
             onChanged: onValueChange,
             obscureText: obscureText,
             cursorColor: const Color(0xFFB1B4E6),
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
+            textAlign: textAlign,
+            style: style,
             decoration: InputDecoration(
-              errorStyle: const TextStyle(height: 1, overflow: TextOverflow.fade),
+              errorStyle:
+                  const TextStyle(height: 1, overflow: TextOverflow.fade),
               focusedBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: Color(0xFFB1B4E6), width: 2.0),
               ),

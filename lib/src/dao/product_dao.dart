@@ -13,4 +13,7 @@ abstract class ProductDao extends AbstractDao<ProductEntity> {
 
   @Query('SELECT * FROM product where description like :filter or productId like :filter  limit 10')
   Future<List<ProductEntity>> findAllProductsByText(String filter);
+
+  @Query('SELECT * FROM product where syncState = :status')
+  Future<List<ProductEntity>> getProductByStatus(int status);
 }

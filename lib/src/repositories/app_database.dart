@@ -4,6 +4,7 @@ import 'package:receipt_generator/src/converters/converter.dart';
 import 'package:receipt_generator/src/dao/contact_dao.dart';
 import 'package:receipt_generator/src/dao/dao.dart';
 import 'package:receipt_generator/src/dao/sequence_dao.dart';
+import 'package:receipt_generator/src/dao/sync_dao.dart';
 import 'package:receipt_generator/src/dao/trn_header_dao.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
@@ -18,7 +19,8 @@ part 'app_database.g.dart'; // the generated code will be there
   TransactionLineItemEntity,
   SequenceEntity,
   ContactEntity,
-  RetailLocationEntity
+  RetailLocationEntity,
+  SyncEntity
 ])
 abstract class AppDatabase extends FloorDatabase {
   ProductDao get productDao;
@@ -27,4 +29,5 @@ abstract class AppDatabase extends FloorDatabase {
   SequenceDao get sequenceDao;
   ContactDao get contactDao;
   RetailLocationDao get retailLocationDao;
+  SyncDao get syncDao;
 }

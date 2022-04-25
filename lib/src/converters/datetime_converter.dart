@@ -24,7 +24,7 @@ class DateTimeNullConverter extends TypeConverter<DateTime?, int?> {
   @override
   int? encode(DateTime? value) {
     if (value != null) {
-      return value.microsecondsSinceEpoch;
+      return value.millisecondsSinceEpoch;
     }
     return null;
   }

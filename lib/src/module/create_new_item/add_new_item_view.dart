@@ -12,14 +12,40 @@ import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 import 'package:receipt_generator/src/widgets/loading.dart';
 import 'package:validators/sanitizers.dart';
 
-class AddNewItemScreen extends StatefulWidget {
-  const AddNewItemScreen({Key? key}) : super(key: key);
+enum NewItemScreenState { editItem, createItem }
+
+class AddNewItemScreen extends StatelessWidget {
+  final String? productId;
+  const AddNewItemScreen({Key? key, this.productId}) : super(key: key);
 
   @override
-  State<AddNewItemScreen> createState() => _AddNewItemScreenState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          lazy: false,
+          create: (context) => productId != null ? ItemBloc(
+            db: RepositoryProvider.of(context),
+          ) : ItemBloc(
+            db: RepositoryProvider.of(context),
+          )..add(LoadExistingItem(productId!)),
+        )
+      ],
+      child: const AddNewItemForm(),
+    );
+  }
 }
 
-class _AddNewItemScreenState extends State<AddNewItemScreen> {
+
+class AddNewItemForm extends StatefulWidget {
+  final NewItemScreenState status;
+  const AddNewItemForm({Key? key, this.status = NewItemScreenState.createItem}) : super(key: key);
+
+  @override
+  State<AddNewItemForm> createState() => _AddNewItemFormState();
+}
+
+class _AddNewItemFormState extends State<AddNewItemForm> {
   String? _uom;
   bool _formValid = false;
   final _formKey = GlobalKey<FormState>();
@@ -32,6 +58,8 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
   late TextEditingController _hsnController;
   late TextEditingController _taxRateController;
   late TextEditingController _skuController;
+  late bool _inEditMode;
+  late String? _productId;
 
   @override
   void initState() {
@@ -44,6 +72,8 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
     _hsnController = TextEditingController();
     _taxRateController = TextEditingController();
     _skuController = TextEditingController();
+    _inEditMode = false;
+    _productId = null;
   }
 
   @override
@@ -118,6 +148,17 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           Navigator.of(context).pop();
+        } else if (ItemStatus.editProduct == state.status) {
+          _inEditMode = true;
+          _productId = state.existingProduct!.skuCode ?? state.existingProduct!.productId;
+          _productNameController.text = state.existingProduct!.description;
+          _salePriceController.text = state.existingProduct!.salePrice!.toString();
+          _listPriceController.text = state.existingProduct!.listPrice!.toString();
+          _purchasePriceController.text = state.existingProduct!.purchasePrice!.toString();
+          _brandController.text = state.existingProduct!.brand!;
+          _hsnController.text = state.existingProduct!.hsn!;
+          _taxRateController.text = state.existingProduct!.tax!.toString();
+          _onUomChange(state.existingProduct!.uom);
         }
       },
       child: Container(
@@ -170,6 +211,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                               ),
                               Expanded(
                                 child: CustomDropDown<String>(
+                                  value: _uom,
                                   data: [
                                     DropDownData(
                                         key: 'SQFT', value: 'Square Feet'),
@@ -275,13 +317,14 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                     top: 20,
                     left: 16,
                     child: AppBarLeading(
-                      heading: "New Product",
+                      heading: _productId ?? "New Product",
                       icon: Icons.arrow_back,
                       onTap: () {
                         Navigator.of(context).pop();
                       },
                     ),
                   ),
+                  if (!_inEditMode)
                   Positioned(
                     top: 20,
                     right: 16,
@@ -320,7 +363,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                           ),
                           Expanded(
                               child: AcceptButton(
-                            label: "Save",
+                            label: _inEditMode ? "Update" : "Save",
                             onPressed: _formValid ? _onSubmit : null,
                           ))
                         ],

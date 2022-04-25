@@ -6,6 +6,7 @@ import 'package:csv/csv.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 
 part 'load_item_bulk_event.dart';
@@ -14,12 +15,14 @@ part 'load_item_bulk_state.dart';
 class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
   final log = Logger('LoadItemBulkBloc');
   final AppDatabase db;
-  LoadItemBulkBloc({required this.db}) : super(LoadItemBulkState()) {
+  final AuthenticationBloc auth;
+  LoadItemBulkBloc({required this.db, required this.auth}) : super(LoadItemBulkState()) {
     on<ProcessFile>(_onLoadFile);
   }
 
   void _onLoadFile(ProcessFile event, Emitter<LoadItemBulkState> emit) async {
     try {
+      if (auth.state.store == null) return;
       emit(state.copyWith(status: LoadItemBulkStatus.loading));
       final input = File(event.path).openRead();
       final fields = await input
@@ -47,7 +50,7 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
             tax: e[8].toString().isNotEmpty ? double.parse(e[8].toString()) / 100 : 0,
             imageUrl: e[9].toString(),
             enable: true,
-          productId: productId, storeId: '', createTime: DateTime.now(),
+          productId: productId, storeId: auth.state.store!.storeNumber!, createTime: DateTime.now(),
         );
         await db.productDao.insertBulk(entity);
       }

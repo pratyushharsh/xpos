@@ -17,10 +17,22 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
   final log = Logger('ItemBloc');
   final AppDatabase db;
 
-  ItemBloc({required this.db}) : super(const ItemState()) {
+  ItemBloc({required this.db}) : super(ItemState()) {
     on<AddItem>(_onAddItem);
+    on<LoadExistingItem>(_onLoadExistingItem);
     on<UpdateItem>(_onUpdateItem);
     on<DeleteItem>(_onDeleteItem);
+  }
+
+  void _onLoadExistingItem(LoadExistingItem event, Emitter<ItemState> emit) async {
+    try {
+      var product = await db.productDao.findProductById(event.productId);
+      if (product != null) {
+        emit(state.copyWith(status: ItemStatus.editProduct, existingProduct: product));
+      }
+    } catch (e) {
+      log.severe(e);
+    }
   }
 
   void _onAddItem(AddItem event, Emitter<ItemState> emit) async {
@@ -32,7 +44,7 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
 
       Product p = Product(
         id: "STORE#1000",
-        sk: "ITEM$itemId",
+        sk: "ITEM#$itemId",
         description: event.product.description,
         tax: event.product.tax,
         productId: itemId,

@@ -1,9 +1,7 @@
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:receipt_generator/src/entity/contact_entity.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 
 part 'load_customer_contact_event.dart';

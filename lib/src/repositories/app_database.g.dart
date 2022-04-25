@@ -73,6 +73,8 @@ class _$AppDatabase extends AppDatabase {
 
   RetailLocationDao? _retailLocationDaoInstance;
 
+  SyncDao? _syncDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -92,7 +94,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `product` (`productId` TEXT, `storeId` TEXT NOT NULL, `description` TEXT NOT NULL, `listPrice` REAL, `salePrice` REAL, `purchasePrice` REAL, `uom` TEXT, `enable` INTEGER NOT NULL, `brand` TEXT, `skuCode` TEXT, `hsn` TEXT, `tax` REAL, `imageUrl` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`productId`))');
+            'CREATE TABLE IF NOT EXISTS `product` (`productId` TEXT, `storeId` TEXT NOT NULL, `description` TEXT NOT NULL, `listPrice` REAL, `salePrice` REAL, `purchasePrice` REAL, `uom` TEXT, `enable` INTEGER NOT NULL, `brand` TEXT, `skuCode` TEXT, `hsn` TEXT, `tax` REAL, `imageUrl` TEXT, `syncState` INTEGER NOT NULL, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastSyncAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`productId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `trn_header` (`transId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `storeId` TEXT NOT NULL, `transactionType` TEXT NOT NULL, `businessDate` INTEGER NOT NULL, `beginDatetime` INTEGER NOT NULL, `endDateTime` INTEGER, `total` REAL NOT NULL, `taxTotal` REAL NOT NULL, `subtotal` REAL NOT NULL, `roundTotal` REAL NOT NULL, `status` TEXT NOT NULL, `customerId` TEXT, `customerPhone` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, `customerName` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL)');
         await database.execute(
@@ -103,6 +105,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `customer` (`contactId` TEXT NOT NULL, `storeId` TEXT NOT NULL, `name` TEXT NOT NULL, `phoneNumber` TEXT, `email` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`contactId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `rtl_loc` (`rtlLocId` TEXT NOT NULL, `storeName` TEXT, `storeContact` TEXT, `storeNumber` TEXT, `currencyId` TEXT, `locale` TEXT, `address1` TEXT, `address2` TEXT, `city` TEXT, `country` TEXT, `postalCode` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`rtlLocId`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `sync` (`type` TEXT NOT NULL, `lastSyncAt` INTEGER, `status` INTEGER NOT NULL, `syncStartTime` INTEGER, `syncEndTime` INTEGER, PRIMARY KEY (`type`))');
         await database.execute(
             'CREATE INDEX `index_product_description` ON `product` (`description`)');
         await database.execute(
@@ -151,6 +155,11 @@ class _$AppDatabase extends AppDatabase {
     return _retailLocationDaoInstance ??=
         _$RetailLocationDao(database, changeListener);
   }
+
+  @override
+  SyncDao get syncDao {
+    return _syncDaoInstance ??= _$SyncDao(database, changeListener);
+  }
 }
 
 class _$ProductDao extends ProductDao {
@@ -173,10 +182,10 @@ class _$ProductDao extends ProductDao {
                   'hsn': item.hsn,
                   'tax': item.tax,
                   'imageUrl': item.imageUrl,
+                  'syncState': item.syncState,
                   'createTime': _dateTimeConverter.encode(item.createTime),
                   'updateTime': _dateTimeNullConverter.encode(item.updateTime),
-                  'lastChangedAt':
-                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'lastSyncAt': _dateTimeNullConverter.encode(item.lastSyncAt),
                   'version': item.version
                 }),
         _productEntityUpdateAdapter = UpdateAdapter(
@@ -197,10 +206,10 @@ class _$ProductDao extends ProductDao {
                   'hsn': item.hsn,
                   'tax': item.tax,
                   'imageUrl': item.imageUrl,
+                  'syncState': item.syncState,
                   'createTime': _dateTimeConverter.encode(item.createTime),
                   'updateTime': _dateTimeNullConverter.encode(item.updateTime),
-                  'lastChangedAt':
-                      _dateTimeNullConverter.encode(item.lastChangedAt),
+                  'lastSyncAt': _dateTimeNullConverter.encode(item.lastSyncAt),
                   'version': item.version
                 });
 
@@ -233,8 +242,9 @@ class _$ProductDao extends ProductDao {
             imageUrl: row['imageUrl'] as String?,
             createTime: _dateTimeConverter.decode(row['createTime'] as int),
             version: row['version'] as int,
-            lastChangedAt:
-                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            syncState: row['syncState'] as int,
+            lastSyncAt:
+                _dateTimeNullConverter.decode(row['lastSyncAt'] as int?),
             updateTime:
                 _dateTimeNullConverter.decode(row['updateTime'] as int?)));
   }
@@ -258,8 +268,9 @@ class _$ProductDao extends ProductDao {
             imageUrl: row['imageUrl'] as String?,
             createTime: _dateTimeConverter.decode(row['createTime'] as int),
             version: row['version'] as int,
-            lastChangedAt:
-                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            syncState: row['syncState'] as int,
+            lastSyncAt:
+                _dateTimeNullConverter.decode(row['lastSyncAt'] as int?),
             updateTime:
                 _dateTimeNullConverter.decode(row['updateTime'] as int?)),
         arguments: [productId]);
@@ -269,8 +280,35 @@ class _$ProductDao extends ProductDao {
   Future<List<ProductEntity>> findAllProductsByText(String filter) async {
     return _queryAdapter.queryList(
         'SELECT * FROM product where description like ?1 or productId like ?1  limit 10',
-        mapper: (Map<String, Object?> row) => ProductEntity(productId: row['productId'] as String?, storeId: row['storeId'] as String, description: row['description'] as String, listPrice: row['listPrice'] as double?, salePrice: row['salePrice'] as double?, purchasePrice: row['purchasePrice'] as double?, uom: row['uom'] as String?, enable: (row['enable'] as int) != 0, brand: row['brand'] as String?, skuCode: row['skuCode'] as String?, hsn: row['hsn'] as String?, tax: row['tax'] as double?, imageUrl: row['imageUrl'] as String?, createTime: _dateTimeConverter.decode(row['createTime'] as int), version: row['version'] as int, lastChangedAt: _dateTimeNullConverter.decode(row['lastChangedAt'] as int?), updateTime: _dateTimeNullConverter.decode(row['updateTime'] as int?)),
+        mapper: (Map<String, Object?> row) => ProductEntity(productId: row['productId'] as String?, storeId: row['storeId'] as String, description: row['description'] as String, listPrice: row['listPrice'] as double?, salePrice: row['salePrice'] as double?, purchasePrice: row['purchasePrice'] as double?, uom: row['uom'] as String?, enable: (row['enable'] as int) != 0, brand: row['brand'] as String?, skuCode: row['skuCode'] as String?, hsn: row['hsn'] as String?, tax: row['tax'] as double?, imageUrl: row['imageUrl'] as String?, createTime: _dateTimeConverter.decode(row['createTime'] as int), version: row['version'] as int, syncState: row['syncState'] as int, lastSyncAt: _dateTimeNullConverter.decode(row['lastSyncAt'] as int?), updateTime: _dateTimeNullConverter.decode(row['updateTime'] as int?)),
         arguments: [filter]);
+  }
+
+  @override
+  Future<List<ProductEntity>> getProductByStatus(int status) async {
+    return _queryAdapter.queryList('SELECT * FROM product where syncState = ?1',
+        mapper: (Map<String, Object?> row) => ProductEntity(
+            productId: row['productId'] as String?,
+            storeId: row['storeId'] as String,
+            description: row['description'] as String,
+            listPrice: row['listPrice'] as double?,
+            salePrice: row['salePrice'] as double?,
+            purchasePrice: row['purchasePrice'] as double?,
+            uom: row['uom'] as String?,
+            enable: (row['enable'] as int) != 0,
+            brand: row['brand'] as String?,
+            skuCode: row['skuCode'] as String?,
+            hsn: row['hsn'] as String?,
+            tax: row['tax'] as double?,
+            imageUrl: row['imageUrl'] as String?,
+            createTime: _dateTimeConverter.decode(row['createTime'] as int),
+            version: row['version'] as int,
+            syncState: row['syncState'] as int,
+            lastSyncAt:
+                _dateTimeNullConverter.decode(row['lastSyncAt'] as int?),
+            updateTime:
+                _dateTimeNullConverter.decode(row['updateTime'] as int?)),
+        arguments: [status]);
   }
 
   @override
@@ -822,6 +860,29 @@ class _$RetailLocationDao extends RetailLocationDao {
   }
 
   @override
+  Future<List<RetailLocationEntity>> listAllRtlLocation() async {
+    return _queryAdapter.queryList('SELECT * FROM rtl_loc',
+        mapper: (Map<String, Object?> row) => RetailLocationEntity(
+            rtlLocId: row['rtlLocId'] as String,
+            storeName: row['storeName'] as String?,
+            storeContact: row['storeContact'] as String?,
+            storeNumber: row['storeNumber'] as String?,
+            currencyId: row['currencyId'] as String?,
+            locale: row['locale'] as String?,
+            address1: row['address1'] as String?,
+            address2: row['address2'] as String?,
+            city: row['city'] as String?,
+            country: row['country'] as String?,
+            postalCode: row['postalCode'] as String?,
+            createTime: _dateTimeConverter.decode(row['createTime'] as int),
+            version: row['version'] as int,
+            lastChangedAt:
+                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            updateTime:
+                _dateTimeNullConverter.decode(row['updateTime'] as int?)));
+  }
+
+  @override
   Future<void> insertItem(RetailLocationEntity item) async {
     await _retailLocationEntityInsertionAdapter.insert(
         item, OnConflictStrategy.abort);
@@ -837,6 +898,88 @@ class _$RetailLocationDao extends RetailLocationDao {
   Future<void> updateItem(RetailLocationEntity item) async {
     await _retailLocationEntityUpdateAdapter.update(
         item, OnConflictStrategy.replace);
+  }
+}
+
+class _$SyncDao extends SyncDao {
+  _$SyncDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _syncEntityInsertionAdapter = InsertionAdapter(
+            database,
+            'sync',
+            (SyncEntity item) => <String, Object?>{
+                  'type': item.type,
+                  'lastSyncAt': _dateTimeNullConverter.encode(item.lastSyncAt),
+                  'status': item.status,
+                  'syncStartTime':
+                      _dateTimeNullConverter.encode(item.syncStartTime),
+                  'syncEndTime': _dateTimeNullConverter.encode(item.syncEndTime)
+                }),
+        _syncEntityUpdateAdapter = UpdateAdapter(
+            database,
+            'sync',
+            ['type'],
+            (SyncEntity item) => <String, Object?>{
+                  'type': item.type,
+                  'lastSyncAt': _dateTimeNullConverter.encode(item.lastSyncAt),
+                  'status': item.status,
+                  'syncStartTime':
+                      _dateTimeNullConverter.encode(item.syncStartTime),
+                  'syncEndTime': _dateTimeNullConverter.encode(item.syncEndTime)
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<SyncEntity> _syncEntityInsertionAdapter;
+
+  final UpdateAdapter<SyncEntity> _syncEntityUpdateAdapter;
+
+  @override
+  Future<SyncEntity?> findSyncById(String type) async {
+    return _queryAdapter.query('SELECT * FROM sync where type = ?1',
+        mapper: (Map<String, Object?> row) => SyncEntity(
+            type: row['type'] as String,
+            lastSyncAt:
+                _dateTimeNullConverter.decode(row['lastSyncAt'] as int?),
+            status: row['status'] as int,
+            syncStartTime:
+                _dateTimeNullConverter.decode(row['syncStartTime'] as int?),
+            syncEndTime:
+                _dateTimeNullConverter.decode(row['syncEndTime'] as int?)),
+        arguments: [type]);
+  }
+
+  @override
+  Future<List<SyncEntity>> listAllSyncStatus() async {
+    return _queryAdapter.queryList('SELECT * FROM sync',
+        mapper: (Map<String, Object?> row) => SyncEntity(
+            type: row['type'] as String,
+            lastSyncAt:
+                _dateTimeNullConverter.decode(row['lastSyncAt'] as int?),
+            status: row['status'] as int,
+            syncStartTime:
+                _dateTimeNullConverter.decode(row['syncStartTime'] as int?),
+            syncEndTime:
+                _dateTimeNullConverter.decode(row['syncEndTime'] as int?)));
+  }
+
+  @override
+  Future<void> insertItem(SyncEntity item) async {
+    await _syncEntityInsertionAdapter.insert(item, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> insertBulk(SyncEntity item) async {
+    await _syncEntityInsertionAdapter.insert(item, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> updateItem(SyncEntity item) async {
+    await _syncEntityUpdateAdapter.update(item, OnConflictStrategy.replace);
   }
 }
 
