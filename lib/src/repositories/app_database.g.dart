@@ -75,6 +75,8 @@ class _$AppDatabase extends AppDatabase {
 
   SyncDao? _syncDaoInstance;
 
+  SettingsDao? _settingDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -107,6 +109,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `rtl_loc` (`rtlLocId` TEXT NOT NULL, `storeName` TEXT, `storeContact` TEXT, `storeNumber` TEXT, `currencyId` TEXT, `locale` TEXT, `address1` TEXT, `address2` TEXT, `city` TEXT, `country` TEXT, `postalCode` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`rtlLocId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `sync` (`type` TEXT NOT NULL, `lastSyncAt` INTEGER, `status` INTEGER NOT NULL, `syncStartTime` INTEGER, `syncEndTime` INTEGER, PRIMARY KEY (`type`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `setting` (`category` TEXT NOT NULL, `subCategory` TEXT NOT NULL, `value` TEXT NOT NULL, `createAt` INTEGER, `updatedAt` INTEGER, PRIMARY KEY (`category`, `subCategory`))');
         await database.execute(
             'CREATE INDEX `index_product_description` ON `product` (`description`)');
         await database.execute(
@@ -159,6 +163,11 @@ class _$AppDatabase extends AppDatabase {
   @override
   SyncDao get syncDao {
     return _syncDaoInstance ??= _$SyncDao(database, changeListener);
+  }
+
+  @override
+  SettingsDao get settingDao {
+    return _settingDaoInstance ??= _$SettingsDao(database, changeListener);
   }
 }
 
@@ -980,6 +989,96 @@ class _$SyncDao extends SyncDao {
   @override
   Future<void> updateItem(SyncEntity item) async {
     await _syncEntityUpdateAdapter.update(item, OnConflictStrategy.replace);
+  }
+}
+
+class _$SettingsDao extends SettingsDao {
+  _$SettingsDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _settingEntityInsertionAdapter = InsertionAdapter(
+            database,
+            'setting',
+            (SettingEntity item) => <String, Object?>{
+                  'category': item.category,
+                  'subCategory': item.subCategory,
+                  'value': item.value,
+                  'createAt': _dateTimeNullConverter.encode(item.createAt),
+                  'updatedAt': _dateTimeNullConverter.encode(item.updatedAt)
+                }),
+        _settingEntityUpdateAdapter = UpdateAdapter(
+            database,
+            'setting',
+            ['category', 'subCategory'],
+            (SettingEntity item) => <String, Object?>{
+                  'category': item.category,
+                  'subCategory': item.subCategory,
+                  'value': item.value,
+                  'createAt': _dateTimeNullConverter.encode(item.createAt),
+                  'updatedAt': _dateTimeNullConverter.encode(item.updatedAt)
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<SettingEntity> _settingEntityInsertionAdapter;
+
+  final UpdateAdapter<SettingEntity> _settingEntityUpdateAdapter;
+
+  @override
+  Future<SettingEntity?> findSetting(
+      String category, String subCategory) async {
+    return _queryAdapter.query(
+        'SELECT * FROM setting where category = ?1 and subCategory = ?2',
+        mapper: (Map<String, Object?> row) => SettingEntity(
+            category: row['category'] as String,
+            subCategory: row['subCategory'] as String,
+            value: row['value'] as String,
+            createAt: _dateTimeNullConverter.decode(row['createAt'] as int?),
+            updatedAt: _dateTimeNullConverter.decode(row['updatedAt'] as int?)),
+        arguments: [category, subCategory]);
+  }
+
+  @override
+  Future<List<SettingEntity>> findSettingsByCategory(String category) async {
+    return _queryAdapter.queryList('SELECT * FROM setting where category = ?1',
+        mapper: (Map<String, Object?> row) => SettingEntity(
+            category: row['category'] as String,
+            subCategory: row['subCategory'] as String,
+            value: row['value'] as String,
+            createAt: _dateTimeNullConverter.decode(row['createAt'] as int?),
+            updatedAt: _dateTimeNullConverter.decode(row['updatedAt'] as int?)),
+        arguments: [category]);
+  }
+
+  @override
+  Future<List<SettingEntity>> findAllSettingsByCategory() async {
+    return _queryAdapter.queryList('SELECT * FROM setting',
+        mapper: (Map<String, Object?> row) => SettingEntity(
+            category: row['category'] as String,
+            subCategory: row['subCategory'] as String,
+            value: row['value'] as String,
+            createAt: _dateTimeNullConverter.decode(row['createAt'] as int?),
+            updatedAt:
+                _dateTimeNullConverter.decode(row['updatedAt'] as int?)));
+  }
+
+  @override
+  Future<void> insertItem(SettingEntity item) async {
+    await _settingEntityInsertionAdapter.insert(item, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> insertBulk(SettingEntity item) async {
+    await _settingEntityInsertionAdapter.insert(
+        item, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> updateItem(SettingEntity item) async {
+    await _settingEntityUpdateAdapter.update(item, OnConflictStrategy.replace);
   }
 }
 

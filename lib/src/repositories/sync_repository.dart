@@ -25,13 +25,40 @@ class SyncRepository {
   static const int staging = 200;
   static const int syncSuccessful = 300;
   static const int syncFailure = 500;
+  DateTime firstStartTime = DateTime(2000);
 
-  SyncRepository({required this.db, required this.restClient});
-  
+  SyncRepository({required this.db, required this.restClient,});
+
+  Future<void> getProductDataFromLastSync(ImportDataFromServer request) async {
+    try {
+      var option =
+          RestOptions(path: '/export', body: json.encode(request.toMap()));
+      var rawResp = await restClient.post(restOptions: option);
+      if (rawResp.statusCode == 200) {
+        var decode = json.decode(rawResp.body);
+        if (decode is List) {
+          log.info("Fetched ${decode.length} records to sync");
+          for (var element in decode) {
+            try {
+              await db.productDao.insertBulk(ProductEntity.fromMap(element));
+            } catch (e) {
+              log.severe(e);
+            }
+
+          }
+        }
+      } else {
+        throw 'Unable to sync the data. Contact Admin';
+      }
+    } catch (e) {
+      log.severe(e);
+    }
+  }
+
   Future<SyncDataResponse> uploadDataToServer(SyncDataRequest request) async {
     try {
       var option =
-      RestOptions(path: '/sync', body: json.encode(request.toMap()));
+          RestOptions(path: '/sync', body: json.encode(request.toMap()));
       var rawResp = await restClient.post(restOptions: option);
       if (rawResp.statusCode == 200) {
         log.info('Successfully Synced the data');
@@ -43,9 +70,9 @@ class SyncRepository {
       log.severe(e);
       throw 'Error while syncing the data';
     }
-}
+  }
 
-  Future<void> _getAllTheProductFromLastSync() async {
+  Future<void> _getAllTheProductFromLastSync(String storeId) async {
     // Get If there is already sync going on
     DateTime now = DateTime.now();
     SyncEntity? lastSyncStatus =
@@ -58,6 +85,8 @@ class SyncRepository {
         return;
       }
     }
+
+    DateTime lastSyncTime = lastSyncStatus?.lastSyncAt ?? firstStartTime;
     // Create Batch For Sync
     DateTime curTime = DateTime.now();
     var st = db.database.batch();
@@ -68,10 +97,18 @@ class SyncRepository {
         [EntityType.product.type, 200, curTime.millisecondsSinceEpoch]);
     await st.commit();
 
+    // Fetch Data And Insert
+    try {
+      await getProductDataFromLastSync(ImportDataFromServer(storeId: storeId, type: "products", lastSyncAt: lastSyncTime.toUtc().toIso8601String()));
+    } catch (e) {
+      log.severe(e);
+    }
+
     try {
       // Start Send to server
       var products = await db.productDao.getProductByStatus(staging);
       var data = products.map((e) => e.toMap()).toList();
+      log.info("Uploading ${data.length} records to sync to server");
       if (data.isNotEmpty) {
         var req = SyncDataRequest(products: data);
         await uploadDataToServer(req);
@@ -79,29 +116,54 @@ class SyncRepository {
       }
       // End Send to server
 
+
       // Update Status After Success failure for sync
       DateTime syncEndTime = DateTime.now();
       var en = db.database.batch();
-      en.execute(
-          'UPDATE product SET syncState = ?1 where syncState = 200', [syncSuccessful]);
+      en.execute('UPDATE product SET syncState = ?1 where syncState = 200',
+          [syncSuccessful]);
       en.execute(
           'INSERT INTO sync(type, status, syncEndTime, lastSyncAt) VALUES (?1, ?2, ?3, ?4) ON CONFLICT (type) DO UPDATE SET status=excluded.status, syncEndTime=excluded.syncEndTime, lastSyncAt=excluded.lastSyncAt',
-          [EntityType.product.type, syncSuccessful, syncEndTime.millisecondsSinceEpoch, syncEndTime.millisecondsSinceEpoch]);
+          [
+            EntityType.product.type,
+            syncSuccessful,
+            syncEndTime.millisecondsSinceEpoch,
+            syncEndTime.millisecondsSinceEpoch
+          ]);
       await en.commit();
     } catch (e) {
       log.severe(e);
       DateTime syncEndTime = DateTime.now();
       var en = db.database.batch();
-      en.execute(
-          'UPDATE product SET syncState = ?1 where syncState = 200', [syncFailure]);
+      en.execute('UPDATE product SET syncState = ?1 where syncState = 200',
+          [syncFailure]);
       en.execute(
           'INSERT INTO sync(type, status, syncEndTime, lastSyncAt) VALUES (?1, ?2, ?3, ?4) ON CONFLICT (type) DO UPDATE SET status=excluded.status, syncEndTime=excluded.syncEndTime, lastSyncAt=excluded.lastSyncAt',
-          [EntityType.product.type, syncFailure, syncEndTime.millisecondsSinceEpoch, syncEndTime.millisecondsSinceEpoch]);
+          [
+            EntityType.product.type,
+            syncFailure,
+            syncEndTime.millisecondsSinceEpoch,
+            syncEndTime.millisecondsSinceEpoch
+          ]);
       await en.commit();
     }
   }
 
-  Future<void> startSync() async {
-    await _getAllTheProductFromLastSync();
+  Future<void> syncProducts() async {
+    // Fetch the last sync status
+    DateTime now = DateTime.now();
+    SyncEntity? lastSyncStatus = await db.syncDao.findSyncById(EntityType.product.type);
+    if (lastSyncStatus != null && lastSyncStatus.status == 200) {
+      if (now.difference(lastSyncStatus.syncStartTime!).inSeconds > 120) {
+        log.warning("Unable to find the last sync status. Retrying...");
+      } else {
+        log.info("Sync already in progress waiting it for finish");
+        return;
+      }
+    }
+  }
+
+  Future<void> startSync(String storeId) async {
+    await _getAllTheProductFromLastSync(storeId);
   }
 }

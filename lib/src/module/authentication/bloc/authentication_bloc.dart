@@ -73,7 +73,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           List<String> userStores = tmp.split(";");
 
           var rtlLoc = await businessRepository.getBusinessById(userStores[0].split(":")[1]);
-          sync.add(StartSyncEvent());
+          sync.add(StartSyncEvent(rtlLoc.rtlLocId));
           emit(AuthenticationState.authenticated(user, tmp, rtlLoc));
         } else {
           emit(AuthenticationState.newUser(user));
@@ -93,7 +93,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       List<String> userStores = tmp.split(";");
 
       var rtlLoc = await businessRepository.getBusinessById(userStores[0].split(":")[1]);
-      sync.add(StartSyncEvent());
+      sync.add(StartSyncEvent(rtlLoc.rtlLocId));
       emit(AuthenticationState.authenticated(event.user, tmp, rtlLoc));
     } else {
       sync.add(StopSyncEvent());

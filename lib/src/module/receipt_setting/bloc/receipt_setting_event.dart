@@ -32,3 +32,8 @@ class OnStoreFooterSubTitleChange extends ReceiptSettingEvent {
 
   OnStoreFooterSubTitleChange({ required this.value });
 }
+
+class OnSaveReceiptEvent extends ReceiptSettingEvent {
+}
+
+class OnInitReceiptSettingEvent extends ReceiptSettingEvent {}

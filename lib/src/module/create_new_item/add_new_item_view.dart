@@ -23,12 +23,10 @@ class AddNewItemScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          lazy: false,
-          create: (context) => productId != null ? ItemBloc(
+          create: (context) => ItemBloc(
             db: RepositoryProvider.of(context),
-          ) : ItemBloc(
-            db: RepositoryProvider.of(context),
-          )..add(LoadExistingItem(productId!)),
+            authenticationBloc: BlocProvider.of(context),
+          )..add(LoadExistingItem(productId)),
         )
       ],
       child: const AddNewItemForm(),
@@ -36,10 +34,10 @@ class AddNewItemScreen extends StatelessWidget {
   }
 }
 
-
 class AddNewItemForm extends StatefulWidget {
   final NewItemScreenState status;
-  const AddNewItemForm({Key? key, this.status = NewItemScreenState.createItem}) : super(key: key);
+  const AddNewItemForm({Key? key, this.status = NewItemScreenState.createItem})
+      : super(key: key);
 
   @override
   State<AddNewItemForm> createState() => _AddNewItemFormState();
@@ -99,6 +97,8 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     // BlocProvider.of<ItemBloc>(context).add(AddItem(prod));
     if (_formKey.currentState!.validate()) {
       var prod = ProductModel(
+          productId: _productId,
+          enable: true,
           description: _productNameController.text,
           listPrice: _listPriceController.text.isNotEmpty
               ? toFloat(_listPriceController.text)
@@ -149,15 +149,21 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           Navigator.of(context).pop();
         } else if (ItemStatus.editProduct == state.status) {
+          print(state.existingProduct);
           _inEditMode = true;
-          _productId = state.existingProduct!.skuCode ?? state.existingProduct!.productId;
+          _productId = state.existingProduct!.skuCode ??
+              state.existingProduct!.productId;
           _productNameController.text = state.existingProduct!.description;
-          _salePriceController.text = state.existingProduct!.salePrice!.toString();
-          _listPriceController.text = state.existingProduct!.listPrice!.toString();
-          _purchasePriceController.text = state.existingProduct!.purchasePrice!.toString();
-          _brandController.text = state.existingProduct!.brand!;
-          _hsnController.text = state.existingProduct!.hsn!;
-          _taxRateController.text = state.existingProduct!.tax!.toString();
+          _salePriceController.text =
+              state.existingProduct!.salePrice!.toString();
+          _listPriceController.text =
+              state.existingProduct!.listPrice?.toString() ?? "";
+          _purchasePriceController.text =
+              state.existingProduct!.purchasePrice?.toString() ?? "";
+          _brandController.text = state.existingProduct?.brand ?? "";
+          _hsnController.text = state.existingProduct?.hsn ?? "";
+          _taxRateController.text = state.existingProduct!.tax?.toString() ?? "";
+          _skuController.text = state.existingProduct!.skuCode ?? "";
           _onUomChange(state.existingProduct!.uom);
         }
       },
@@ -325,28 +331,28 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                     ),
                   ),
                   if (!_inEditMode)
-                  Positioned(
-                    top: 20,
-                    right: 16,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(RouteConfig.loadItemsInBulkScreen);
-                      },
-                      child: const Text(
-                        "Bulk Import",
-                        style: TextStyle(color: AppColor.primary),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14, horizontal: 10),
-                        primary: AppColor.color8,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0)),
+                    Positioned(
+                      top: 20,
+                      right: 16,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteConfig.loadItemsInBulkScreen);
+                        },
+                        child: const Text(
+                          "Bulk Import",
+                          style: TextStyle(color: AppColor.primary),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 14, horizontal: 10),
+                          primary: AppColor.color8,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0)),
+                        ),
                       ),
                     ),
-                  ),
                   Positioned(
                     bottom: 0,
                     child: Container(

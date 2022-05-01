@@ -1,6 +1,6 @@
 part of 'receipt_setting_bloc.dart';
 
-enum ReceiptSettingStatus { initial, modified, loading, failure, success }
+enum ReceiptSettingStatus { initial, modified, loading, failure, success, initLoad }
 
 class ReceiptSettingState extends Equatable {
   final ReceiptSettingStatus status;

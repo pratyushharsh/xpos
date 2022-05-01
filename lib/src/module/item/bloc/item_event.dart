@@ -9,7 +9,7 @@ abstract class ItemEvent extends Equatable {
 }
 
 class LoadExistingItem extends ItemEvent {
-  final String productId;
+  final String? productId;
   const LoadExistingItem(this.productId);
 }
 

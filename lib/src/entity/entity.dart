@@ -6,3 +6,4 @@ export './sequence_entity.dart';
 export './contact_entity.dart';
 export './business_entity.dart';
 export './sync_entity.dart';
+export './setting_entity.dart';

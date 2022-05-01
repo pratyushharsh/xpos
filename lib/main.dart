@@ -1,6 +1,6 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
-import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
+// import 'package:amplify_api/amplify_api.dart';
+// import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,6 @@ import 'package:receipt_generator/src/util/helper/rest_api.dart';
 import 'bloc_observer.dart';
 import 'firebase_options.dart';
 import 'log.dart';
-import 'models/ModelProvider.dart';
 import 'my_app.dart';
 import 'amplifyconfiguration.dart';
 
@@ -50,13 +49,13 @@ Future<void> main() {
 
 Future<void> _initAmplifyFlutter() async {
   try {
-    AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance,
-        syncInterval: 10,
-        errorHandler: (er) => {
-      log.severe(er)
-    });
-    await Amplify.addPlugin(datastorePlugin);
-    await Amplify.addPlugin(AmplifyAPI());
+    // AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance,
+    //     syncInterval: 10,
+    //     errorHandler: (er) => {
+    //   log.severe(er)
+    // });
+    // await Amplify.addPlugin(datastorePlugin);
+    // await Amplify.addPlugin(AmplifyAPI());
     await Amplify.configure(amplifyconfig);
     log.info('Aws Configured');
   } on AmplifyAlreadyConfiguredException {

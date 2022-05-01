@@ -20,7 +20,8 @@ part 'app_database.g.dart'; // the generated code will be there
   SequenceEntity,
   ContactEntity,
   RetailLocationEntity,
-  SyncEntity
+  SyncEntity,
+  SettingEntity
 ])
 abstract class AppDatabase extends FloorDatabase {
   ProductDao get productDao;
@@ -30,4 +31,5 @@ abstract class AppDatabase extends FloorDatabase {
   ContactDao get contactDao;
   RetailLocationDao get retailLocationDao;
   SyncDao get syncDao;
+  SettingsDao get settingDao;
 }

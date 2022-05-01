@@ -87,7 +87,7 @@ class ProductEntity extends BaseEntity {
       'uom': uom,
       'enable': enable,
       'brand': brand,
-      'skuCode': skuCode,
+      'sku_code': skuCode,
       'hsn': hsn,
       'tax': tax,
       'image_url': imageUrl,
@@ -102,21 +102,27 @@ class ProductEntity extends BaseEntity {
     return ProductEntity(
       productId: map['product_id'] as String,
       storeId: map['store_id'] as String,
-      description: map['description'] as String,
-      listPrice: map['list_price'] as double,
-      salePrice: map['sale_price'] as double,
-      purchasePrice: map['purchase_price'] as double,
-      uom: map['uom'] as String,
-      enable: map['enable'] as bool,
-      brand: map['brand'] as String,
-      skuCode: map['skuCode'] as String,
-      hsn: map['hsn'] as String,
-      tax: map['tax'] as double,
-      imageUrl: map['image_url'] as String,
-      createTime: map['create_date'] as DateTime,
-      updateTime: map['update_date'] as DateTime,
-      lastSyncAt: map['last_sync_at'] as DateTime,
-      version: map['version'] as int,
+      description: (map['description'] ?? map['product_id']) as String,
+      listPrice: double.tryParse(map['list_price'].toString()),
+      salePrice: double.tryParse(map['sale_price'].toString()),
+      purchasePrice: double.tryParse(map['purchase_price'].toString()),
+      uom: map['uom'] as String?,
+      enable: map['enable'] != null ? map['enable'] as bool : false,
+      brand: map['brand'] as String?,
+      skuCode: map['skuCode'] as String?,
+      hsn: map['hsn'] as String?,
+      tax: double.tryParse(map['tax'].toString()),
+      imageUrl: map['image_url'] as String?,
+      createTime: DateTime.tryParse(map['create_date']) ?? DateTime.now(),
+      updateTime: DateTime.tryParse(map['update_date']??""),
+      lastSyncAt: DateTime.tryParse(map['last_sync_at']??""),
+      version: map['version'] != null ? map['version'] as int : 1,
+      syncState: 300
     );
+  }
+
+  @override
+  String toString() {
+    return 'ProductEntity{productId: $productId, storeId: $storeId, description: $description, listPrice: $listPrice, salePrice: $salePrice, purchasePrice: $purchasePrice, uom: $uom, enable: $enable, brand: $brand, skuCode: $skuCode, hsn: $hsn, tax: $tax, imageUrl: $imageUrl, syncState: $syncState, createTime: $createTime, updateTime: $updateTime, lastSyncAt: $lastSyncAt, version: $version}';
   }
 }
