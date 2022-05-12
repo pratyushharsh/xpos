@@ -47,6 +47,9 @@ abstract class TransactionDao {
   @Query('SELECT * FROM trn_line_item')
   Future<List<TransactionLineItemEntity>> getAllTransactionLineItem();
 
+  @Query('SELECT * FROM trn_header where syncState = :status')
+  Future<List<TransactionHeaderEntity>> getTransactionHeaderByStatus(int status);
+
   @transaction
   Future<bool> updateTransactionStatus(int transId, String status) async {
     var header = await findHeaderByTransactionSeq(transId);
@@ -58,7 +61,7 @@ abstract class TransactionDao {
             header.status == SaleStatus.pending) {
           TransactionHeaderEntity newData = header.copyWith(
               status: status,
-              endDateTime: DateTime.now().microsecondsSinceEpoch);
+              endDateTime: DateTime.now());
           await updateTransaction(newData);
           return true;
         }
@@ -68,7 +71,7 @@ abstract class TransactionDao {
             header.status == SaleStatus.suspended) {
           TransactionHeaderEntity newData = header.copyWith(
               status: status,
-              endDateTime: DateTime.now().microsecondsSinceEpoch);
+              endDateTime: DateTime.now());
           await updateTransaction(newData);
           return true;
         }

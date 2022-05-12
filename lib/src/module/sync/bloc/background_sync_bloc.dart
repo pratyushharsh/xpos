@@ -35,7 +35,7 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     if (_timer != null) {
       _timer!.cancel();
     } else {
-      _timer = Timer.periodic(const Duration(seconds: 600), (t) async {
+      _timer = Timer.periodic(const Duration(minutes: 30), (t) async {
         if (BackgroundSyncStatus.inProgress != state.status) {
           add(SyncAllDataEvent());
         }
@@ -50,6 +50,10 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
   }
 
   void _onSyncAllDataEvent(SyncAllDataEvent event, Emitter<BackgroundSyncState> emit) async {
+    if (state.status == BackgroundSyncStatus.inProgress) {
+      return;
+    }
+    await Future.delayed(const Duration(seconds: 10));
     emit(state.copyWith(status: BackgroundSyncStatus.inProgress));
     DateTime start = DateTime.now();
     log.info("Starting Sync for all the Data");

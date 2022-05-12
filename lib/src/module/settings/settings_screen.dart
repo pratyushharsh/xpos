@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
+import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
 
 import '../../widgets/custom_button.dart';
 
@@ -50,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
               icon: Icons.settings,
               children: [
                 SettingsItem(text: "Sync Data", onTap: () async {
-
+                  BlocProvider.of<BackgroundSyncBloc>(context).add(SyncAllDataEvent());
                 }),
                 SettingsItem(text: "Invoice Setting", onTap: () {}),
                 SettingsItem(text: "Receipt Setting", onTap: () {

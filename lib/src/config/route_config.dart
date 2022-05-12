@@ -4,6 +4,7 @@ import 'package:receipt_generator/src/module/business/bloc/business_bloc.dart';
 import 'package:receipt_generator/src/module/business/business_view.dart';
 import 'package:receipt_generator/src/module/create_new_item/add_new_item_view.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_view.dart';
+import 'package:receipt_generator/src/module/customer_detail/customer_detail_screen.dart';
 import 'package:receipt_generator/src/module/home/home_view.dart';
 import 'package:receipt_generator/src/module/invoice/invoice_view.dart';
 import 'package:receipt_generator/src/module/list_all_item/list_all_item_view.dart';
@@ -27,6 +28,7 @@ class RouteConfig {
   static const String invoiceViewScreen = "/invoice-view";
   static const String businessViewScreen = "/business-view";
   static const String receiptSettingViewScreen = "/receipt-setting";
+  static const String customerDetailScreen = "/customer-detail";
 
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -64,6 +66,8 @@ class RouteConfig {
       case receiptDisplayScreen:
         var transId = settings.arguments as int;
         return MaterialPageRoute(builder: (_) => ReceiptDisplayView(transactionId: transId,));
+      case customerDetailScreen:
+        return MaterialPageRoute(builder: (_) => const CustomerDetailScreen(userId: "PRATY-123",));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

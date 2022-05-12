@@ -345,8 +345,7 @@ class ReceiptDate extends StatelessWidget {
     return BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
       builder: (context, state) {
         return Text(
-          formatter.format(
-              DateTime.fromMicrosecondsSinceEpoch(state.header!.businessDate)),
+          formatter.format(state.header!.businessDate),
         );
       },
     );
@@ -547,7 +546,7 @@ class ReceiptBarcode extends StatelessWidget {
         return BarcodeWidget(
           barcode: Barcode.code128(), // Barcode type and settings
           data:
-              '${formatter.format(DateTime.fromMicrosecondsSinceEpoch(state.header!.businessDate))}${state.header!.transId}', // Content
+              '${formatter.format(state.header!.businessDate)}${state.header!.transId}', // Content
           width: 200,
           height: 80,
         );

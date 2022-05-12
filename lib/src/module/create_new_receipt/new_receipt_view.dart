@@ -22,6 +22,7 @@ class NewReceiptView extends StatelessWidget {
       create: (ctx) => CreateNewReceiptBloc(
         db: RepositoryProvider.of(ctx),
         contactDb: RepositoryProvider.of(ctx),
+        authenticationBloc: BlocProvider.of(ctx)
       )..add(OnInitiateNewTransaction()),
       child: Container(
         color: AppColor.background,

@@ -84,7 +84,8 @@ class ContactEntity extends BaseEntity {
     };
   }
 
-  factory ContactEntity.fromMap(Map<String, dynamic> map) {
+  @override
+  ContactEntity fromMap(Map<String, dynamic> map) {
     return ContactEntity(
       contactId: map['contactId'] as String,
       storeId: map['storeId'] as String,

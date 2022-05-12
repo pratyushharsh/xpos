@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
+import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
 
@@ -16,9 +17,10 @@ class CreateNewReceiptBloc
     extends Bloc<CreateNewReceiptEvent, CreateNewReceiptState> {
   final log = Logger('CreateNewReceiptBloc');
   final AppDatabase db;
+  final AuthenticationBloc authenticationBloc;
   final ContactRepository contactDb;
 
-  CreateNewReceiptBloc({required this.db, required this.contactDb})
+  CreateNewReceiptBloc({required this.db, required this.contactDb, required this.authenticationBloc})
       : super(const CreateNewReceiptState(
             status: CreateNewReceiptStatus.initial)) {
     on<AddItemToReceipt>(_onAddNewLineItem);
@@ -75,10 +77,13 @@ class CreateNewReceiptBloc
   // @TODO List different transaction status INITIATED, SALE_COMPLETED, SUSPENDED, CANCELLED, RETURNED, EXCHANGED
   void _onCreateNewTransaction(
       OnCreateNewTransaction event, Emitter<CreateNewReceiptState> emit) async {
+    String? storeId = authenticationBloc.state.store?.rtlLocId;
+    if (storeId == null) throw Exception("Store Not Found");
+
     TransactionHeaderEntity header = TransactionHeaderEntity(
         transId: state.transSeq,
-        businessDate: DateTime.now().microsecondsSinceEpoch,
-        beginDatetime: DateTime.now().microsecondsSinceEpoch,
+        businessDate: DateTime.now(),
+        beginDatetime: DateTime.now(),
         transactionType: TransactionType.cashSale,
         total: state.grandTotal,
         taxTotal: state.tax,
@@ -88,7 +93,7 @@ class CreateNewReceiptBloc
         customerId: state.selectedCustomer?.contactId,
         customerName: state.selectedCustomer?.name,
         customerPhone: state.selectedCustomer?.phoneNumber,
-        shippingAddress: state.selectedCustomer?.shippingAddress, storeId: '', createTime: DateTime.now());
+        shippingAddress: state.selectedCustomer?.shippingAddress, storeId: storeId, createTime: DateTime.now());
     List<TransactionLineItemEntity> lineItems =
         state.lineItem.map((e) => e.toEntity(state.transSeq)).toList();
 

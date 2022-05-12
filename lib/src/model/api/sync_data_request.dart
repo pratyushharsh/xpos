@@ -1,11 +1,13 @@
 class SyncDataRequest {
   final List<Map<String, dynamic>>? products;
+  final List<Map<String, dynamic>>? transactions;
 
-  SyncDataRequest({this.products});
+  SyncDataRequest({this.products, this.transactions});
 
   Map<String, dynamic> toMap() {
     return {
       "product": products,
+      "transaction": transactions
     };
   }
 }

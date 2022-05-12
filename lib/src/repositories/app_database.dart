@@ -5,7 +5,7 @@ import 'package:receipt_generator/src/dao/contact_dao.dart';
 import 'package:receipt_generator/src/dao/dao.dart';
 import 'package:receipt_generator/src/dao/sequence_dao.dart';
 import 'package:receipt_generator/src/dao/sync_dao.dart';
-import 'package:receipt_generator/src/dao/trn_header_dao.dart';
+import 'package:receipt_generator/src/dao/trn_dao.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 

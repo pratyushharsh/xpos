@@ -98,7 +98,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `product` (`productId` TEXT, `storeId` TEXT NOT NULL, `description` TEXT NOT NULL, `listPrice` REAL, `salePrice` REAL, `purchasePrice` REAL, `uom` TEXT, `enable` INTEGER NOT NULL, `brand` TEXT, `skuCode` TEXT, `hsn` TEXT, `tax` REAL, `imageUrl` TEXT, `syncState` INTEGER NOT NULL, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastSyncAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`productId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `trn_header` (`transId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `storeId` TEXT NOT NULL, `transactionType` TEXT NOT NULL, `businessDate` INTEGER NOT NULL, `beginDatetime` INTEGER NOT NULL, `endDateTime` INTEGER, `total` REAL NOT NULL, `taxTotal` REAL NOT NULL, `subtotal` REAL NOT NULL, `roundTotal` REAL NOT NULL, `status` TEXT NOT NULL, `customerId` TEXT, `customerPhone` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, `customerName` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `trn_header` (`transId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `storeId` TEXT NOT NULL, `transactionType` TEXT NOT NULL, `businessDate` INTEGER NOT NULL, `beginDatetime` INTEGER NOT NULL, `endDateTime` INTEGER, `total` REAL NOT NULL, `taxTotal` REAL NOT NULL, `subtotal` REAL NOT NULL, `roundTotal` REAL NOT NULL, `status` TEXT NOT NULL, `customerId` TEXT, `customerPhone` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, `customerName` TEXT, `syncState` INTEGER NOT NULL, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `trn_line_item` (`transId` INTEGER, `transSeq` INTEGER NOT NULL, `productId` TEXT NOT NULL, `productDescription` TEXT NOT NULL, `qty` REAL NOT NULL, `price` REAL NOT NULL, `amount` REAL NOT NULL, `discount` REAL NOT NULL, FOREIGN KEY (`transId`) REFERENCES `trn_header` (`transId`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`transId`, `transSeq`))');
         await database.execute(
@@ -355,9 +355,11 @@ class _$TransactionDao extends TransactionDao {
                   'transId': item.transId,
                   'storeId': item.storeId,
                   'transactionType': item.transactionType,
-                  'businessDate': item.businessDate,
-                  'beginDatetime': item.beginDatetime,
-                  'endDateTime': item.endDateTime,
+                  'businessDate': _dateTimeConverter.encode(item.businessDate),
+                  'beginDatetime':
+                      _dateTimeConverter.encode(item.beginDatetime),
+                  'endDateTime':
+                      _dateTimeNullConverter.encode(item.endDateTime),
                   'total': item.total,
                   'taxTotal': item.taxTotal,
                   'subtotal': item.subtotal,
@@ -368,6 +370,7 @@ class _$TransactionDao extends TransactionDao {
                   'shippingAddress': item.shippingAddress,
                   'billingAddress': item.billingAddress,
                   'customerName': item.customerName,
+                  'syncState': item.syncState,
                   'createTime': _dateTimeConverter.encode(item.createTime),
                   'updateTime': _dateTimeNullConverter.encode(item.updateTime),
                   'lastChangedAt':
@@ -395,9 +398,11 @@ class _$TransactionDao extends TransactionDao {
                   'transId': item.transId,
                   'storeId': item.storeId,
                   'transactionType': item.transactionType,
-                  'businessDate': item.businessDate,
-                  'beginDatetime': item.beginDatetime,
-                  'endDateTime': item.endDateTime,
+                  'businessDate': _dateTimeConverter.encode(item.businessDate),
+                  'beginDatetime':
+                      _dateTimeConverter.encode(item.beginDatetime),
+                  'endDateTime':
+                      _dateTimeNullConverter.encode(item.endDateTime),
                   'total': item.total,
                   'taxTotal': item.taxTotal,
                   'subtotal': item.subtotal,
@@ -408,6 +413,7 @@ class _$TransactionDao extends TransactionDao {
                   'shippingAddress': item.shippingAddress,
                   'billingAddress': item.billingAddress,
                   'customerName': item.customerName,
+                  'syncState': item.syncState,
                   'createTime': _dateTimeConverter.encode(item.createTime),
                   'updateTime': _dateTimeNullConverter.encode(item.updateTime),
                   'lastChangedAt':
@@ -461,10 +467,12 @@ class _$TransactionDao extends TransactionDao {
         mapper: (Map<String, Object?> row) => TransactionHeaderEntity(
             transId: row['transId'] as int,
             storeId: row['storeId'] as String,
-            businessDate: row['businessDate'] as int,
-            beginDatetime: row['beginDatetime'] as int,
+            businessDate: _dateTimeConverter.decode(row['businessDate'] as int),
+            beginDatetime:
+                _dateTimeConverter.decode(row['beginDatetime'] as int),
             transactionType: row['transactionType'] as String,
-            endDateTime: row['endDateTime'] as int?,
+            endDateTime:
+                _dateTimeNullConverter.decode(row['endDateTime'] as int?),
             total: row['total'] as double,
             taxTotal: row['taxTotal'] as double,
             subtotal: row['subtotal'] as double,
@@ -479,6 +487,7 @@ class _$TransactionDao extends TransactionDao {
             version: row['version'] as int,
             lastChangedAt:
                 _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            syncState: row['syncState'] as int,
             updateTime:
                 _dateTimeNullConverter.decode(row['updateTime'] as int?)));
   }
@@ -490,10 +499,12 @@ class _$TransactionDao extends TransactionDao {
         mapper: (Map<String, Object?> row) => TransactionHeaderEntity(
             transId: row['transId'] as int,
             storeId: row['storeId'] as String,
-            businessDate: row['businessDate'] as int,
-            beginDatetime: row['beginDatetime'] as int,
+            businessDate: _dateTimeConverter.decode(row['businessDate'] as int),
+            beginDatetime:
+                _dateTimeConverter.decode(row['beginDatetime'] as int),
             transactionType: row['transactionType'] as String,
-            endDateTime: row['endDateTime'] as int?,
+            endDateTime:
+                _dateTimeNullConverter.decode(row['endDateTime'] as int?),
             total: row['total'] as double,
             taxTotal: row['taxTotal'] as double,
             subtotal: row['subtotal'] as double,
@@ -508,6 +519,7 @@ class _$TransactionDao extends TransactionDao {
             version: row['version'] as int,
             lastChangedAt:
                 _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            syncState: row['syncState'] as int,
             updateTime:
                 _dateTimeNullConverter.decode(row['updateTime'] as int?)),
         arguments: [transSeq]);
@@ -542,6 +554,40 @@ class _$TransactionDao extends TransactionDao {
             price: row['price'] as double,
             amount: row['amount'] as double,
             discount: row['discount'] as double));
+  }
+
+  @override
+  Future<List<TransactionHeaderEntity>> getTransactionHeaderByStatus(
+      int status) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM trn_header where syncState = ?1',
+        mapper: (Map<String, Object?> row) => TransactionHeaderEntity(
+            transId: row['transId'] as int,
+            storeId: row['storeId'] as String,
+            businessDate: _dateTimeConverter.decode(row['businessDate'] as int),
+            beginDatetime:
+                _dateTimeConverter.decode(row['beginDatetime'] as int),
+            transactionType: row['transactionType'] as String,
+            endDateTime:
+                _dateTimeNullConverter.decode(row['endDateTime'] as int?),
+            total: row['total'] as double,
+            taxTotal: row['taxTotal'] as double,
+            subtotal: row['subtotal'] as double,
+            roundTotal: row['roundTotal'] as double,
+            status: row['status'] as String,
+            customerId: row['customerId'] as String?,
+            customerPhone: row['customerPhone'] as String?,
+            shippingAddress: row['shippingAddress'] as String?,
+            billingAddress: row['billingAddress'] as String?,
+            customerName: row['customerName'] as String?,
+            createTime: _dateTimeConverter.decode(row['createTime'] as int),
+            version: row['version'] as int,
+            lastChangedAt:
+                _dateTimeNullConverter.decode(row['lastChangedAt'] as int?),
+            syncState: row['syncState'] as int,
+            updateTime:
+                _dateTimeNullConverter.decode(row['updateTime'] as int?)),
+        arguments: [status]);
   }
 
   @override

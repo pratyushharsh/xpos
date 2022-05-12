@@ -10,9 +10,9 @@ class TransactionHeaderEntity extends BaseEntity {
 
   final String storeId;
   final String transactionType;
-  final int businessDate;
-  final int beginDatetime;
-  final int? endDateTime;
+  final DateTime businessDate;
+  final DateTime beginDatetime;
+  final DateTime? endDateTime;
   final double total;
   final double taxTotal;
   final double subtotal;
@@ -23,6 +23,7 @@ class TransactionHeaderEntity extends BaseEntity {
   final String? shippingAddress;
   final String? billingAddress;
   final String? customerName;
+  final int syncState;
 
   late DateTime createTime;
   late DateTime? updateTime;
@@ -49,6 +50,7 @@ class TransactionHeaderEntity extends BaseEntity {
       required this.createTime,
       this.version = 1,
       this.lastChangedAt,
+      this.syncState = 100,
       this.updateTime});
 
   @override
@@ -77,13 +79,65 @@ class TransactionHeaderEntity extends BaseEntity {
     return EntityType.transaction;
   }
 
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'trans_id': transId,
+      'store_id': storeId,
+      'transaction_type': transactionType,
+      'business_date': businessDate.toUtc().toIso8601String(),
+      'begin_timestamp': beginDatetime.toUtc().toIso8601String(),
+      'end_timestamp': endDateTime?.toUtc().toIso8601String(),
+      'total': total,
+      'tax_total': taxTotal,
+      'subtotal': subtotal,
+      'round_total': roundTotal,
+      'status': status,
+      'customer_id': customerId,
+      'customer_phone': customerPhone,
+      'shipping_address': shippingAddress,
+      'billing_address': billingAddress,
+      'customer_name': customerName,
+      'create_time': createTime.toUtc().toIso8601String(),
+      'update_time': updateTime?.toUtc().toIso8601String(),
+      'last_changed_at': lastChangedAt?.toUtc().toIso8601String(),
+      'version': version
+    };
+  }
+
+  factory TransactionHeaderEntity.fromMap(Map<String, dynamic> map) {
+    return TransactionHeaderEntity(
+      transId: map['trans_id'] as int,
+      storeId: map['store_id'] as String,
+      transactionType: map['transaction_type'] as String,
+      businessDate: DateTime.tryParse(map['business_date']??"") ?? DateTime.now(),
+      beginDatetime: DateTime.tryParse(map['begin_timestamp']??"") ?? DateTime.now(),
+      endDateTime: DateTime.tryParse(map['end_timestamp']??""),
+      total: double.parse(map['total'].toString()),
+      taxTotal: double.parse(map['tax_total'].toString()),
+      subtotal: double.parse(map['subtotal'].toString()),
+      roundTotal: double.parse(map['round_total'].toString()),
+      status: map['status'] as String,
+      customerId: map['customer_id'] as String?,
+      customerPhone: map['customer_phone'] as String?,
+      shippingAddress: map['shipping_address'] as String?,
+      billingAddress: map['billing_address'] as String?,
+      customerName: map['customer_name'] as String?,
+      createTime: DateTime.tryParse(map['create_time']??"") ?? DateTime.now(),
+      updateTime: DateTime.tryParse(map['update_time']??""),
+      lastChangedAt: DateTime.tryParse(map['last_changed_at']??""),
+      version: map['version'] as int,
+      syncState: 300
+    );
+  }
+
   TransactionHeaderEntity copyWith({
     int? transId,
     String? storeId,
     String? transactionType,
-    int? businessDate,
-    int? beginDatetime,
-    int? endDateTime,
+    DateTime? businessDate,
+    DateTime? beginDatetime,
+    DateTime? endDateTime,
     double? total,
     double? taxTotal,
     double? subtotal,
@@ -94,6 +148,7 @@ class TransactionHeaderEntity extends BaseEntity {
     String? shippingAddress,
     String? billingAddress,
     String? customerName,
+    int? syncState,
     DateTime? createTime,
     DateTime? updateTime,
     DateTime? lastChangedAt,
@@ -117,65 +172,11 @@ class TransactionHeaderEntity extends BaseEntity {
       shippingAddress: shippingAddress ?? this.shippingAddress,
       billingAddress: billingAddress ?? this.billingAddress,
       customerName: customerName ?? this.customerName,
+      syncState: syncState ?? this.syncState,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
       lastChangedAt: lastChangedAt ?? this.lastChangedAt,
       version: version ?? this.version,
     );
   }
-
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-      'transId': transId,
-      'storeId': storeId,
-      'transactionType': transactionType,
-      'businessDate': businessDate,
-      'beginDatetime': beginDatetime,
-      'endDateTime': endDateTime,
-      'total': total,
-      'taxTotal': taxTotal,
-      'subtotal': subtotal,
-      'roundTotal': roundTotal,
-      'status': status,
-      'customerId': customerId,
-      'customerPhone': customerPhone,
-      'shippingAddress': shippingAddress,
-      'billingAddress': billingAddress,
-      'customerName': customerName,
-      'createTime': createTime,
-      'updateTime': updateTime,
-      'lastChangedAt': lastChangedAt,
-      'version': version,
-    };
-  }
-
-  factory TransactionHeaderEntity.fromMap(Map<String, dynamic> map) {
-    return TransactionHeaderEntity(
-      transId: map['transId'] as int,
-      storeId: map['storeId'] as String,
-      transactionType: map['transactionType'] as String,
-      businessDate: map['businessDate'] as int,
-      beginDatetime: map['beginDatetime'] as int,
-      endDateTime: map['endDateTime'] as int,
-      total: map['total'] as double,
-      taxTotal: map['taxTotal'] as double,
-      subtotal: map['subtotal'] as double,
-      roundTotal: map['roundTotal'] as double,
-      status: map['status'] as String,
-      customerId: map['customerId'] as String,
-      customerPhone: map['customerPhone'] as String,
-      shippingAddress: map['shippingAddress'] as String,
-      billingAddress: map['billingAddress'] as String,
-      customerName: map['customerName'] as String,
-      createTime: map['createTime'] as DateTime,
-      updateTime: map['updateTime'] as DateTime,
-      lastChangedAt: map['lastChangedAt'] as DateTime,
-      version: map['version'] as int,
-    );
-  }
 }
-
-// Status
-// Total Detail
-//

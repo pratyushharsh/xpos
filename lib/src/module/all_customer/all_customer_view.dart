@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
 import 'package:receipt_generator/src/module/all_customer/bloc/all_customer_bloc.dart';
 
@@ -39,22 +40,27 @@ class CustomerViewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              contact.name,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-            if (contact.phoneNumber != null) Text('${contact.phoneNumber}'),
-            if (contact.email != null) Text('${contact.email}'),
-            if (contact.billingAddress != null )
-            Text(
-                '${contact.billingAddress}'),
-          ],
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed(RouteConfig.customerDetailScreen);
+      },
+      child: Card(
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                contact.name,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              if (contact.phoneNumber != null) Text('${contact.phoneNumber}'),
+              if (contact.email != null) Text('${contact.email}'),
+              if (contact.billingAddress != null )
+              Text(
+                  '${contact.billingAddress}'),
+            ],
+          ),
         ),
       ),
     );

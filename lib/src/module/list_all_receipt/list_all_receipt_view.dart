@@ -100,8 +100,7 @@ class ReceiptHeaderCard extends StatelessWidget {
               Row(
                 children: [
                   Text(AppFormatter.dateFormatter.format(
-                      DateTime.fromMicrosecondsSinceEpoch(
-                          receipt.businessDate)))
+                      receipt.businessDate))
                 ],
               )
             ],

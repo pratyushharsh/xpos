@@ -1,8 +1,6 @@
 import 'package:receipt_generator/src/entity/types.dart';
 
-abstract class BaseEntity {
-
-  Map<String, dynamic> toMap();
+abstract class BaseEntity extends DynamoEntity {
 
   String getPK();
 
@@ -29,5 +27,13 @@ abstract class BaseEntity {
     res.addAll(getKeys());
     return res;
   }
+}
 
+abstract class DynamoEntity {
+
+  Map<String, dynamic> toMap();
+
+  static DynamoEntity? fromMap(Map<String, dynamic> map) {
+    return null;
+  }
 }
