@@ -1,9 +1,7 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:receipt_generator/models/Product.dart';
 import 'package:receipt_generator/src/entity/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
@@ -43,7 +41,6 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
       emit(state.copyWith(status: ItemStatus.addingProduct));
       ProductEntity e = event.product.toEntity();
 
-      String itemId = UUID.getUUID();
 
       // Product p = Product(
       //   id: "STORE#1000",

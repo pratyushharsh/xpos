@@ -39,16 +39,21 @@ class SaleLine {
 
   TransactionLineItemEntity toEntity(int transId) {
     return TransactionLineItemEntity(
-        transId: transId,
-        transSeq: seq,
-        productId: product.skuCode ?? product.productId.toString(),
-        productDescription: product.description,
-        qty: qty,
-        price: price,
-        amount: amount,
-        discount: discount,
-        // createDate: DateTime.now().microsecondsSinceEpoch,
-        // updateDate: DateTime.now().microsecondsSinceEpoch
+      transId: transId,
+      transSeq: seq,
+      productId: product.skuCode ?? product.productId.toString(),
+      hsn: product.hsn,
+      productDescription: product.description,
+      qty: qty,
+      amount: 0,
+      itemDiscount: 0,
+      orderDiscount: 0,
+      listPrice: product.listPrice??price,
+      salePrice: product.salePrice??price,
+      taxAmount: 0,
+      taxClass: "IGST",
+      taxRate: product.tax??0.0,
+      uom: product.uom,
     );
   }
 

@@ -121,7 +121,9 @@ class CreateNewReceiptBloc
       if (event.name != null && event.name!.isNotEmpty) {
         var customer =
             await db.contactDao.findAllProductsByName('%${event.name}%');
-        var x = (await contactDb.getContact())
+        var contacts = await contactDb.getContact();
+        log.info("${contacts.length} contacts found.");
+        var x = contacts
             .where((con) {
               if (event.name != null) {
                 if (con.name

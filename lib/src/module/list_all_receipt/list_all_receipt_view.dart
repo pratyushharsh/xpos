@@ -47,6 +47,10 @@ class ReceiptHeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
+        onDoubleTap: () {
+          Navigator.of(context).pushNamed(RouteConfig.invoiceDisplayScreen,
+              arguments: receipt.transId);
+        },
         onTap: () {
           Navigator.of(context).pushNamed(RouteConfig.receiptDisplayScreen,
               arguments: receipt.transId);

@@ -17,7 +17,6 @@ class ReceiptSettingView extends StatelessWidget {
   }
 }
 
-
 class ReceiptSettingForm extends StatelessWidget {
   const ReceiptSettingForm({Key? key}) : super(key: key);
 
@@ -30,8 +29,7 @@ class ReceiptSettingForm extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             SingleChildScrollView(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Column(
                 children: const [
                   SizedBox(
@@ -65,8 +63,8 @@ class ReceiptSettingForm extends StatelessWidget {
                 ),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 14, horizontal: 10),
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
                   primary: AppColor.color8,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0)),

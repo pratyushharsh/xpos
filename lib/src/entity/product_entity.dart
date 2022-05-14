@@ -16,7 +16,7 @@ class ProductEntity extends BaseEntity {
   final double? listPrice;
   final double? salePrice;
   final double? purchasePrice;
-  final String? uom;
+  final String uom;
   final bool enable;
   final String? brand;
   final String? skuCode;
@@ -36,7 +36,7 @@ class ProductEntity extends BaseEntity {
       required this.listPrice,
       required this.salePrice,
       this.purchasePrice,
-      this.uom,
+      required this.uom,
       required this.enable,
       this.brand,
       this.skuCode,
@@ -106,7 +106,7 @@ class ProductEntity extends BaseEntity {
       listPrice: double.tryParse(map['list_price'].toString()),
       salePrice: double.tryParse(map['sale_price'].toString()),
       purchasePrice: double.tryParse(map['purchase_price'].toString()),
-      uom: map['uom'] as String?,
+      uom: map['uom'] as String,
       enable: map['enable'] != null ? map['enable'] as bool : false,
       brand: map['brand'] as String?,
       skuCode: map['skuCode'] as String?,

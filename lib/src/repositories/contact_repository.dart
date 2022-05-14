@@ -7,6 +7,7 @@ class ContactRepository {
   Future<List<ContactEntity>> getContact() async {
     if (_contacts == null) {
       var data = await _getContactFromPhonebook();
+      print(data);
       if (data == null) {
         _contacts = List.empty();
       } else {
@@ -43,8 +44,10 @@ class ContactRepository {
   }
 
   Future<List<Contact>?> _getContactFromPhonebook() async {
-    if (await FlutterContacts.requestPermission(readonly: true)) {
-      return FlutterContacts.getContacts(withProperties: true);
+    if (!await FlutterContacts.requestPermission(readonly: true)) {
+      print("Permission Denied");
+    } else {
+      return await FlutterContacts.getContacts(withProperties: true);
     }
     return null;
   }

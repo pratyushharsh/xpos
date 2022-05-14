@@ -10,6 +10,7 @@ import 'package:receipt_generator/src/module/invoice/invoice_view.dart';
 import 'package:receipt_generator/src/module/list_all_item/list_all_item_view.dart';
 import 'package:receipt_generator/src/module/list_all_receipt/list_all_receipt_view.dart';
 import 'package:receipt_generator/src/module/load_item_bulk/load_item_bulk_view.dart';
+import 'package:receipt_generator/src/module/receipt_display/invoice_display_view.dart';
 import 'package:receipt_generator/src/module/receipt_display/receipt_display_view.dart';
 import 'package:receipt_generator/src/module/receipt_setting/receipt_setting_view.dart';
 import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.dart';
@@ -25,6 +26,7 @@ class RouteConfig {
   static const String loadItemsInBulkScreen = "/load-in-bulk";
   static const String createReceiptScreen = "/create-receipt";
   static const String receiptDisplayScreen = "/receipt-display";
+  static const String invoiceDisplayScreen = "/invoice-display";
   static const String invoiceViewScreen = "/invoice-view";
   static const String businessViewScreen = "/business-view";
   static const String receiptSettingViewScreen = "/receipt-setting";
@@ -66,6 +68,9 @@ class RouteConfig {
       case receiptDisplayScreen:
         var transId = settings.arguments as int;
         return MaterialPageRoute(builder: (_) => ReceiptDisplayView(transactionId: transId,));
+      case invoiceDisplayScreen:
+        var transId = settings.arguments as int;
+        return MaterialPageRoute(builder: (_) => InvoiceDisplayView(transactionId: transId,));
       case customerDetailScreen:
         return MaterialPageRoute(builder: (_) => const CustomerDetailScreen(userId: "PRATY-123",));
       default:

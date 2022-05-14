@@ -8,7 +8,7 @@ class ProductModel {
   final double? listPrice;
   final double? salePrice;
   final double? purchasePrice;
-  final String? uom;
+  final String uom;
   final bool enable;
   final String? brand;
   final String? skuCode;
@@ -22,7 +22,7 @@ class ProductModel {
       required this.listPrice,
       required this.salePrice,
       this.purchasePrice,
-      this.uom,
+      required this.uom,
       this.enable = true,
       this.brand,
       this.skuCode,

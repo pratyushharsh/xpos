@@ -53,7 +53,6 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     if (state.status == BackgroundSyncStatus.inProgress) {
       return;
     }
-    await Future.delayed(const Duration(seconds: 10));
     emit(state.copyWith(status: BackgroundSyncStatus.inProgress));
     DateTime start = DateTime.now();
     log.info("Starting Sync for all the Data");

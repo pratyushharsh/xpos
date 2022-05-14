@@ -14,6 +14,7 @@ import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart
 import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
+import 'package:receipt_generator/src/repositories/setting_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
@@ -23,9 +24,9 @@ class MyApp extends StatelessWidget {
   final RestApiClient restClient;
   const MyApp(
       {Key? key,
-        required this.database,
-        required this.userPool,
-        required this.restClient})
+      required this.database,
+      required this.userPool,
+      required this.restClient})
       : super(key: key);
 
   @override
@@ -37,14 +38,17 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(create: (context) => userPool),
           RepositoryProvider(
               create: (context) => BusinessRepository(
-                db: database,
-                restClient: restClient,
-              )),
+                    db: database,
+                    restClient: restClient,
+                  )),
           RepositoryProvider(
               create: (context) => SyncRepository(
-                db: database,
-                restClient: restClient,
-              )),
+                    db: database,
+                    restClient: restClient,
+                  )),
+          RepositoryProvider(
+              create: (context) =>
+                  SettingsRepository(db: database, restClient: restClient))
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(
@@ -72,8 +76,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => LoadItemBulkBloc(
                 db: RepositoryProvider.of(context),
-                auth: BlocProvider.of(context)
-            ),
+                auth: BlocProvider.of(context)),
           ),
         ], child: const MyAppView()));
   }
@@ -106,13 +109,13 @@ class _MyAppViewState extends State<MyAppView> {
               case AuthenticationStatus.authenticated:
                 _navigator.pushAndRemoveUntil<void>(
                   HomeScreen.route(),
-                      (route) => false,
+                  (route) => false,
                 );
                 break;
               case AuthenticationStatus.unauthenticated:
                 _navigator.pushAndRemoveUntil<void>(
                   LoginView.route(),
-                      (route) => false,
+                  (route) => false,
                 );
                 break;
               case AuthenticationStatus.verifyUser:

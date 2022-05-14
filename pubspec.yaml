@@ -54,8 +54,8 @@ dependencies:
   share_plus: ^3.0.5
   validators: ^3.0.0
   rxdart: ^0.27.3
-  amplify_flutter: ^0.4.0
-  amplify_auth_cognito: ^0.4.0
+#  amplify_flutter: ^0.4.0
+#  amplify_auth_cognito: ^0.4.0
 #  amplify_datastore: ^0.4.0
 #  amplify_api: ^0.4.0
   firebase_core: ^1.12.0

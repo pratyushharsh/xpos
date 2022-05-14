@@ -1,7 +1,6 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 // import 'package:amplify_api/amplify_api.dart';
 // import 'package:amplify_datastore/amplify_datastore.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,21 +47,21 @@ Future<void> main() {
 }
 
 Future<void> _initAmplifyFlutter() async {
-  try {
-    // AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance,
-    //     syncInterval: 10,
-    //     errorHandler: (er) => {
-    //   log.severe(er)
-    // });
-    // await Amplify.addPlugin(datastorePlugin);
-    // await Amplify.addPlugin(AmplifyAPI());
-    await Amplify.configure(amplifyconfig);
-    log.info('Aws Configured');
-  } on AmplifyAlreadyConfiguredException {
-    log.severe(
-        "Amplify was already configured. Looks like app restarted on android.");
-  } catch (e) {
-    log.severe('Error configuring amplify');
-    log.severe(e);
-  }
+  // try {
+  //   // AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance,
+  //   //     syncInterval: 10,
+  //   //     errorHandler: (er) => {
+  //   //   log.severe(er)
+  //   // });
+  //   // await Amplify.addPlugin(datastorePlugin);
+  //   // await Amplify.addPlugin(AmplifyAPI());
+  //   await Amplify.configure(amplifyconfig);
+  //   log.info('Aws Configured');
+  // } on AmplifyAlreadyConfiguredException {
+  //   log.severe(
+  //       "Amplify was already configured. Looks like app restarted on android.");
+  // } catch (e) {
+  //   log.severe('Error configuring amplify');
+  //   log.severe(e);
+  // }
 }

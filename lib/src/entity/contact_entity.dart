@@ -23,9 +23,10 @@ class ContactEntity extends BaseEntity {
   final String? email;
   final String? shippingAddress;
   final String? billingAddress;
+  final int syncState;
   late DateTime createTime;
   late DateTime? updateTime;
-  late DateTime? lastChangedAt;
+  late DateTime? lastSyncAt;
   late int version;
 
   ContactEntity({
@@ -38,7 +39,8 @@ class ContactEntity extends BaseEntity {
     this.billingAddress,
     required this.createTime,
     this.version = 1,
-    this.lastChangedAt,
+    this.syncState = 100,
+    this.lastSyncAt,
     this.updateTime});
 
   @override
@@ -70,34 +72,34 @@ class ContactEntity extends BaseEntity {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'contactId': contactId,
-      'storeId': storeId,
+      'contact_id': contactId,
+      'store_id': storeId,
       'name': name,
-      'phoneNumber': phoneNumber,
+      'phone_number': phoneNumber,
       'email': email,
-      'shippingAddress': shippingAddress,
-      'billingAddress': billingAddress,
-      'createTime': createTime,
-      'updateTime': updateTime,
-      'lastChangedAt': lastChangedAt,
+      'shipping_address': shippingAddress,
+      'billing_address': billingAddress,
+      'create_date': createTime.toUtc().toIso8601String(),
+      'update_date': updateTime?.toUtc().toIso8601String(),
+      'last_sync_at': lastSyncAt?.toUtc().toIso8601String(),
       'version': version,
     };
   }
 
-  @override
-  ContactEntity fromMap(Map<String, dynamic> map) {
+  static ContactEntity fromMap(Map<String, dynamic> map) {
     return ContactEntity(
       contactId: map['contactId'] as String,
       storeId: map['storeId'] as String,
       name: map['name'] as String,
-      phoneNumber: map['phoneNumber'] as String,
-      email: map['email'] as String,
-      shippingAddress: map['shippingAddress'] as String,
-      billingAddress: map['billingAddress'] as String,
-      createTime: map['createTime'] as DateTime,
-      updateTime: map['updateTime'] as DateTime,
-      lastChangedAt: map['lastChangedAt'] as DateTime,
-      version: map['version'] as int,
+      phoneNumber: map['phoneNumber'] as String?,
+      email: map['email'] as String?,
+      shippingAddress: map['shippingAddress'] as String?,
+      billingAddress: map['billingAddress'] as String?,
+      createTime: DateTime.tryParse(map['create_date']) ?? DateTime.now(),
+      updateTime: DateTime.tryParse(map['update_date']??""),
+      lastSyncAt: DateTime.tryParse(map['last_sync_at']??""),
+      version: map['version'] != null ? map['version'] as int : 1,
+      syncState: 300
     );
   }
 }

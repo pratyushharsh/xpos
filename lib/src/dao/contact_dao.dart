@@ -11,4 +11,7 @@ abstract class ContactDao extends AbstractDao<ContactEntity> {
 
   @Query('SELECT * FROM customer where name like :filter or phoneNumber like :filter or email like :filter limit 10')
   Future<List<ContactEntity>> findAllProductsByName(String filter);
+
+  @Query('SELECT * FROM customer where syncState = :status')
+  Future<List<ContactEntity>> getCustomerByStatus(int status);
 }

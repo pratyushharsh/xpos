@@ -57,6 +57,31 @@ class SyncRepository {
     }
   }
 
+  Future<void> getContactsFromLastSync(ImportDataFromServer request) async {
+    try {
+      var option =
+      RestOptions(path: '/export', body: json.encode(request.toMap()));
+      var rawResp = await restClient.post(restOptions: option);
+      if (rawResp.statusCode == 200) {
+        var decode = json.decode(rawResp.body);
+        if (decode is List) {
+          log.info("Fetched ${decode.length} records to sync");
+          for (var element in decode) {
+            try {
+              await db.contactDao.insertBulk(ContactEntity.fromMap(element));
+            } catch (e) {
+              log.severe(e);
+            }
+          }
+        }
+      } else {
+        throw 'Unable to sync the data. Contact Admin';
+      }
+    } catch (e) {
+      log.severe(e);
+    }
+  }
+
   Future<void> getTransactionsFromLastSync(ImportDataFromServer request) async {
     try {
       var option =
@@ -129,6 +154,9 @@ class SyncRepository {
     } else if (EntityType.transaction == entity) {
       st.execute('UPDATE trn_header SET syncState = ?1 where syncState < 200',
           [syncState]);
+    } else if (EntityType.contact == entity) {
+      st.execute('UPDATE customer SET syncState = ?1 where syncState < 200',
+          [syncState]);
     }
 
     st.execute(
@@ -147,6 +175,9 @@ class SyncRepository {
           [syncState]);
     } else if (EntityType.transaction == entity) {
       en.execute('UPDATE trn_header SET syncState = ?1 where syncState = 200',
+          [syncState]);
+    } else if (EntityType.contact == entity) {
+      en.execute('UPDATE customer SET syncState = ?1 where syncState = 200',
           [syncState]);
     }
 
@@ -273,8 +304,57 @@ class SyncRepository {
     }
   }
 
+  Future<void> _syncAllContacts(String storeId) async {
+    // Get If there is already sync going on
+    // Get Last Sync Time
+    SyncEntity? sync = await _initiateSync(entity: EntityType.contact);
+    DateTime lastSyncTime = sync?.lastSyncAt ?? firstStartTime;
+    // Create Batch For Sync
+    await _initiateBatch(entity: EntityType.contact, syncState: staging);
+
+
+    // Fetch the transaction and store in the database
+    // Fetch Data From Server And Insert In Db
+    // @TODO Handle the error
+    try {
+      await getContactsFromLastSync(ImportDataFromServer(
+          storeId: storeId,
+          type: "customer",
+          lastSyncAt: lastSyncTime.toUtc().toIso8601String()));
+    } catch (e) {
+      log.severe(e);
+    }
+    // End Fetch From Server
+
+
+    /// Upload the sync data
+    try {
+      // Send Contacts To Server
+      var contacts = await db.contactDao.getCustomerByStatus(staging);
+      var data = contacts.map((e) => e.toMap()).toList();
+      log.info(data);
+      log.info("Uploading ${data.length} contacts to sync to server");
+      if (data.isNotEmpty) {
+        var req = SyncDataRequest(customers: data);
+        await uploadDataToServer(req);
+        log.info(data);
+      }
+      // End Send to server
+
+      // Update Status After Success failure for sync
+      await _closeOrUpdateSync(
+          entity: EntityType.contact, syncState: syncSuccessful);
+    } catch (e) {
+      log.severe(e);
+      await _closeOrUpdateSync(
+          entity: EntityType.contact, syncState: syncFailure);
+    }
+  }
+
+
   Future<void> startSync(String storeId) async {
-    await _getAllTheProductFromLastSync(storeId);
-    await _getAllTransactionFromLastSync(storeId);
+    // await _getAllTheProductFromLastSync(storeId);
+    // await _getAllTransactionFromLastSync(storeId);
+    await _syncAllContacts(storeId);
   }
 }

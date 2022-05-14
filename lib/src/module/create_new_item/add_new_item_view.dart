@@ -109,7 +109,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           purchasePrice: _purchasePriceController.text.isNotEmpty
               ? toFloat(_purchasePriceController.text)
               : null,
-          uom: _uom,
+          uom: _uom??"EACH",
           brand:
               _brandController.text.isNotEmpty ? _brandController.text : null,
           hsn: _hsnController.text.isNotEmpty ? _hsnController.text : null,
