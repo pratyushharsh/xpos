@@ -21,6 +21,8 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     on<OnBusinessNameChange>(_onBusinessNameChange);
     on<OnBusinessContactChange>(_onBusinessContactChange);
     on<OnBusinessAddressChange>(_onBusinessAddressChange);
+    on<OnBusinessGstChange>(_onBusinessGstChange);
+    on<OnBusinessPanChange>(_onBusinessPanChange);
     on<OnSaveBusiness>(_onSaveBusinessDetail);
     on<OnCreateNewBusiness>(_onCreateNewBusiness);
   }
@@ -53,7 +55,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
         var entity = await repo.updateBusiness(state.entity!.copyWith(
             storeName: state.businessName,
             storeContact: state.businessContact,
-            address1: state.businessAddress));
+            address1: state.businessAddress, gst: state.businessGst, pan: state.businessPan));
         emit(state.copyWith(status: BusinessStatus.success, entity: entity));
       }
     } catch (e) {
@@ -69,7 +71,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
       var resp = await repo.createNewBusiness(CreateBusinessRequest(
           name: state.businessName,
           address: state.businessAddress,
-          phone: state.businessContact));
+          phone: state.businessContact,));
       log.info(resp);
       emit(state.copyWith(status: BusinessStatus.newBusinessCreated, entity: resp));
     } catch (e) {
@@ -100,6 +102,22 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     emit(
       state.copyWith(
           businessAddress: event.address, status: BusinessStatus.modified),
+    );
+  }
+
+  void _onBusinessPanChange(
+      OnBusinessPanChange event, Emitter<BusinessState> emit) async {
+    emit(
+      state.copyWith(
+          businessPan: event.pan, status: BusinessStatus.modified),
+    );
+  }
+
+  void _onBusinessGstChange(
+      OnBusinessGstChange event, Emitter<BusinessState> emit) async {
+    emit(
+      state.copyWith(
+          businessGst: event.gst, status: BusinessStatus.modified),
     );
   }
 }

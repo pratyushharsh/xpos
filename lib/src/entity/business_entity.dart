@@ -17,6 +17,8 @@ class RetailLocationEntity extends BaseEntity {
   final String? city;
   final String? country;
   final String? postalCode;
+  final String? gst;
+  final String? pan;
   late DateTime createTime;
   late DateTime? updateTime;
   late DateTime? lastChangedAt;
@@ -34,6 +36,8 @@ class RetailLocationEntity extends BaseEntity {
       this.city,
       this.country,
       this.postalCode,
+        this.gst,
+        this.pan,
       required this.createTime,
       this.version = 1,
       this.lastChangedAt,
@@ -79,6 +83,8 @@ class RetailLocationEntity extends BaseEntity {
       'city': city,
       'country': country,
       'postalCode': postalCode,
+      'gst': gst,
+      'pan': pan,
       'createTime': createTime,
       'updateTime': updateTime,
       'lastChangedAt': lastChangedAt,
@@ -118,6 +124,8 @@ class RetailLocationEntity extends BaseEntity {
     String? city,
     String? country,
     String? postalCode,
+    String? gst,
+    String? pan,
     DateTime? createTime,
     DateTime? updateTime,
     DateTime? lastChangedAt,
@@ -136,6 +144,8 @@ class RetailLocationEntity extends BaseEntity {
       city: city ?? this.city,
       country: country ?? this.country,
       postalCode: postalCode ?? this.postalCode,
+      gst: gst ?? this.gst,
+      pan: pan ?? this.pan,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
       lastChangedAt: lastChangedAt ?? this.lastChangedAt,

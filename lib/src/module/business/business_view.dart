@@ -131,6 +131,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
   late TextEditingController _businessNameController;
   late TextEditingController _businessContactController;
   late TextEditingController _businessAddressController;
+  late TextEditingController _businessGstController;
+  late TextEditingController _businessPanController;
 
   @override
   void initState() {
@@ -138,6 +140,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
     _businessNameController = TextEditingController();
     _businessContactController = TextEditingController();
     _businessAddressController = TextEditingController();
+    _businessGstController = TextEditingController();
+    _businessPanController = TextEditingController();
   }
 
   @override
@@ -145,6 +149,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
     _businessNameController.dispose();
     _businessContactController.dispose();
     _businessAddressController.dispose();
+    _businessGstController.dispose();
+    _businessPanController.dispose();
     super.dispose();
   }
 
@@ -166,6 +172,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
           _businessNameController.text = state.businessName;
           _businessContactController.text = state.businessContact;
           _businessAddressController.text = state.businessAddress;
+          _businessGstController.text = state.businessGst;
+          _businessPanController.text = state.businessPan;
         }
         return Column(
           children: [
@@ -194,7 +202,25 @@ class _BusinessDetailState extends State<BusinessDetail> {
                 BlocProvider.of<BusinessBloc>(context)
                     .add(OnBusinessAddressChange(val));
               },
-            )
+            ),
+            CustomTextField(
+              controller: _businessGstController,
+              label: "GST Number",
+              textCapitalization: TextCapitalization.characters,
+              onValueChange: (val) {
+                BlocProvider.of<BusinessBloc>(context)
+                    .add(OnBusinessGstChange(val.toUpperCase()));
+              },
+            ),
+            CustomTextField(
+              controller: _businessPanController,
+              label: "PAN Number",
+              textCapitalization: TextCapitalization.characters,
+              onValueChange: (val) {
+                BlocProvider.of<BusinessBloc>(context)
+                    .add(OnBusinessPanChange(val.toUpperCase()));
+              },
+            ),
           ],
         );
       },

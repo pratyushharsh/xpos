@@ -1,6 +1,14 @@
 part of 'business_bloc.dart';
 
-enum BusinessStatus { initial, modified, loading, failure, success, newBusinessCreated, newBusinessFailure }
+enum BusinessStatus {
+  initial,
+  modified,
+  loading,
+  failure,
+  success,
+  newBusinessCreated,
+  newBusinessFailure
+}
 enum BusinessOperation { create, update, delete }
 
 class BusinessState extends Equatable {
@@ -10,6 +18,8 @@ class BusinessState extends Equatable {
   final String businessName;
   final String businessContact;
   final String businessAddress;
+  final String businessGst;
+  final String businessPan;
 
   bool get error {
     return businessName.isNotEmpty;
@@ -22,6 +32,8 @@ class BusinessState extends Equatable {
     this.businessName = '',
     this.businessContact = '',
     this.businessAddress = '',
+    this.businessGst = '',
+    this.businessPan = '',
   });
 
   @override
@@ -31,7 +43,9 @@ class BusinessState extends Equatable {
         operation,
         businessName,
         businessAddress,
-        businessContact
+        businessContact,
+        businessGst,
+        businessPan
       ];
 
   BusinessState copyWith({
@@ -41,6 +55,8 @@ class BusinessState extends Equatable {
     String? businessName,
     String? businessContact,
     String? businessAddress,
+    String? businessGst,
+    String? businessPan,
   }) {
     return BusinessState(
       status: status ?? this.status,
@@ -49,6 +65,8 @@ class BusinessState extends Equatable {
       businessName: businessName ?? this.businessName,
       businessContact: businessContact ?? this.businessContact,
       businessAddress: businessAddress ?? this.businessAddress,
+      businessGst: businessGst ?? this.businessGst,
+      businessPan: businessPan ?? this.businessPan,
     );
   }
 }

@@ -9,7 +9,10 @@ class SaleLine {
   final double discount;
 
   get tax {
-    return (price - discount) * (product.tax ?? 0) * qty;
+    var incTax = (price - discount) * qty;
+    var taxRate = product.tax ?? 0;
+    var t = incTax / (100 + taxRate * 100) * 100;
+    return incTax - t;
   }
 
   SaleLine(
@@ -45,14 +48,14 @@ class SaleLine {
       hsn: product.hsn,
       productDescription: product.description,
       qty: qty,
-      amount: 0,
+      amount: amount,
       itemDiscount: 0,
       orderDiscount: 0,
-      listPrice: product.listPrice??price,
-      salePrice: product.salePrice??price,
-      taxAmount: 0,
+      listPrice: product.listPrice ?? price,
+      salePrice: price,
+      taxAmount: tax,
       taxClass: "IGST",
-      taxRate: product.tax??0.0,
+      taxRate: product.tax ?? 0.0,
       uom: product.uom,
     );
   }

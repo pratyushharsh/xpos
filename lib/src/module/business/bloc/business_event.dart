@@ -27,6 +27,18 @@ class OnBusinessAddressChange extends BusinessEvent {
   OnBusinessAddressChange(this.address);
 }
 
+class OnBusinessGstChange extends BusinessEvent {
+  final String gst;
+
+  OnBusinessGstChange(this.gst);
+}
+
+class OnBusinessPanChange extends BusinessEvent {
+  final String pan;
+
+  OnBusinessPanChange(this.pan);
+}
+
 class OnCreateNewBusiness extends BusinessEvent {}
 
 class OnSaveBusiness extends BusinessEvent {}

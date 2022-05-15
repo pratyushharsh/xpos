@@ -17,6 +17,7 @@ class CustomTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final TextStyle style;
   final TextAlign textAlign;
+  final TextCapitalization textCapitalization;
 
   const CustomTextField(
       {Key? key,
@@ -32,6 +33,7 @@ class CustomTextField extends StatelessWidget {
       this.controller,
       this.focusNode,
       this.validator,
+      this.textCapitalization = TextCapitalization.none,
       this.obscureText = false,
       this.style = const TextStyle(
         fontWeight: FontWeight.w600,
@@ -77,6 +79,7 @@ class CustomTextField extends StatelessWidget {
             cursorColor: const Color(0xFFB1B4E6),
             textAlign: textAlign,
             style: style,
+            textCapitalization: textCapitalization,
             decoration: InputDecoration(
               errorStyle:
                   const TextStyle(height: 1, overflow: TextOverflow.fade),

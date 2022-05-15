@@ -83,7 +83,12 @@ class InvoiceBlock extends StatelessWidget {
         decoration: BoxDecoration(border: Border.all(width: 0.4)),
         padding: const EdgeInsets.all(2),
         child: Column(
-          children: const [InvoiceHeader(), InvoiceTable(), InvoiceFooter()],
+          children: [
+            InvoiceHeader(),
+            InvoiceTable(),
+            Expanded(child: Container()),
+            InvoiceFooter()
+          ],
         ),
       ),
     );
@@ -448,23 +453,74 @@ class InvoiceTable extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          InvoiceTableHeader(
-            headers: [
-              InvoiceTableHeaderModel(label: "Sl.No", flex: 2),
-              InvoiceTableHeaderModel(label: "Description", flex: 11),
-              InvoiceTableHeaderModel(label: "HSN/SAC", flex: 5),
-              InvoiceTableHeaderModel(label: "Alt/Qty", flex: 5),
-              InvoiceTableHeaderModel(label: "Qty", flex: 5),
-              InvoiceTableHeaderModel(label: "Sale Price", flex: 4),
-              InvoiceTableHeaderModel(label: "Rate", flex: 4),
-              InvoiceTableHeaderModel(label: "UOM", flex: 3),
-              InvoiceTableHeaderModel(label: "Disc%", flex: 3),
-              InvoiceTableHeaderModel(label: "Amount", flex: 6),
+          InvoiceTableCells(
+            bottomBorder: true,
+            data: [
+              InvoiceTableCellModel(label: "Sl.No", flex: 2),
+              InvoiceTableCellModel(label: "Description", flex: 11),
+              InvoiceTableCellModel(label: "HSN/SAC", flex: 5),
+              InvoiceTableCellModel(label: "Alt/Qty", flex: 4),
+              InvoiceTableCellModel(label: "Qty", flex: 4),
+              InvoiceTableCellModel(label: "Sale Price", flex: 5),
+              InvoiceTableCellModel(label: "Rate", flex: 5),
+              InvoiceTableCellModel(label: "UOM", flex: 3),
+              InvoiceTableCellModel(label: "Disc", flex: 3),
+              InvoiceTableCellModel(
+                  label: "Amount", flex: 6, textAlign: TextAlign.right),
             ],
           ),
-          const InvoiceTableLineItems()
+          const InvoiceTableLineItems(),
+          const InvoiceTableOrderSummary()
         ],
       ),
+    );
+  }
+}
+
+class InvoiceTableOrderSummary extends StatelessWidget {
+  const InvoiceTableOrderSummary({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
+      builder: (context, state) {
+        return InvoiceTableCells(
+          topBorder: true,
+          bottomBorder: true,
+          data: [
+            InvoiceTableCellModel(label: "", flex: 2),
+            InvoiceTableCellModel(
+                label: "Total",
+                flex: 11,
+                textAlign: TextAlign.right,
+                fontWeight: FontWeight.bold),
+            InvoiceTableCellModel(label: "", flex: 5),
+            InvoiceTableCellModel(label: "", flex: 4),
+            InvoiceTableCellModel(
+                label: "",
+                flex: 4,
+                fontWeight: FontWeight.bold,
+                textAlign: TextAlign.right),
+            InvoiceTableCellModel(
+                label: "",
+                flex: 5,
+                textAlign: TextAlign.right),
+            InvoiceTableCellModel(
+                label: "",
+                flex: 5,
+                textAlign: TextAlign.right),
+            InvoiceTableCellModel(label: "", flex: 3),
+            InvoiceTableCellModel(
+                label: "",
+                flex: 3),
+            InvoiceTableCellModel(
+                label: "${state.header?.total.toStringAsFixed(2)}",
+                flex: 6,
+                fontWeight: FontWeight.bold,
+                textAlign: TextAlign.right),
+          ],
+        );
+      },
     );
   }
 }
@@ -479,18 +535,39 @@ class InvoiceTableLineItems extends StatelessWidget {
         if (state.lineItems == null) return Container();
         return Column(
           children: state.lineItems!
-              .map((e) => InvoiceTableHeader(
-                    headers: [
-                      InvoiceTableHeaderModel(label: e.transSeq.toString(), flex: 2),
-                      InvoiceTableHeaderModel(label: e.productDescription, flex: 11),
-                      InvoiceTableHeaderModel(label: "", flex: 5),
-                      InvoiceTableHeaderModel(label: "", flex: 5),
-                      InvoiceTableHeaderModel(label: e.qty.toString(), flex: 5),
-                      InvoiceTableHeaderModel(label: "Sale Price", flex: 4),
-                      InvoiceTableHeaderModel(label: "Rate", flex: 4),
-                      InvoiceTableHeaderModel(label: "Sqft", flex: 3),
-                      InvoiceTableHeaderModel(label: "Disc%", flex: 3),
-                      InvoiceTableHeaderModel(label: e.amount.toStringAsFixed(2), flex: 6),
+              .map((e) => InvoiceTableCells(
+                    data: [
+                      InvoiceTableCellModel(
+                          label: e.transSeq.toString(), flex: 2),
+                      InvoiceTableCellModel(
+                          label: e.productDescription,
+                          flex: 11,
+                          fontWeight: FontWeight.bold),
+                      InvoiceTableCellModel(label: "${e.hsn}", flex: 5),
+                      InvoiceTableCellModel(label: "", flex: 4),
+                      InvoiceTableCellModel(
+                          label: e.qty.toString(),
+                          flex: 4,
+                          fontWeight: FontWeight.bold,
+                          textAlign: TextAlign.right),
+                      InvoiceTableCellModel(
+                          label: e.listPrice.toStringAsFixed(2),
+                          flex: 5,
+                          textAlign: TextAlign.right),
+                      InvoiceTableCellModel(
+                          label: e.salePrice.toStringAsFixed(2),
+                          flex: 5,
+                          textAlign: TextAlign.right),
+                      InvoiceTableCellModel(label: e.uom, flex: 3),
+                      InvoiceTableCellModel(
+                          label: (e.itemDiscount + e.orderDiscount)
+                              .toStringAsFixed(2),
+                          flex: 3),
+                      InvoiceTableCellModel(
+                          label: e.amount.toStringAsFixed(2),
+                          flex: 6,
+                          fontWeight: FontWeight.bold,
+                          textAlign: TextAlign.right),
                     ],
                   ))
               .toList(),
@@ -500,24 +577,40 @@ class InvoiceTableLineItems extends StatelessWidget {
   }
 }
 
-class InvoiceTableHeaderModel {
+class InvoiceTableCellModel {
   final String label;
   final int? flex;
   final double? width;
+  final FontWeight fontWeight;
+  final TextAlign textAlign;
 
-  InvoiceTableHeaderModel({required this.label, this.flex, this.width});
+  InvoiceTableCellModel(
+      {required this.label,
+      this.flex,
+      this.width,
+      this.fontWeight = FontWeight.normal,
+      this.textAlign = TextAlign.left});
 }
 
-class InvoiceTableHeader extends StatelessWidget {
-  final List<InvoiceTableHeaderModel> headers;
-  const InvoiceTableHeader({Key? key, required this.headers}) : super(key: key);
+class InvoiceTableCells extends StatelessWidget {
+  final List<InvoiceTableCellModel> data;
+  final FontWeight? fontWeight;
+  const InvoiceTableCells(
+      {Key? key,
+      required this.data,
+      this.fontWeight,
+      this.bottomBorder = false,
+      this.topBorder = false})
+      : super(key: key);
   final double fontSize = 7;
+  final bool bottomBorder;
+  final bool topBorder;
 
-  Widget buildHeader(InvoiceTableHeaderModel m, {bool end = false}) {
+  Widget buildHeader(InvoiceTableCellModel m, {bool end = false}) {
     if (m.flex != null) {
       return Expanded(
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 0.5, horizontal: 1),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
           decoration: BoxDecoration(
             border: Border(
               right: end ? BorderSide.none : const BorderSide(width: 0.4),
@@ -525,7 +618,8 @@ class InvoiceTableHeader extends StatelessWidget {
           ),
           child: Text(
             m.label,
-            style: TextStyle(fontSize: fontSize),
+            textAlign: m.textAlign,
+            style: TextStyle(fontSize: fontSize, fontWeight: m.fontWeight),
           ),
         ),
         flex: m.flex!,
@@ -537,7 +631,8 @@ class InvoiceTableHeader extends StatelessWidget {
         fit: BoxFit.cover,
         child: Text(
           m.label,
-          style: TextStyle(fontSize: fontSize),
+          textAlign: m.textAlign,
+          style: TextStyle(fontSize: fontSize, fontWeight: m.fontWeight),
         ),
       ),
     );
@@ -546,16 +641,268 @@ class InvoiceTableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(width: 0.4),
+          top: bottomBorder ? const BorderSide(width: 0.4) : BorderSide.none,
+          bottom: bottomBorder ? const BorderSide(width: 0.4) : BorderSide.none,
         ),
       ),
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: headers.asMap().entries.map((e) => buildHeader(e.value, end: e.key == headers.length - 1)).toList(),
+          children: data
+              .asMap()
+              .entries
+              .map((e) => buildHeader(e.value, end: e.key == data.length - 1))
+              .toList(),
         ),
+      ),
+    );
+  }
+}
+
+class TaxTableHeader extends StatelessWidget {
+  const TaxTableHeader({Key? key}) : super(key: key);
+  final double fontSize = 7;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          top: BorderSide(width: 0.4),
+        ),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    right: BorderSide(width: 0.4),
+                  ),
+                ),
+                child: Text(
+                  "HSN/SAC",
+                  style: TextStyle(fontSize: fontSize),
+                ),
+              ),
+              flex: 10,
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    right: BorderSide(width: 0.4),
+                  ),
+                ),
+                child: Text(
+                  "HSN/SAC",
+                  style: TextStyle(fontSize: fontSize),
+                ),
+              ),
+              flex: 5,
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    right: BorderSide(width: 0.4),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      "Central Tax",
+                      style: TextStyle(fontSize: fontSize),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                top: BorderSide(width: 0.4),
+                                right: BorderSide(width: 0.4),
+                              ),
+                            ),
+                            child: Text(
+                              "Rate",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          flex: 2,
+                        ),
+                        Expanded(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                top: BorderSide(width: 0.4),
+                              ),
+                            ),
+                            child: Text(
+                              "Amount",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          flex: 5,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              flex: 7,
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    right: BorderSide(width: 0.4),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      "State Tax",
+                      style: TextStyle(fontSize: fontSize),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                top: BorderSide(width: 0.4),
+                                right: BorderSide(width: 0.4),
+                              ),
+                            ),
+                            child: Text(
+                              "Rate",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          flex: 2,
+                        ),
+                        Expanded(
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                top: BorderSide(width: 0.4),
+                              ),
+                            ),
+                            child: Text(
+                              "Amount",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          flex: 5,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              flex: 7,
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+                decoration: const BoxDecoration(
+                  border: Border(),
+                ),
+                child: Text(
+                  "Total",
+                  style: TextStyle(fontSize: fontSize),
+                ),
+              ),
+              flex: 5,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class InvoiceTaxDetail extends StatelessWidget {
+  const InvoiceTaxDetail({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          TaxTableHeader(),
+          InvoiceTableCells(
+            bottomBorder: true,
+            data: [
+              InvoiceTableCellModel(label: "48239019", flex: 10),
+              InvoiceTableCellModel(
+                  label: "43,220", flex: 5, textAlign: TextAlign.right),
+              InvoiceTableCellModel(
+                  label: "9%", flex: 2, textAlign: TextAlign.right),
+              InvoiceTableCellModel(
+                  label: "3,339.80", flex: 5, textAlign: TextAlign.right),
+              InvoiceTableCellModel(
+                  label: "9%", flex: 2, textAlign: TextAlign.right),
+              InvoiceTableCellModel(
+                  label: "3,339.80", flex: 5, textAlign: TextAlign.right),
+              InvoiceTableCellModel(
+                  label: "7,779.60", flex: 5, textAlign: TextAlign.right),
+            ],
+          ),
+          InvoiceTableCells(
+            bottomBorder: true,
+            data: [
+              InvoiceTableCellModel(
+                  label: "Total",
+                  flex: 10,
+                  fontWeight: FontWeight.bold,
+                  textAlign: TextAlign.right),
+              InvoiceTableCellModel(
+                  label: "43,220",
+                  flex: 5,
+                  textAlign: TextAlign.right,
+                  fontWeight: FontWeight.bold),
+              InvoiceTableCellModel(
+                  label: "9%",
+                  flex: 2,
+                  textAlign: TextAlign.right,
+                  fontWeight: FontWeight.bold),
+              InvoiceTableCellModel(
+                  label: "3,339.80",
+                  flex: 5,
+                  textAlign: TextAlign.right,
+                  fontWeight: FontWeight.bold),
+              InvoiceTableCellModel(
+                  label: "9%",
+                  flex: 2,
+                  textAlign: TextAlign.right,
+                  fontWeight: FontWeight.bold),
+              InvoiceTableCellModel(
+                  label: "3,339.80",
+                  flex: 5,
+                  textAlign: TextAlign.right,
+                  fontWeight: FontWeight.bold),
+              InvoiceTableCellModel(
+                  label: "7,779.60",
+                  flex: 5,
+                  textAlign: TextAlign.right,
+                  fontWeight: FontWeight.bold),
+            ],
+          )
+        ],
       ),
     );
   }
@@ -566,6 +913,15 @@ class InvoiceFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Column(
+        children: const [
+          InvoiceTaxDetail(),
+          SizedBox(
+            height: 70,
+          )
+        ],
+      ),
+    );
   }
 }
