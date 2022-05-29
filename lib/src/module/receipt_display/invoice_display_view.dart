@@ -1,22 +1,109 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:number_to_words/number_to_words.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
+import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/util/extension/string_extension.dart';
 import 'package:receipt_generator/src/widgets/appbar_leading.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 import 'bloc/receipt_display_bloc.dart';
+import 'custom_expanded.dart';
+import 'invoice_builder.dart';
 
-class InvoiceDisplayView extends StatelessWidget {
+const double fontSize = 7;
+
+class InvoiceDisplayView extends StatefulWidget {
   final int transactionId;
   const InvoiceDisplayView({Key? key, required this.transactionId})
       : super(key: key);
+
+  static final List<InvoiceTableCellModel> headers = [
+    InvoiceTableCellModel(label: "Sl.No", flex: 2),
+    InvoiceTableCellModel(label: "Description", flex: 11),
+    InvoiceTableCellModel(label: "HSN/SAC", flex: 5),
+    InvoiceTableCellModel(label: "Alt/Qty", flex: 4),
+    InvoiceTableCellModel(label: "Qty", flex: 4),
+    InvoiceTableCellModel(label: "Sale Price", flex: 5),
+    InvoiceTableCellModel(label: "Rate", flex: 5),
+    InvoiceTableCellModel(label: "UOM", flex: 3),
+    InvoiceTableCellModel(label: "Disc", flex: 3),
+    InvoiceTableCellModel(label: "Amount", flex: 6, textAlign: TextAlign.right)
+  ];
+
+  @override
+  State<InvoiceDisplayView> createState() => _InvoiceDisplayViewState();
+}
+
+class _InvoiceDisplayViewState extends State<InvoiceDisplayView> {
+
+  List<GlobalKey<State<StatefulWidget>>> keys = List.generate(200, (index) => GlobalKey());
+  int count = 0;
+
+  void _printReceipt(List<GlobalKey> key) {
+    Printing.layoutPdf(
+        format: PdfPageFormat.a4,
+        onLayout: (PdfPageFormat format) async {
+          final doc = pw.Document();
+
+          for (GlobalKey k in key) {
+            final image = await WidgetWraper.fromKey(
+              key: k,
+              pixelRatio: 5.0,
+            );
+            doc.addPage(pw.Page(
+                pageFormat: format,
+                build: (pw.Context context) {
+                  return pw.Center(
+                    child: pw.Image(image),
+                  );
+                }));
+          }
+
+          return doc.save();
+        });
+  }
+
+  void _shareReceipt(List<GlobalKey> key) async {
+    final doc = pw.Document();
+
+    for (GlobalKey k in key) {
+      final image = await WidgetWraper.fromKey(
+        key: k,
+        pixelRatio: 5.0,
+      );
+      doc.addPage(pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          margin: pw.EdgeInsets.zero,
+          build: (pw.Context context) {
+            return pw.Image(image);
+          }));
+    }
+
+    var raw = await doc.save();
+
+    Printing.sharePdf(
+      filename: '${widget.transactionId}.pdf',
+      bytes: raw,
+    );
+  }
+
+  void updateKeys(int k) {
+    // _keys = k;
+    print('total page $k');
+    count = k;
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
       create: (context) => ReceiptDisplayBloc(
-          transId: transactionId,
+          transId: widget.transactionId,
           db: RepositoryProvider.of(context),
+          authBloc: RepositoryProvider.of(context),
           settingsRepo: RepositoryProvider.of(context))
         ..add(FetchReceiptDataEvent()),
       child: Container(
@@ -32,16 +119,18 @@ class InvoiceDisplayView extends StatelessWidget {
                 if (state.status == ReceiptDisplayStatus.success)
                   SingleChildScrollView(
                     child: Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: InteractiveViewer(
                         child: Column(
-                          children: const [
-                            SizedBox(
+                          children: [
+                            const SizedBox(
                               height: 80,
                             ),
-                            InvoiceBlock(),
-                            InvoiceBlock(),
-                            InvoiceBlock(),
+                            Invoice(
+                              state: state,
+                              keys: keys,
+                              updateKeys: updateKeys,
+                            )
                           ],
                         ),
                       ),
@@ -59,6 +148,18 @@ class InvoiceDisplayView extends StatelessWidget {
                       },
                     ),
                   ),
+                if (state.status == ReceiptDisplayStatus.success)
+                  Positioned(
+                    top: 20,
+                    right: 16,
+                    child: IconButton(
+                      icon: const Icon(Icons.print),
+                      onPressed: () {
+                        // _shareReceipt([_printKey1, _printKey2]);
+                        _printReceipt(keys.sublist(0, count));
+                      },
+                    ),
+                  ),
               ],
             );
           }),
@@ -68,29 +169,268 @@ class InvoiceDisplayView extends StatelessWidget {
   }
 }
 
-class InvoiceBlock extends StatelessWidget {
-  const InvoiceBlock({Key? key}) : super(key: key);
+class Invoice extends StatefulWidget {
+  final ReceiptDisplayState state;
+  final Function updateKeys;
+  final List<GlobalKey<State<StatefulWidget>>> keys;
+  const Invoice(
+      {Key? key,
+      required this.state,
+      required this.updateKeys,
+      required this.keys})
+      : super(key: key);
+
+  @override
+  State<Invoice> createState() => _InvoiceState();
+}
+
+class _InvoiceState extends State<Invoice> {
+  List<List<TransactionLineItemEntity>> line = [];
+  bool initialPass = true;
+
+  @override
+  void initState() {
+    super.initState();
+    line = [widget.state.lineItems!];
+    initialPass = true;
+  }
+
+  void updateLineItems(List<double> heights, double maxHeight) {
+    if (!initialPass) return;
+    // Build Lines based upon the weight
+    var totalHeight = heights.fold<double>(
+        0.0, (previousValue, element) => previousValue + element);
+    var headerHeight = 0.0;
+    var footerHeight = 0.0;
+    if (heights.length >= 5) {
+      headerHeight += (heights[0] + heights[1]);
+      footerHeight += (heights[heights.length - 1] +
+          heights[heights.length - 2] +
+          heights[heights.length - 3]);
+    }
+
+    List<List<TransactionLineItemEntity>> res = [];
+    // Based upon the lineItems Length calculate the size
+    bool footerHeightExceed = false;
+    List<TransactionLineItemEntity> tmp = [];
+    double th = headerHeight;
+    bool pageOverFlow = false;
+    for (int i = 0; i < widget.state.lineItems!.length; i++) {
+      if (th + heights[i + 2] + footerHeight < maxHeight) {
+        tmp.add(widget.state.lineItems![i]);
+        th += heights[i + 2];
+        pageOverFlow = false;
+      } else if (th + heights[i + 2] < maxHeight) {
+        tmp.add(widget.state.lineItems![i]);
+        th += heights[i + 2];
+        pageOverFlow = true;
+      } else {
+        res.add(tmp);
+        tmp = [];
+        tmp.add(widget.state.lineItems![i]);
+        th = headerHeight + heights[i + 2];
+        pageOverFlow = false;
+      }
+    }
+
+    if (tmp.isNotEmpty) {
+      res.add(tmp);
+    }
+
+    if (pageOverFlow) {
+      res.add([]);
+    }
+
+    // Set the value of initial paas to false before computing.
+    initialPass = false;
+    widget.updateKeys(res.length);
+    if (totalHeight > maxHeight) {
+      setState(() {
+        line = res;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    MediaQuery.of(context).size.width;
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-      child: Container(
-        height: MediaQuery.of(context).size.width * 1.414,
-        width: MediaQuery.of(context).size.width,
-        margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(border: Border.all(width: 0.4)),
-        padding: const EdgeInsets.all(2),
-        child: Column(
-          children: [
-            InvoiceHeader(),
-            InvoiceTable(),
-            Expanded(child: Container()),
-            InvoiceFooter()
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: line
+          .asMap()
+          .entries
+          .map(
+            (e) => InvoiceBlock(
+              printKey: widget.keys[e.key],
+              headers: InvoiceDisplayView.headers,
+              lineItems: e.value,
+              displayInvoiceFooter: e.key == line.length - 1,
+              onLineItemOverFlow: updateLineItems,
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class InvoiceBlock extends StatelessWidget {
+  final GlobalKey<State<StatefulWidget>> printKey;
+  final List<InvoiceTableCellModel> headers;
+  final bool displayInvoiceFooter;
+  final List<TransactionLineItemEntity> lineItems;
+  final OnLineItemOverFlow onLineItemOverFlow;
+  const InvoiceBlock(
+      {Key? key,
+      required this.printKey,
+      required this.headers,
+      required this.onLineItemOverFlow,
+      this.displayInvoiceFooter = true,
+      required this.lineItems})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      key: printKey,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        child: Container(
+          height: MediaQuery.of(context).size.width * 1.414,
+          width: MediaQuery.of(context).size.width,
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(border: Border.all(width: 0.4)),
+          padding: const EdgeInsets.all(2),
+          child: CustomInvoiceColumn(
+            onLineItemOverflow: onLineItemOverFlow,
+            children: [
+              const InvoiceHeader(),
+              InvoiceTableCells(
+                bottomBorder: true,
+                data: headers,
+              ),
+              ...lineItems
+                  .map((e) => InvoiceTableCells(
+                        data: [
+                          InvoiceTableCellModel(
+                              label: e.transSeq.toString(), flex: 2),
+                          InvoiceTableCellModel(
+                              label: e.productDescription,
+                              flex: 11,
+                              fontWeight: FontWeight.bold),
+                          InvoiceTableCellModel(label: "${e.hsn}", flex: 5),
+                          InvoiceTableCellModel(label: "", flex: 4),
+                          InvoiceTableCellModel(
+                              label: e.qty.toString(),
+                              flex: 4,
+                              fontWeight: FontWeight.bold,
+                              textAlign: TextAlign.right),
+                          InvoiceTableCellModel(
+                              label: e.listPrice.toStringAsFixed(2),
+                              flex: 5,
+                              textAlign: TextAlign.right),
+                          InvoiceTableCellModel(
+                              label: e.salePrice.toStringAsFixed(2),
+                              flex: 5,
+                              textAlign: TextAlign.right),
+                          InvoiceTableCellModel(label: e.uom, flex: 3),
+                          InvoiceTableCellModel(
+                              label: (e.itemDiscount + e.orderDiscount)
+                                  .toStringAsFixed(2),
+                              flex: 3),
+                          InvoiceTableCellModel(
+                              label: e.amount.toStringAsFixed(2),
+                              flex: 6,
+                              fontWeight: FontWeight.bold,
+                              textAlign: TextAlign.right),
+                        ],
+                      ))
+                  .toList(),
+              if (displayInvoiceFooter) const TaxSummaryAmount(),
+              CustomExpanded(
+                child: InvoiceSpacer(
+                  data: headers,
+                ),
+              ),
+              // Expanded(child: InvoiceSpacer(data: headers)),
+              if (displayInvoiceFooter) const InvoiceTableOrderSummary(),
+              if (displayInvoiceFooter) const InvoiceFooter()
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class TaxSummaryAmount extends StatelessWidget {
+  const TaxSummaryAmount({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            InvoiceTableCells(
+              padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 1),
+              data: [
+                InvoiceTableCellModel(label: "", flex: 2),
+                InvoiceTableCellModel(
+                    label: "Output CGST @9%",
+                    flex: 11,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.right),
+                InvoiceTableCellModel(label: "", flex: 5),
+                InvoiceTableCellModel(label: "", flex: 4),
+                InvoiceTableCellModel(
+                    label: "",
+                    flex: 4,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.right),
+                InvoiceTableCellModel(
+                    label: "", flex: 5, textAlign: TextAlign.right),
+                InvoiceTableCellModel(
+                    label: "", flex: 5, textAlign: TextAlign.right),
+                InvoiceTableCellModel(label: "", flex: 3),
+                InvoiceTableCellModel(label: "", flex: 3),
+                InvoiceTableCellModel(
+                    label: "Rs. 4324.43",
+                    flex: 6,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.right),
+              ],
+            ),
+            InvoiceTableCells(
+              padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 1),
+              data: [
+                InvoiceTableCellModel(label: "", flex: 2),
+                InvoiceTableCellModel(
+                    label: "Output SGST @9%",
+                    flex: 11,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.right),
+                InvoiceTableCellModel(label: "", flex: 5),
+                InvoiceTableCellModel(label: "", flex: 4),
+                InvoiceTableCellModel(
+                    label: "",
+                    flex: 4,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.right),
+                InvoiceTableCellModel(
+                    label: "", flex: 5, textAlign: TextAlign.right),
+                InvoiceTableCellModel(
+                    label: "", flex: 5, textAlign: TextAlign.right),
+                InvoiceTableCellModel(label: "", flex: 3),
+                InvoiceTableCellModel(label: "", flex: 3),
+                InvoiceTableCellModel(
+                    label: "Rs.4324.43",
+                    flex: 6,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.right),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -125,6 +465,7 @@ class InvoiceBusinessDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var store = BlocProvider.of<ReceiptDisplayBloc>(context).authBloc.state.store!;
     return Container(
       decoration: const BoxDecoration(
           border: Border(
@@ -135,41 +476,39 @@ class InvoiceBusinessDetail extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (store.storeName != null)
           Text(
-            "Pratyush Ka Thela",
+            store.storeName!,
             style:
                 TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize + 1),
           ),
+          if (store.address1 != null)
           Text(
-            "Ganesh Chowak",
+            store.address1!,
+            style: TextStyle(fontSize: fontSize),
+          ),
+          if (store.address2 != null)
+          Text(
+            store.address2!,
+            style: TextStyle(fontSize: fontSize),
+          ),
+          if (store.storeContact != null)
+          Text(
+            "Ph: `${store.storeContact}`",
+            style: TextStyle(fontSize: fontSize),
+          ),
+          if (store.gst != null)
+          Text(
+            "GST: ${store.gst}",
             style: TextStyle(fontSize: fontSize),
           ),
           Text(
-            "Samastipur",
+            "${store.state} - ${store.postalCode} - ${store.country}",
             style: TextStyle(fontSize: fontSize),
           ),
+          if (store.storeEmail != null)
           Text(
-            "Ph: 9430123120",
-            style: TextStyle(fontSize: fontSize),
-          ),
-          Text(
-            "GST: 10A5432543JKFE",
-            style: TextStyle(fontSize: fontSize),
-          ),
-          Text(
-            "Bihar - 848101 - India",
-            style: TextStyle(fontSize: fontSize),
-          ),
-          Text(
-            "Email: pratyushharsh2015@gmail.com",
-            style: TextStyle(fontSize: fontSize),
-          ),
-          Text(
-            "GSTIN/UIN: 10AKKKFREG5KK",
-            style: TextStyle(fontSize: fontSize),
-          ),
-          Text(
-            "State Name: Bihar, Code : 10",
+            "Email: ${store.storeEmail}",
             style: TextStyle(fontSize: fontSize),
           ),
         ],
@@ -446,31 +785,47 @@ class InvoiceSummary extends StatelessWidget {
 }
 
 class InvoiceTable extends StatelessWidget {
-  const InvoiceTable({Key? key}) : super(key: key);
+  final List<InvoiceTableCellModel> headers;
+  const InvoiceTable({Key? key, required this.headers}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           InvoiceTableCells(
             bottomBorder: true,
-            data: [
-              InvoiceTableCellModel(label: "Sl.No", flex: 2),
-              InvoiceTableCellModel(label: "Description", flex: 11),
-              InvoiceTableCellModel(label: "HSN/SAC", flex: 5),
-              InvoiceTableCellModel(label: "Alt/Qty", flex: 4),
-              InvoiceTableCellModel(label: "Qty", flex: 4),
-              InvoiceTableCellModel(label: "Sale Price", flex: 5),
-              InvoiceTableCellModel(label: "Rate", flex: 5),
-              InvoiceTableCellModel(label: "UOM", flex: 3),
-              InvoiceTableCellModel(label: "Disc", flex: 3),
-              InvoiceTableCellModel(
-                  label: "Amount", flex: 6, textAlign: TextAlign.right),
-            ],
+            data: headers,
           ),
           const InvoiceTableLineItems(),
-          const InvoiceTableOrderSummary()
+          Expanded(child: InvoiceSpacer(data: headers)),
+          const InvoiceTableOrderSummary(),
+          const Text(
+            "Amount Chargeable (in words)",
+            style: TextStyle(fontSize: fontSize),
+          ),
+          BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
+            builder: (context, state) {
+              var x = state.header!.total.toInt();
+              var y = (state.header!.total * 100 % 100).toInt();
+
+              String amountToWord =
+                  "INR " + NumberToWord().convert('en-in', x).toTitleCase();
+              if (y > 0) {
+                amountToWord += " and ";
+                amountToWord +=
+                    NumberToWord().convert('en-in', y).toTitleCase();
+                amountToWord += "paise Only";
+              }
+
+              return Text(
+                amountToWord,
+                style: const TextStyle(
+                    fontSize: fontSize + 1, fontWeight: FontWeight.bold),
+              );
+            },
+          )
         ],
       ),
     );
@@ -484,40 +839,66 @@ class InvoiceTableOrderSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
       builder: (context, state) {
-        return InvoiceTableCells(
-          topBorder: true,
-          bottomBorder: true,
-          data: [
-            InvoiceTableCellModel(label: "", flex: 2),
-            InvoiceTableCellModel(
-                label: "Total",
-                flex: 11,
-                textAlign: TextAlign.right,
-                fontWeight: FontWeight.bold),
-            InvoiceTableCellModel(label: "", flex: 5),
-            InvoiceTableCellModel(label: "", flex: 4),
-            InvoiceTableCellModel(
-                label: "",
-                flex: 4,
-                fontWeight: FontWeight.bold,
-                textAlign: TextAlign.right),
-            InvoiceTableCellModel(
-                label: "",
-                flex: 5,
-                textAlign: TextAlign.right),
-            InvoiceTableCellModel(
-                label: "",
-                flex: 5,
-                textAlign: TextAlign.right),
-            InvoiceTableCellModel(label: "", flex: 3),
-            InvoiceTableCellModel(
-                label: "",
-                flex: 3),
-            InvoiceTableCellModel(
-                label: "${state.header?.total.toStringAsFixed(2)}",
-                flex: 6,
-                fontWeight: FontWeight.bold,
-                textAlign: TextAlign.right),
+        var x = state.header!.total.toInt();
+        var y = (state.header!.total * 100 % 100).toInt();
+
+        String amountToWord =
+            "INR " + NumberToWord().convert('en-in', x).toTitleCase();
+        if (y > 0) {
+          amountToWord += " and ";
+          amountToWord += NumberToWord().convert('en-in', y).toTitleCase();
+          amountToWord += "paise Only";
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InvoiceTableCells(
+              topBorder: true,
+              bottomBorder: true,
+              data: [
+                InvoiceTableCellModel(label: "", flex: 2),
+                InvoiceTableCellModel(
+                    label: "Total",
+                    flex: 11,
+                    textAlign: TextAlign.right,
+                    fontWeight: FontWeight.bold),
+                InvoiceTableCellModel(label: "", flex: 5),
+                InvoiceTableCellModel(label: "", flex: 4),
+                InvoiceTableCellModel(
+                    label:
+                        "${state.lineItems!.fold<double>(0, (pv, e) => pv + e.qty)}",
+                    flex: 4,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.right),
+                InvoiceTableCellModel(
+                    label: "", flex: 5, textAlign: TextAlign.right),
+                InvoiceTableCellModel(
+                    label: "", flex: 5, textAlign: TextAlign.right),
+                InvoiceTableCellModel(label: "", flex: 3),
+                InvoiceTableCellModel(label: "", flex: 3),
+                InvoiceTableCellModel(
+                    label: "${state.header?.total.toStringAsFixed(2)}",
+                    flex: 6,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.right),
+              ],
+            ),
+            const SizedBox(
+              height: 1,
+            ),
+            const Text(
+              "Amount Chargeable (in words)",
+              style: TextStyle(fontSize: fontSize),
+            ),
+            Text(
+              amountToWord,
+              style: const TextStyle(
+                  fontSize: fontSize + 1, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 1,
+            )
           ],
         );
       },
@@ -595,11 +976,13 @@ class InvoiceTableCellModel {
 class InvoiceTableCells extends StatelessWidget {
   final List<InvoiceTableCellModel> data;
   final FontWeight? fontWeight;
+  final EdgeInsetsGeometry padding;
   const InvoiceTableCells(
       {Key? key,
       required this.data,
       this.fontWeight,
       this.bottomBorder = false,
+      this.padding = const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
       this.topBorder = false})
       : super(key: key);
   final double fontSize = 7;
@@ -610,7 +993,7 @@ class InvoiceTableCells extends StatelessWidget {
     if (m.flex != null) {
       return Expanded(
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+          padding: padding,
           decoration: BoxDecoration(
             border: Border(
               right: end ? BorderSide.none : const BorderSide(width: 0.4),
@@ -643,7 +1026,7 @@ class InvoiceTableCells extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          top: bottomBorder ? const BorderSide(width: 0.4) : BorderSide.none,
+          top: topBorder ? const BorderSide(width: 0.4) : BorderSide.none,
           bottom: bottomBorder ? const BorderSide(width: 0.4) : BorderSide.none,
         ),
       ),
@@ -840,69 +1223,138 @@ class InvoiceTaxDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          TaxTableHeader(),
-          InvoiceTableCells(
-            bottomBorder: true,
-            data: [
-              InvoiceTableCellModel(label: "48239019", flex: 10),
-              InvoiceTableCellModel(
-                  label: "43,220", flex: 5, textAlign: TextAlign.right),
-              InvoiceTableCellModel(
-                  label: "9%", flex: 2, textAlign: TextAlign.right),
-              InvoiceTableCellModel(
-                  label: "3,339.80", flex: 5, textAlign: TextAlign.right),
-              InvoiceTableCellModel(
-                  label: "9%", flex: 2, textAlign: TextAlign.right),
-              InvoiceTableCellModel(
-                  label: "3,339.80", flex: 5, textAlign: TextAlign.right),
-              InvoiceTableCellModel(
-                  label: "7,779.60", flex: 5, textAlign: TextAlign.right),
+    return BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
+      builder: (context, state) {
+        var totAmount = state.taxSummary.fold<double>(
+            0.0, (previousValue, element) => previousValue + element.amount);
+        var totCgstAmount = state.taxSummary.fold<double>(0.0,
+            (previousValue, element) => previousValue + element.cgstAmount);
+        var totSgstAmount = state.taxSummary.fold<double>(
+            0.0, (previousValue, element) => previousValue + element.sgstAmont);
+        var totTaxAmount = state.taxSummary.fold<double>(
+            0.0, (previousValue, element) => previousValue + element.taxTotal);
+
+        return Container(
+          child: Column(
+            children: [
+              const TaxTableHeader(),
+              ...state.taxSummary
+                  .map((e) => InvoiceTableCells(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 2, horizontal: 1),
+                        topBorder: true,
+                        data: [
+                          InvoiceTableCellModel(label: e.hsn, flex: 10),
+                          InvoiceTableCellModel(
+                              label: e.amount.toStringAsFixed(2),
+                              flex: 5,
+                              textAlign: TextAlign.right),
+                          InvoiceTableCellModel(
+                              label:
+                                  "${(e.cgstRate * 100).toStringAsFixed(0)}%",
+                              flex: 2,
+                              textAlign: TextAlign.right),
+                          InvoiceTableCellModel(
+                              label: e.cgstAmount.toStringAsFixed(2),
+                              flex: 5,
+                              textAlign: TextAlign.right),
+                          InvoiceTableCellModel(
+                              label:
+                                  "${(e.sgstRate * 100).toStringAsFixed(0)}%",
+                              flex: 2,
+                              textAlign: TextAlign.right),
+                          InvoiceTableCellModel(
+                              label: e.sgstAmont.toStringAsFixed(2),
+                              flex: 5,
+                              textAlign: TextAlign.right),
+                          InvoiceTableCellModel(
+                              label: e.taxTotal.toStringAsFixed(2),
+                              flex: 5,
+                              textAlign: TextAlign.right),
+                        ],
+                      ))
+                  .toList(),
+              InvoiceTableCells(
+                topBorder: true,
+                bottomBorder: true,
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 1),
+                data: [
+                  InvoiceTableCellModel(
+                      label: "Total",
+                      flex: 10,
+                      fontWeight: FontWeight.bold,
+                      textAlign: TextAlign.right),
+                  InvoiceTableCellModel(
+                      label: totAmount.toStringAsFixed(2),
+                      flex: 5,
+                      textAlign: TextAlign.right,
+                      fontWeight: FontWeight.bold),
+                  InvoiceTableCellModel(
+                      label: "9%",
+                      flex: 2,
+                      textAlign: TextAlign.right,
+                      fontWeight: FontWeight.bold),
+                  InvoiceTableCellModel(
+                      label: totCgstAmount.toStringAsFixed(2),
+                      flex: 5,
+                      textAlign: TextAlign.right,
+                      fontWeight: FontWeight.bold),
+                  InvoiceTableCellModel(
+                      label: "9%",
+                      flex: 2,
+                      textAlign: TextAlign.right,
+                      fontWeight: FontWeight.bold),
+                  InvoiceTableCellModel(
+                      label: totSgstAmount.toStringAsFixed(2),
+                      flex: 5,
+                      textAlign: TextAlign.right,
+                      fontWeight: FontWeight.bold),
+                  InvoiceTableCellModel(
+                      label: totTaxAmount.toStringAsFixed(2),
+                      flex: 5,
+                      textAlign: TextAlign.right,
+                      fontWeight: FontWeight.bold),
+                ],
+              )
             ],
           ),
-          InvoiceTableCells(
-            bottomBorder: true,
-            data: [
-              InvoiceTableCellModel(
-                  label: "Total",
-                  flex: 10,
-                  fontWeight: FontWeight.bold,
-                  textAlign: TextAlign.right),
-              InvoiceTableCellModel(
-                  label: "43,220",
-                  flex: 5,
-                  textAlign: TextAlign.right,
-                  fontWeight: FontWeight.bold),
-              InvoiceTableCellModel(
-                  label: "9%",
-                  flex: 2,
-                  textAlign: TextAlign.right,
-                  fontWeight: FontWeight.bold),
-              InvoiceTableCellModel(
-                  label: "3,339.80",
-                  flex: 5,
-                  textAlign: TextAlign.right,
-                  fontWeight: FontWeight.bold),
-              InvoiceTableCellModel(
-                  label: "9%",
-                  flex: 2,
-                  textAlign: TextAlign.right,
-                  fontWeight: FontWeight.bold),
-              InvoiceTableCellModel(
-                  label: "3,339.80",
-                  flex: 5,
-                  textAlign: TextAlign.right,
-                  fontWeight: FontWeight.bold),
-              InvoiceTableCellModel(
-                  label: "7,779.60",
-                  flex: 5,
-                  textAlign: TextAlign.right,
-                  fontWeight: FontWeight.bold),
-            ],
-          )
-        ],
+        );
+      },
+    );
+  }
+}
+
+class InvoiceSpacer extends StatelessWidget {
+  final List<InvoiceTableCellModel> data;
+  const InvoiceSpacer({Key? key, required this.data}) : super(key: key);
+
+  Widget buildSpacer(InvoiceTableCellModel m, {bool end = false}) {
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            right: end ? BorderSide.none : const BorderSide(width: 0.4),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [Container()],
+        ),
+      ),
+      flex: m.flex ?? 1,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: data
+            .asMap()
+            .entries
+            .map((e) => buildSpacer(e.value, end: e.key == data.length - 1))
+            .toList(),
       ),
     );
   }
@@ -915,11 +1367,68 @@ class InvoiceFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-        children: const [
-          InvoiceTaxDetail(),
-          SizedBox(
-            height: 70,
+        children: [
+          const InvoiceTaxDetail(),
+          SizedBox(height: 15),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Expanded(child: Declaration()),
+              Expanded(child: AuthoritySignature())
+            ],
           )
+        ],
+      ),
+    );
+  }
+}
+
+class Declaration extends StatelessWidget {
+  const Declaration({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        Text("Declaration",
+            style: TextStyle(
+                fontSize: fontSize, decoration: TextDecoration.underline)),
+        Text(
+          "We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.",
+          style: TextStyle(fontSize: fontSize),
+        ),
+      ],
+    );
+  }
+}
+
+class AuthoritySignature extends StatelessWidget {
+  const AuthoritySignature({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          top: BorderSide(width: 0.4),
+          left: BorderSide(width: 0.4),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            "for Pratyush Ka Thela",
+            style: TextStyle(fontSize: fontSize),
+          ),
+          Container(
+            height: 20,
+          ),
+          const Text(
+            "Authorised Signatory",
+            style: TextStyle(fontSize: fontSize),
+          ),
         ],
       ),
     );

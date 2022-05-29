@@ -28,7 +28,7 @@ class ClientsView extends StatelessWidget {
         ),
         Positioned(
           bottom: 90,
-          right: 10,
+          right: 20,
           child: OpenContainer(
             transitionType: ContainerTransitionType.fade,
             transitionDuration: const Duration(milliseconds: 500),
@@ -37,18 +37,16 @@ class ClientsView extends StatelessWidget {
             },
             closedElevation: 6.0,
             closedShape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
+              borderRadius: BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30), bottomLeft: Radius.circular(30), bottomRight: Radius.circular(5)),
             ),
             closedBuilder: (BuildContext context, void Function() action) {
               return Container(
-                height: 40,
-                width: 40,
+                height: 45,
+                width: 45,
                 color: AppColor.primary,
                 child: const Center(
                   child: Icon(
-                    Icons.add,
+                    Icons.person_add_alt_1,
                     color: AppColor.iconColor,
                   ),
                 ),

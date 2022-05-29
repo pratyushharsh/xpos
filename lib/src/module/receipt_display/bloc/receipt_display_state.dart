@@ -7,24 +7,35 @@ class ReceiptDisplayState extends Equatable {
   final TransactionHeaderEntity? header;
   final ReceiptSettingsModel? receiptSettings;
   final List<TransactionLineItemEntity>? lineItems;
+  final List<HsnTaxSummary> taxSummary;
+  final List<GlobalKey> globalKeys;
 
-  const ReceiptDisplayState({this.status = ReceiptDisplayStatus.initial, this.header, this.lineItems, this.receiptSettings});
+  const ReceiptDisplayState(
+      {this.status = ReceiptDisplayStatus.initial,
+      this.header,
+      this.lineItems,
+      this.receiptSettings,
+      this.globalKeys = const [],
+      required this.taxSummary});
 
   @override
-  List<Object?> get props => [status, header, lineItems, receiptSettings];
+  List<Object?> get props =>
+      [status, header, lineItems, receiptSettings, taxSummary];
 
   ReceiptDisplayState copyWith({
     ReceiptDisplayStatus? status,
     TransactionHeaderEntity? header,
     ReceiptSettingsModel? receiptSettings,
     List<TransactionLineItemEntity>? lineItems,
+    List<HsnTaxSummary>? taxSummary,
+    List<GlobalKey>? globalKeys,
   }) {
     return ReceiptDisplayState(
-      status: status ?? this.status,
-      header: header ?? this.header,
-      receiptSettings: receiptSettings ?? this.receiptSettings,
-      lineItems: lineItems ?? this.lineItems,
-    );
+        status: status ?? this.status,
+        header: header ?? this.header,
+        receiptSettings: receiptSettings ?? this.receiptSettings,
+        lineItems: lineItems ?? this.lineItems,
+        taxSummary: taxSummary ?? this.taxSummary,
+        globalKeys: globalKeys ?? this.globalKeys);
   }
 }
-

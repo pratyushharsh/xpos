@@ -67,7 +67,7 @@ class ReceiptHeaderCard extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    '${Currency.inr}${receipt.total}',
+                    '${Currency.inr}${receipt.total.toStringAsFixed(2)}',
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 20),
                   )

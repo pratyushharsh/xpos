@@ -70,7 +70,9 @@ class SettingsScreen extends StatelessWidget {
               icon: Icons.mail_rounded,
               children: [
                 SettingsItem(text: "FAQ and Videos", onTap: () {}),
-                SettingsItem(text: "Contact us", onTap: () {}),
+                SettingsItem(text: "Contact us", onTap: () {
+                  Navigator.of(context).pushNamed(RouteConfig.splashScreen);
+                }),
               ],
             ),
           ),

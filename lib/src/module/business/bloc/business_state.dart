@@ -17,7 +17,8 @@ class BusinessState extends Equatable {
   final BusinessOperation operation;
   final String businessName;
   final String businessContact;
-  final String businessAddress;
+  final String? businessEmail;
+  final BusinessAddress? businessAddress;
   final String businessGst;
   final String businessPan;
 
@@ -31,7 +32,8 @@ class BusinessState extends Equatable {
     this.operation = BusinessOperation.create,
     this.businessName = '',
     this.businessContact = '',
-    this.businessAddress = '',
+    this.businessEmail,
+    this.businessAddress,
     this.businessGst = '',
     this.businessPan = '',
   });
@@ -45,7 +47,8 @@ class BusinessState extends Equatable {
         businessAddress,
         businessContact,
         businessGst,
-        businessPan
+        businessPan,
+        businessEmail
       ];
 
   BusinessState copyWith({
@@ -54,7 +57,8 @@ class BusinessState extends Equatable {
     BusinessOperation? operation,
     String? businessName,
     String? businessContact,
-    String? businessAddress,
+    String? businessEmail,
+    BusinessAddress? businessAddress,
     String? businessGst,
     String? businessPan,
   }) {
@@ -64,9 +68,15 @@ class BusinessState extends Equatable {
       operation: operation ?? this.operation,
       businessName: businessName ?? this.businessName,
       businessContact: businessContact ?? this.businessContact,
+      businessEmail: businessEmail ?? this.businessEmail,
       businessAddress: businessAddress ?? this.businessAddress,
       businessGst: businessGst ?? this.businessGst,
       businessPan: businessPan ?? this.businessPan,
     );
+  }
+
+  @override
+  String toString() {
+    return 'BusinessState{status: $status, entity: $entity, operation: $operation, businessName: $businessName, businessContact: $businessContact, businessEmail: $businessEmail, businessAddress: $businessAddress, businessGst: $businessGst, businessPan: $businessPan}';
   }
 }

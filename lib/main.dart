@@ -1,6 +1,4 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
-// import 'package:amplify_api/amplify_api.dart';
-// import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +11,6 @@ import 'bloc_observer.dart';
 import 'firebase_options.dart';
 import 'log.dart';
 import 'my_app.dart';
-import 'amplifyconfiguration.dart';
 
 final log = Logger('Main');
 

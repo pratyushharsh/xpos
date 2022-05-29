@@ -18,6 +18,8 @@ class CustomTextField extends StatelessWidget {
   final TextStyle style;
   final TextAlign textAlign;
   final TextCapitalization textCapitalization;
+  final GestureTapCallback? onTap;
+  final bool? enabled;
 
   const CustomTextField(
       {Key? key,
@@ -32,7 +34,9 @@ class CustomTextField extends StatelessWidget {
       this.errorText,
       this.controller,
       this.focusNode,
+      this.onTap,
       this.validator,
+      this.enabled,
       this.textCapitalization = TextCapitalization.none,
       this.obscureText = false,
       this.style = const TextStyle(
@@ -79,6 +83,8 @@ class CustomTextField extends StatelessWidget {
             cursorColor: const Color(0xFFB1B4E6),
             textAlign: textAlign,
             style: style,
+            onTap: onTap,
+            enabled: enabled,
             textCapitalization: textCapitalization,
             decoration: InputDecoration(
               errorStyle:

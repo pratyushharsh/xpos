@@ -106,7 +106,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `customer` (`contactId` TEXT NOT NULL, `storeId` TEXT NOT NULL, `name` TEXT NOT NULL, `phoneNumber` TEXT, `email` TEXT, `shippingAddress` TEXT, `billingAddress` TEXT, `syncState` INTEGER NOT NULL, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastSyncAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`contactId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `rtl_loc` (`rtlLocId` TEXT NOT NULL, `storeName` TEXT, `storeContact` TEXT, `storeNumber` TEXT, `currencyId` TEXT, `locale` TEXT, `address1` TEXT, `address2` TEXT, `city` TEXT, `country` TEXT, `postalCode` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`rtlLocId`))');
+            'CREATE TABLE IF NOT EXISTS `rtl_loc` (`rtlLocId` TEXT NOT NULL, `storeName` TEXT, `storeEmail` TEXT, `storeContact` TEXT, `storeNumber` TEXT, `currencyId` TEXT, `locale` TEXT, `address1` TEXT, `address2` TEXT, `city` TEXT, `state` TEXT, `country` TEXT, `postalCode` TEXT, `gst` TEXT, `pan` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER, `lastChangedAt` INTEGER, `version` INTEGER NOT NULL, PRIMARY KEY (`rtlLocId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `sync` (`type` TEXT NOT NULL, `lastSyncAt` INTEGER, `status` INTEGER NOT NULL, `syncStartTime` INTEGER, `syncEndTime` INTEGER, PRIMARY KEY (`type`))');
         await database.execute(
@@ -904,6 +904,7 @@ class _$RetailLocationDao extends RetailLocationDao {
             (RetailLocationEntity item) => <String, Object?>{
                   'rtlLocId': item.rtlLocId,
                   'storeName': item.storeName,
+                  'storeEmail': item.storeEmail,
                   'storeContact': item.storeContact,
                   'storeNumber': item.storeNumber,
                   'currencyId': item.currencyId,
@@ -911,8 +912,11 @@ class _$RetailLocationDao extends RetailLocationDao {
                   'address1': item.address1,
                   'address2': item.address2,
                   'city': item.city,
+                  'state': item.state,
                   'country': item.country,
                   'postalCode': item.postalCode,
+                  'gst': item.gst,
+                  'pan': item.pan,
                   'createTime': _dateTimeConverter.encode(item.createTime),
                   'updateTime': _dateTimeNullConverter.encode(item.updateTime),
                   'lastChangedAt':
@@ -926,6 +930,7 @@ class _$RetailLocationDao extends RetailLocationDao {
             (RetailLocationEntity item) => <String, Object?>{
                   'rtlLocId': item.rtlLocId,
                   'storeName': item.storeName,
+                  'storeEmail': item.storeEmail,
                   'storeContact': item.storeContact,
                   'storeNumber': item.storeNumber,
                   'currencyId': item.currencyId,
@@ -933,8 +938,11 @@ class _$RetailLocationDao extends RetailLocationDao {
                   'address1': item.address1,
                   'address2': item.address2,
                   'city': item.city,
+                  'state': item.state,
                   'country': item.country,
                   'postalCode': item.postalCode,
+                  'gst': item.gst,
+                  'pan': item.pan,
                   'createTime': _dateTimeConverter.encode(item.createTime),
                   'updateTime': _dateTimeNullConverter.encode(item.updateTime),
                   'lastChangedAt':
@@ -959,6 +967,7 @@ class _$RetailLocationDao extends RetailLocationDao {
         mapper: (Map<String, Object?> row) => RetailLocationEntity(
             rtlLocId: row['rtlLocId'] as String,
             storeName: row['storeName'] as String?,
+            storeEmail: row['storeEmail'] as String?,
             storeContact: row['storeContact'] as String?,
             storeNumber: row['storeNumber'] as String?,
             currencyId: row['currencyId'] as String?,
@@ -966,8 +975,11 @@ class _$RetailLocationDao extends RetailLocationDao {
             address1: row['address1'] as String?,
             address2: row['address2'] as String?,
             city: row['city'] as String?,
+            state: row['state'] as String?,
             country: row['country'] as String?,
             postalCode: row['postalCode'] as String?,
+            gst: row['gst'] as String?,
+            pan: row['pan'] as String?,
             createTime: _dateTimeConverter.decode(row['createTime'] as int),
             version: row['version'] as int,
             lastChangedAt:
@@ -983,6 +995,7 @@ class _$RetailLocationDao extends RetailLocationDao {
         mapper: (Map<String, Object?> row) => RetailLocationEntity(
             rtlLocId: row['rtlLocId'] as String,
             storeName: row['storeName'] as String?,
+            storeEmail: row['storeEmail'] as String?,
             storeContact: row['storeContact'] as String?,
             storeNumber: row['storeNumber'] as String?,
             currencyId: row['currencyId'] as String?,
@@ -990,8 +1003,11 @@ class _$RetailLocationDao extends RetailLocationDao {
             address1: row['address1'] as String?,
             address2: row['address2'] as String?,
             city: row['city'] as String?,
+            state: row['state'] as String?,
             country: row['country'] as String?,
             postalCode: row['postalCode'] as String?,
+            gst: row['gst'] as String?,
+            pan: row['pan'] as String?,
             createTime: _dateTimeConverter.decode(row['createTime'] as int),
             version: row['version'] as int,
             lastChangedAt:

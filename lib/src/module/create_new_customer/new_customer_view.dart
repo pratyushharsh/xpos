@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
@@ -39,6 +42,8 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
   late TextEditingController _customerNameController;
   late TextEditingController _customerPhoneController;
   late TextEditingController _customerEmailController;
+  late TextEditingController _customerPanController;
+  late TextEditingController _customerGstController;
   late TextEditingController _customerShipAddressController;
   late TextEditingController _customerBillAddressController;
 
@@ -48,6 +53,8 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
     _customerNameController = TextEditingController();
     _customerPhoneController = TextEditingController();
     _customerEmailController = TextEditingController();
+    _customerPanController = TextEditingController();
+    _customerGstController = TextEditingController();
     _customerShipAddressController = TextEditingController();
     _customerBillAddressController = TextEditingController();
   }
@@ -57,6 +64,8 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
     _customerNameController.dispose();
     _customerPhoneController.dispose();
     _customerEmailController.dispose();
+    _customerPanController.dispose();
+    _customerGstController.dispose();
     _customerShipAddressController.dispose();
     _customerBillAddressController.dispose();
     super.dispose();
@@ -64,11 +73,16 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
 
   void _onSubmit() {
     CustomerParty customer = CustomerParty(
-      name: _customerNameController.text,
-      phoneNumber: _customerPhoneController.text.isNotEmpty ? _customerPhoneController.text : null,
-      email: _customerEmailController.text.isNotEmpty ? _customerEmailController.text : null,
-      billingAddress: _customerBillAddressController.text.isNotEmpty ? _customerBillAddressController.text : null
-    );
+        name: _customerNameController.text,
+        phoneNumber: _customerPhoneController.text.isNotEmpty
+            ? _customerPhoneController.text
+            : null,
+        email: _customerEmailController.text.isNotEmpty
+            ? _customerEmailController.text
+            : null,
+        billingAddress: _customerBillAddressController.text.isNotEmpty
+            ? _customerBillAddressController.text
+            : null);
     BlocProvider.of<NewCustomerBloc>(context)
         .add(OnCreateCustomer(customer: customer));
   }
@@ -139,11 +153,21 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
                               label: "Email",
                               validator:
                                   NewPartyFieldValidator.validatePartyEmail,
-                              textInputType: TextInputType.phone,
+                              textInputType: TextInputType.emailAddress,
                               controller: _customerEmailController,
                             ),
+                            CustomTextField(
+                              label: "GST",
+                              textInputType: TextInputType.phone,
+                              controller: _customerGstController,
+                            ),
+                            CustomTextField(
+                              label: "PAN",
+                              textInputType: TextInputType.phone,
+                              controller: _customerPanController,
+                            ),
                             const SizedBox(
-                              height: 30,
+                              height: 20,
                             ),
                             Row(
                               children: [
@@ -181,7 +205,25 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
                                 maxLines: 5,
                                 controller: _customerShipAddressController,
                               ),
+                            const SizedBox(
+                              height: 250,
+                            ),
                           ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: BlurryContainer(
+                        blur: 8,
+                        height: 70,
+                        elevation: 0,
+                        borderRadius: const BorderRadius.all(Radius.circular(0)),
+                        color: Colors.white.withOpacity(0.6),
+                        child: const SizedBox(
+                          height: 70,
                         ),
                       ),
                     ),

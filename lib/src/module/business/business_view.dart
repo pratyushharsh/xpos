@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
+import 'package:receipt_generator/src/model/address.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
+import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
@@ -16,7 +18,8 @@ class BusinessView extends StatelessWidget {
     return MaterialPageRoute<void>(builder: (_) => const BusinessView());
   }
 
-  const BusinessView({Key? key, this.operation = BusinessOperation.create, this.businessId})
+  const BusinessView(
+      {Key? key, this.operation = BusinessOperation.create, this.businessId})
       : super(key: key);
 
   @override
@@ -29,6 +32,7 @@ class BusinessView extends StatelessWidget {
         color: Colors.white,
         child: SafeArea(
           child: Scaffold(
+            resizeToAvoidBottomInset: true,
             backgroundColor: Colors.white,
             body: Stack(
               fit: StackFit.expand,
@@ -130,7 +134,7 @@ class BusinessDetail extends StatefulWidget {
 class _BusinessDetailState extends State<BusinessDetail> {
   late TextEditingController _businessNameController;
   late TextEditingController _businessContactController;
-  late TextEditingController _businessAddressController;
+  late TextEditingController _businessEmailController;
   late TextEditingController _businessGstController;
   late TextEditingController _businessPanController;
 
@@ -139,7 +143,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
     super.initState();
     _businessNameController = TextEditingController();
     _businessContactController = TextEditingController();
-    _businessAddressController = TextEditingController();
+    _businessEmailController = TextEditingController();
     _businessGstController = TextEditingController();
     _businessPanController = TextEditingController();
   }
@@ -148,7 +152,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
   void dispose() {
     _businessNameController.dispose();
     _businessContactController.dispose();
-    _businessAddressController.dispose();
+    _businessEmailController.dispose();
     _businessGstController.dispose();
     _businessPanController.dispose();
     super.dispose();
@@ -171,7 +175,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
         if (BusinessStatus.success == state.status) {
           _businessNameController.text = state.businessName;
           _businessContactController.text = state.businessContact;
-          _businessAddressController.text = state.businessAddress;
+          _businessEmailController.text = state.businessEmail ?? "";
           _businessGstController.text = state.businessGst;
           _businessPanController.text = state.businessPan;
         }
@@ -194,15 +198,37 @@ class _BusinessDetailState extends State<BusinessDetail> {
               },
             ),
             CustomTextField(
-              controller: _businessAddressController,
-              label: "Business Address",
-              minLines: 4,
-              maxLines: 4,
+              controller: _businessEmailController,
+              label: "Email",
+              textInputType: TextInputType.emailAddress,
               onValueChange: (val) {
                 BlocProvider.of<BusinessBloc>(context)
-                    .add(OnBusinessAddressChange(val));
+                    .add(OnBusinessEmailChange(val));
               },
             ),
+            GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: AppColor.background,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    )),
+                    builder: (context) => const BusinessAddressDialog(),
+                  ).then((value) => {
+                        if (value != null && value.length > 0 && value[0] is BusinessAddress)
+                          {
+                            BlocProvider.of<BusinessBloc>(context)
+                                .add(OnBusinessAddressChange(value[0]))
+                          }
+                      });
+                },
+                child: AddressWidget(
+                  address: state.businessAddress?.toString() ?? "",
+                )),
             CustomTextField(
               controller: _businessGstController,
               label: "GST Number",
@@ -224,6 +250,139 @@ class _BusinessDetailState extends State<BusinessDetail> {
           ],
         );
       },
+    );
+  }
+}
+
+class AddressWidget extends StatelessWidget {
+  final String address;
+  const AddressWidget({Key? key, required this.address}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Business Address",
+          style:
+              TextStyle(fontWeight: FontWeight.w400, color: Color(0xFF6B7281)),
+        ),
+        const SizedBox(
+          height: 1,
+        ),
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              //color: AppColor.background,
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(width: 0.8, color: const Color(0xFF6B7281))),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              minHeight: 100,
+              minWidth: double.infinity,
+              maxWidth: double.infinity,
+            ),
+            child: Text(
+              address,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+      ],
+    );
+  }
+}
+
+class BusinessAddressDialog extends StatefulWidget {
+  const BusinessAddressDialog({Key? key}) : super(key: key);
+
+  @override
+  State<BusinessAddressDialog> createState() => _BusinessAddressDialogState();
+}
+
+class _BusinessAddressDialogState extends State<BusinessAddressDialog> {
+  late TextEditingController _zipcodeController;
+  late TextEditingController _buildingController;
+  late TextEditingController _streetController;
+  late TextEditingController _cityController;
+  late TextEditingController _stateController;
+
+  @override
+  void initState() {
+    super.initState();
+    _zipcodeController = TextEditingController();
+    _buildingController = TextEditingController();
+    _streetController = TextEditingController();
+    _cityController = TextEditingController();
+    _stateController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _zipcodeController.dispose();
+    _buildingController.dispose();
+    _streetController.dispose();
+    _cityController.dispose();
+    _stateController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          padding: const EdgeInsets.all(14.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomTextField(
+                label: "Pincode",
+                controller: _zipcodeController,
+                textInputType: TextInputType.number,
+              ),
+              CustomTextField(
+                label: "Building, Company, Apartment",
+                controller: _buildingController,
+              ),
+              CustomTextField(
+                label: "Area, Street",
+                controller: _streetController,
+              ),
+              CustomTextField(
+                label: "Town/City",
+                controller: _cityController,
+              ),
+              CustomTextField(
+                label: "State",
+                controller: _stateController,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: AcceptButton(
+                  label: "Save",
+                  borderRadius: BorderRadius.circular(5.0),
+                  onPressed: () {
+                    Navigator.of(context).pop([
+                      BusinessAddress(
+                          zipcode: _zipcodeController.text,
+                          building: _buildingController.text,
+                          street: _streetController.text,
+                          city: _cityController.text,
+                          state: _stateController.text)]
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

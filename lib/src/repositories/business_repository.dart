@@ -16,11 +16,10 @@ class BusinessRepository {
 
   BusinessRepository({required this.db, required this.restClient});
 
-
-  Future<RetailLocationEntity> _findAndPersistBusiness(String businessId) async {
+  Future<RetailLocationEntity> _findAndPersistBusiness(
+      String businessId) async {
     try {
-      var option =
-      RestOptions(path: '/business/$businessId');
+      var option = RestOptions(path: '/business/$businessId');
       var rawResp = await restClient.get(restOptions: option);
       if (rawResp.statusCode == 200) {
         try {
@@ -28,13 +27,22 @@ class BusinessRepository {
               restClient.parsedResponse(rawResp));
 
           var entity = RetailLocationEntity(
-              rtlLocId: resp.businessId,
-              version: 1,
-              createTime: DateTime.parse(resp.createdAt),
-              storeName: resp.name,
-              storeNumber: resp.businessId,
-              storeContact: resp.phone,
-              address1: resp.address
+            rtlLocId: resp.businessId,
+            version: 1,
+            createTime: resp.createdAt,
+            storeName: resp.name,
+            storeNumber: resp.businessId,
+            storeContact: resp.phone,
+            address1: resp.address1,
+            address2: resp.address2,
+            city: resp.city,
+            state: resp.state,
+            country: resp.country,
+            pan: resp.pan,
+            gst: resp.gst,
+            currencyId: resp.currency,
+            locale: resp.locale,
+            postalCode: resp.postalCode,
           );
           await db.retailLocationDao.insertBulk(entity);
           return entity;
@@ -92,11 +100,20 @@ class BusinessRepository {
           var entity = RetailLocationEntity(
             rtlLocId: resp.businessId,
             version: 1,
-            createTime: DateTime.parse(resp.createdAt),
+            createTime: resp.createdAt,
             storeName: resp.name,
             storeNumber: resp.businessId,
             storeContact: resp.phone,
-            address1: resp.address
+            address1: resp.address1,
+            address2: resp.address2,
+            city: resp.city,
+            state: resp.state,
+            country: resp.country,
+            pan: resp.pan,
+            gst: resp.gst,
+            currencyId: resp.currency,
+            locale: resp.locale,
+            postalCode: resp.postalCode,
           );
           await db.retailLocationDao.insertBulk(entity);
           return entity;

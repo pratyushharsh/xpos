@@ -8,6 +8,7 @@ class RetailLocationEntity extends BaseEntity {
   @PrimaryKey()
   final String rtlLocId;
   final String? storeName;
+  final String? storeEmail;
   final String? storeContact;
   final String? storeNumber;
   final String? currencyId;
@@ -15,6 +16,7 @@ class RetailLocationEntity extends BaseEntity {
   final String? address1;
   final String? address2;
   final String? city;
+  final String? state;
   final String? country;
   final String? postalCode;
   final String? gst;
@@ -27,6 +29,7 @@ class RetailLocationEntity extends BaseEntity {
   RetailLocationEntity(
       {required this.rtlLocId,
       this.storeName,
+        this.storeEmail,
       this.storeContact,
       this.storeNumber,
       this.currencyId,
@@ -34,10 +37,11 @@ class RetailLocationEntity extends BaseEntity {
       this.address1,
       this.address2,
       this.city,
+        this.state,
       this.country,
       this.postalCode,
-        this.gst,
-        this.pan,
+      this.gst,
+      this.pan,
       required this.createTime,
       this.version = 1,
       this.lastChangedAt,
@@ -74,6 +78,7 @@ class RetailLocationEntity extends BaseEntity {
     return {
       'rtlLocId': rtlLocId,
       'storeName': storeName,
+      'storeEmail': storeEmail,
       'storeContact': storeContact,
       'storeNumber': storeNumber,
       'currencyId': currencyId,
@@ -81,6 +86,7 @@ class RetailLocationEntity extends BaseEntity {
       'address1': address1,
       'address2': address2,
       'city': city,
+      'state': state,
       'country': country,
       'postalCode': postalCode,
       'gst': gst,
@@ -96,6 +102,7 @@ class RetailLocationEntity extends BaseEntity {
     return RetailLocationEntity(
       rtlLocId: map['rtlLocId'] as String,
       storeName: map['storeName'] as String,
+      storeEmail: map['storeEmail'] as String,
       storeContact: map['storeContact'] as String,
       storeNumber: map['storeNumber'] as String,
       currencyId: map['currencyId'] as String,
@@ -103,6 +110,7 @@ class RetailLocationEntity extends BaseEntity {
       address1: map['address1'] as String,
       address2: map['address2'] as String,
       city: map['city'] as String,
+      state: map['state'] as String,
       country: map['country'] as String,
       postalCode: map['postalCode'] as String,
       createTime: map['createTime'] as DateTime,
@@ -115,6 +123,7 @@ class RetailLocationEntity extends BaseEntity {
   RetailLocationEntity copyWith({
     String? rtlLocId,
     String? storeName,
+    String? storeEmail,
     String? storeContact,
     String? storeNumber,
     String? currencyId,
@@ -122,6 +131,7 @@ class RetailLocationEntity extends BaseEntity {
     String? address1,
     String? address2,
     String? city,
+    String? state,
     String? country,
     String? postalCode,
     String? gst,
@@ -135,6 +145,7 @@ class RetailLocationEntity extends BaseEntity {
     return RetailLocationEntity(
       rtlLocId: rtlLocId ?? this.rtlLocId,
       storeName: storeName ?? this.storeName,
+      storeEmail: storeEmail ?? this.storeEmail,
       storeContact: storeContact ?? this.storeContact,
       storeNumber: storeNumber ?? this.storeNumber,
       currencyId: currencyId ?? this.currencyId,
@@ -142,6 +153,7 @@ class RetailLocationEntity extends BaseEntity {
       address1: address1 ?? this.address1,
       address2: address2 ?? this.address2,
       city: city ?? this.city,
+      state: state ?? this.state,
       country: country ?? this.country,
       postalCode: postalCode ?? this.postalCode,
       gst: gst ?? this.gst,

@@ -9,3 +9,9 @@ class UpdateReceiptStatusEvent extends ReceiptDisplayEvent{
   final String status;
   UpdateReceiptStatusEvent(this.status);
 }
+
+class UpdateGlobalKey extends ReceiptDisplayEvent {
+  final List<GlobalKey> globalKey;
+
+  UpdateGlobalKey(this.globalKey);
+}

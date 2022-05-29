@@ -77,6 +77,7 @@ class ReceiptDisplayView extends StatelessWidget {
       create: (context) => ReceiptDisplayBloc(
           transId: transactionId,
           db: RepositoryProvider.of(context),
+          authBloc: RepositoryProvider.of(context),
           settingsRepo: RepositoryProvider.of(context))
         ..add(FetchReceiptDataEvent()),
       child: Container(
@@ -475,7 +476,7 @@ class ReceiptLineItem extends StatelessWidget {
         Expanded(
             flex: 2,
             child: Text(
-              "${Currency.inr}${lineItem.amount}",
+              "${Currency.inr}${lineItem.amount.toStringAsFixed(2)}",
               textAlign: TextAlign.right,
             )),
       ],
@@ -519,7 +520,7 @@ class ReceiptSummary extends StatelessWidget {
                   "Subtotal",
                   style: style,
                 ),
-                Text("${Currency.inr}${state.header!.subtotal}")
+                Text("${Currency.inr}${state.header!.subtotal.toStringAsFixed(2)}")
               ],
             ),
             Row(
@@ -536,14 +537,14 @@ class ReceiptSummary extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Tax", style: style),
-                Text("${Currency.inr}${state.header!.taxTotal}")
+                Text("${Currency.inr}${state.header!.taxTotal.toStringAsFixed(2)}")
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Total", style: style),
-                Text("${Currency.inr}${state.header!.total}")
+                Text("${Currency.inr}${state.header!.total.toStringAsFixed(2)}")
               ],
             ),
           ],
