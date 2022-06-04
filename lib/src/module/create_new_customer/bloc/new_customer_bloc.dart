@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:receipt_generator/src/entity/contact_entity.dart';
+import 'package:receipt_generator/src/entity/pos/contact_entity.dart';
 import 'package:receipt_generator/src/model/cust_party.dart';
 
 import '../../../repositories/app_database.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/all_customer/all_customer_view.dart';
 import 'package:receipt_generator/src/module/business/bloc/business_bloc.dart';
 import 'package:receipt_generator/src/module/business/business_view.dart';
@@ -15,11 +16,14 @@ import 'package:receipt_generator/src/module/receipt_display/receipt_display_vie
 import 'package:receipt_generator/src/module/receipt_setting/receipt_setting_view.dart';
 import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.dart';
 
+import '../module/create_new_item/modify_line_item_screen.dart';
+
 class RouteConfig {
 
   static const String splashScreen = "/";
   static const String homeScreen = "/home";
   static const String editItemScreen = "/edit-item";
+  static const String editSaleLineItemScreen = "/edit-sale-line-item";
   static const String allItemsScreen = "/list-items";
   static const String allReceiptScreen = "/list-receipt";
   static const String allCustomerScreen = "/all-customer";
@@ -73,6 +77,9 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => InvoiceDisplayView(transactionId: transId,));
       case customerDetailScreen:
         return MaterialPageRoute(builder: (_) => const CustomerDetailScreen(userId: "PRATY-123",));
+      case editSaleLineItemScreen:
+        var line = settings.arguments as SaleLine;
+        return MaterialPageRoute(builder: (_) => ModifyLineItemScreen(saleLine: line,));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

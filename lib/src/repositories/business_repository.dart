@@ -6,7 +6,7 @@ import 'package:receipt_generator/src/model/api/create_business_response.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
-import '../entity/entity.dart';
+import '../entity/pos/entity.dart';
 
 class BusinessRepository {
   final log = Logger('BusinessRepository');

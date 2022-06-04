@@ -20,8 +20,7 @@ class CustomInvoiceColumn extends MultiChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      print("Build Done");
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       onLineItemOverflow(_heights, _maxHeight);
     });
     return RenderCustomInvoiceColumn(this);
@@ -116,11 +115,6 @@ class RenderCustomInvoiceColumn extends RenderBox
     size = Size(width, constraints.maxHeight);
   }
 
-  @override
-  Size computeDryLayout(BoxConstraints constraints) {
-    // TODO: implement computeDryLayout
-    return super.computeDryLayout(constraints);
-  }
 
   @override
   void paint(PaintingContext context, Offset offset) {

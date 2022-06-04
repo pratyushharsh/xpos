@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/module/all_customer/bloc/all_customer_bloc.dart';
 
 class AllCustomerView extends StatelessWidget {

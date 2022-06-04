@@ -1,14 +1,14 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
+import 'package:receipt_generator/src/repositories/config_database.dart';
 import 'package:receipt_generator/src/repositories/custom_storage.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 import 'bloc_observer.dart';
-import 'firebase_options.dart';
 import 'log.dart';
 import 'my_app.dart';
 
@@ -20,9 +20,10 @@ Future<void> main() {
     initRootLogger();
     final db =
         await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
 
-    // AmplifyAuthCognito auth = AmplifyAuthCognito();
+    final configDb =
+    await $FloorConfigDatabase.databaseBuilder('config_database.db').build();
+
     await _initAmplifyFlutter();
 
     var customStorage =  CustomStorage();

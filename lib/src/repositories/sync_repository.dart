@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:receipt_generator/src/entity/types.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/api/api.dart';
 
-import '../entity/entity.dart';
+import '../entity/pos/entity.dart';
 import '../util/helper/rest_api.dart';
 import 'app_database.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-import 'package:receipt_generator/src/entity/contact_entity.dart';
+import 'package:receipt_generator/src/entity/pos/contact_entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
@@ -20,10 +20,10 @@ class NewReceiptView extends StatelessWidget {
     return BlocProvider(
       lazy: false,
       create: (ctx) => CreateNewReceiptBloc(
-        db: RepositoryProvider.of(ctx),
-        contactDb: RepositoryProvider.of(ctx),
-        authenticationBloc: BlocProvider.of(ctx)
-      )..add(OnInitiateNewTransaction()),
+          db: RepositoryProvider.of(ctx),
+          contactDb: RepositoryProvider.of(ctx),
+          authenticationBloc: BlocProvider.of(ctx))
+        ..add(OnInitiateNewTransaction()),
       child: Container(
         color: AppColor.background,
         child: SafeArea(
@@ -123,8 +123,14 @@ class BuildLineItem extends StatelessWidget {
         builder: (context, state) {
       return Column(
         children: state.lineItem
-            .map((e) => NewLineItem(
-                  saleLine: e,
+            .map((e) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    NewLineItem(
+                      saleLine: e,
+                    ),
+                    const Divider()
+                  ],
                 ))
             .toList(),
       );
@@ -194,38 +200,29 @@ class LineItemHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
-        Expanded(
-          flex: 3,
-          child: Text(
-            "Product Name",
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Text(
-            "Unit Price",
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            "Qty",
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
+      children: [
+        const SizedBox(width: 60,),
+        Expanded(child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            Text(
+              "Product Desc",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            Text(
+              "UnitCost",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            Text(
+              "Qty",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            Text(
               "Amount",
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
-          ),
-        ),
+          ],
+        )),
       ],
     );
   }
@@ -236,68 +233,146 @@ class NewLineItem extends StatelessWidget {
 
   const NewLineItem({Key? key, required this.saleLine}) : super(key: key);
 
+  static const textStyle = TextStyle(fontWeight: FontWeight.bold);
+  // Widget test() {
+  //   return Row(
+  //     children: [
+  //       Expanded(
+  //         flex: 3,
+  //         child: Text(
+  //           saleLine.product.description,
+  //         ),
+  //       ),
+  //       Expanded(
+  //         flex: 2,
+  //         child: TextFormField(
+  //           textAlign: TextAlign.right,
+  //           initialValue: saleLine.price.toStringAsFixed(2),
+  //           keyboardType: TextInputType.number,
+  //           onChanged: (val) {
+  //             BlocProvider.of<CreateNewReceiptBloc>(context).add(
+  //                 OnUnitPriceUpdate(
+  //                     saleLine: saleLine, unitPrice: double.parse(val)));
+  //           },
+  //           decoration: const InputDecoration(
+  //             contentPadding:
+  //             EdgeInsets.symmetric(vertical: 8, horizontal: 3),
+  //             border: OutlineInputBorder(),
+  //             isDense: true,
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(
+  //         width: 10,
+  //       ),
+  //       Expanded(
+  //         flex: 1,
+  //         child: TextFormField(
+  //           textAlign: TextAlign.right,
+  //           keyboardType: TextInputType.number,
+  //           onChanged: (val) {
+  //             BlocProvider.of<CreateNewReceiptBloc>(context).add(
+  //                 OnQuantityUpdate(
+  //                     saleLine: saleLine, quantity: double.parse(val)));
+  //           },
+  //           initialValue: saleLine.qty.toString(),
+  //           decoration: const InputDecoration(
+  //             contentPadding:
+  //             EdgeInsets.symmetric(vertical: 8, horizontal: 3),
+  //             border: OutlineInputBorder(),
+  //             isDense: true,
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(
+  //         width: 10,
+  //       ),
+  //       Expanded(
+  //         flex: 2,
+  //         child: Align(
+  //             alignment: Alignment.centerRight,
+  //             child: Text(
+  //                 "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}")),
+  //       ),
+  //     ],
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(2),
-      child: Row(
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(RouteConfig.editSaleLineItemScreen, arguments: saleLine);
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 3,
-            child: Text(
-              saleLine.product.description,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                  decoration: BoxDecoration(border: Border.all(width: 1)),
+                  child: Image.network(
+                    "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+                    fit: BoxFit.cover,
+                    height: 50,
+                    width: 50,
+                  )),
+              const SizedBox(width: 8,),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(saleLine.product.description),
+                    Text(saleLine.product.description),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(saleLine.product.productId ??
+                            saleLine.product.skuCode ??
+                            "",  style: textStyle,),
+                        Text(
+                            "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}",  style: textStyle,),
+                        Text(saleLine.qty.toString(),  style: textStyle,),
+                        Text(
+                            "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}", style: textStyle,),
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ],
           ),
-          Expanded(
-            flex: 2,
-            child: TextFormField(
-              textAlign: TextAlign.right,
-              initialValue: saleLine.price.toStringAsFixed(2),
-              keyboardType: TextInputType.number,
-              onChanged: (val) {
-                BlocProvider.of<CreateNewReceiptBloc>(context).add(
-                    OnUnitPriceUpdate(
-                        saleLine: saleLine, unitPrice: double.parse(val)));
-              },
-              decoration: const InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 3),
-                border: OutlineInputBorder(),
-                isDense: true,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.only(right: 8, top: 4),
+                    child: Icon(Icons.discount, color: Colors.brown, size: 16,)
+                  ),
+                  Text("10% off on all"),
+                ],
               ),
-            ),
+              Text("-${Currency.inr}50.00", style: textStyle,)
+            ],
           ),
-          const SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            flex: 1,
-            child: TextFormField(
-              textAlign: TextAlign.right,
-              keyboardType: TextInputType.number,
-              onChanged: (val) {
-                BlocProvider.of<CreateNewReceiptBloc>(context).add(
-                    OnQuantityUpdate(
-                        saleLine: saleLine, quantity: double.parse(val)));
-              },
-              initialValue: saleLine.qty.toString(),
-              decoration: const InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 3),
-                border: OutlineInputBorder(),
-                isDense: true,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: const [
+                  Padding(
+                      padding: EdgeInsets.only(right: 8, top: 4),
+                      child: Icon(Icons.discount, color: Colors.brown, size: 16,)
+                  ),
+                  Text("10% off on all"),
+                ],
               ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            flex: 2,
-            child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                    "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}")),
+              Text("-${Currency.inr}50.00", style: textStyle,)
+            ],
           ),
         ],
       ),

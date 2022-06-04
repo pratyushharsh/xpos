@@ -10,7 +10,7 @@ import 'package:pdf/pdf.dart';
 import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 
 import '../../widgets/appbar_leading.dart';
 import 'bloc/receipt_display_bloc.dart';

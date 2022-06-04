@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:number_to_words/number_to_words.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/util/extension/string_extension.dart';
 import 'package:receipt_generator/src/widgets/appbar_leading.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -294,8 +295,8 @@ class InvoiceBlock extends StatelessWidget {
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
         child: Container(
-          height: MediaQuery.of(context).size.width * 1.414,
-          width: MediaQuery.of(context).size.width,
+          height: math.min(MediaQuery.of(context).size.width, 600) * 1.414,
+          width: math.min(MediaQuery.of(context).size.width, 600),
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(border: Border.all(width: 0.4)),
           padding: const EdgeInsets.all(2),
@@ -1369,7 +1370,7 @@ class InvoiceFooter extends StatelessWidget {
       child: Column(
         children: [
           const InvoiceTaxDetail(),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [

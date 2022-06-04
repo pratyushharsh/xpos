@@ -15,6 +15,7 @@ import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
 import 'package:receipt_generator/src/repositories/setting_repository.dart';
+import 'package:receipt_generator/src/repositories/sync_config_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
@@ -37,24 +38,31 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(create: (context) => ContactRepository()),
           RepositoryProvider(create: (context) => userPool),
           RepositoryProvider(
-              create: (context) => BusinessRepository(
-                    db: database,
-                    restClient: restClient,
-                  )),
+            create: (context) => BusinessRepository(
+              db: database,
+              restClient: restClient,
+            ),
+          ),
           RepositoryProvider(
-              create: (context) => SyncRepository(
-                    db: database,
-                    restClient: restClient,
-                  )),
+            create: (context) => SyncRepository(
+              db: database,
+              restClient: restClient,
+            ),
+          ),
           RepositoryProvider(
-              create: (context) =>
-                  SettingsRepository(db: database, restClient: restClient))
+            create: (context) => SyncConfigRepository(),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                SettingsRepository(db: database, restClient: restClient),
+          )
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(
             lazy: false,
             create: (context) => BackgroundSyncBloc(
               syncRepository: RepositoryProvider.of(context),
+              syncConfigRepository: RepositoryProvider.of(context)
             ),
           ),
           BlocProvider(

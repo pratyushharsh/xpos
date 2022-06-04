@@ -1,5 +1,5 @@
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:receipt_generator/src/entity/contact_entity.dart';
+import 'package:receipt_generator/src/entity/pos/contact_entity.dart';
 
 class ContactRepository {
   List<ContactEntity>? _contacts;

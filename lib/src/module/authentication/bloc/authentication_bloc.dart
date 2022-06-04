@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:receipt_generator/src/entity/business_entity.dart';
+import 'package:receipt_generator/src/entity/pos/business_entity.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 

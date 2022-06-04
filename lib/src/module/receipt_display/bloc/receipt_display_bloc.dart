@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/hsn_tax_summary.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';

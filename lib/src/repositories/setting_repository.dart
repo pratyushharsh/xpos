@@ -3,7 +3,7 @@ import 'package:receipt_generator/src/config/code_value.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
-import '../entity/entity.dart';
+import '../entity/pos/entity.dart';
 import 'app_database.dart';
 
 class SettingsRepository {

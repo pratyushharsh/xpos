@@ -46,12 +46,28 @@ class SettingsScreen extends StatelessWidget {
           ),
           SectionWidget(
             data: Detail(
+              title: "Store Setting",
+              subtitle: "Setup Your Store And Give Permission",
+              icon: Icons.home_repair_service,
+              children: [
+                SettingsItem(text: "Feature Settings", onTap: () {}),
+                SettingsItem(text: "Tax Configuration", onTap: () {}),
+                SettingsItem(text: "Receipt Config", onTap: () {
+                }),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          SectionWidget(
+            data: Detail(
               title: "Settings",
               subtitle: "Modify your forms as required",
               icon: Icons.settings,
               children: [
                 SettingsItem(text: "Sync Data", onTap: () async {
-                  BlocProvider.of<BackgroundSyncBloc>(context).add(SyncAllDataEvent());
+                  BlocProvider.of<BackgroundSyncBloc>(context).add(SyncAllConfigDataEvent());
                 }),
                 SettingsItem(text: "Invoice Setting", onTap: () {}),
                 SettingsItem(text: "Receipt Setting", onTap: () {

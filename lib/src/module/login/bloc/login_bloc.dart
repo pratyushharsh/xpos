@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:bloc/bloc.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
@@ -14,7 +13,6 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final log = Logger('LoginBloc');
 
-  FirebaseAuth auth = FirebaseAuth.instance;
   final CognitoUserPool userPool;
   final AuthenticationBloc authenticationBloc;
 
@@ -23,11 +21,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<VerifyUserOtp>(_onVerifyUserOtp);
   }
 
-  void verificationCompleted(
-      PhoneAuthCredential phoneAuthCredential) async {
-    log.info(phoneAuthCredential);
-    await auth.signInWithCredential(phoneAuthCredential);
-  }
 
   void _signUpUser(String phoneNumber) async {
     try {
@@ -52,7 +45,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } else if (Platform.isAndroid) {
         AndroidDeviceInfo info = await deviceInfo.androidInfo;
         deviceName = '${info.device}:${info.model}:${info.hardware}:${info.version}';
+      } else if (Platform.isMacOS) {
+        MacOsDeviceInfo info = await deviceInfo.macOsInfo;
+        deviceName = '${info.computerName}:${info.model}:${info.osRelease}:${info.systemGUID}';
+      } else if (Platform.isWindows) {
+        WindowsDeviceInfo info = await deviceInfo.windowsInfo;
+        deviceName = '${info.computerName}:${info.numberOfCores}:${info.systemMemoryInMegabytes}';
       }
+      log.info("Logging to $deviceName}");
 
 
       final cognitoUser = CognitoUser(event.phoneNumber, userPool, deviceName: deviceName);

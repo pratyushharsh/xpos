@@ -1,4 +1,4 @@
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
 
 class SaleLine {
@@ -7,20 +7,22 @@ class SaleLine {
   final double qty;
   final double price;
   final double discount;
-
-  get tax {
-    var incTax = (price - discount) * qty;
-    var taxRate = product.tax ?? 0;
-    var t = incTax / (100 + taxRate * 100) * 100;
-    return incTax - t;
-  }
+  final List<SaleTaxModifier> taxModifier;
 
   SaleLine(
       {required this.seq,
       required this.product,
       this.qty = 1,
+      this.taxModifier = const [],
       required this.price,
       this.discount = 0.0});
+
+  get tax {
+    var incTax = (price - discount) * qty;
+    var taxRate = product.tax ?? 0;
+    var t = incTax / (100 + taxRate) * 100;
+    return incTax - t;
+  }
 
   double get amount {
     return price * qty - discount;
@@ -59,7 +61,6 @@ class SaleLine {
       uom: product.uom,
     );
   }
-
   // static SaleLine fromEntity(TransactionLineItemEntity lineItem) {
   //   return SaleLine(seq: lineItem.transSeq, product: product, price: lineItem.price);
   // }

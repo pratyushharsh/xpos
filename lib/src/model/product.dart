@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 
 @immutable
 class ProductModel {

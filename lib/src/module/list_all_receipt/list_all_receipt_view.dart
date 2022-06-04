@@ -4,7 +4,7 @@ import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/formatter.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/module/list_all_receipt/bloc/list_all_receipt_bloc.dart';
 
 class ListAllReceiptView extends StatelessWidget {
