@@ -1,14 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
-import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
+import 'package:receipt_generator/src/repositories/sequence_repository.dart';
+import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 
 part 'create_new_receipt_event.dart';
 part 'create_new_receipt_state.dart';
@@ -16,11 +18,18 @@ part 'create_new_receipt_state.dart';
 class CreateNewReceiptBloc
     extends Bloc<CreateNewReceiptEvent, CreateNewReceiptState> {
   final log = Logger('CreateNewReceiptBloc');
-  final AppDatabase db;
+  final Isar db;
   final AuthenticationBloc authenticationBloc;
   final ContactRepository contactDb;
+  final SequenceRepository sequenceRepository;
+  final TransactionRepository transactionReposotory;
 
-  CreateNewReceiptBloc({required this.db, required this.contactDb, required this.authenticationBloc})
+  CreateNewReceiptBloc(
+      {required this.db,
+      required this.contactDb,
+        required this.transactionReposotory,
+      required this.authenticationBloc,
+      required this.sequenceRepository})
       : super(const CreateNewReceiptState(
             status: CreateNewReceiptStatus.initial)) {
     on<AddItemToReceipt>(_onAddNewLineItem);
@@ -36,8 +45,8 @@ class CreateNewReceiptBloc
 
   void _onInitiateTransaction(OnInitiateNewTransaction event,
       Emitter<CreateNewReceiptState> emit) async {
-    var newSeq = await db.sequenceDao.getNextSequence("RECEIPT_ID");
-    emit(state.copyWith(transSeq: newSeq.nextSeq));
+    var newSeq = (await sequenceRepository.getNextSequence(SequenceType.trans)).nextSeq;
+    emit(state.copyWith(transSeq: newSeq));
   }
 
   void _onAddNewLineItem(
@@ -77,7 +86,7 @@ class CreateNewReceiptBloc
   // @TODO List different transaction status INITIATED, SALE_COMPLETED, SUSPENDED, CANCELLED, RETURNED, EXCHANGED
   void _onCreateNewTransaction(
       OnCreateNewTransaction event, Emitter<CreateNewReceiptState> emit) async {
-    String? storeId = authenticationBloc.state.store?.rtlLocId;
+    int? storeId = authenticationBloc.state.store?.rtlLocId;
     if (storeId == null) throw Exception("Store Not Found");
 
     TransactionHeaderEntity header = TransactionHeaderEntity(
@@ -93,21 +102,26 @@ class CreateNewReceiptBloc
         customerId: state.selectedCustomer?.contactId,
         customerName: state.selectedCustomer?.name,
         customerPhone: state.selectedCustomer?.phoneNumber,
-        shippingAddress: state.selectedCustomer?.shippingAddress, storeId: storeId, createTime: DateTime.now());
+        shippingAddress: state.selectedCustomer?.shippingAddress,
+        storeId: storeId,
+        createTime: DateTime.now());
     List<TransactionLineItemEntity> lineItems =
         state.lineItem.map((e) => e.toEntity(state.transSeq)).toList();
 
     // Create If Contact Does not exist else override
     if (state.selectedCustomer != null) {
       try {
-        await db.contactDao.insertBulk(state.selectedCustomer!);
-      } catch (e) {
+        db.writeTxn((isar) async {
+          if (state.selectedCustomer != null) {
+            await isar.contactEntitys.put(state.selectedCustomer!);
+          }
+        });      } catch (e) {
         log.severe(e);
       }
     }
 
     try {
-      await db.transactionDao.createNewSale(header, lineItems);
+      await transactionReposotory.createNewSale(header, lineItems);
       emit(state.copyWith(status: CreateNewReceiptStatus.paymentAwaiting));
     } catch (e) {
       log.severe(e);
@@ -119,16 +133,18 @@ class CreateNewReceiptBloc
       OnCustomerNameChange event, Emitter<CreateNewReceiptState> emit) async {
     try {
       if (event.name != null && event.name!.isNotEmpty) {
-        var customer =
-            await db.contactDao.findAllProductsByName('%${event.name}%');
+        var customer = await db.contactEntitys
+            .filter()
+            .nameContains('${event.name}', caseSensitive: false)
+            .findAll();
         var contacts = await contactDb.getContact();
         log.info("${contacts.length} contacts found.");
         var x = contacts
             .where((con) {
               if (event.name != null) {
                 if (con.name
-                        .toLowerCase()
-                        .contains(event.name!.toLowerCase())) {
+                    .toLowerCase()
+                    .contains(event.name!.toLowerCase())) {
                   return true;
                 }
                 return false;

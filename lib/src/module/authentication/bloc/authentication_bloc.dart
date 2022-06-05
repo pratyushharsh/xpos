@@ -1,6 +1,7 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/business_entity.dart';
@@ -18,7 +19,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   final log = Logger('AuthenticationBloc');
 
   final CognitoUserPool userPool;
-  final AppDatabase db;
+  final Isar db;
   final BusinessRepository businessRepository;
   final BackgroundSyncBloc sync;
 
@@ -72,7 +73,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           String tmp = stores.value!;
           List<String> userStores = tmp.split(";");
 
-          var rtlLoc = await businessRepository.getBusinessById(userStores[0].split(":")[1]);
+          var rtlLoc = await businessRepository.getBusinessById(int.parse(userStores[0].split(":")[1]));
           sync.add(StartSyncEvent(rtlLoc.rtlLocId));
           emit(AuthenticationState.authenticated(user, tmp, rtlLoc));
         } else {
@@ -92,7 +93,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       String tmp = event.stores!.value!;
       List<String> userStores = tmp.split(";");
 
-      var rtlLoc = await businessRepository.getBusinessById(userStores[0].split(":")[1]);
+      var rtlLoc = await businessRepository.getBusinessById(int.parse(userStores[0].split(":")[1]));
       sync.add(StartSyncEvent(rtlLoc.rtlLocId));
       emit(AuthenticationState.authenticated(event.user, tmp, rtlLoc));
     } else {

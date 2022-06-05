@@ -63,7 +63,7 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => const InvoiceView());
       case businessViewScreen:
         var bId = settings.arguments;
-        if (bId is String) {
+        if (bId is int) {
           return MaterialPageRoute(builder: (_) => BusinessView(operation: BusinessOperation.update, businessId: bId,));
         }
         return MaterialPageRoute(builder: (_) => const BusinessView());

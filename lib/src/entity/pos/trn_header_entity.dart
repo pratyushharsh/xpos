@@ -1,12 +1,14 @@
-import 'package:floor/floor.dart';
+import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
-@Entity(tableName: 'trn_header')
+part 'trn_header_entity.g.dart';
+
+@Collection()
 class TransactionHeaderEntity extends BaseEntity {
-  @PrimaryKey(autoGenerate: true)
+  @Id()
   final int transId;
 
-  final String storeId;
+  final int storeId;
   final String transactionType;
   final DateTime businessDate;
   final DateTime beginDatetime;
@@ -27,6 +29,10 @@ class TransactionHeaderEntity extends BaseEntity {
   late DateTime? updateTime;
   late DateTime? lastChangedAt;
   late int version;
+
+  final lineItems = IsarLinks<TransactionLineItemEntity>();
+
+  final paymentLineItems = IsarLinks<TransactionPaymentLineItemEntity>();
 
   TransactionHeaderEntity(
       {required this.transId,
@@ -63,7 +69,7 @@ class TransactionHeaderEntity extends BaseEntity {
 
   @override
   String getStoreId() {
-    return storeId;
+    return '$storeId';
   }
 
   @override
@@ -106,7 +112,7 @@ class TransactionHeaderEntity extends BaseEntity {
   factory TransactionHeaderEntity.fromMap(Map<String, dynamic> map) {
     return TransactionHeaderEntity(
       transId: map['trans_id'] as int,
-      storeId: map['store_id'] as String,
+      storeId: map['store_id'] as int,
       transactionType: map['transaction_type'] as String,
       businessDate: DateTime.tryParse(map['business_date']??"") ?? DateTime.now(),
       beginDatetime: DateTime.tryParse(map['begin_timestamp']??"") ?? DateTime.now(),
@@ -131,7 +137,7 @@ class TransactionHeaderEntity extends BaseEntity {
 
   TransactionHeaderEntity copyWith({
     int? transId,
-    String? storeId,
+    int? storeId,
     String? transactionType,
     DateTime? businessDate,
     DateTime? beginDatetime,

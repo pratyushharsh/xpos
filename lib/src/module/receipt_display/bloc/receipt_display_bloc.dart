@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/hsn_tax_summary.dart';
@@ -18,7 +19,7 @@ class ReceiptDisplayBloc
     extends Bloc<ReceiptDisplayEvent, ReceiptDisplayState> {
   final log = Logger('ReceiptDisplayBloc');
   final int transId;
-  final AppDatabase db;
+  final Isar db;
   final SettingsRepository settingsRepo;
   final AuthenticationBloc authBloc;
 
@@ -36,14 +37,18 @@ class ReceiptDisplayBloc
       ReceiptSettingsModel recSetting = await settingsRepo.getReceiptSettings();
       emit(state.copyWith(
           status: ReceiptDisplayStatus.loading, receiptSettings: recSetting));
-      TransactionHeaderEntity? header =
-          await db.transactionDao.findHeaderByTransactionSeq(transId);
-      List<TransactionLineItemEntity> lineItem =
-          await db.transactionDao.findLineItemByTransactionSeq(transId);
+
+      TransactionHeaderEntity? transaction = await db.transactionHeaderEntitys.get(transId);
+      if (transaction == null) {
+        log.severe("Transaction $transId does not exists");
+        emit(state.copyWith(status: ReceiptDisplayStatus.failure));
+        return;
+      }
+      await transaction.lineItems.load();
 
       // build tax detail
       HashMap<String, List<TransactionLineItemEntity>> hsnCategory = HashMap();
-      for (TransactionLineItemEntity li in lineItem) {
+      for (TransactionLineItemEntity li in transaction.lineItems.toList()) {
         if (li.hsn == null) continue;
         hsnCategory.putIfAbsent(li.hsn!, () => List.empty(growable: true));
         hsnCategory[li.hsn!]?.add(li);
@@ -72,16 +77,11 @@ class ReceiptDisplayBloc
                       previousValue + element.taxAmount)))
           .toList(growable: false);
 
-      // List<TransactionLineItemEntity> tmp = await db.transactionDao.getAllTransactionLineItem();
-      if (header != null) {
-        emit(state.copyWith(
-            header: header,
-            lineItems: lineItem,
-            status: ReceiptDisplayStatus.success,
-            taxSummary: taxDetail));
-      } else {
-        emit(state.copyWith(status: ReceiptDisplayStatus.failure));
-      }
+      emit(state.copyWith(
+          header: transaction,
+          lineItems: transaction.lineItems.toList(),
+          status: ReceiptDisplayStatus.success,
+          taxSummary: taxDetail));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: ReceiptDisplayStatus.failure));
@@ -91,11 +91,12 @@ class ReceiptDisplayBloc
   void _onUpdateReceiptStatusEvent(
       UpdateReceiptStatusEvent event, Emitter<ReceiptDisplayState> emit) async {
     try {
-      var data = await db.transactionDao
-          .updateTransactionStatus(transId, event.status);
-      if (data) {
-        add(FetchReceiptDataEvent());
-      }
+      // @TODO
+      // var data = await db.transactionDao
+      //     .updateTransactionStatus(transId, event.status);
+      // if (data) {
+      //   add(FetchReceiptDataEvent());
+      // }
     } catch (e) {
       log.severe(e);
     }

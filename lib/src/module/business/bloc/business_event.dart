@@ -4,7 +4,7 @@ part of 'business_bloc.dart';
 abstract class BusinessEvent {}
 
 class LoadBusinessDetail extends BusinessEvent {
-  final String? businessId;
+  final int? businessId;
 
   LoadBusinessDetail(this.businessId);
 }

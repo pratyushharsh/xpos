@@ -1,15 +1,15 @@
+import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/config/code_value.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 import '../entity/pos/entity.dart';
-import 'app_database.dart';
 
 class SettingsRepository {
-  final log = Logger('BusinessRepository');
+  final log = Logger('SettingsRepository');
 
-  final AppDatabase db;
+  final Isar db;
   final RestApiClient restClient;
 
   SettingsRepository({required this.db, required this.restClient});
@@ -18,7 +18,7 @@ class SettingsRepository {
       ReceiptSettingsModel req) async {
     try {
       if (req.storeNumber != null) {
-        await db.settingDao.insertBulk(SettingEntity(
+        await db.settingEntitys.put(SettingEntity(
           category: SettingsCategory.receipt,
           subCategory: SettingsSubCategory.receiptPhoneNumber,
           value: req.storeNumber!,
@@ -26,7 +26,7 @@ class SettingsRepository {
       }
 
       if (req.tagLine != null) {
-        await db.settingDao.insertBulk(SettingEntity(
+        await db.settingEntitys.put(SettingEntity(
           category: SettingsCategory.receipt,
           subCategory: SettingsSubCategory.receiptTagLine,
           value: req.tagLine!,
@@ -34,7 +34,7 @@ class SettingsRepository {
       }
 
       if (req.storeAddress != null) {
-        await db.settingDao.insertBulk(SettingEntity(
+        await db.settingEntitys.put(SettingEntity(
           category: SettingsCategory.receipt,
           subCategory: SettingsSubCategory.receiptStoreAddress,
           value: req.storeAddress!,
@@ -42,7 +42,7 @@ class SettingsRepository {
       }
 
       if (req.footerTitle != null) {
-        await db.settingDao.insertBulk(SettingEntity(
+        await db.settingEntitys.put(SettingEntity(
           category: SettingsCategory.receipt,
           subCategory: SettingsSubCategory.receiptFooterTitle,
           value: req.footerTitle!,
@@ -50,7 +50,7 @@ class SettingsRepository {
       }
 
       if (req.footerSubtitle != null) {
-        await db.settingDao.insertBulk(SettingEntity(
+        await db.settingEntitys.put(SettingEntity(
           category: SettingsCategory.receipt,
           subCategory: SettingsSubCategory.receiptFooterSubTitle,
           value: req.footerSubtitle!,
@@ -63,8 +63,7 @@ class SettingsRepository {
   }
 
   Future<ReceiptSettingsModel> getReceiptSettings() async {
-    List<SettingEntity> res =
-        await db.settingDao.findSettingsByCategory(SettingsCategory.receipt);
+    List<SettingEntity> res = await db.settingEntitys.filter().categoryEqualTo(SettingsCategory.receipt).findAll();
 
     return ReceiptSettingsModel(
       storeNumber: res

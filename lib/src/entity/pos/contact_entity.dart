@@ -1,25 +1,25 @@
-import 'package:floor/floor.dart';
+import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
+part 'contact_entity.g.dart';
 
-@Entity(tableName: 'customer', indices: [
-  Index(
-    value: ['name'],
-  ),
-  Index(
-    value: ['phoneNumber'],
-  ),
-  Index(
-    value: ['email'],
-  ),
-])
+@Collection()
 class ContactEntity extends BaseEntity {
 
-  @PrimaryKey()
+  @Id()
+  final int? id;
+
+  @Index(unique: true)
   final String contactId;
   final String storeId;
+
+  @Index()
   final String name;
+
+  @Index()
   final String? phoneNumber;
+
+  @Index()
   final String? email;
   final String? shippingAddress;
   final String? billingAddress;
@@ -30,6 +30,7 @@ class ContactEntity extends BaseEntity {
   late int version;
 
   ContactEntity({
+    this.id,
     required this.contactId,
     required this.name,
     required this.storeId,

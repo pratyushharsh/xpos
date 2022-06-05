@@ -1,10 +1,13 @@
-import 'package:floor/floor.dart';
+import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
-@Entity(tableName: 'rtl_loc')
+part 'business_entity.g.dart';
+
+@Collection()
 class RetailLocationEntity extends BaseEntity {
-  @PrimaryKey()
-  final String rtlLocId;
+
+  @Id()
+  final int rtlLocId;
   final String? storeName;
   final String? storeEmail;
   final String? storeContact;
@@ -27,7 +30,7 @@ class RetailLocationEntity extends BaseEntity {
   RetailLocationEntity(
       {required this.rtlLocId,
       this.storeName,
-        this.storeEmail,
+      this.storeEmail,
       this.storeContact,
       this.storeNumber,
       this.currencyId,
@@ -35,7 +38,7 @@ class RetailLocationEntity extends BaseEntity {
       this.address1,
       this.address2,
       this.city,
-        this.state,
+      this.state,
       this.country,
       this.postalCode,
       this.gst,
@@ -57,7 +60,7 @@ class RetailLocationEntity extends BaseEntity {
 
   @override
   String getStoreId() {
-    return rtlLocId;
+    return '$rtlLocId';
   }
 
   @override
@@ -98,7 +101,7 @@ class RetailLocationEntity extends BaseEntity {
 
   factory RetailLocationEntity.fromMap(Map<String, dynamic> map) {
     return RetailLocationEntity(
-      rtlLocId: map['rtlLocId'] as String,
+      rtlLocId: map['rtlLocId'] as int,
       storeName: map['storeName'] as String,
       storeEmail: map['storeEmail'] as String,
       storeContact: map['storeContact'] as String,
@@ -119,7 +122,7 @@ class RetailLocationEntity extends BaseEntity {
   }
 
   RetailLocationEntity copyWith({
-    String? rtlLocId,
+    int? rtlLocId,
     String? storeName,
     String? storeEmail,
     String? storeContact,

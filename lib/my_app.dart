@@ -2,6 +2,7 @@ import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/module/business/business_view.dart';
@@ -11,16 +12,17 @@ import 'package:receipt_generator/src/module/login/bloc/login_bloc.dart';
 import 'package:receipt_generator/src/module/login/login_view.dart';
 import 'package:receipt_generator/src/module/login/verify_user_view.dart';
 import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
-import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
+import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/setting_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_config_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_repository.dart';
+import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 class MyApp extends StatelessWidget {
-  final AppDatabase database;
+  final Isar database;
   final CognitoUserPool userPool;
   final RestApiClient restClient;
   const MyApp(
@@ -55,15 +57,22 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(
             create: (context) =>
                 SettingsRepository(db: database, restClient: restClient),
-          )
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                SequenceRepository(db: database, restClient: restClient),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                TransactionRepository(db: database, restClient: restClient),
+          ),
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(
             lazy: false,
             create: (context) => BackgroundSyncBloc(
-              syncRepository: RepositoryProvider.of(context),
-              syncConfigRepository: RepositoryProvider.of(context)
-            ),
+                syncRepository: RepositoryProvider.of(context),
+                syncConfigRepository: RepositoryProvider.of(context)),
           ),
           BlocProvider(
             lazy: false,
@@ -84,7 +93,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => LoadItemBulkBloc(
                 db: RepositoryProvider.of(context),
-                auth: BlocProvider.of(context)),
+                auth: BlocProvider.of(context),
+                sequenceRepository: RepositoryProvider.of(context)),
           ),
         ], child: const MyAppView()));
   }

@@ -4,7 +4,7 @@ part of 'background_sync_bloc.dart';
 abstract class BackgroundSyncEvent {}
 
 class StartSyncEvent extends BackgroundSyncEvent {
-  final String storeId;
+  final int storeId;
 
   StartSyncEvent(this.storeId);
 }

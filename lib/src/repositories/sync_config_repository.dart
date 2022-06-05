@@ -1,10 +1,6 @@
 import 'dart:isolate';
 
-import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:receipt_generator/src/entity/config/code_value_entity.dart';
-
-import 'config_database.dart';
 
 class SyncConfigRepository {
   final log = Logger('SyncConfigRepository');
@@ -28,18 +24,6 @@ class SyncConfigRepository {
     ReceivePort childReceivePort = ReceivePort();
     sendPort.send(childReceivePort.sendPort);
     print("From Isolate");
-
-    // Insert in the database
-    final configDb =
-    await $FloorConfigDatabase.databaseBuilder('config_database.db').build();
-
-    var code = CodeValueEntity(rtlLocId: "1", category: "REWR", code: "DUU", value: "Sometexxt");
-
-    try {
-      await configDb.codeValueDao.insertBulk(code);
-    } catch (e) {
-      print(e);
-    }
 
     await Future.delayed(const Duration(seconds: 5));
     SendPort sPort = (await childReceivePort.first)[1];

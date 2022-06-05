@@ -4,7 +4,7 @@ enum BackgroundSyncStatus { initial, started, inProgress, success }
 
 class BackgroundSyncState {
   final BackgroundSyncStatus status;
-  final String? storeId;
+  final int? storeId;
 
   const BackgroundSyncState(
       {this.status = BackgroundSyncStatus.initial, this.storeId})
@@ -15,7 +15,7 @@ class BackgroundSyncState {
             : true);
 
   BackgroundSyncState copyWith(
-      {BackgroundSyncStatus? status, String? storeId}) {
+      {BackgroundSyncStatus? status, int? storeId}) {
     return BackgroundSyncState(
         status: status ?? this.status, storeId: storeId ?? this.storeId);
   }

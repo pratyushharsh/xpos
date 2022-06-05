@@ -1,5 +1,6 @@
 
 import 'package:bloc/bloc.dart';
+import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/repositories/app_database.dart';
@@ -11,7 +12,7 @@ class LoadCustomerContactBloc
     extends Bloc<LoadCustomerContactEvent, LoadCustomerContactState> {
 
   final log = Logger('LoadCustomerContactBloc');
-  final AppDatabase db;
+  final Isar db;
   
   LoadCustomerContactBloc({ required this.db }) : super(LoadCustomerContactState()) {
     on<LoadCustomerContactFromPhone>(_loadCustomerContactFromPhone);

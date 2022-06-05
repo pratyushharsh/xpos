@@ -1,17 +1,5 @@
-import 'package:floor/floor.dart';
+import 'package:isar/isar.dart';
 
-@Entity(tableName: 'code_value', indices: [
-  Index(
-    value: ['category'],
-  ),
-  Index(
-    value: ['code'],
-  ),
-], primaryKeys: [
-  'rtlLocId',
-  'category',
-  'code'
-])
 class CodeValueEntity {
   final String rtlLocId;
   final String category;

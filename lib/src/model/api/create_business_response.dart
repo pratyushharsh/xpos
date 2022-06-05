@@ -1,5 +1,5 @@
 class CreateBusinessResponse {
-  String businessId;
+  int businessId;
   String name;
   String? email;
   String? address1;
@@ -57,7 +57,7 @@ class CreateBusinessResponse {
 
   factory CreateBusinessResponse.fromMap(Map<String, dynamic> map) {
     return CreateBusinessResponse(
-        businessId: map['business_id'] as String,
+        businessId: map['business_id'] as int,
         name: map['name'] as String,
         email: map['email'] as String?,
         address1: map['address1'] as String?,

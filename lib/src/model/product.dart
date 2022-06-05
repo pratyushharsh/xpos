@@ -70,7 +70,7 @@ class ProductModel {
         hsn: hsn,
         purchasePrice: purchasePrice,
         tax: tax,
-        uom: uom, createTime: DateTime.now(), storeId: '');
+        uom: uom, createTime: DateTime.now(), storeId: 000);
   }
 
   static ProductModel fromEntity(ProductEntity entity) {

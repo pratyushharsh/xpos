@@ -20,10 +20,12 @@ class NewReceiptView extends StatelessWidget {
     return BlocProvider(
       lazy: false,
       create: (ctx) => CreateNewReceiptBloc(
-          db: RepositoryProvider.of(ctx),
-          contactDb: RepositoryProvider.of(ctx),
-          authenticationBloc: BlocProvider.of(ctx))
-        ..add(OnInitiateNewTransaction()),
+        db: RepositoryProvider.of(ctx),
+        contactDb: RepositoryProvider.of(ctx),
+        authenticationBloc: BlocProvider.of(ctx),
+        sequenceRepository: RepositoryProvider.of(ctx),
+        transactionReposotory: RepositoryProvider.of(ctx)
+      )..add(OnInitiateNewTransaction()),
       child: Container(
         color: AppColor.background,
         child: SafeArea(
@@ -201,8 +203,11 @@ class LineItemHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const SizedBox(width: 60,),
-        Expanded(child: Row(
+        const SizedBox(
+          width: 60,
+        ),
+        Expanded(
+            child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [
             Text(
@@ -319,7 +324,9 @@ class NewLineItem extends StatelessWidget {
                     height: 50,
                     width: 50,
                   )),
-              const SizedBox(width: 8,),
+              const SizedBox(
+                width: 8,
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,14 +336,24 @@ class NewLineItem extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(saleLine.product.productId ??
-                            saleLine.product.skuCode ??
-                            "",  style: textStyle,),
                         Text(
-                            "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}",  style: textStyle,),
-                        Text(saleLine.qty.toString(),  style: textStyle,),
+                          saleLine.product.productId ??
+                              saleLine.product.skuCode ??
+                              "",
+                          style: textStyle,
+                        ),
                         Text(
-                            "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}", style: textStyle,),
+                          "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}",
+                          style: textStyle,
+                        ),
+                        Text(
+                          saleLine.qty.toString(),
+                          style: textStyle,
+                        ),
+                        Text(
+                          "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}",
+                          style: textStyle,
+                        ),
                       ],
                     )
                   ],
@@ -350,13 +367,19 @@ class NewLineItem extends StatelessWidget {
               Row(
                 children: const [
                   Padding(
-                    padding: EdgeInsets.only(right: 8, top: 4),
-                    child: Icon(Icons.discount, color: Colors.brown, size: 16,)
-                  ),
+                      padding: EdgeInsets.only(right: 8, top: 4),
+                      child: Icon(
+                        Icons.discount,
+                        color: Colors.brown,
+                        size: 16,
+                      )),
                   Text("10% off on all"),
                 ],
               ),
-              Text("-${Currency.inr}50.00", style: textStyle,)
+              Text(
+                "-${Currency.inr}50.00",
+                style: textStyle,
+              )
             ],
           ),
           Row(
@@ -366,12 +389,18 @@ class NewLineItem extends StatelessWidget {
                 children: const [
                   Padding(
                       padding: EdgeInsets.only(right: 8, top: 4),
-                      child: Icon(Icons.discount, color: Colors.brown, size: 16,)
-                  ),
+                      child: Icon(
+                        Icons.discount,
+                        color: Colors.brown,
+                        size: 16,
+                      )),
                   Text("10% off on all"),
                 ],
               ),
-              Text("-${Currency.inr}50.00", style: textStyle,)
+              Text(
+                "-${Currency.inr}50.00",
+                style: textStyle,
+              )
             ],
           ),
         ],

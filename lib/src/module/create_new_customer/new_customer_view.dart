@@ -1,4 +1,3 @@
-
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +19,9 @@ class NewCustomerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
-      create: (context) => NewCustomerBloc(db: RepositoryProvider.of(context)),
+      create: (context) => NewCustomerBloc(
+          db: RepositoryProvider.of(context),
+          sequenceRepository: RepositoryProvider.of(context)),
       child: const CreateNewCustomerForm(),
     );
   }
@@ -219,7 +220,8 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
                         blur: 8,
                         height: 70,
                         elevation: 0,
-                        borderRadius: const BorderRadius.all(Radius.circular(0)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(0)),
                         color: Colors.white.withOpacity(0.6),
                         child: const SizedBox(
                           height: 70,

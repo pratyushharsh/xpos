@@ -119,7 +119,7 @@ class ProfileCard extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                Navigator.of(context).pushNamed(RouteConfig.businessViewScreen, arguments: state.store?.storeNumber);
+                Navigator.of(context).pushNamed(RouteConfig.businessViewScreen, arguments: state.store?.rtlLocId);
               },
               child: const Hero(
                 tag: "business-logo",

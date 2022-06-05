@@ -26,6 +26,7 @@ class AddNewItemScreen extends StatelessWidget {
           create: (context) => ItemBloc(
             db: RepositoryProvider.of(context),
             authenticationBloc: BlocProvider.of(context),
+            sequenceRepository: RepositoryProvider.of(context)
           )..add(LoadExistingItem(productId)),
         )
       ],

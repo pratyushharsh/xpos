@@ -12,7 +12,7 @@ import 'bloc/business_bloc.dart';
 
 class BusinessView extends StatelessWidget {
   final BusinessOperation operation;
-  final String? businessId;
+  final int? businessId;
 
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => const BusinessView());

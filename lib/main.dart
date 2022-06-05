@@ -2,9 +2,10 @@ import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
-import 'package:receipt_generator/src/repositories/app_database.dart';
-import 'package:receipt_generator/src/repositories/config_database.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/repositories/custom_storage.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
@@ -18,11 +19,24 @@ Future<void> main() {
   return BlocOverrides.runZoned(() async {
     WidgetsFlutterBinding.ensureInitialized();
     initRootLogger();
-    final db =
-        await $FloorAppDatabase.databaseBuilder('app_database.db').build();
 
-    final configDb =
-    await $FloorConfigDatabase.databaseBuilder('config_database.db').build();
+    // Database Configuration
+    final dir = await getApplicationSupportDirectory();
+    final isar = await Isar.open(
+      inspector: true,
+      schemas: [
+        RetailLocationEntitySchema,
+        ContactEntitySchema,
+        ProductEntitySchema,
+        SequenceEntitySchema,
+        SettingEntitySchema,
+        SyncEntitySchema,
+        TransactionHeaderEntitySchema,
+        TransactionLineItemEntitySchema,
+        TransactionPaymentLineItemEntitySchema
+      ],
+      directory: dir.path,
+    );
 
     await _initAmplifyFlutter();
 
@@ -40,7 +54,7 @@ Future<void> main() {
         baseUrl:
         "https://3lw9rlveu5.execute-api.ap-south-1.amazonaws.com/dev");
 
-    runApp(MyApp(database: db, userPool: userPool, restClient: restClient,));
+    runApp(MyApp(database: isar, userPool: userPool, restClient: restClient,));
   }, blocObserver: InvoicingBlocObserver());
 }
 

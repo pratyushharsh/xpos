@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
+import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/module/all_customer/bloc/all_customer_bloc.dart';
+import 'package:receipt_generator/src/widgets/my_loader.dart';
 
 class AllCustomerView extends StatelessWidget {
   const AllCustomerView({Key? key}) : super(key: key);
@@ -16,7 +18,7 @@ class AllCustomerView extends StatelessWidget {
       child: BlocBuilder<AllCustomerBloc, AllCustomerState>(
         builder: (context, state) {
           if (state.status == AllCustomerStatus.loading) {
-            return const CircularProgressIndicator();
+            return const MyLoader(color: AppColor.color6,);
           }
           return RefreshIndicator(
             onRefresh: () async {

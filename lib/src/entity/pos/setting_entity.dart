@@ -1,10 +1,13 @@
-import 'package:floor/floor.dart';
+import 'package:isar/isar.dart';
 
-@Entity(
-  tableName: 'setting',
-  primaryKeys: ['category', 'subCategory'],
-)
+part 'setting_entity.g.dart';
+
+@Collection()
 class SettingEntity {
+
+  @Id()
+  final int? id;
+
   final String category;
   final String subCategory;
   final String value;
@@ -12,7 +15,8 @@ class SettingEntity {
   final DateTime? updatedAt;
 
   SettingEntity(
-      {required this.category,
+      {this.id,
+        required this.category,
       required this.subCategory,
       required this.value,
       this.createAt,

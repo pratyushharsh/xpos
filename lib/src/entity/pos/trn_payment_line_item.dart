@@ -1,19 +1,11 @@
-import 'package:floor/floor.dart';
-import 'package:receipt_generator/src/entity/pos/entity.dart';
+import 'package:isar/isar.dart';
 
-@Entity(
-  tableName: 'trn_payment_line_item',
-  primaryKeys: ['transId', 'paymentSeq'],
-  foreignKeys: [
-    ForeignKey(
-      childColumns: ['transId'],
-      parentColumns: ['transId'],
-      entity: TransactionHeaderEntity,
-    )
-  ],
-)
+part 'trn_payment_line_item.g.dart';
+
+@Collection()
 class TransactionPaymentLineItemEntity {
   final int? transId;
+  @Id()
   final int paymentSeq;
   final String productId;
   final String productDescription;

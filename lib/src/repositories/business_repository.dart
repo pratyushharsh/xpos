@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/model/api/api.dart';
 import 'package:receipt_generator/src/model/api/create_business_response.dart';
@@ -11,13 +12,13 @@ import '../entity/pos/entity.dart';
 class BusinessRepository {
   final log = Logger('BusinessRepository');
 
-  final AppDatabase db;
+  final Isar db;
   final RestApiClient restClient;
 
   BusinessRepository({required this.db, required this.restClient});
 
   Future<RetailLocationEntity> _findAndPersistBusiness(
-      String businessId) async {
+      int businessId) async {
     try {
       var option = RestOptions(path: '/business/$businessId');
       var rawResp = await restClient.get(restOptions: option);
@@ -31,7 +32,7 @@ class BusinessRepository {
             version: 1,
             createTime: resp.createdAt,
             storeName: resp.name,
-            storeNumber: resp.businessId,
+            storeNumber: '$resp.businessId',
             storeContact: resp.phone,
             address1: resp.address1,
             address2: resp.address2,
@@ -44,7 +45,7 @@ class BusinessRepository {
             locale: resp.locale,
             postalCode: resp.postalCode,
           );
-          await db.retailLocationDao.insertBulk(entity);
+          await db.writeTxn((isar) => isar.retailLocationEntitys.put(entity));
           return entity;
         } catch (e) {
           log.severe(e);
@@ -59,9 +60,10 @@ class BusinessRepository {
     }
   }
 
-  Future<RetailLocationEntity> getBusinessById(String businessId) async {
+  Future<RetailLocationEntity> getBusinessById(int businessId) async {
     try {
-      var data = await db.retailLocationDao.findRetailLocById(businessId);
+
+      var data = await db.retailLocationEntitys.get(businessId);
 
       if (data == null) {
         log.info('Cannot find business in the database');
@@ -78,7 +80,7 @@ class BusinessRepository {
   Future<RetailLocationEntity> updateBusiness(
       RetailLocationEntity entity) async {
     try {
-      await db.retailLocationDao.insertBulk(entity);
+      await db.writeTxn((isar) => isar.retailLocationEntitys.put(entity));
       return entity;
     } catch (e) {
       log.severe(e);
@@ -102,7 +104,7 @@ class BusinessRepository {
             version: 1,
             createTime: resp.createdAt,
             storeName: resp.name,
-            storeNumber: resp.businessId,
+            storeNumber: '$resp.businessId',
             storeContact: resp.phone,
             address1: resp.address1,
             address2: resp.address2,
@@ -115,7 +117,7 @@ class BusinessRepository {
             locale: resp.locale,
             postalCode: resp.postalCode,
           );
-          await db.retailLocationDao.insertBulk(entity);
+          await db.writeTxn((isar) => isar.retailLocationEntitys.put(entity));
           return entity;
         } catch (e) {
           log.severe(e);

@@ -1,14 +1,12 @@
 import 'dart:async';
 
-import '../../repositories/app_database.dart';
+import 'package:isar/isar.dart';
 
 class BackgroundSyncService {
 
-  final AppDatabase database;
+  final Isar database;
 
   BackgroundSyncService(this.database);
-
-
 
   Future<void> start() async {
   }

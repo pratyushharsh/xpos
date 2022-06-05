@@ -1,19 +1,13 @@
-import 'package:floor/floor.dart';
+import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
+part 'trn_line_item_entity.g.dart';
 
-@Entity(
-  tableName: 'trn_line_item',
-  primaryKeys: ['transId', 'transSeq'],
-  foreignKeys: [
-    ForeignKey(
-      childColumns: ['transId'],
-      parentColumns: ['transId'],
-      entity: TransactionHeaderEntity,
-    )
-  ],
-)
+@Collection()
 class TransactionLineItemEntity extends DynamoEntity {
+
+  @Id()
+  final int? id;
   final int? transId;
   final int transSeq;
   final String? brand;
@@ -33,8 +27,12 @@ class TransactionLineItemEntity extends DynamoEntity {
   final double taxAmount;
   final String? shipmentId;
 
+  @Backlink(to: 'lineItems')
+  final header = IsarLink<TransactionHeaderEntity>();
+
   TransactionLineItemEntity(
-      {required this.transId,
+      {this.id,
+        required this.transId,
       required this.transSeq,
       this.brand,
       required this.productId,

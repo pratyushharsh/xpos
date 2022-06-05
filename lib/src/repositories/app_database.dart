@@ -5,7 +5,7 @@ import 'package:receipt_generator/src/dao/pos/dao.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
-part 'app_database.g.dart'; // the generated code will be there
+// part 'app_database.g.dart'; // the generated code will be there
 
 @TypeConverters([DateTimeConverter, DateTimeNullConverter])
 @Database(version: 1, entities: [
@@ -19,7 +19,7 @@ part 'app_database.g.dart'; // the generated code will be there
   SyncEntity,
   SettingEntity
 ])
-abstract class AppDatabase extends FloorDatabase {
+abstract class AppDatabaseS extends FloorDatabase {
   ProductDao get productDao;
   SkuDao get skuDao;
   TransactionDao get transactionDao;

@@ -1,10 +1,31 @@
-import 'package:floor/floor.dart';
+import 'package:isar/isar.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 
-@Entity(tableName: 'sequence')
+part 'sequence_entity.g.dart';
+
+enum SequenceType {
+  item,
+  trans,
+  customer
+}
+
+@Collection()
 class SequenceEntity {
-  @PrimaryKey()
+  @Id()
+  final int id;
+
   final String name;
   final int nextSeq;
 
-  SequenceEntity({required this.name, required this.nextSeq});
+  SequenceEntity({required this.id, required this.name, required this.nextSeq});
+
+  SequenceEntity copyWith({
+    int? nextSeq,
+  }) {
+    return SequenceEntity(
+      nextSeq: nextSeq ?? this.nextSeq,
+      id: id,
+      name: name
+    );
+  }
 }

@@ -14,21 +14,4 @@ abstract class SequenceDao extends AbstractDao<SequenceEntity> {
 
   @Query("Select * from sequence where name = :type")
   Future<SequenceEntity?> getSequenceByType(String type);
-
-  @transaction
-  Future<SequenceEntity> getNextSequence(String type) async {
-    // get sequence
-    var data = await getSequenceByType(type);
-
-    if (data == null) {
-      var seq = SequenceEntity(name: type, nextSeq: 1);
-      await createNewSequence(seq);
-      data = seq;
-    }
-    // if not present update or create
-    var nextSeq = SequenceEntity(name: data.name, nextSeq: data.nextSeq + 1);
-    await updateSequence(nextSeq);
-    //
-    return data;
-  }
 }

@@ -1,14 +1,20 @@
-import 'package:floor/floor.dart';
+import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
-@Entity(tableName: 'product', indices: [
-  Index(value: ['description']),
-  Index(value: ['skuCode'], unique: true)
-])
+// @Entity(tableName: 'product', indices: [
+//   Index(value: ['description']),
+//   Index(value: ['skuCode'], unique: true)
+// ])
+part 'product_entity.g.dart';
+
+@Collection()
 class ProductEntity extends BaseEntity {
-  @primaryKey
+  @Id()
+  int? id;
+
+  @Index(unique: true)
   String? productId;
-  String storeId;
+  int storeId;
 
   final String description;
   final double? listPrice;
@@ -27,8 +33,12 @@ class ProductEntity extends BaseEntity {
   late DateTime? lastSyncAt;
   late int version;
 
+  @Index(type: IndexType.value, caseSensitive: false)
+  List<String> get descriptionWords => Isar.splitWords(description);
+
   ProductEntity(
-      {this.productId,
+      {this.id,
+      this.productId,
       required this.storeId,
       required this.description,
       required this.listPrice,
@@ -59,7 +69,7 @@ class ProductEntity extends BaseEntity {
 
   @override
   String getStoreId() {
-    return storeId;
+    return '$storeId';
   }
 
   @override
@@ -98,25 +108,24 @@ class ProductEntity extends BaseEntity {
 
   factory ProductEntity.fromMap(Map<String, dynamic> map) {
     return ProductEntity(
-      productId: map['product_id'] as String,
-      storeId: map['store_id'] as String,
-      description: (map['description'] ?? map['product_id']) as String,
-      listPrice: double.tryParse(map['list_price'].toString()),
-      salePrice: double.tryParse(map['sale_price'].toString()),
-      purchasePrice: double.tryParse(map['purchase_price'].toString()),
-      uom: map['uom'] as String,
-      enable: map['enable'] != null ? map['enable'] as bool : false,
-      brand: map['brand'] as String?,
-      skuCode: map['skuCode'] as String?,
-      hsn: map['hsn'] as String?,
-      tax: double.tryParse(map['tax'].toString()),
-      imageUrl: map['image_url'] as String?,
-      createTime: DateTime.tryParse(map['create_date']) ?? DateTime.now(),
-      updateTime: DateTime.tryParse(map['update_date']??""),
-      lastSyncAt: DateTime.tryParse(map['last_sync_at']??""),
-      version: map['version'] != null ? map['version'] as int : 1,
-      syncState: 300
-    );
+        productId: map['product_id'] as String,
+        storeId: map['store_id'] as int,
+        description: (map['description'] ?? map['product_id']) as String,
+        listPrice: double.tryParse(map['list_price'].toString()),
+        salePrice: double.tryParse(map['sale_price'].toString()),
+        purchasePrice: double.tryParse(map['purchase_price'].toString()),
+        uom: map['uom'] as String,
+        enable: map['enable'] != null ? map['enable'] as bool : false,
+        brand: map['brand'] as String?,
+        skuCode: map['skuCode'] as String?,
+        hsn: map['hsn'] as String?,
+        tax: double.tryParse(map['tax'].toString()),
+        imageUrl: map['image_url'] as String?,
+        createTime: DateTime.tryParse(map['create_date']) ?? DateTime.now(),
+        updateTime: DateTime.tryParse(map['update_date'] ?? ""),
+        lastSyncAt: DateTime.tryParse(map['last_sync_at'] ?? ""),
+        version: map['version'] != null ? map['version'] as int : 1,
+        syncState: 300);
   }
 
   @override

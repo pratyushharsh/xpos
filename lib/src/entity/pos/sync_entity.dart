@@ -1,7 +1,13 @@
 import 'package:floor/floor.dart';
+import 'package:isar/isar.dart';
 
-@Entity(tableName: 'sync')
+part 'sync_entity.g.dart';
+
+@Collection()
 class SyncEntity {
+  @Id()
+  final int? id;
+
   @PrimaryKey()
   final String type;
 
@@ -11,5 +17,10 @@ class SyncEntity {
   final DateTime? syncEndTime;
 
   SyncEntity(
-      {required this.type, this.lastSyncAt, required this.status, this.syncStartTime, this.syncEndTime});
+      {this.id,
+      required this.type,
+      this.lastSyncAt,
+      required this.status,
+      this.syncStartTime,
+      this.syncEndTime});
 }
