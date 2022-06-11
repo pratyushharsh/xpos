@@ -15,7 +15,7 @@ extension GetSyncEntityCollection on Isar {
 const SyncEntitySchema = CollectionSchema(
   name: 'SyncEntity',
   schema:
-      '{"name":"SyncEntity","idName":"id","properties":[{"name":"lastSyncAt","type":"Long"},{"name":"status","type":"Long"},{"name":"syncEndTime","type":"Long"},{"name":"syncStartTime","type":"Long"},{"name":"type","type":"String"}],"indexes":[],"links":[]}',
+      '{"name":"SyncEntity","idName":"id","properties":[{"name":"lastSyncAt","type":"Long"},{"name":"status","type":"Long"},{"name":"syncEndTime","type":"Long"},{"name":"syncStartTime","type":"Long"},{"name":"type","type":"String"}],"indexes":[{"name":"type","unique":false,"properties":[{"name":"type","type":"Hash","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'lastSyncAt': 0,
@@ -25,8 +25,12 @@ const SyncEntitySchema = CollectionSchema(
     'type': 4
   },
   listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
+  indexIds: {'type': 0},
+  indexValueTypes: {
+    'type': [
+      IndexValueType.stringHash,
+    ]
+  },
   linkIds: {},
   backlinkLinkNames: {},
   getId: _syncEntityGetId,
@@ -203,6 +207,11 @@ extension SyncEntityQueryWhereSort
   QueryBuilder<SyncEntity, SyncEntity, QAfterWhere> anyId() {
     return addWhereClauseInternal(const IdWhereClause.any());
   }
+
+  QueryBuilder<SyncEntity, SyncEntity, QAfterWhere> anyType() {
+    return addWhereClauseInternal(
+        const IndexWhereClause.any(indexName: 'type'));
+  }
 }
 
 extension SyncEntityQueryWhere
@@ -258,6 +267,39 @@ extension SyncEntityQueryWhere
       upper: upperId,
       includeUpper: includeUpper,
     ));
+  }
+
+  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> typeEqualTo(
+      String type) {
+    return addWhereClauseInternal(IndexWhereClause.equalTo(
+      indexName: 'type',
+      value: [type],
+    ));
+  }
+
+  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> typeNotEqualTo(
+      String type) {
+    if (whereSortInternal == Sort.asc) {
+      return addWhereClauseInternal(IndexWhereClause.lessThan(
+        indexName: 'type',
+        upper: [type],
+        includeUpper: false,
+      )).addWhereClauseInternal(IndexWhereClause.greaterThan(
+        indexName: 'type',
+        lower: [type],
+        includeLower: false,
+      ));
+    } else {
+      return addWhereClauseInternal(IndexWhereClause.greaterThan(
+        indexName: 'type',
+        lower: [type],
+        includeLower: false,
+      )).addWhereClauseInternal(IndexWhereClause.lessThan(
+        indexName: 'type',
+        upper: [type],
+        includeUpper: false,
+      ));
+    }
   }
 }
 

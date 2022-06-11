@@ -1,4 +1,3 @@
-import 'package:floor/floor.dart';
 import 'package:isar/isar.dart';
 
 part 'sync_entity.g.dart';
@@ -8,7 +7,7 @@ class SyncEntity {
   @Id()
   final int? id;
 
-  @PrimaryKey()
+  @Index()
   final String type;
 
   final DateTime? lastSyncAt;

@@ -17,7 +17,7 @@ class TransactionRepository {
 
     header.lineItems.addAll(lineItems);
 
-    var resp = await db.writeTxn((isar) async {
+    await db.writeTxn((isar) async {
       await isar.transactionHeaderEntitys.put(header, saveLinks: true);
     });
   }

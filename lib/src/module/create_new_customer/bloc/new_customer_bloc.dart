@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:receipt_generator/src/entity/pos/contact_entity.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/cust_party.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';

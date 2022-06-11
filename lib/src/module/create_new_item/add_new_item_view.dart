@@ -5,8 +5,10 @@ import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/model/product.dart';
 import 'package:receipt_generator/src/module/create_new_item/product_field_validator.dart';
 import 'package:receipt_generator/src/module/item/bloc/item_bloc.dart';
+import 'package:receipt_generator/src/repositories/config_repository.dart';
 import 'package:receipt_generator/src/widgets/appbar_leading.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
+import 'package:receipt_generator/src/widgets/custom_checkbox.dart';
 import 'package:receipt_generator/src/widgets/custom_dropdown.dart';
 import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 import 'package:receipt_generator/src/widgets/loading.dart';
@@ -59,6 +61,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   late TextEditingController _skuController;
   late bool _inEditMode;
   late String? _productId;
+  late bool _priceIncludeTax;
 
   @override
   void initState() {
@@ -73,6 +76,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     _skuController = TextEditingController();
     _inEditMode = false;
     _productId = null;
+    _priceIncludeTax = false;
   }
 
   @override
@@ -130,6 +134,8 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
 
   @override
   Widget build(BuildContext context) {
+    var repo = RepositoryProvider.of<ConfigRepository>(context);
+    var uom = repo.getCodeByCategory("UOM");
     return BlocListener<ItemBloc, ItemState>(
       listener: (context, state) {
         if (state.status == ItemStatus.addingProduct) {
@@ -150,8 +156,8 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           Navigator.of(context).pop();
         } else if (ItemStatus.editProduct == state.status) {
-          print(state.existingProduct);
           _inEditMode = true;
+          _uom = state.existingProduct!.uom;
           _productId = state.existingProduct!.skuCode ??
               state.existingProduct!.productId;
           _productNameController.text = state.existingProduct!.description;
@@ -165,7 +171,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           _hsnController.text = state.existingProduct?.hsn ?? "";
           _taxRateController.text = state.existingProduct!.tax?.toString() ?? "";
           _skuController.text = state.existingProduct!.skuCode ?? "";
-          _onUomChange(state.existingProduct!.uom);
+          _formKey.currentState!.validate();
         }
       },
       child: Container(
@@ -181,7 +187,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                   _formValid = _formKey.currentState!.validate();
                 });
               },
-              autovalidateMode: AutovalidateMode.always,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -219,12 +225,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                               Expanded(
                                 child: CustomDropDown<String>(
                                   value: _uom,
-                                  data: [
-                                    DropDownData(
-                                        key: 'SQFT', value: 'Square Feet'),
-                                    DropDownData(key: 'EA', value: 'Each'),
-                                    DropDownData(key: 'M', value: 'Meter'),
-                                  ],
+                                  data: uom.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
                                   label: 'UOM',
                                   onChanged: _onUomChange,
                                   validator:
@@ -250,18 +251,11 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                               ),
                               Expanded(
                                 child: CustomTextField(
-                                  label: "Purchase Price",
-                                  textInputType: TextInputType.number,
-                                  validator:
-                                      NewProductFieldValidator.validatePrice,
-                                  controller: _purchasePriceController,
+                                  label: "Brand",
+                                  controller: _brandController,
                                 ),
                               ),
                             ],
-                          ),
-                          CustomTextField(
-                            label: "Brand",
-                            controller: _brandController,
                           ),
                           const SizedBox(
                             height: 20,
@@ -280,7 +274,24 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                                     color: AppColor.primary),
                               )),
                           const SizedBox(
-                            height: 10,
+                            height: 15,
+                          ),
+                          Row(
+                            children: [
+                              CustomCheckbox(
+                                value: _priceIncludeTax,
+                                onChanged: (val) {
+                                  setState(() {
+                                    _priceIncludeTax = val;
+                                  });
+                                },
+                              ),
+                              const SizedBox(width: 5,),
+                              const Text("Price Include Tax", style: TextStyle(color: Color(0xFF6B7281)),)
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 8,
                           ),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,

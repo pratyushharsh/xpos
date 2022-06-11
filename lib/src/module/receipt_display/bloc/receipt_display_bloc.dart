@@ -9,7 +9,6 @@ import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/hsn_tax_summary.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
-import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/repositories/setting_repository.dart';
 
 part 'receipt_display_event.dart';

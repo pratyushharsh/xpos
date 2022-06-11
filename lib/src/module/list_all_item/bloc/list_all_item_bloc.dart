@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
-import 'package:receipt_generator/src/repositories/app_database.dart';
 
 part 'list_all_item_event.dart';
 part 'list_all_item_state.dart';

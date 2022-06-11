@@ -4,7 +4,6 @@ import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/model/api/api.dart';
 import 'package:receipt_generator/src/model/api/create_business_response.dart';
-import 'package:receipt_generator/src/repositories/app_database.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 import '../entity/pos/entity.dart';

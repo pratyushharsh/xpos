@@ -13,6 +13,7 @@ import 'package:receipt_generator/src/module/login/login_view.dart';
 import 'package:receipt_generator/src/module/login/verify_user_view.dart';
 import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
+import 'package:receipt_generator/src/repositories/config_repository.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/setting_repository.dart';
@@ -52,7 +53,9 @@ class MyApp extends StatelessWidget {
             ),
           ),
           RepositoryProvider(
-            create: (context) => SyncConfigRepository(),
+            create: (context) => SyncConfigRepository(
+              db: database
+            ),
           ),
           RepositoryProvider(
             create: (context) =>
@@ -65,6 +68,10 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(
             create: (context) =>
                 TransactionRepository(db: database, restClient: restClient),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                ConfigRepository(db: database),
           ),
         ],
         child: MultiBlocProvider(providers: [

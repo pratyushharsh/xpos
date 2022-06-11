@@ -7,7 +7,6 @@ import 'package:receipt_generator/src/model/api/api.dart';
 
 import '../entity/pos/entity.dart';
 import '../util/helper/rest_api.dart';
-import 'app_database.dart';
 
 /*
 SyncState

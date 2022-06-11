@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
+import 'package:receipt_generator/src/entity/config/code_value_entity.dart';
 import 'package:receipt_generator/src/model/address.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
+import 'package:receipt_generator/src/repositories/config_repository.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
+import 'package:receipt_generator/src/widgets/custom_dropdown.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
@@ -219,7 +222,9 @@ class _BusinessDetailState extends State<BusinessDetail> {
                     )),
                     builder: (context) => const BusinessAddressDialog(),
                   ).then((value) => {
-                        if (value != null && value.length > 0 && value[0] is BusinessAddress)
+                        if (value != null &&
+                            value.length > 0 &&
+                            value[0] is BusinessAddress)
                           {
                             BlocProvider.of<BusinessBloc>(context)
                                 .add(OnBusinessAddressChange(value[0]))
@@ -310,6 +315,8 @@ class _BusinessAddressDialogState extends State<BusinessAddressDialog> {
   late TextEditingController _streetController;
   late TextEditingController _cityController;
   late TextEditingController _stateController;
+  late String? _country;
+  late String? _state;
 
   @override
   void initState() {
@@ -319,6 +326,8 @@ class _BusinessAddressDialogState extends State<BusinessAddressDialog> {
     _streetController = TextEditingController();
     _cityController = TextEditingController();
     _stateController = TextEditingController();
+    _country = null;
+    _state = null;
   }
 
   @override
@@ -331,8 +340,23 @@ class _BusinessAddressDialogState extends State<BusinessAddressDialog> {
     super.dispose();
   }
 
+  void _onCountryChange(String? value) {
+    setState(() {
+      _country = value;
+    });
+  }
+
+  void _onStateChange(String? value) {
+    setState(() {
+      _state = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    var repo = RepositoryProvider.of<ConfigRepository>(context);
+    var countryCode = repo.getCodeByCategory("COUNTRY_CODE");
+    var stateCode = repo.getCodeByCategory("IN_STATE");
     return SingleChildScrollView(
       child: Padding(
         padding: MediaQuery.of(context).viewInsets,
@@ -341,6 +365,12 @@ class _BusinessAddressDialogState extends State<BusinessAddressDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              CustomDropDown<String>(
+                value: _country,
+                data: countryCode.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
+                onChanged: _onCountryChange,
+                label: 'Country',
+              ),
               CustomTextField(
                 label: "Pincode",
                 controller: _zipcodeController,
@@ -358,9 +388,11 @@ class _BusinessAddressDialogState extends State<BusinessAddressDialog> {
                 label: "Town/City",
                 controller: _cityController,
               ),
-              CustomTextField(
-                label: "State",
-                controller: _stateController,
+              CustomDropDown<String>(
+                value: _state,
+                data: stateCode.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
+                onChanged: _onStateChange,
+                label: 'State',
               ),
               SizedBox(
                 width: double.infinity,
@@ -374,8 +406,8 @@ class _BusinessAddressDialogState extends State<BusinessAddressDialog> {
                           building: _buildingController.text,
                           street: _streetController.text,
                           city: _cityController.text,
-                          state: _stateController.text)]
-                    );
+                          state: _stateController.text)
+                    ]);
                   },
                 ),
               )
