@@ -19,6 +19,11 @@ class ItemSearchBloc extends Bloc<ItemSearchEvent, ItemSearchState> {
   }
 
   void _onSearchItem(SearchItemByFilter event, Emitter<ItemSearchState> emit) async {
+    if (event.filter.isEmpty) {
+      emit(state.copyWith(products: [], status: ItemSearchStatus.success));
+      return;
+    }
+
     try {
       emit(state.copyWith(status: ItemSearchStatus.loading));
       var prod = await db.productEntitys.where().descriptionWordsAnyStartsWith(event.filter).limit(10).findAll();

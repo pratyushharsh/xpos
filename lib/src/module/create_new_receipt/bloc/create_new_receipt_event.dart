@@ -46,3 +46,7 @@ class OnSuggestedCustomerSelect extends CreateNewReceiptEvent {
   final ContactEntity contact;
   OnSuggestedCustomerSelect(this.contact);
 }
+
+class OnAddNewTenderLine extends CreateNewReceiptEvent {
+
+}

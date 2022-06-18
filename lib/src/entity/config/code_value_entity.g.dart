@@ -15,14 +15,14 @@ extension GetCodeValueEntityCollection on Isar {
 const CodeValueEntitySchema = CollectionSchema(
   name: 'CodeValueEntity',
   schema:
-      '{"name":"CodeValueEntity","idName":"id","properties":[{"name":"category","type":"String"},{"name":"code","type":"String"},{"name":"description","type":"String"},{"name":"value","type":"String"}],"indexes":[{"name":"category","unique":false,"properties":[{"name":"category","type":"Hash","caseSensitive":true}]},{"name":"category_code","unique":true,"properties":[{"name":"category","type":"Hash","caseSensitive":true},{"name":"code","type":"Hash","caseSensitive":true}]}],"links":[]}',
+      '{"name":"CodeValueEntity","idName":"id","properties":[{"name":"category","type":"String"},{"name":"code","type":"String"},{"name":"description","type":"String"},{"name":"value","type":"String"}],"indexes":[{"name":"category","unique":false,"properties":[{"name":"category","type":"Value","caseSensitive":true}]},{"name":"category_code","unique":true,"properties":[{"name":"category","type":"Hash","caseSensitive":true},{"name":"code","type":"Hash","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {'category': 0, 'code': 1, 'description': 2, 'value': 3},
   listProperties: {},
   indexIds: {'category': 0, 'category_code': 1},
   indexValueTypes: {
     'category': [
-      IndexValueType.stringHash,
+      IndexValueType.string,
     ],
     'category_code': [
       IndexValueType.stringHash,
@@ -343,6 +343,57 @@ extension CodeValueEntityQueryWhere
         includeUpper: false,
       ));
     }
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause>
+      categoryGreaterThan(
+    String category, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(IndexWhereClause.greaterThan(
+      indexName: 'category',
+      lower: [category],
+      includeLower: include,
+    ));
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause>
+      categoryLessThan(
+    String category, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(IndexWhereClause.lessThan(
+      indexName: 'category',
+      upper: [category],
+      includeUpper: include,
+    ));
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause>
+      categoryBetween(
+    String lowerCategory,
+    String upperCategory, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addWhereClauseInternal(IndexWhereClause.between(
+      indexName: 'category',
+      lower: [lowerCategory],
+      includeLower: includeLower,
+      upper: [upperCategory],
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause>
+      categoryStartsWith(String CategoryPrefix) {
+    return addWhereClauseInternal(IndexWhereClause.between(
+      indexName: 'category',
+      lower: [CategoryPrefix],
+      includeLower: true,
+      upper: ['$CategoryPrefix\u{FFFFF}'],
+      includeUpper: true,
+    ));
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause>

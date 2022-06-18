@@ -67,6 +67,7 @@ dependencies:
   isar: ^2.5.0
   isar_flutter_libs: ^2.5.0
   archive: ^3.3.0
+  firebase_messaging: ^11.4.1
 
 dev_dependencies:
   flutter_test:

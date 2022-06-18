@@ -24,10 +24,10 @@ class AcceptButton extends StatelessWidget {
       ),
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         primary: AppColor.primary,
         shape: RoundedRectangleBorder(
-            borderRadius: borderRadius ?? BorderRadius.circular(12.0)),
+            borderRadius: borderRadius ?? BorderRadius.circular(5.0)),
       ),
     );
   }
@@ -49,10 +49,10 @@ class RejectButton extends StatelessWidget {
       ),
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         primary: AppColor.color8,
         shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
   }

@@ -18,3 +18,16 @@ class SaleTaxModifier {
       this.overrideTaxAmount,
       this.overrideTaxPercent});
 }
+
+class PriceModifier {
+  final String modifierId;
+  final double amount;
+  final String category;
+  final String description;
+
+  PriceModifier(
+      {required this.modifierId,
+      required this.amount,
+      required this.category,
+      required this.description});
+}

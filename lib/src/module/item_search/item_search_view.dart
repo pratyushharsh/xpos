@@ -57,7 +57,9 @@ class SearchSaleProductBar extends StatelessWidget {
     return  CustomTextField(
       label: "Search For Products",
       onValueChange: (val) {
-        BlocProvider.of<ItemSearchBloc>(context).add(SearchItemByFilter(val));
+        if (val.length >= 3) {
+          BlocProvider.of<ItemSearchBloc>(context).add(SearchItemByFilter(val));
+        }
       },
     );
   }

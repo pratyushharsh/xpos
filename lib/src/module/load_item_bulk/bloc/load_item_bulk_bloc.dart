@@ -31,14 +31,14 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
       final input = File(event.path).openRead();
       final fields = await input
           .transform(utf8.decoder)
-          .transform(const CsvToListConverter())
+          .transform(const CsvToListConverter(shouldParseNumbers: false, eol: '\n'))
           .toList();
 
       var resp = await db.writeTxn((isar) async {
         for (var i = 1; i < fields.length; i++) {
           var e = fields[i];
 
-          var productId = e[6].toString();
+          var productId = e[0].toString();
           int? seq;
           if (productId.isEmpty) {
             seq = (await sequenceRepository.getNextSequence(SequenceType.item))
@@ -47,30 +47,30 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
           }
 
           var entity = ProductEntity(
-            description: e[0].toString(),
+            displayName: e[1].toString(),
+            description: e[2].toString(),
             listPrice:
-                e[1].toString().isNotEmpty ? double.parse(e[1].toString()) : 0,
-            salePrice:
-                e[2].toString().isNotEmpty ? double.parse(e[2].toString()) : 0,
-            purchasePrice:
                 e[3].toString().isNotEmpty ? double.parse(e[3].toString()) : 0,
-            uom: e[4].toString(),
-            brand: e[5].toString(),
-            skuCode: e[6].toString(),
-            hsn: e[7].toString(),
-            tax: e[8].toString().isNotEmpty
-                ? double.parse(e[8].toString()) / 100
+            salePrice:
+                e[4].toString().isNotEmpty ? double.parse(e[3].toString()) : 0,
+            uom: e[5].toString(),
+            brand: e[6].toString(),
+            skuCode: e[7].toString(),
+            hsn: e[8].toString(),
+            tax: e[9].toString().isNotEmpty
+                ? double.parse(e[9].toString()) / 100
                 : 0,
-            imageUrl: e[9].toString(),
+            imageUrl: e[10].toString(),
             enable: true,
             productId: productId.toString(),
             storeId: auth.state.store!.rtlLocId,
             createTime: DateTime.now(),
             id: seq,
           );
-          await db.productEntitys.put(entity);
+          await db.productEntitys.put(entity, replaceOnConflict: true);
         }
       });
+      log.info(resp);
 
       emit(state.copyWith(status: LoadItemBulkStatus.success));
     } catch (e) {

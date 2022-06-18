@@ -23,6 +23,7 @@ Future<void> main() {
 
     // Database Configuration
     final dir = await getApplicationSupportDirectory();
+    print(dir);
     final isar = await Isar.open(
       inspector: true,
       schemas: [

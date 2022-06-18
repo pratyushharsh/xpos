@@ -123,6 +123,7 @@ class _InvoiceDisplayViewState extends State<InvoiceDisplayView> {
                       padding: const EdgeInsets.all(5),
                       child: InteractiveViewer(
                         child: Column(
+                          mainAxisSize: MainAxisSize.max,
                           children: [
                             const SizedBox(
                               height: 80,
@@ -156,8 +157,8 @@ class _InvoiceDisplayViewState extends State<InvoiceDisplayView> {
                     child: IconButton(
                       icon: const Icon(Icons.print),
                       onPressed: () {
-                        // _shareReceipt([_printKey1, _printKey2]);
-                        _printReceipt(keys.sublist(0, count));
+                        _shareReceipt(keys.sublist(0, count));
+                        // _printReceipt(keys.sublist(0, count));
                       },
                     ),
                   ),

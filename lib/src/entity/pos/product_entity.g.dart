@@ -15,28 +15,29 @@ extension GetProductEntityCollection on Isar {
 const ProductEntitySchema = CollectionSchema(
   name: 'ProductEntity',
   schema:
-      '{"name":"ProductEntity","idName":"id","properties":[{"name":"brand","type":"String"},{"name":"createTime","type":"Long"},{"name":"description","type":"String"},{"name":"descriptionWords","type":"StringList"},{"name":"enable","type":"Bool"},{"name":"hsn","type":"String"},{"name":"imageUrl","type":"String"},{"name":"lastSyncAt","type":"Long"},{"name":"listPrice","type":"Double"},{"name":"productId","type":"String"},{"name":"purchasePrice","type":"Double"},{"name":"salePrice","type":"Double"},{"name":"skuCode","type":"String"},{"name":"storeId","type":"Long"},{"name":"syncState","type":"Long"},{"name":"tax","type":"Double"},{"name":"uom","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"descriptionWords","unique":false,"properties":[{"name":"descriptionWords","type":"Value","caseSensitive":false}]},{"name":"productId","unique":true,"properties":[{"name":"productId","type":"Hash","caseSensitive":true}]}],"links":[]}',
+      '{"name":"ProductEntity","idName":"id","properties":[{"name":"brand","type":"String"},{"name":"createTime","type":"Long"},{"name":"description","type":"String"},{"name":"descriptionWords","type":"StringList"},{"name":"displayName","type":"String"},{"name":"enable","type":"Bool"},{"name":"hsn","type":"String"},{"name":"imageUrl","type":"String"},{"name":"lastSyncAt","type":"Long"},{"name":"listPrice","type":"Double"},{"name":"productId","type":"String"},{"name":"purchasePrice","type":"Double"},{"name":"salePrice","type":"Double"},{"name":"skuCode","type":"String"},{"name":"storeId","type":"Long"},{"name":"syncState","type":"Long"},{"name":"tax","type":"Double"},{"name":"uom","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"descriptionWords","unique":false,"properties":[{"name":"descriptionWords","type":"Value","caseSensitive":false}]},{"name":"productId","unique":true,"properties":[{"name":"productId","type":"Hash","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'brand': 0,
     'createTime': 1,
     'description': 2,
     'descriptionWords': 3,
-    'enable': 4,
-    'hsn': 5,
-    'imageUrl': 6,
-    'lastSyncAt': 7,
-    'listPrice': 8,
-    'productId': 9,
-    'purchasePrice': 10,
-    'salePrice': 11,
-    'skuCode': 12,
-    'storeId': 13,
-    'syncState': 14,
-    'tax': 15,
-    'uom': 16,
-    'updateTime': 17,
-    'version': 18
+    'displayName': 4,
+    'enable': 5,
+    'hsn': 6,
+    'imageUrl': 7,
+    'lastSyncAt': 8,
+    'listPrice': 9,
+    'productId': 10,
+    'purchasePrice': 11,
+    'salePrice': 12,
+    'skuCode': 13,
+    'storeId': 14,
+    'syncState': 15,
+    'tax': 16,
+    'uom': 17,
+    'updateTime': 18,
+    'version': 19
   },
   listProperties: {'descriptionWords'},
   indexIds: {'descriptionWords': 0, 'productId': 1},
@@ -96,8 +97,11 @@ void _productEntitySerializeNative(
   final value1 = object.createTime;
   final _createTime = value1;
   final value2 = object.description;
-  final _description = IsarBinaryWriter.utf8Encoder.convert(value2);
-  dynamicSize += (_description.length) as int;
+  IsarUint8List? _description;
+  if (value2 != null) {
+    _description = IsarBinaryWriter.utf8Encoder.convert(value2);
+  }
+  dynamicSize += (_description?.length ?? 0) as int;
   final value3 = object.descriptionWords;
   dynamicSize += (value3.length) * 8;
   final bytesList3 = <IsarUint8List>[];
@@ -107,53 +111,56 @@ void _productEntitySerializeNative(
     dynamicSize += bytes.length as int;
   }
   final _descriptionWords = bytesList3;
-  final value4 = object.enable;
-  final _enable = value4;
-  final value5 = object.hsn;
+  final value4 = object.displayName;
+  final _displayName = IsarBinaryWriter.utf8Encoder.convert(value4);
+  dynamicSize += (_displayName.length) as int;
+  final value5 = object.enable;
+  final _enable = value5;
+  final value6 = object.hsn;
   IsarUint8List? _hsn;
-  if (value5 != null) {
-    _hsn = IsarBinaryWriter.utf8Encoder.convert(value5);
+  if (value6 != null) {
+    _hsn = IsarBinaryWriter.utf8Encoder.convert(value6);
   }
   dynamicSize += (_hsn?.length ?? 0) as int;
-  final value6 = object.imageUrl;
+  final value7 = object.imageUrl;
   IsarUint8List? _imageUrl;
-  if (value6 != null) {
-    _imageUrl = IsarBinaryWriter.utf8Encoder.convert(value6);
+  if (value7 != null) {
+    _imageUrl = IsarBinaryWriter.utf8Encoder.convert(value7);
   }
   dynamicSize += (_imageUrl?.length ?? 0) as int;
-  final value7 = object.lastSyncAt;
-  final _lastSyncAt = value7;
-  final value8 = object.listPrice;
-  final _listPrice = value8;
-  final value9 = object.productId;
+  final value8 = object.lastSyncAt;
+  final _lastSyncAt = value8;
+  final value9 = object.listPrice;
+  final _listPrice = value9;
+  final value10 = object.productId;
   IsarUint8List? _productId;
-  if (value9 != null) {
-    _productId = IsarBinaryWriter.utf8Encoder.convert(value9);
+  if (value10 != null) {
+    _productId = IsarBinaryWriter.utf8Encoder.convert(value10);
   }
   dynamicSize += (_productId?.length ?? 0) as int;
-  final value10 = object.purchasePrice;
-  final _purchasePrice = value10;
-  final value11 = object.salePrice;
-  final _salePrice = value11;
-  final value12 = object.skuCode;
+  final value11 = object.purchasePrice;
+  final _purchasePrice = value11;
+  final value12 = object.salePrice;
+  final _salePrice = value12;
+  final value13 = object.skuCode;
   IsarUint8List? _skuCode;
-  if (value12 != null) {
-    _skuCode = IsarBinaryWriter.utf8Encoder.convert(value12);
+  if (value13 != null) {
+    _skuCode = IsarBinaryWriter.utf8Encoder.convert(value13);
   }
   dynamicSize += (_skuCode?.length ?? 0) as int;
-  final value13 = object.storeId;
-  final _storeId = value13;
-  final value14 = object.syncState;
-  final _syncState = value14;
-  final value15 = object.tax;
-  final _tax = value15;
-  final value16 = object.uom;
-  final _uom = IsarBinaryWriter.utf8Encoder.convert(value16);
+  final value14 = object.storeId;
+  final _storeId = value14;
+  final value15 = object.syncState;
+  final _syncState = value15;
+  final value16 = object.tax;
+  final _tax = value16;
+  final value17 = object.uom;
+  final _uom = IsarBinaryWriter.utf8Encoder.convert(value17);
   dynamicSize += (_uom.length) as int;
-  final value17 = object.updateTime;
-  final _updateTime = value17;
-  final value18 = object.version;
-  final _version = value18;
+  final value18 = object.updateTime;
+  final _updateTime = value18;
+  final value19 = object.version;
+  final _version = value19;
   final size = staticSize + dynamicSize;
 
   rawObj.buffer = alloc(size);
@@ -164,21 +171,22 @@ void _productEntitySerializeNative(
   writer.writeDateTime(offsets[1], _createTime);
   writer.writeBytes(offsets[2], _description);
   writer.writeStringList(offsets[3], _descriptionWords);
-  writer.writeBool(offsets[4], _enable);
-  writer.writeBytes(offsets[5], _hsn);
-  writer.writeBytes(offsets[6], _imageUrl);
-  writer.writeDateTime(offsets[7], _lastSyncAt);
-  writer.writeDouble(offsets[8], _listPrice);
-  writer.writeBytes(offsets[9], _productId);
-  writer.writeDouble(offsets[10], _purchasePrice);
-  writer.writeDouble(offsets[11], _salePrice);
-  writer.writeBytes(offsets[12], _skuCode);
-  writer.writeLong(offsets[13], _storeId);
-  writer.writeLong(offsets[14], _syncState);
-  writer.writeDouble(offsets[15], _tax);
-  writer.writeBytes(offsets[16], _uom);
-  writer.writeDateTime(offsets[17], _updateTime);
-  writer.writeLong(offsets[18], _version);
+  writer.writeBytes(offsets[4], _displayName);
+  writer.writeBool(offsets[5], _enable);
+  writer.writeBytes(offsets[6], _hsn);
+  writer.writeBytes(offsets[7], _imageUrl);
+  writer.writeDateTime(offsets[8], _lastSyncAt);
+  writer.writeDouble(offsets[9], _listPrice);
+  writer.writeBytes(offsets[10], _productId);
+  writer.writeDouble(offsets[11], _purchasePrice);
+  writer.writeDouble(offsets[12], _salePrice);
+  writer.writeBytes(offsets[13], _skuCode);
+  writer.writeLong(offsets[14], _storeId);
+  writer.writeLong(offsets[15], _syncState);
+  writer.writeDouble(offsets[16], _tax);
+  writer.writeBytes(offsets[17], _uom);
+  writer.writeDateTime(offsets[18], _updateTime);
+  writer.writeLong(offsets[19], _version);
 }
 
 ProductEntity _productEntityDeserializeNative(
@@ -189,23 +197,24 @@ ProductEntity _productEntityDeserializeNative(
   final object = ProductEntity(
     brand: reader.readStringOrNull(offsets[0]),
     createTime: reader.readDateTime(offsets[1]),
-    description: reader.readString(offsets[2]),
-    enable: reader.readBool(offsets[4]),
-    hsn: reader.readStringOrNull(offsets[5]),
+    description: reader.readStringOrNull(offsets[2]),
+    displayName: reader.readString(offsets[4]),
+    enable: reader.readBool(offsets[5]),
+    hsn: reader.readStringOrNull(offsets[6]),
     id: id,
-    imageUrl: reader.readStringOrNull(offsets[6]),
-    lastSyncAt: reader.readDateTimeOrNull(offsets[7]),
-    listPrice: reader.readDoubleOrNull(offsets[8]),
-    productId: reader.readStringOrNull(offsets[9]),
-    purchasePrice: reader.readDoubleOrNull(offsets[10]),
-    salePrice: reader.readDoubleOrNull(offsets[11]),
-    skuCode: reader.readStringOrNull(offsets[12]),
-    storeId: reader.readLong(offsets[13]),
-    syncState: reader.readLong(offsets[14]),
-    tax: reader.readDoubleOrNull(offsets[15]),
-    uom: reader.readString(offsets[16]),
-    updateTime: reader.readDateTimeOrNull(offsets[17]),
-    version: reader.readLong(offsets[18]),
+    imageUrl: reader.readStringOrNull(offsets[7]),
+    lastSyncAt: reader.readDateTimeOrNull(offsets[8]),
+    listPrice: reader.readDoubleOrNull(offsets[9]),
+    productId: reader.readStringOrNull(offsets[10]),
+    purchasePrice: reader.readDoubleOrNull(offsets[11]),
+    salePrice: reader.readDoubleOrNull(offsets[12]),
+    skuCode: reader.readStringOrNull(offsets[13]),
+    storeId: reader.readLong(offsets[14]),
+    syncState: reader.readLong(offsets[15]),
+    tax: reader.readDoubleOrNull(offsets[16]),
+    uom: reader.readString(offsets[17]),
+    updateTime: reader.readDateTimeOrNull(offsets[18]),
+    version: reader.readLong(offsets[19]),
   );
   return object;
 }
@@ -220,38 +229,40 @@ P _productEntityDeserializePropNative<P>(
     case 1:
       return (reader.readDateTime(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readStringList(offset) ?? []) as P;
     case 4:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 8:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 9:
       return (reader.readStringOrNull(offset)) as P;
-    case 10:
+    case 8:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 9:
       return (reader.readDoubleOrNull(offset)) as P;
+    case 10:
+      return (reader.readStringOrNull(offset)) as P;
     case 11:
       return (reader.readDoubleOrNull(offset)) as P;
     case 12:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 13:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 14:
       return (reader.readLong(offset)) as P;
     case 15:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 16:
-      return (reader.readString(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 17:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 18:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 19:
       return (reader.readLong(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
@@ -266,6 +277,7 @@ dynamic _productEntitySerializeWeb(
       jsObj, 'createTime', object.createTime.toUtc().millisecondsSinceEpoch);
   IsarNative.jsObjectSet(jsObj, 'description', object.description);
   IsarNative.jsObjectSet(jsObj, 'descriptionWords', object.descriptionWords);
+  IsarNative.jsObjectSet(jsObj, 'displayName', object.displayName);
   IsarNative.jsObjectSet(jsObj, 'enable', object.enable);
   IsarNative.jsObjectSet(jsObj, 'hsn', object.hsn);
   IsarNative.jsObjectSet(jsObj, 'id', object.id);
@@ -297,7 +309,8 @@ ProductEntity _productEntityDeserializeWeb(
                 isUtc: true)
             .toLocal()
         : DateTime.fromMillisecondsSinceEpoch(0),
-    description: IsarNative.jsObjectGet(jsObj, 'description') ?? '',
+    description: IsarNative.jsObjectGet(jsObj, 'description'),
+    displayName: IsarNative.jsObjectGet(jsObj, 'displayName') ?? '',
     enable: IsarNative.jsObjectGet(jsObj, 'enable') ?? false,
     hsn: IsarNative.jsObjectGet(jsObj, 'hsn'),
     id: IsarNative.jsObjectGet(jsObj, 'id'),
@@ -343,13 +356,15 @@ P _productEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
               .toLocal()
           : DateTime.fromMillisecondsSinceEpoch(0)) as P;
     case 'description':
-      return (IsarNative.jsObjectGet(jsObj, 'description') ?? '') as P;
+      return (IsarNative.jsObjectGet(jsObj, 'description')) as P;
     case 'descriptionWords':
       return ((IsarNative.jsObjectGet(jsObj, 'descriptionWords') as List?)
               ?.map((e) => e ?? '')
               .toList()
               .cast<String>() ??
           []) as P;
+    case 'displayName':
+      return (IsarNative.jsObjectGet(jsObj, 'displayName') ?? '') as P;
     case 'enable':
       return (IsarNative.jsObjectGet(jsObj, 'enable') ?? false) as P;
     case 'hsn':
@@ -824,8 +839,17 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      descriptionIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'description',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
       descriptionEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -838,7 +862,7 @@ extension ProductEntityQueryFilter
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
       descriptionGreaterThan(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -853,7 +877,7 @@ extension ProductEntityQueryFilter
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
       descriptionLessThan(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -868,8 +892,8 @@ extension ProductEntityQueryFilter
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
       descriptionBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
@@ -1032,6 +1056,113 @@ extension ProductEntityQueryFilter
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'descriptionWords',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      displayNameEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'displayName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      displayNameGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'displayName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      displayNameLessThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'displayName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      displayNameBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'displayName',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      displayNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'displayName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      displayNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'displayName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      displayNameContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'displayName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      displayNameMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'displayName',
       value: pattern,
       caseSensitive: caseSensitive,
     ));
@@ -2135,6 +2266,15 @@ extension ProductEntityQueryWhereSortBy
     return addSortByInternal('description', Sort.desc);
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByDisplayName() {
+    return addSortByInternal('displayName', Sort.asc);
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
+      sortByDisplayNameDesc() {
+    return addSortByInternal('displayName', Sort.desc);
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByEnable() {
     return addSortByInternal('enable', Sort.asc);
   }
@@ -2301,6 +2441,15 @@ extension ProductEntityQueryWhereSortThenBy
     return addSortByInternal('description', Sort.desc);
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByDisplayName() {
+    return addSortByInternal('displayName', Sort.asc);
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
+      thenByDisplayNameDesc() {
+    return addSortByInternal('displayName', Sort.desc);
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByEnable() {
     return addSortByInternal('enable', Sort.asc);
   }
@@ -2455,6 +2604,11 @@ extension ProductEntityQueryWhereDistinct
     return addDistinctByInternal('description', caseSensitive: caseSensitive);
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByDisplayName(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('displayName', caseSensitive: caseSensitive);
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByEnable() {
     return addDistinctByInternal('enable');
   }
@@ -2536,13 +2690,17 @@ extension ProductEntityQueryProperty
     return addPropertyNameInternal('createTime');
   }
 
-  QueryBuilder<ProductEntity, String, QQueryOperations> descriptionProperty() {
+  QueryBuilder<ProductEntity, String?, QQueryOperations> descriptionProperty() {
     return addPropertyNameInternal('description');
   }
 
   QueryBuilder<ProductEntity, List<String>, QQueryOperations>
       descriptionWordsProperty() {
     return addPropertyNameInternal('descriptionWords');
+  }
+
+  QueryBuilder<ProductEntity, String, QQueryOperations> displayNameProperty() {
+    return addPropertyNameInternal('displayName');
   }
 
   QueryBuilder<ProductEntity, bool, QQueryOperations> enableProperty() {

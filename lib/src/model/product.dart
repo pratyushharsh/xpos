@@ -60,7 +60,7 @@ class ProductModel {
   ProductEntity toEntity() {
     return ProductEntity(
         productId: skuCode ?? productId,
-        description: description,
+        displayName: description,
         listPrice: listPrice,
         salePrice: salePrice,
         enable: enable,
@@ -76,7 +76,7 @@ class ProductModel {
   static ProductModel fromEntity(ProductEntity entity) {
     return ProductModel(
         productId: entity.productId,
-        description: entity.description,
+        description: entity.displayName,
         listPrice: entity.listPrice,
         salePrice: entity.salePrice,
         enable: entity.enable,

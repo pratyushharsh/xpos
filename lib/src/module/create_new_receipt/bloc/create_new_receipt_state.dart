@@ -15,6 +15,7 @@ enum CustomerSearchState { initial, searching, selected }
 class CreateNewReceiptState extends Equatable {
   final int transSeq;
   final List<SaleLine> lineItem;
+  final List<TenderLineItem> tenderLine;
   final ContactEntity? selectedCustomer;
   final CreateNewReceiptStatus status;
   final List<ContactEntity> customerSuggestion;
@@ -23,6 +24,7 @@ class CreateNewReceiptState extends Equatable {
 
   const CreateNewReceiptState(
       {this.lineItem = const [],
+        this.tenderLine = const [],
       this.transSeq = -1,
       required this.status,
       this.selectedCustomer,

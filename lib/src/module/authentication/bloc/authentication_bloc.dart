@@ -16,6 +16,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
 
   final log = Logger('AuthenticationBloc');
+  final bool test = true;
 
   final CognitoUserPool userPool;
   final Isar db;
@@ -48,6 +49,17 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   void _onInitialAuth(InitialAuthEvent event, Emitter<AuthenticationState> emit) async {
     try {
+
+      // @TODO Remove after testing
+      if (test) {
+        emit(AuthenticationState.authenticated(CognitoUser("pratyush-test", CognitoUserPool(
+          "ap-south-1_gXgaeT7lu",
+          "366tbopn6vh1f3v88e4u2drn34"
+        )), "100026", RetailLocationEntity(
+          rtlLocId: 100026, createTime: DateTime.now(),
+        )));
+        return;
+      }
 
       var user = await userPool.getCurrentUser();
       if (user != null) {

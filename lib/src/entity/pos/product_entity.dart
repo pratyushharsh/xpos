@@ -16,7 +16,8 @@ class ProductEntity extends BaseEntity {
   String? productId;
   int storeId;
 
-  final String description;
+  final String displayName;
+  final String? description;
   final double? listPrice;
   final double? salePrice;
   final double? purchasePrice;
@@ -34,13 +35,14 @@ class ProductEntity extends BaseEntity {
   late int version;
 
   @Index(type: IndexType.value, caseSensitive: false)
-  List<String> get descriptionWords => Isar.splitWords(description);
+  List<String> get descriptionWords => Isar.splitWords(displayName);
 
   ProductEntity(
       {this.id,
       this.productId,
       required this.storeId,
-      required this.description,
+      required this.displayName,
+        this.description,
       required this.listPrice,
       required this.salePrice,
       this.purchasePrice,
@@ -88,6 +90,7 @@ class ProductEntity extends BaseEntity {
     return {
       'product_id': productId,
       'store_id': storeId,
+      'display_name': displayName,
       'description': description,
       'list_price': listPrice,
       'sale_price': salePrice,
@@ -110,7 +113,7 @@ class ProductEntity extends BaseEntity {
     return ProductEntity(
         productId: map['product_id'] as String,
         storeId: map['store_id'] as int,
-        description: (map['description'] ?? map['product_id']) as String,
+        displayName: (map['display_name'] ?? map['product_id']) as String,
         listPrice: double.tryParse(map['list_price'].toString()),
         salePrice: double.tryParse(map['sale_price'].toString()),
         purchasePrice: double.tryParse(map['purchase_price'].toString()),
@@ -130,6 +133,6 @@ class ProductEntity extends BaseEntity {
 
   @override
   String toString() {
-    return 'ProductEntity{productId: $productId, storeId: $storeId, description: $description, listPrice: $listPrice, salePrice: $salePrice, purchasePrice: $purchasePrice, uom: $uom, enable: $enable, brand: $brand, skuCode: $skuCode, hsn: $hsn, tax: $tax, imageUrl: $imageUrl, syncState: $syncState, createTime: $createTime, updateTime: $updateTime, lastSyncAt: $lastSyncAt, version: $version}';
+    return 'ProductEntity{productId: $productId, storeId: $storeId, description: $displayName, listPrice: $listPrice, salePrice: $salePrice, purchasePrice: $purchasePrice, uom: $uom, enable: $enable, brand: $brand, skuCode: $skuCode, hsn: $hsn, tax: $tax, imageUrl: $imageUrl, syncState: $syncState, createTime: $createTime, updateTime: $updateTime, lastSyncAt: $lastSyncAt, version: $version}';
   }
 }

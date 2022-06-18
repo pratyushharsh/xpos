@@ -160,7 +160,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           _uom = state.existingProduct!.uom;
           _productId = state.existingProduct!.skuCode ??
               state.existingProduct!.productId;
-          _productNameController.text = state.existingProduct!.description;
+          _productNameController.text = state.existingProduct!.displayName;
           _salePriceController.text =
               state.existingProduct!.salePrice!.toString();
           _listPriceController.text =
@@ -206,6 +206,14 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                             validator:
                                 NewProductFieldValidator.validateProductName,
                             controller: _productNameController,
+                          ),
+                          CustomTextField(
+                            label: "Product Description",
+                            validator:
+                            NewProductFieldValidator.validateProductName,
+                            controller: _productNameController,
+                            minLines: 5,
+                            maxLines: 10,
                           ),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,

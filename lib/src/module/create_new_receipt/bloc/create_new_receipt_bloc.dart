@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
+import 'package:receipt_generator/src/model/tender_line.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
@@ -22,12 +25,12 @@ class CreateNewReceiptBloc
   final AuthenticationBloc authenticationBloc;
   final ContactRepository contactDb;
   final SequenceRepository sequenceRepository;
-  final TransactionRepository transactionReposotory;
+  final TransactionRepository transactionRepository;
 
   CreateNewReceiptBloc(
       {required this.db,
       required this.contactDb,
-        required this.transactionReposotory,
+        required this.transactionRepository,
       required this.authenticationBloc,
       required this.sequenceRepository})
       : super(const CreateNewReceiptState(
@@ -41,6 +44,7 @@ class CreateNewReceiptBloc
     on<OnCustomerPhoneChange>(_onCustomerPhoneChange);
     on<OnCustomerAddressChange>(_onCustomerAddressChange);
     on<OnSuggestedCustomerSelect>(_onSuggestedCustomerSelectEvent);
+    on<OnAddNewTenderLine>(_onAddNewTenderLineItem);
   }
 
   void _onInitiateTransaction(OnInitiateNewTransaction event,
@@ -121,7 +125,7 @@ class CreateNewReceiptBloc
     }
 
     try {
-      await transactionReposotory.createNewSale(header, lineItems);
+      await transactionRepository.createNewSale(header, lineItems);
       emit(state.copyWith(status: CreateNewReceiptStatus.paymentAwaiting));
     } catch (e) {
       log.severe(e);
@@ -137,7 +141,11 @@ class CreateNewReceiptBloc
             .filter()
             .nameContains('${event.name}', caseSensitive: false)
             .findAll();
-        var contacts = await contactDb.getContact();
+
+        var contacts = <ContactEntity>[];
+        if (Platform.isIOS || Platform.isAndroid) {
+          contacts = await contactDb.getContact();
+        }
         log.info("${contacts.length} contacts found.");
         var x = contacts
             .where((con) {
@@ -185,5 +193,10 @@ class CreateNewReceiptBloc
         selectedCustomer: event.contact,
         customerSearchState: CustomerSearchState.selected,
         customerAddress: event.contact.shippingAddress));
+  }
+
+  void _onAddNewTenderLineItem(OnAddNewTenderLine event,
+      Emitter<CreateNewReceiptState> emit) async {
+
   }
 }

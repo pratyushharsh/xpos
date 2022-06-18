@@ -95,7 +95,7 @@ class ItemCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${product.skuCode ?? product.productId}',
+                      '${product.productId ?? product.skuCode}',
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     Text(
@@ -108,14 +108,14 @@ class ItemCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  if (product.salePrice != null)
+                  if (product.salePrice != null && product.salePrice! > 0)
                   Text('₹ ${product.salePrice!.toStringAsFixed(2)}',
                       style: const TextStyle(fontWeight: FontWeight.w600)),
                   if (product.listPrice != null)
                   Text(
                     '₹ ${product.listPrice!.toStringAsFixed(2)}',
-                    style:
-                        const TextStyle(decoration: TextDecoration.lineThrough),
+                    style: (product.salePrice != null && product.salePrice! > 0) ?
+                        const TextStyle(decoration: TextDecoration.lineThrough) : const TextStyle(),
                   ),
                 ],
               ),

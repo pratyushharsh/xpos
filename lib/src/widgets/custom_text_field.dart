@@ -20,6 +20,7 @@ class CustomTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final GestureTapCallback? onTap;
   final bool? enabled;
+  final ValueChanged<String>? onFieldSubmitted;
 
   const CustomTextField(
       {Key? key,
@@ -37,6 +38,7 @@ class CustomTextField extends StatelessWidget {
       this.onTap,
       this.validator,
       this.enabled,
+      this.onFieldSubmitted,
       this.textCapitalization = TextCapitalization.none,
       this.obscureText = false,
       this.style = const TextStyle(
@@ -84,6 +86,7 @@ class CustomTextField extends StatelessWidget {
             textAlign: textAlign,
             style: style,
             onTap: onTap,
+            onFieldSubmitted: onFieldSubmitted,
             enabled: enabled,
             textCapitalization: textCapitalization,
             decoration: InputDecoration(

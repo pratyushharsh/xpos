@@ -8,19 +8,21 @@ class SaleLine {
   final double price;
   final double discount;
   final List<SaleTaxModifier> taxModifier;
+  final List<PriceModifier> priceModifier;
 
   SaleLine(
       {required this.seq,
       required this.product,
       this.qty = 1,
       this.taxModifier = const [],
+      this.priceModifier = const [],
       required this.price,
       this.discount = 0.0});
 
   get tax {
     var incTax = (price - discount) * qty;
     var taxRate = product.tax ?? 0;
-    var t = incTax / (100 + taxRate) * 100;
+    var t = incTax / (1 + taxRate);
     return incTax - t;
   }
 
