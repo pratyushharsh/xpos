@@ -8,6 +8,7 @@ import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/model/tender_line.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_mobile_view.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_recipt_desktop_view.dart';
+import 'package:receipt_generator/src/module/customer_search/bloc/customer_search_bloc.dart';
 import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
@@ -19,15 +20,24 @@ class NewReceiptView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      lazy: false,
-      create: (ctx) => CreateNewReceiptBloc(
-          db: RepositoryProvider.of(ctx),
-          contactDb: RepositoryProvider.of(ctx),
-          authenticationBloc: BlocProvider.of(ctx),
-          sequenceRepository: RepositoryProvider.of(ctx),
-          transactionRepository: RepositoryProvider.of(ctx))
-        ..add(OnInitiateNewTransaction()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          lazy: false,
+          create: (ctx) => CreateNewReceiptBloc(
+              db: RepositoryProvider.of(ctx),
+              authenticationBloc: BlocProvider.of(ctx),
+              sequenceRepository: RepositoryProvider.of(ctx),
+              transactionRepository: RepositoryProvider.of(ctx))
+            ..add(OnInitiateNewTransaction()),
+        ),
+        BlocProvider(
+          create: (ctx) => CustomerSearchBloc(
+            contactDb: RepositoryProvider.of(ctx),
+            db: RepositoryProvider.of(ctx),
+          ),
+        ),
+      ],
       child: LayoutBuilder(
         builder: (context, constrain) {
           if (constrain.maxWidth > 800) {
@@ -53,7 +63,7 @@ class CustomerSuggestionWidget extends StatelessWidget {
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
           BlocProvider.of<CreateNewReceiptBloc>(context)
-              .add(OnSuggestedCustomerSelect(contactEntity));
+              .add(OnCustomerSelect(contactEntity));
         },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -627,28 +637,63 @@ class RetailSummaryDetailRow extends StatelessWidget {
   }
 }
 
-class CustomerDetailWidget extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController();
-  CustomerDetailWidget({Key? key}) : super(key: key);
+class SaleCustomerMobile extends StatelessWidget {
+  final ContactEntity customer;
+  const SaleCustomerMobile({Key? key, required this.customer})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+    return Container(
+      child: Column(
+        children: [Text(customer.name), Text('${customer.phoneNumber}')],
+      ),
+    );
+  }
+}
+
+class CustomerDetailWidget extends StatefulWidget {
+  CustomerDetailWidget({Key? key}) : super(key: key);
+
+  @override
+  State<CustomerDetailWidget> createState() => _CustomerDetailWidgetState();
+}
+
+class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
+  final TextEditingController _controller = TextEditingController();
+  var newCustomer = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CustomerSearchBloc, CustomerSearchState>(
       builder: (context, state) {
-        if (state.selectedCustomer != null) {
-          _controller.text = state.selectedCustomer!.name;
-        }
         return Column(
           children: [
-            CustomTextField(
-              controller: _controller,
-              label: "Customer Detail",
-              onValueChange: (value) {
-                BlocProvider.of<CreateNewReceiptBloc>(context)
-                    .add(OnCustomerNameChange(name: value));
-              },
-            ),
-            if (CustomerSearchState.searching == state.customerSearchState)
+            BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+                builder: (context, st) {
+              if (st.customer != null && !newCustomer) {
+                return InkWell(
+                  onLongPress: () {
+                    setState(() => {
+                      newCustomer = true
+                    });
+                  },
+                    child: SaleCustomerMobile(
+                  customer: st.customer!,
+                ));
+              } else {
+                return CustomTextField(
+                  controller: _controller,
+                  label: "Customer Detail",
+                  onValueChange: (value) {
+                    BlocProvider.of<CustomerSearchBloc>(context)
+                        .add(OnCustomerNameChange(name: value));
+                  },
+                  suffixIcon: newCustomer ? const Icon(Icons.close) : null,
+                );
+              }
+            }),
+            if (CustomerSearchStateStatus.searching == state.status)
               Card(
                 elevation: 4,
                 child: Container(
@@ -675,10 +720,15 @@ class CustomerDetailWidget extends StatelessWidget {
                       ...state.customerSuggestion
                           .map((e) => InkWell(
                                 onTap: () {
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                  BlocProvider.of<CreateNewReceiptBloc>(context)
-                                      .add(OnSuggestedCustomerSelect(e));
+                                  setState(() {
+                                    newCustomer = false;
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    BlocProvider.of<CreateNewReceiptBloc>(context)
+                                        .add(OnCustomerSelect(e));
+                                    BlocProvider.of<CustomerSearchBloc>(context)
+                                        .add(OnSearchComplete());
+                                  });
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -695,13 +745,18 @@ class CustomerDetailWidget extends StatelessWidget {
                       const Divider(
                         height: 0,
                       ),
-                      ...state.phoneContactSuggestion
+                      ...state.phoneBookSuggestion
                           .map((e) => InkWell(
                                 onTap: () {
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                  BlocProvider.of<CreateNewReceiptBloc>(context)
-                                      .add(OnSuggestedCustomerSelect(e));
+                                  setState(() {
+                                    newCustomer = false;
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    BlocProvider.of<CreateNewReceiptBloc>(context)
+                                        .add(OnCustomerSelect(e));
+                                    BlocProvider.of<CustomerSearchBloc>(context)
+                                        .add(OnSearchComplete());
+                                  });
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(

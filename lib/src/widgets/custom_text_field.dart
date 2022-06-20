@@ -6,6 +6,7 @@ class CustomTextField extends StatelessWidget {
   final int minLines;
   final int maxLines;
   final Widget? icon;
+  final Widget? suffixIcon;
   final String? initialValue;
   final ValueChanged<String>? onValueChange;
   final String? errorText;
@@ -25,6 +26,7 @@ class CustomTextField extends StatelessWidget {
   const CustomTextField(
       {Key? key,
       this.icon,
+      this.suffixIcon,
       this.helperText,
       required this.label,
       this.maxLines = 1,
@@ -97,6 +99,7 @@ class CustomTextField extends StatelessWidget {
               ),
               prefixIconConstraints: prefixIconConstraint,
               prefixIcon: icon,
+              suffixIcon: suffixIcon,
               contentPadding: const EdgeInsets.all(12),
               border: const OutlineInputBorder(),
               isDense: true,

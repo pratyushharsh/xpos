@@ -20,7 +20,7 @@ class ListAllReceiptBloc extends Bloc<ListAllReceiptEvent, ListAllReceiptState> 
   void _onLoadAllReceipt(LoadAllReceipt event, Emitter<ListAllReceiptState> emit) async {
     try {
       emit(state.copyWith(status: ListAllReceiptStatus.loading));
-      var receipts = await db.transactionHeaderEntitys.where(sort: Sort.desc).findAll();
+      var receipts = await db.transactionHeaderEntitys.where().sortByBeginDatetimeDesc().findAll();
       emit(state.copyWith(receipts: receipts, status: ListAllReceiptStatus.success));
     } catch (e) {
       log.severe(e);

@@ -18,7 +18,11 @@ class TransactionHeaderEntity extends BaseEntity {
   final double subtotal;
   final double roundTotal;
   final String status;
+
+  @Index()
   final String? customerId;
+
+  @Index()
   final String? customerPhone;
   final String? shippingAddress;
   final String? billingAddress;

@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -11,7 +10,6 @@ import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/model/tender_line.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
-import 'package:receipt_generator/src/repositories/contact_repository.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 import 'package:receipt_generator/src/util/helper/tax_helper.dart';
@@ -24,13 +22,11 @@ class CreateNewReceiptBloc
   final log = Logger('CreateNewReceiptBloc');
   final Isar db;
   final AuthenticationBloc authenticationBloc;
-  final ContactRepository contactDb;
   final SequenceRepository sequenceRepository;
   final TransactionRepository transactionRepository;
 
   CreateNewReceiptBloc(
       {required this.db,
-      required this.contactDb,
       required this.transactionRepository,
       required this.authenticationBloc,
       required this.sequenceRepository})
@@ -44,7 +40,7 @@ class CreateNewReceiptBloc
     // on<OnCustomerNameChange>(_onCustomerNameChange);
     // on<OnCustomerPhoneChange>(_onCustomerPhoneChange);
     // on<OnCustomerAddressChange>(_onCustomerAddressChange);
-    // on<OnSuggestedCustomerSelect>(_onSuggestedCustomerSelectEvent);
+    on<OnCustomerSelect>(_onCustomerSelectEvent);
     on<OnAddNewTenderLine>(_onAddNewTenderLineItem);
     on<OnChangeSaleStep>(_onChangeSaleStep);
     on<_VerifyOrderAndEmitState>(_onVerifyOrderAndEmitStep);
@@ -117,21 +113,21 @@ class CreateNewReceiptBloc
         subtotal: state.subTotal,
         roundTotal: 0.00,
         status: SaleStatus.pending,
-        customerId: state.selectedCustomer?.contactId,
-        customerName: state.selectedCustomer?.name,
-        customerPhone: state.selectedCustomer?.phoneNumber,
-        shippingAddress: state.selectedCustomer?.shippingAddress,
+        customerId: state.customer?.contactId,
+        customerName: state.customer?.name,
+        customerPhone: state.customer?.phoneNumber,
+        shippingAddress: state.customer?.shippingAddress,
         storeId: storeId,
         createTime: DateTime.now());
     List<TransactionLineItemEntity> lineItems =
         state.lineItem.map((e) => e.toEntity(state.transSeq)).toList();
 
     // Create If Contact Does not exist else override
-    if (state.selectedCustomer != null) {
+    if (state.customer != null) {
       try {
         db.writeTxn((isar) async {
-          if (state.selectedCustomer != null) {
-            await isar.contactEntitys.put(state.selectedCustomer!);
+          if (state.customer != null) {
+            await isar.contactEntitys.put(state.customer!);
           }
         });
       } catch (e) {
@@ -149,46 +145,6 @@ class CreateNewReceiptBloc
     add(_VerifyOrderAndEmitState());
   }
 
-  // void _onCustomerNameChange(
-  //     OnCustomerNameChange event, Emitter<CreateNewReceiptState> emit) async {
-  //   try {
-  //     if (event.name != null && event.name!.isNotEmpty) {
-  //       var customer = await db.contactEntitys
-  //           .filter()
-  //           .nameContains('${event.name}', caseSensitive: false)
-  //           .findAll();
-  //
-  //       var contacts = <ContactEntity>[];
-  //       if (Platform.isIOS || Platform.isAndroid) {
-  //         contacts = await contactDb.getContact();
-  //       }
-  //       log.info("${contacts.length} contacts found.");
-  //       var x = contacts
-  //           .where((con) {
-  //             if (event.name != null) {
-  //               if (con.name
-  //                   .toLowerCase()
-  //                   .contains(event.name!.toLowerCase())) {
-  //                 return true;
-  //               }
-  //               return false;
-  //             } else {
-  //               return true;
-  //             }
-  //           })
-  //           .take(5)
-  //           .toList();
-  //       emit(state.copyWith(
-  //           customerSuggestion: customer,
-  //           selectedCustomer: null,
-  //           customerSearchState: CustomerSearchState.searching,
-  //           phoneContactSuggestion: x));
-  //     }
-  //   } catch (e) {
-  //     log.severe(e);
-  //   }
-  // }
-
   // void _onCustomerPhoneChange(
   //     OnCustomerPhoneChange event, Emitter<CreateNewReceiptState> emit) async {
   //   emit(state.copyWith(customerPhone: event.phone));
@@ -199,17 +155,10 @@ class CreateNewReceiptBloc
   //   emit(state.copyWith(customerAddress: event.address));
   // }
 
-  // void _onSuggestedCustomerSelectEvent(OnSuggestedCustomerSelect event,
-  //     Emitter<CreateNewReceiptState> emit) async {
-  //   emit(state.copyWith(
-  //       customerSuggestion: List.empty(),
-  //       customerId: event.contact.contactId,
-  //       customerPhone: event.contact.phoneNumber,
-  //       customerName: event.contact.name,
-  //       selectedCustomer: event.contact,
-  //       customerSearchState: CustomerSearchState.selected,
-  //       customerAddress: event.contact.shippingAddress));
-  // }
+  void _onCustomerSelectEvent(OnCustomerSelect event,
+      Emitter<CreateNewReceiptState> emit) async {
+    emit(state.copyWith(customer: event.contact,));
+  }
 
   void _onAddNewTenderLineItem(
       OnAddNewTenderLine event, Emitter<CreateNewReceiptState> emit) async {

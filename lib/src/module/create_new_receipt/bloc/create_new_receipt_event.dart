@@ -27,11 +27,6 @@ class OnInitiateNewTransaction extends CreateNewReceiptEvent {}
 
 class OnCreateNewTransaction extends CreateNewReceiptEvent {}
 
-class OnCustomerNameChange extends CreateNewReceiptEvent {
-  final String? name;
-  OnCustomerNameChange({this.name});
-}
-
 class OnCustomerPhoneChange extends CreateNewReceiptEvent {
   final String? phone;
   OnCustomerPhoneChange({this.phone});
@@ -42,9 +37,9 @@ class OnCustomerAddressChange extends CreateNewReceiptEvent {
   OnCustomerAddressChange({this.address});
 }
 
-class OnSuggestedCustomerSelect extends CreateNewReceiptEvent {
+class OnCustomerSelect extends CreateNewReceiptEvent {
   final ContactEntity contact;
-  OnSuggestedCustomerSelect(this.contact);
+  OnCustomerSelect(this.contact);
 }
 
 class OnAddNewTenderLine extends CreateNewReceiptEvent {

@@ -16,7 +16,7 @@ extension GetTransactionHeaderEntityCollection on Isar {
 const TransactionHeaderEntitySchema = CollectionSchema(
   name: 'TransactionHeaderEntity',
   schema:
-      '{"name":"TransactionHeaderEntity","idName":"transId","properties":[{"name":"beginDatetime","type":"Long"},{"name":"billingAddress","type":"String"},{"name":"businessDate","type":"Long"},{"name":"createTime","type":"Long"},{"name":"customerId","type":"String"},{"name":"customerName","type":"String"},{"name":"customerPhone","type":"String"},{"name":"endDateTime","type":"Long"},{"name":"lastChangedAt","type":"Long"},{"name":"roundTotal","type":"Double"},{"name":"shippingAddress","type":"String"},{"name":"status","type":"String"},{"name":"storeId","type":"Long"},{"name":"subtotal","type":"Double"},{"name":"syncState","type":"Long"},{"name":"taxTotal","type":"Double"},{"name":"total","type":"Double"},{"name":"transactionType","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[],"links":[{"name":"lineItems","target":"TransactionLineItemEntity"},{"name":"paymentLineItems","target":"TransactionPaymentLineItemEntity"}]}',
+      '{"name":"TransactionHeaderEntity","idName":"transId","properties":[{"name":"beginDatetime","type":"Long"},{"name":"billingAddress","type":"String"},{"name":"businessDate","type":"Long"},{"name":"createTime","type":"Long"},{"name":"customerId","type":"String"},{"name":"customerName","type":"String"},{"name":"customerPhone","type":"String"},{"name":"endDateTime","type":"Long"},{"name":"lastChangedAt","type":"Long"},{"name":"roundTotal","type":"Double"},{"name":"shippingAddress","type":"String"},{"name":"status","type":"String"},{"name":"storeId","type":"Long"},{"name":"subtotal","type":"Double"},{"name":"syncState","type":"Long"},{"name":"taxTotal","type":"Double"},{"name":"total","type":"Double"},{"name":"transactionType","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"customerId","unique":false,"properties":[{"name":"customerId","type":"Hash","caseSensitive":true}]},{"name":"customerPhone","unique":false,"properties":[{"name":"customerPhone","type":"Hash","caseSensitive":true}]}],"links":[{"name":"lineItems","target":"TransactionLineItemEntity"},{"name":"paymentLineItems","target":"TransactionPaymentLineItemEntity"}]}',
   idName: 'transId',
   propertyIds: {
     'beginDatetime': 0,
@@ -41,8 +41,15 @@ const TransactionHeaderEntitySchema = CollectionSchema(
     'version': 19
   },
   listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
+  indexIds: {'customerId': 0, 'customerPhone': 1},
+  indexValueTypes: {
+    'customerId': [
+      IndexValueType.stringHash,
+    ],
+    'customerPhone': [
+      IndexValueType.stringHash,
+    ]
+  },
   linkIds: {'lineItems': 0, 'paymentLineItems': 1},
   backlinkLinkNames: {},
   getId: _transactionHeaderEntityGetId,
@@ -455,6 +462,18 @@ extension TransactionHeaderEntityQueryWhereSort
       anyTransId() {
     return addWhereClauseInternal(const IdWhereClause.any());
   }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterWhere>
+      anyCustomerId() {
+    return addWhereClauseInternal(
+        const IndexWhereClause.any(indexName: 'customerId'));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterWhere>
+      anyCustomerPhone() {
+    return addWhereClauseInternal(
+        const IndexWhereClause.any(indexName: 'customerPhone'));
+  }
 }
 
 extension TransactionHeaderEntityQueryWhere on QueryBuilder<
@@ -513,6 +532,106 @@ extension TransactionHeaderEntityQueryWhere on QueryBuilder<
       includeLower: includeLower,
       upper: upperTransId,
       includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> customerIdEqualTo(String? customerId) {
+    return addWhereClauseInternal(IndexWhereClause.equalTo(
+      indexName: 'customerId',
+      value: [customerId],
+    ));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> customerIdNotEqualTo(String? customerId) {
+    if (whereSortInternal == Sort.asc) {
+      return addWhereClauseInternal(IndexWhereClause.lessThan(
+        indexName: 'customerId',
+        upper: [customerId],
+        includeUpper: false,
+      )).addWhereClauseInternal(IndexWhereClause.greaterThan(
+        indexName: 'customerId',
+        lower: [customerId],
+        includeLower: false,
+      ));
+    } else {
+      return addWhereClauseInternal(IndexWhereClause.greaterThan(
+        indexName: 'customerId',
+        lower: [customerId],
+        includeLower: false,
+      )).addWhereClauseInternal(IndexWhereClause.lessThan(
+        indexName: 'customerId',
+        upper: [customerId],
+        includeUpper: false,
+      ));
+    }
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> customerIdIsNull() {
+    return addWhereClauseInternal(const IndexWhereClause.equalTo(
+      indexName: 'customerId',
+      value: [null],
+    ));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> customerIdIsNotNull() {
+    return addWhereClauseInternal(const IndexWhereClause.greaterThan(
+      indexName: 'customerId',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> customerPhoneEqualTo(String? customerPhone) {
+    return addWhereClauseInternal(IndexWhereClause.equalTo(
+      indexName: 'customerPhone',
+      value: [customerPhone],
+    ));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> customerPhoneNotEqualTo(String? customerPhone) {
+    if (whereSortInternal == Sort.asc) {
+      return addWhereClauseInternal(IndexWhereClause.lessThan(
+        indexName: 'customerPhone',
+        upper: [customerPhone],
+        includeUpper: false,
+      )).addWhereClauseInternal(IndexWhereClause.greaterThan(
+        indexName: 'customerPhone',
+        lower: [customerPhone],
+        includeLower: false,
+      ));
+    } else {
+      return addWhereClauseInternal(IndexWhereClause.greaterThan(
+        indexName: 'customerPhone',
+        lower: [customerPhone],
+        includeLower: false,
+      )).addWhereClauseInternal(IndexWhereClause.lessThan(
+        indexName: 'customerPhone',
+        upper: [customerPhone],
+        includeUpper: false,
+      ));
+    }
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> customerPhoneIsNull() {
+    return addWhereClauseInternal(const IndexWhereClause.equalTo(
+      indexName: 'customerPhone',
+      value: [null],
+    ));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> customerPhoneIsNotNull() {
+    return addWhereClauseInternal(const IndexWhereClause.greaterThan(
+      indexName: 'customerPhone',
+      lower: [null],
+      includeLower: false,
     ));
   }
 }

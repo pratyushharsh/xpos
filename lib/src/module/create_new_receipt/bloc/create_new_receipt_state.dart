@@ -10,20 +10,15 @@ enum CreateNewReceiptStatus {
   error
 }
 
-enum CustomerSearchState { initial, searching, selected }
-
 enum CreateSaleStep { item, payment, customer, complete, confirmed }
 
 class CreateNewReceiptState extends Equatable {
   final int transSeq;
   final List<SaleLine> lineItem;
   final List<TenderLineItem> tenderLine;
-  final ContactEntity? selectedCustomer;
+  final ContactEntity? customer;
   final CreateNewReceiptStatus status;
   final CreateSaleStep step;
-  final List<ContactEntity> customerSuggestion;
-  final List<ContactEntity> phoneContactSuggestion;
-  final CustomerSearchState customerSearchState;
 
   const CreateNewReceiptState(
       {this.lineItem = const [],
@@ -31,10 +26,7 @@ class CreateNewReceiptState extends Equatable {
       this.transSeq = -1,
       required this.status,
       this.step = CreateSaleStep.item,
-      this.selectedCustomer,
-      this.customerSearchState = CustomerSearchState.initial,
-      this.phoneContactSuggestion = const [],
-      this.customerSuggestion = const []});
+      this.customer,});
 
   double get subTotal {
     return lineItem.fold(
@@ -69,41 +61,31 @@ class CreateNewReceiptState extends Equatable {
     return grandTotal - paidAmount;
   }
 
-  CreateNewReceiptState copyWith({
-    int? transSeq,
-    List<SaleLine>? lineItem,
-    List<TenderLineItem>? tenderLine,
-    ContactEntity? selectedCustomer,
-    CreateNewReceiptStatus? status,
-    CreateSaleStep? step,
-    List<ContactEntity>? customerSuggestion,
-    List<ContactEntity>? phoneContactSuggestion,
-    CustomerSearchState? customerSearchState,
-  }) {
-    return CreateNewReceiptState(
-      transSeq: transSeq ?? this.transSeq,
-      lineItem: lineItem ?? this.lineItem,
-      tenderLine: tenderLine ?? this.tenderLine,
-      selectedCustomer: selectedCustomer ?? this.selectedCustomer,
-      status: status ?? this.status,
-      step: step ?? this.step,
-      customerSuggestion: customerSuggestion ?? this.customerSuggestion,
-      phoneContactSuggestion:
-          phoneContactSuggestion ?? this.phoneContactSuggestion,
-      customerSearchState: customerSearchState ?? this.customerSearchState,
-    );
-  }
-
   @override
   List<Object?> get props => [
         lineItem,
         transSeq,
         status,
         step,
-    tenderLine,
-        customerSuggestion,
-        selectedCustomer,
-        phoneContactSuggestion,
-        customerSearchState
+        tenderLine,
+        customer,
       ];
+
+  CreateNewReceiptState copyWith({
+    int? transSeq,
+    List<SaleLine>? lineItem,
+    List<TenderLineItem>? tenderLine,
+    ContactEntity? customer,
+    CreateNewReceiptStatus? status,
+    CreateSaleStep? step,
+  }) {
+    return CreateNewReceiptState(
+      transSeq: transSeq ?? this.transSeq,
+      lineItem: lineItem ?? this.lineItem,
+      tenderLine: tenderLine ?? this.tenderLine,
+      customer: customer ?? this.customer,
+      status: status ?? this.status,
+      step: step ?? this.step,
+    );
+  }
 }
