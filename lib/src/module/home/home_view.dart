@@ -181,7 +181,7 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
                   ),
                   IconButton(
                     icon: FaIcon(
-                      FontAwesomeIcons.boxes,
+                      FontAwesomeIcons.boxesStacked,
                       color: widget.selectedIndex == 3
                           ? AppColor.primary
                           : AppColor.iconColor,

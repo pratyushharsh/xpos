@@ -76,7 +76,8 @@ class RouteConfig {
         var transId = settings.arguments as int;
         return MaterialPageRoute(builder: (_) => InvoiceDisplayView(transactionId: transId,));
       case customerDetailScreen:
-        return MaterialPageRoute(builder: (_) => const CustomerDetailScreen(userId: "PRATY-123",));
+        var contactId = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => CustomerDetailScreen(userId: contactId,));
       case editSaleLineItemScreen:
         var line = settings.arguments as SaleLine;
         return MaterialPageRoute(builder: (_) => ModifyLineItemScreen(saleLine: line,));

@@ -213,7 +213,6 @@ class _InvoiceState extends State<Invoice> {
 
     List<List<TransactionLineItemEntity>> res = [];
     // Based upon the lineItems Length calculate the size
-    bool footerHeightExceed = false;
     List<TransactionLineItemEntity> tmp = [];
     double th = headerHeight;
     bool pageOverFlow = false;

@@ -48,5 +48,16 @@ class OnSuggestedCustomerSelect extends CreateNewReceiptEvent {
 }
 
 class OnAddNewTenderLine extends CreateNewReceiptEvent {
+  final String tenderType;
+  final double amount;
 
+  OnAddNewTenderLine({required this.tenderType, required this.amount });
 }
+
+class OnChangeSaleStep extends CreateNewReceiptEvent {
+  final CreateSaleStep step;
+
+  OnChangeSaleStep(this.step);
+}
+
+class _VerifyOrderAndEmitState extends CreateNewReceiptEvent {}

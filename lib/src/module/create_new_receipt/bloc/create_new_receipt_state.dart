@@ -12,21 +12,25 @@ enum CreateNewReceiptStatus {
 
 enum CustomerSearchState { initial, searching, selected }
 
+enum CreateSaleStep { item, payment, customer, complete, confirmed }
+
 class CreateNewReceiptState extends Equatable {
   final int transSeq;
   final List<SaleLine> lineItem;
   final List<TenderLineItem> tenderLine;
   final ContactEntity? selectedCustomer;
   final CreateNewReceiptStatus status;
+  final CreateSaleStep step;
   final List<ContactEntity> customerSuggestion;
   final List<ContactEntity> phoneContactSuggestion;
   final CustomerSearchState customerSearchState;
 
   const CreateNewReceiptState(
       {this.lineItem = const [],
-        this.tenderLine = const [],
+      this.tenderLine = const [],
       this.transSeq = -1,
       required this.status,
+      this.step = CreateSaleStep.item,
       this.selectedCustomer,
       this.customerSearchState = CustomerSearchState.initial,
       this.phoneContactSuggestion = const [],
@@ -51,27 +55,43 @@ class CreateNewReceiptState extends Equatable {
     return subTotal - discount + tax;
   }
 
-  CreateNewReceiptState copyWith(
-      {List<SaleLine>? lineItem,
-      int? transSeq,
-      CreateNewReceiptStatus? status,
-      String? customerId,
-      String? customerPhone,
-      String? customerAddress,
-      String? customerName,
-      ContactEntity? selectedCustomer,
-      CustomerSearchState? customerSearchState,
-      List<ContactEntity>? customerSuggestion,
-      List<ContactEntity>? phoneContactSuggestion}) {
+  double get items {
+    return lineItem.fold(
+        0.0, (previousValue, element) => previousValue + element.qty);
+  }
+
+  double get paidAmount {
+    return tenderLine.fold(
+        0.0, (previousValue, element) => previousValue + element.amount);
+  }
+
+  double get amountDue {
+    return grandTotal - paidAmount;
+  }
+
+  CreateNewReceiptState copyWith({
+    int? transSeq,
+    List<SaleLine>? lineItem,
+    List<TenderLineItem>? tenderLine,
+    ContactEntity? selectedCustomer,
+    CreateNewReceiptStatus? status,
+    CreateSaleStep? step,
+    List<ContactEntity>? customerSuggestion,
+    List<ContactEntity>? phoneContactSuggestion,
+    CustomerSearchState? customerSearchState,
+  }) {
     return CreateNewReceiptState(
-        lineItem: lineItem ?? this.lineItem,
-        transSeq: transSeq ?? this.transSeq,
-        status: status ?? this.status,
-        selectedCustomer: selectedCustomer ?? this.selectedCustomer,
-        customerSearchState: customerSearchState ?? this.customerSearchState,
-        customerSuggestion: customerSuggestion ?? this.customerSuggestion,
-        phoneContactSuggestion:
-            phoneContactSuggestion ?? this.phoneContactSuggestion);
+      transSeq: transSeq ?? this.transSeq,
+      lineItem: lineItem ?? this.lineItem,
+      tenderLine: tenderLine ?? this.tenderLine,
+      selectedCustomer: selectedCustomer ?? this.selectedCustomer,
+      status: status ?? this.status,
+      step: step ?? this.step,
+      customerSuggestion: customerSuggestion ?? this.customerSuggestion,
+      phoneContactSuggestion:
+          phoneContactSuggestion ?? this.phoneContactSuggestion,
+      customerSearchState: customerSearchState ?? this.customerSearchState,
+    );
   }
 
   @override
@@ -79,6 +99,8 @@ class CreateNewReceiptState extends Equatable {
         lineItem,
         transSeq,
         status,
+        step,
+    tenderLine,
         customerSuggestion,
         selectedCustomer,
         phoneContactSuggestion,

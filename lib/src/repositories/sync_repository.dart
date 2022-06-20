@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
-import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/api/api.dart';
 
-import '../entity/pos/entity.dart';
 import '../util/helper/rest_api.dart';
 
 /*

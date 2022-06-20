@@ -5,6 +5,7 @@ import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/entity/pos/contact_entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
+import 'package:receipt_generator/src/model/tender_line.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_mobile_view.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_recipt_desktop_view.dart';
 import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
@@ -79,26 +80,52 @@ class BuildLineItem extends StatelessWidget {
     return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
         builder: (context, state) {
       return ListView.builder(
-          itemCount: state.lineItem.length,
+          itemCount: state.lineItem.length + state.tenderLine.length,
           itemBuilder: (itemBuilder, idx) {
-            return InkWell(
-              onTap: () {
-                Navigator.of(context)
-                    .pushNamed(RouteConfig.editSaleLineItemScreen, arguments: state.lineItem[idx]);
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: NewLineItem(
-                      saleLine: state.lineItem[idx],
+            if (idx < state.lineItem.length) {
+              return InkWell(
+                onTap: () {
+                  // Navigator.of(context)
+                  //     .pushNamed(RouteConfig.editSaleLineItemScreen, arguments: state.lineItem[idx]);
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: NewLineItem(
+                        saleLine: state.lineItem[idx],
+                      ),
                     ),
-                  ),
-                  const Divider(height: 0,)
-                ],
-              ),
-            );
+                    const Divider(
+                      height: 0,
+                    )
+                  ],
+                ),
+              );
+            }
+
+            if (idx >= state.lineItem.length) {
+              return InkWell(
+                onTap: () {},
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: TenderLineDisplay(
+                        tenderLine:
+                            state.tenderLine[idx - state.lineItem.length],
+                      ),
+                    ),
+                    const Divider(
+                      height: 0,
+                    )
+                  ],
+                ),
+              );
+            }
+            return Container();
           });
     });
   }
@@ -206,7 +233,36 @@ class LineItemHeader extends StatelessWidget {
   }
 }
 
-class NewLineItem extends StatelessWidget {
+class TenderLineDisplay extends StatelessWidget {
+  final TenderLineItem tenderLine;
+  const TenderLineDisplay({Key? key, required this.tenderLine})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+      child: Row(
+        children: [
+          const Expanded(child: Icon(Icons.currency_rupee)),
+          Expanded(
+              child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(tenderLine.tenderId))),
+          Expanded(
+              child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '${Currency.inr} ${tenderLine.amount.toStringAsFixed(2)}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ))),
+        ],
+      ),
+    );
+  }
+}
+
+class NewLineItem extends StatefulWidget {
   final SaleLine saleLine;
 
   const NewLineItem({Key? key, required this.saleLine}) : super(key: key);
@@ -216,106 +272,126 @@ class NewLineItem extends StatelessWidget {
   );
 
   @override
+  State<NewLineItem> createState() => _NewLineItemState();
+}
+
+class _NewLineItemState extends State<NewLineItem> {
+  void onTap() {
+    final NavigatorState navigator = Navigator.of(context);
+    final RenderBox itemBox = context.findRenderObject()! as RenderBox;
+    final Rect itemRect = itemBox.localToGlobal(Offset.zero,
+            ancestor: navigator.context.findRenderObject()) &
+        itemBox.size;
+    print(itemRect);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                  decoration: BoxDecoration(border: Border.all(width: 1)),
-                  child: Image.network(
-                    "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
-                    fit: BoxFit.cover,
-                    height: 50,
-                    width: 50,
-                    errorBuilder: (context, obj, trace) {
-                      return const SizedBox(
-                        height: 50,
-                        width: 50,
-                      );
-                    },
-                  )),
-              const SizedBox(
-                width: 8,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(saleLine.product.description),
-                    Text(saleLine.product.description),
-                    Text(
-                      saleLine.product.productId ??
-                          saleLine.product.skuCode ??
-                          "",
-                      style: textStyle,
-                    ),
-                  ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                    decoration: BoxDecoration(border: Border.all(width: 1)),
+                    child: Image.network(
+                      "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+                      fit: BoxFit.cover,
+                      height: 50,
+                      width: 50,
+                      errorBuilder: (context, obj, trace) {
+                        return const SizedBox(
+                          height: 50,
+                          width: 50,
+                        );
+                      },
+                    )),
+                const SizedBox(
+                  width: 8,
                 ),
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(child: Container(), flex: 2,),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}",
-                    style: textStyle,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    saleLine.qty.toString(),
-                    style: textStyle,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}",
-                    style: textStyle,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          ...saleLine.priceModifier
-              .map((e) => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: const [
-                          Padding(
-                              padding: EdgeInsets.only(right: 8, top: 4),
-                              child: Icon(
-                                Icons.discount,
-                                color: Colors.brown,
-                                size: 16,
-                              )),
-                          Text("10% off on all"),
-                        ],
+                      Text(widget.saleLine.product.description),
+                      Text(widget.saleLine.product.description),
+                      Text(
+                        widget.saleLine.product.productId ??
+                            widget.saleLine.product.skuCode ??
+                            "",
+                        style: NewLineItem.textStyle,
                       ),
-                      const Text(
-                        "-${Currency.inr}50.00",
-                        style: textStyle,
-                      )
                     ],
-                  ))
-              .toList()
-        ],
+                  ),
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Container(),
+                  flex: 2,
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "${Currency.inr}${widget.saleLine.amount.toStringAsFixed(2)}",
+                      style: NewLineItem.textStyle,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      widget.saleLine.qty.toString(),
+                      style: NewLineItem.textStyle,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "${Currency.inr}${widget.saleLine.amount.toStringAsFixed(2)}",
+                      style: NewLineItem.textStyle,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            ...widget.saleLine.priceModifier
+                .map((e) => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: const [
+                            Padding(
+                                padding: EdgeInsets.only(right: 8, top: 4),
+                                child: Icon(
+                                  Icons.discount,
+                                  color: Colors.brown,
+                                  size: 16,
+                                )),
+                            Text("10% off on all"),
+                          ],
+                        ),
+                        const Text(
+                          "-${Currency.inr}50.00",
+                          style: NewLineItem.textStyle,
+                        )
+                      ],
+                    ))
+                .toList()
+          ],
+        ),
       ),
     );
   }
@@ -372,6 +448,13 @@ class NewInvoiceButtonBar extends StatelessWidget {
               Expanded(
                 child: RejectButton(
                   onPressed: () {
+                    // @TODO Void All the tender
+                    if (state.step == CreateSaleStep.payment) {
+                      BlocProvider.of<CreateNewReceiptBloc>(context)
+                          .add(OnChangeSaleStep(CreateSaleStep.item));
+                      return;
+                    }
+
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -406,46 +489,29 @@ class NewInvoiceButtonBar extends StatelessWidget {
               const SizedBox(
                 width: 8,
               ),
-              Expanded(
-                child: AcceptButton(
-                  onPressed: state.transSeq > 0 && state.lineItem.isNotEmpty
-                      ? () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Sale Confirmation"),
-                                content: const Text(
-                                    "Would you like to continue the sale transaction?"),
-                                actions: [
-                                  ElevatedButton(
-                                    child: const Text("Cancel"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  ElevatedButton(
-                                    child: const Text("Continue"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(true);
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          ).then((value) => {
-                                if (value != null && value)
-                                  {
-                                    BlocProvider.of<CreateNewReceiptBloc>(
-                                            context)
-                                        .add(OnCreateNewTransaction())
-                                  }
-                              });
-                        }
-                      : null,
-                  label: "Proceed To Pay",
+              if (state.step == CreateSaleStep.item ||
+                  state.step == CreateSaleStep.payment)
+                Expanded(
+                  child: AcceptButton(
+                    onPressed: state.transSeq > 0 && state.lineItem.isNotEmpty
+                        ? () {
+                            BlocProvider.of<CreateNewReceiptBloc>(context)
+                                .add(OnChangeSaleStep(CreateSaleStep.payment));
+                          }
+                        : null,
+                    label: "Proceed To Pay",
+                  ),
                 ),
-              ),
+              if (state.step == CreateSaleStep.complete)
+                Expanded(
+                  child: AcceptButton(
+                    onPressed: () {
+                      BlocProvider.of<CreateNewReceiptBloc>(context)
+                          .add(OnChangeSaleStep(CreateSaleStep.complete));
+                    },
+                    label: "Complete Sale",
+                  ),
+                ),
             ],
           ),
         );
@@ -453,6 +519,38 @@ class NewInvoiceButtonBar extends StatelessWidget {
     );
   }
 }
+//OnChangeSaleStep
+// showDialog(
+// context: context,
+// builder: (BuildContext context) {
+// return AlertDialog(
+// title: const Text("Sale Confirmation"),
+// content: const Text(
+// "Would you like to continue the sale transaction?"),
+// actions: [
+// ElevatedButton(
+// child: const Text("Cancel"),
+// onPressed: () {
+// Navigator.of(context).pop();
+// },
+// ),
+// ElevatedButton(
+// child: const Text("Continue"),
+// onPressed: () {
+// Navigator.of(context).pop(true);
+// },
+// ),
+// ],
+// );
+// },
+// ).then((value) => {
+// if (value != null && value)
+// {
+// BlocProvider.of<CreateNewReceiptBloc>(
+// context)
+//     .add(OnCreateNewTransaction())
+// }
+// });
 
 class NewReceiptSummaryWidget extends StatelessWidget {
   const NewReceiptSummaryWidget({Key? key}) : super(key: key);
@@ -465,30 +563,26 @@ class NewReceiptSummaryWidget extends StatelessWidget {
           children: [
             RetailSummaryDetailRow(
               title: "Sub Total",
-              value: state.subTotal.toStringAsFixed(2),
-              currency: Currency.inr,
+              value: "${Currency.inr} ${state.subTotal.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Discount",
-              value: state.discount.toStringAsFixed(2),
-              currency: Currency.inr,
+              value: "${Currency.inr} ${state.discount.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Tax",
-              value: state.tax.toStringAsFixed(2),
-              currency: Currency.inr,
+              value: "${Currency.inr} ${state.tax.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             const Divider(),
             RetailSummaryDetailRow(
               title: "Grand Total",
-              value: state.grandTotal.toStringAsFixed(2),
-              currency: Currency.inr,
+              value: "${Currency.inr} ${state.grandTotal.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
@@ -504,28 +598,28 @@ class NewReceiptSummaryWidget extends StatelessWidget {
 class RetailSummaryDetailRow extends StatelessWidget {
   final String title;
   final String value;
-  final String currency;
   final TextStyle? textStyle;
+  final MainAxisAlignment mainAxisAlignment;
 
   const RetailSummaryDetailRow(
       {Key? key,
       required this.title,
       required this.value,
-      required this.currency,
+      this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
       this.textStyle})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: mainAxisAlignment,
       children: [
         Text(
           title,
           style: textStyle,
         ),
         Text(
-          currency + value,
+          value,
           style: textStyle,
         )
       ],
@@ -644,18 +738,22 @@ class SaleHeaderBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
-  builder: (context, state) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      height: 35,
-      color: Colors.black,
-      child: Row(
-        children: [
-          Text('Transaction No#  ${state.transSeq}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)
-        ],
-      ),
+      builder: (context, state) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          height: 35,
+          color: Colors.black,
+          child: Row(
+            children: [
+              Text(
+                'Transaction No#  ${state.transSeq}',
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
+        );
+      },
     );
-  },
-);
   }
 }

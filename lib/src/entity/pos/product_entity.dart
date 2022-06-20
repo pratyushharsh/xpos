@@ -12,7 +12,7 @@ class ProductEntity extends BaseEntity {
   @Id()
   int? id;
 
-  @Index(unique: true)
+  @Index(unique: true, type: IndexType.value)
   String? productId;
   int storeId;
 

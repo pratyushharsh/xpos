@@ -15,7 +15,7 @@ extension GetProductEntityCollection on Isar {
 const ProductEntitySchema = CollectionSchema(
   name: 'ProductEntity',
   schema:
-      '{"name":"ProductEntity","idName":"id","properties":[{"name":"brand","type":"String"},{"name":"createTime","type":"Long"},{"name":"description","type":"String"},{"name":"descriptionWords","type":"StringList"},{"name":"displayName","type":"String"},{"name":"enable","type":"Bool"},{"name":"hsn","type":"String"},{"name":"imageUrl","type":"String"},{"name":"lastSyncAt","type":"Long"},{"name":"listPrice","type":"Double"},{"name":"productId","type":"String"},{"name":"purchasePrice","type":"Double"},{"name":"salePrice","type":"Double"},{"name":"skuCode","type":"String"},{"name":"storeId","type":"Long"},{"name":"syncState","type":"Long"},{"name":"tax","type":"Double"},{"name":"uom","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"descriptionWords","unique":false,"properties":[{"name":"descriptionWords","type":"Value","caseSensitive":false}]},{"name":"productId","unique":true,"properties":[{"name":"productId","type":"Hash","caseSensitive":true}]}],"links":[]}',
+      '{"name":"ProductEntity","idName":"id","properties":[{"name":"brand","type":"String"},{"name":"createTime","type":"Long"},{"name":"description","type":"String"},{"name":"descriptionWords","type":"StringList"},{"name":"displayName","type":"String"},{"name":"enable","type":"Bool"},{"name":"hsn","type":"String"},{"name":"imageUrl","type":"String"},{"name":"lastSyncAt","type":"Long"},{"name":"listPrice","type":"Double"},{"name":"productId","type":"String"},{"name":"purchasePrice","type":"Double"},{"name":"salePrice","type":"Double"},{"name":"skuCode","type":"String"},{"name":"storeId","type":"Long"},{"name":"syncState","type":"Long"},{"name":"tax","type":"Double"},{"name":"uom","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"descriptionWords","unique":false,"properties":[{"name":"descriptionWords","type":"Value","caseSensitive":false}]},{"name":"productId","unique":true,"properties":[{"name":"productId","type":"Value","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'brand': 0,
@@ -46,7 +46,7 @@ const ProductEntitySchema = CollectionSchema(
       IndexValueType.stringCIS,
     ],
     'productId': [
-      IndexValueType.stringHash,
+      IndexValueType.string,
     ]
   },
   linkIds: {},
@@ -665,6 +665,57 @@ extension ProductEntityQueryWhere
       indexName: 'productId',
       lower: [null],
       includeLower: false,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      productIdGreaterThan(
+    String? productId, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(IndexWhereClause.greaterThan(
+      indexName: 'productId',
+      lower: [productId],
+      includeLower: include,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      productIdLessThan(
+    String? productId, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(IndexWhereClause.lessThan(
+      indexName: 'productId',
+      upper: [productId],
+      includeUpper: include,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      productIdBetween(
+    String? lowerProductId,
+    String? upperProductId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addWhereClauseInternal(IndexWhereClause.between(
+      indexName: 'productId',
+      lower: [lowerProductId],
+      includeLower: includeLower,
+      upper: [upperProductId],
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      productIdStartsWith(String? ProductIdPrefix) {
+    return addWhereClauseInternal(IndexWhereClause.between(
+      indexName: 'productId',
+      lower: [ProductIdPrefix],
+      includeLower: true,
+      upper: ['$ProductIdPrefix\u{FFFFF}'],
+      includeUpper: true,
     ));
   }
 }

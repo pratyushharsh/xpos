@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipt_generator/src/module/create_new_receipt/sale_complete_dialog.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
+import '../../config/constants.dart';
+import '../../config/currency.dart';
 import '../../config/theme_settings.dart';
 import '../item_search/bloc/item_search_bloc.dart';
 import 'bloc/create_new_receipt_bloc.dart';
@@ -20,37 +23,62 @@ class NewReceiptDesktopView extends StatelessWidget {
           body: BlocProvider(
             lazy: true,
             create: (ctx) => ItemSearchBloc(db: RepositoryProvider.of(ctx)),
-            child: Column(
-              children: [
-                Container(
-                  color: Colors.purple,
-                  height: 35,
-                  child: Row(
-                    children: const [
-                      Text("Header"),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Expanded(child: SearchUserDisplayDesktop()),
-                      // Expanded(child: TenderDisplayDesktop()),
-                      Expanded(child: SaleReturnDisplayDesktop()),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Colors.red,
-                  height: 35,
-                  child: Row(
-                    children: const [
-                      Text("Footer"),
-                    ],
-                  ),
-                )
-              ],
+            child: BlocConsumer<CreateNewReceiptBloc, CreateNewReceiptState>(
+              listener: (context, state) {
+                if (state.step == CreateSaleStep.complete) {
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (ctx) => const SaleCompleteDialog()
+                  ).then((value) => {
+                    if (value == Constants.print) {
+                      BlocProvider.of<CreateNewReceiptBloc>(context).add(OnCreateNewTransaction())
+                    } else if (value == Constants.printAndEmail) {
+                      BlocProvider.of<CreateNewReceiptBloc>(context).add(OnCreateNewTransaction())
+                    } else if (value == Constants.cancel) {
+
+                    }
+                  });
+                } else if (state.step == CreateSaleStep.confirmed) {
+                  Navigator.of(context).pop();
+                }
+              },
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    Container(
+                      color: Colors.purple,
+                      height: 35,
+                      child: Row(
+                        children: const [
+                          Text("Header"),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (CreateSaleStep.item == state.step || CreateSaleStep.complete == state.step)
+                            const Expanded(child: SearchUserDisplayDesktop()),
+                          if (CreateSaleStep.payment == state.step)
+                            const Expanded(child: TenderDisplayDesktop()),
+                          const Expanded(child: SaleReturnDisplayDesktop()),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      color: Colors.red,
+                      height: 35,
+                      child: Row(
+                        children: const [
+                          Text("Footer"),
+                        ],
+                      ),
+                    )
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -110,6 +138,8 @@ class SearchItemProductsListDesktop extends StatelessWidget {
                       onTap: () {
                         BlocProvider.of<CreateNewReceiptBloc>(context)
                             .add(AddItemToReceipt(p));
+                        BlocProvider.of<ItemSearchBloc>(context)
+                            .add(SearchItemByFilter(""));
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -122,7 +152,7 @@ class SearchItemProductsListDesktop extends StatelessWidget {
                             Text(p.productId ?? p.skuCode ?? "Invalid"),
                             Text(p.description),
                             Text(
-                                "${p.salePrice ?? p.listPrice} | ${p.listPrice}"),
+                                "${(p.salePrice != null && p.salePrice! > 0) ? p.salePrice : p.listPrice} | ${p.listPrice}"),
                             const SizedBox(
                               height: 5,
                             ),
@@ -161,9 +191,7 @@ class SaleReturnDisplayDesktop extends StatelessWidget {
                   Expanded(
                     child: BuildLineItem(),
                   ),
-                  Divider(),
-                  NewReceiptSummaryWidget(),
-                  Divider(),
+                  NewReceiptSummaryDesktopWidget(),
                   NewInvoiceButtonBar()
                 ],
               ),
@@ -221,13 +249,11 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
   String selectedTender = "";
   late TextEditingController tenderController;
 
-
   @override
   void initState() {
     super.initState();
     tenderController = TextEditingController();
   }
-
 
   @override
   void dispose() {
@@ -263,7 +289,11 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
               enabled: selectedTender.isNotEmpty,
               label: "Enter Tender Amount",
               onFieldSubmitted: (val) {
-                print(val);
+                BlocProvider.of<CreateNewReceiptBloc>(context).add(
+                    OnAddNewTenderLine(
+                        tenderType: selectedTender, amount: double.parse(val)));
+                tenderController.text = '';
+                onSelectNewTender('');
               },
             ),
             bottom: 0,
@@ -332,6 +362,66 @@ class TenderListDisplayCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class NewReceiptSummaryDesktopWidget extends StatelessWidget {
+  const NewReceiptSummaryDesktopWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            Container(
+              color: Colors.black,
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: RetailSummaryDetailRow(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      title: "Items:\t\t",
+                      value: state.items.toString(),
+                      textStyle: const TextStyle(
+                          fontWeight: FontWeight.w600, color: Colors.white),
+                    ),
+                  ),
+                  Expanded(
+                    child: RetailSummaryDetailRow(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      title: "Tax:\t",
+                      value: "${Currency.inr} ${state.tax.toStringAsFixed(2)}",
+                      textStyle: const TextStyle(
+                          fontWeight: FontWeight.w600, color: Colors.white),
+                    ),
+                  ),
+                  Expanded(
+                    child: RetailSummaryDetailRow(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      title: "Sub Total:\t",
+                      value: "${Currency.inr} ${state.subTotal.toStringAsFixed(2)}",
+                      textStyle: const TextStyle(
+                          fontWeight: FontWeight.w600, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            RetailSummaryDetailRow(
+              title: "Amount Due",
+              value: "${Currency.inr} ${state.amountDue.toStringAsFixed(2)}",
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
+            const Divider(),
+          ],
+        );
+      },
     );
   }
 }

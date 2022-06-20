@@ -42,11 +42,11 @@ class CustomerViewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).pushNamed(RouteConfig.customerDetailScreen);
-      },
-      child: Card(
+    return Card(
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).pushNamed(RouteConfig.customerDetailScreen, arguments: contact.contactId);
+        },
         child: Container(
           padding: const EdgeInsets.all(8),
           child: Column(

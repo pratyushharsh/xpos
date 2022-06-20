@@ -63,7 +63,6 @@ class SyncConfigRepository {
   static void spawnIsolate(SendPort sendPort) async {
     ReceivePort childReceivePort = ReceivePort();
     sendPort.send(childReceivePort.sendPort);
-    print("From Isolate");
 
     await Future.delayed(const Duration(seconds: 5));
     SendPort sPort = (await childReceivePort.first)[1];

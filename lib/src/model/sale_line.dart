@@ -20,10 +20,7 @@ class SaleLine {
       this.discount = 0.0});
 
   get tax {
-    var incTax = (price - discount) * qty;
-    var taxRate = product.tax ?? 0;
-    var t = incTax / (1 + taxRate);
-    return incTax - t;
+    return taxModifier.fold<double>(0.00, (previousValue, element) => previousValue + element.taxAmount);
   }
 
   double get amount {
@@ -33,6 +30,7 @@ class SaleLine {
   SaleLine copyWith(
       {int? seq,
       ProductModel? product,
+      List<SaleTaxModifier>? taxModifier,
       double? qty,
       double? price,
       double? discount}) {
@@ -41,6 +39,7 @@ class SaleLine {
         product: product ?? this.product,
         qty: qty ?? this.qty,
         price: price ?? this.price,
+        taxModifier: taxModifier ?? this.taxModifier,
         discount: discount ?? this.discount);
   }
 

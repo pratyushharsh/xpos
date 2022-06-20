@@ -16,22 +16,24 @@ extension GetTransactionPaymentLineItemEntityCollection on Isar {
 const TransactionPaymentLineItemEntitySchema = CollectionSchema(
   name: 'TransactionPaymentLineItemEntity',
   schema:
-      '{"name":"TransactionPaymentLineItemEntity","idName":"paymentSeq","properties":[{"name":"amount","type":"Double"},{"name":"discount","type":"Double"},{"name":"price","type":"Double"},{"name":"productDescription","type":"String"},{"name":"productId","type":"String"},{"name":"qty","type":"Double"},{"name":"transId","type":"Long"}],"indexes":[],"links":[]}',
-  idName: 'paymentSeq',
+      '{"name":"TransactionPaymentLineItemEntity","idName":"id","properties":[{"name":"amount","type":"Double"},{"name":"authCode","type":"String"},{"name":"beginDate","type":"Long"},{"name":"currencyId","type":"String"},{"name":"endDate","type":"Long"},{"name":"paymentSeq","type":"Long"},{"name":"tenderId","type":"String"},{"name":"tenderStatusCode","type":"String"},{"name":"transId","type":"Long"}],"indexes":[],"links":[]}',
+  idName: 'id',
   propertyIds: {
     'amount': 0,
-    'discount': 1,
-    'price': 2,
-    'productDescription': 3,
-    'productId': 4,
-    'qty': 5,
-    'transId': 6
+    'authCode': 1,
+    'beginDate': 2,
+    'currencyId': 3,
+    'endDate': 4,
+    'paymentSeq': 5,
+    'tenderId': 6,
+    'tenderStatusCode': 7,
+    'transId': 8
   },
   listProperties: {},
   indexIds: {},
   indexValueTypes: {},
-  linkIds: {},
-  backlinkLinkNames: {},
+  linkIds: {'header': 0},
+  backlinkLinkNames: {'header': 'paymentLineItems'},
   getId: _transactionPaymentLineItemEntityGetId,
   getLinks: _transactionPaymentLineItemEntityGetLinks,
   attachLinks: _transactionPaymentLineItemEntityAttachLinks,
@@ -46,16 +48,16 @@ const TransactionPaymentLineItemEntitySchema = CollectionSchema(
 
 int? _transactionPaymentLineItemEntityGetId(
     TransactionPaymentLineItemEntity object) {
-  if (object.paymentSeq == Isar.autoIncrement) {
+  if (object.id == Isar.autoIncrement) {
     return null;
   } else {
-    return object.paymentSeq;
+    return object.id;
   }
 }
 
 List<IsarLinkBase> _transactionPaymentLineItemEntityGetLinks(
     TransactionPaymentLineItemEntity object) {
-  return [];
+  return [object.header];
 }
 
 void _transactionPaymentLineItemEntitySerializeNative(
@@ -68,20 +70,29 @@ void _transactionPaymentLineItemEntitySerializeNative(
   var dynamicSize = 0;
   final value0 = object.amount;
   final _amount = value0;
-  final value1 = object.discount;
-  final _discount = value1;
-  final value2 = object.price;
-  final _price = value2;
-  final value3 = object.productDescription;
-  final _productDescription = IsarBinaryWriter.utf8Encoder.convert(value3);
-  dynamicSize += (_productDescription.length) as int;
-  final value4 = object.productId;
-  final _productId = IsarBinaryWriter.utf8Encoder.convert(value4);
-  dynamicSize += (_productId.length) as int;
-  final value5 = object.qty;
-  final _qty = value5;
-  final value6 = object.transId;
-  final _transId = value6;
+  final value1 = object.authCode;
+  IsarUint8List? _authCode;
+  if (value1 != null) {
+    _authCode = IsarBinaryWriter.utf8Encoder.convert(value1);
+  }
+  dynamicSize += (_authCode?.length ?? 0) as int;
+  final value2 = object.beginDate;
+  final _beginDate = value2;
+  final value3 = object.currencyId;
+  final _currencyId = IsarBinaryWriter.utf8Encoder.convert(value3);
+  dynamicSize += (_currencyId.length) as int;
+  final value4 = object.endDate;
+  final _endDate = value4;
+  final value5 = object.paymentSeq;
+  final _paymentSeq = value5;
+  final value6 = object.tenderId;
+  final _tenderId = IsarBinaryWriter.utf8Encoder.convert(value6);
+  dynamicSize += (_tenderId.length) as int;
+  final value7 = object.tenderStatusCode;
+  final _tenderStatusCode = IsarBinaryWriter.utf8Encoder.convert(value7);
+  dynamicSize += (_tenderStatusCode.length) as int;
+  final value8 = object.transId;
+  final _transId = value8;
   final size = staticSize + dynamicSize;
 
   rawObj.buffer = alloc(size);
@@ -89,12 +100,14 @@ void _transactionPaymentLineItemEntitySerializeNative(
   final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
   final writer = IsarBinaryWriter(buffer, staticSize);
   writer.writeDouble(offsets[0], _amount);
-  writer.writeDouble(offsets[1], _discount);
-  writer.writeDouble(offsets[2], _price);
-  writer.writeBytes(offsets[3], _productDescription);
-  writer.writeBytes(offsets[4], _productId);
-  writer.writeDouble(offsets[5], _qty);
-  writer.writeLong(offsets[6], _transId);
+  writer.writeBytes(offsets[1], _authCode);
+  writer.writeDateTime(offsets[2], _beginDate);
+  writer.writeBytes(offsets[3], _currencyId);
+  writer.writeDateTime(offsets[4], _endDate);
+  writer.writeLong(offsets[5], _paymentSeq);
+  writer.writeBytes(offsets[6], _tenderId);
+  writer.writeBytes(offsets[7], _tenderStatusCode);
+  writer.writeLong(offsets[8], _transId);
 }
 
 TransactionPaymentLineItemEntity
@@ -105,14 +118,17 @@ TransactionPaymentLineItemEntity
         List<int> offsets) {
   final object = TransactionPaymentLineItemEntity(
     amount: reader.readDouble(offsets[0]),
-    discount: reader.readDouble(offsets[1]),
-    paymentSeq: id,
-    price: reader.readDouble(offsets[2]),
-    productDescription: reader.readString(offsets[3]),
-    productId: reader.readString(offsets[4]),
-    qty: reader.readDouble(offsets[5]),
-    transId: reader.readLongOrNull(offsets[6]),
+    authCode: reader.readStringOrNull(offsets[1]),
+    beginDate: reader.readDateTime(offsets[2]),
+    currencyId: reader.readString(offsets[3]),
+    endDate: reader.readDateTimeOrNull(offsets[4]),
+    id: id,
+    paymentSeq: reader.readLong(offsets[5]),
+    tenderId: reader.readString(offsets[6]),
+    tenderStatusCode: reader.readString(offsets[7]),
+    transId: reader.readLong(offsets[8]),
   );
+  _transactionPaymentLineItemEntityAttachLinks(collection, id, object);
   return object;
 }
 
@@ -124,17 +140,21 @@ P _transactionPaymentLineItemEntityDeserializePropNative<P>(
     case 0:
       return (reader.readDouble(offset)) as P;
     case 1:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 5:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 6:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
+    case 7:
+      return (reader.readString(offset)) as P;
+    case 8:
+      return (reader.readLong(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
   }
@@ -145,13 +165,16 @@ dynamic _transactionPaymentLineItemEntitySerializeWeb(
     TransactionPaymentLineItemEntity object) {
   final jsObj = IsarNative.newJsObject();
   IsarNative.jsObjectSet(jsObj, 'amount', object.amount);
-  IsarNative.jsObjectSet(jsObj, 'discount', object.discount);
-  IsarNative.jsObjectSet(jsObj, 'paymentSeq', object.paymentSeq);
-  IsarNative.jsObjectSet(jsObj, 'price', object.price);
+  IsarNative.jsObjectSet(jsObj, 'authCode', object.authCode);
   IsarNative.jsObjectSet(
-      jsObj, 'productDescription', object.productDescription);
-  IsarNative.jsObjectSet(jsObj, 'productId', object.productId);
-  IsarNative.jsObjectSet(jsObj, 'qty', object.qty);
+      jsObj, 'beginDate', object.beginDate.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'currencyId', object.currencyId);
+  IsarNative.jsObjectSet(
+      jsObj, 'endDate', object.endDate?.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'paymentSeq', object.paymentSeq);
+  IsarNative.jsObjectSet(jsObj, 'tenderId', object.tenderId);
+  IsarNative.jsObjectSet(jsObj, 'tenderStatusCode', object.tenderStatusCode);
   IsarNative.jsObjectSet(jsObj, 'transId', object.transId);
   return jsObj;
 }
@@ -162,17 +185,30 @@ TransactionPaymentLineItemEntity
         dynamic jsObj) {
   final object = TransactionPaymentLineItemEntity(
     amount: IsarNative.jsObjectGet(jsObj, 'amount') ?? double.negativeInfinity,
-    discount:
-        IsarNative.jsObjectGet(jsObj, 'discount') ?? double.negativeInfinity,
+    authCode: IsarNative.jsObjectGet(jsObj, 'authCode'),
+    beginDate: IsarNative.jsObjectGet(jsObj, 'beginDate') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'beginDate'),
+                isUtc: true)
+            .toLocal()
+        : DateTime.fromMillisecondsSinceEpoch(0),
+    currencyId: IsarNative.jsObjectGet(jsObj, 'currencyId') ?? '',
+    endDate: IsarNative.jsObjectGet(jsObj, 'endDate') != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+                IsarNative.jsObjectGet(jsObj, 'endDate'),
+                isUtc: true)
+            .toLocal()
+        : null,
+    id: IsarNative.jsObjectGet(jsObj, 'id'),
     paymentSeq:
         IsarNative.jsObjectGet(jsObj, 'paymentSeq') ?? double.negativeInfinity,
-    price: IsarNative.jsObjectGet(jsObj, 'price') ?? double.negativeInfinity,
-    productDescription:
-        IsarNative.jsObjectGet(jsObj, 'productDescription') ?? '',
-    productId: IsarNative.jsObjectGet(jsObj, 'productId') ?? '',
-    qty: IsarNative.jsObjectGet(jsObj, 'qty') ?? double.negativeInfinity,
-    transId: IsarNative.jsObjectGet(jsObj, 'transId'),
+    tenderId: IsarNative.jsObjectGet(jsObj, 'tenderId') ?? '',
+    tenderStatusCode: IsarNative.jsObjectGet(jsObj, 'tenderStatusCode') ?? '',
+    transId:
+        IsarNative.jsObjectGet(jsObj, 'transId') ?? double.negativeInfinity,
   );
+  _transactionPaymentLineItemEntityAttachLinks(
+      collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
   return object;
 }
 
@@ -182,38 +218,52 @@ P _transactionPaymentLineItemEntityDeserializePropWeb<P>(
     case 'amount':
       return (IsarNative.jsObjectGet(jsObj, 'amount') ??
           double.negativeInfinity) as P;
-    case 'discount':
-      return (IsarNative.jsObjectGet(jsObj, 'discount') ??
-          double.negativeInfinity) as P;
+    case 'authCode':
+      return (IsarNative.jsObjectGet(jsObj, 'authCode')) as P;
+    case 'beginDate':
+      return (IsarNative.jsObjectGet(jsObj, 'beginDate') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'beginDate'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+    case 'currencyId':
+      return (IsarNative.jsObjectGet(jsObj, 'currencyId') ?? '') as P;
+    case 'endDate':
+      return (IsarNative.jsObjectGet(jsObj, 'endDate') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'endDate'),
+                  isUtc: true)
+              .toLocal()
+          : null) as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
     case 'paymentSeq':
       return (IsarNative.jsObjectGet(jsObj, 'paymentSeq') ??
           double.negativeInfinity) as P;
-    case 'price':
-      return (IsarNative.jsObjectGet(jsObj, 'price') ?? double.negativeInfinity)
-          as P;
-    case 'productDescription':
-      return (IsarNative.jsObjectGet(jsObj, 'productDescription') ?? '') as P;
-    case 'productId':
-      return (IsarNative.jsObjectGet(jsObj, 'productId') ?? '') as P;
-    case 'qty':
-      return (IsarNative.jsObjectGet(jsObj, 'qty') ?? double.negativeInfinity)
-          as P;
+    case 'tenderId':
+      return (IsarNative.jsObjectGet(jsObj, 'tenderId') ?? '') as P;
+    case 'tenderStatusCode':
+      return (IsarNative.jsObjectGet(jsObj, 'tenderStatusCode') ?? '') as P;
     case 'transId':
-      return (IsarNative.jsObjectGet(jsObj, 'transId')) as P;
+      return (IsarNative.jsObjectGet(jsObj, 'transId') ??
+          double.negativeInfinity) as P;
     default:
       throw 'Illegal propertyName';
   }
 }
 
 void _transactionPaymentLineItemEntityAttachLinks(
-    IsarCollection col, int id, TransactionPaymentLineItemEntity object) {}
+    IsarCollection col, int id, TransactionPaymentLineItemEntity object) {
+  object.header.attach(col, col.isar.transactionHeaderEntitys, 'header', id);
+}
 
 extension TransactionPaymentLineItemEntityQueryWhereSort on QueryBuilder<
     TransactionPaymentLineItemEntity,
     TransactionPaymentLineItemEntity,
     QWhere> {
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterWhere> anyPaymentSeq() {
+      TransactionPaymentLineItemEntity, QAfterWhere> anyId() {
     return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
@@ -222,14 +272,12 @@ extension TransactionPaymentLineItemEntityQueryWhere on QueryBuilder<
     TransactionPaymentLineItemEntity,
     TransactionPaymentLineItemEntity,
     QWhereClause> {
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterWhereClause> paymentSeqEqualTo(int paymentSeq) {
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterWhereClause> idEqualTo(int id) {
     return addWhereClauseInternal(IdWhereClause.between(
-      lower: paymentSeq,
+      lower: id,
       includeLower: true,
-      upper: paymentSeq,
+      upper: id,
       includeUpper: true,
     ));
   }
@@ -237,49 +285,51 @@ extension TransactionPaymentLineItemEntityQueryWhere on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterWhereClause> paymentSeqNotEqualTo(int paymentSeq) {
+      QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: paymentSeq, includeUpper: false),
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
       ).addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: paymentSeq, includeLower: false),
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
       );
     } else {
       return addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: paymentSeq, includeLower: false),
+        IdWhereClause.greaterThan(lower: id, includeLower: false),
       ).addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: paymentSeq, includeUpper: false),
+        IdWhereClause.lessThan(upper: id, includeUpper: false),
       );
     }
   }
 
-  QueryBuilder<TransactionPaymentLineItemEntity,
-          TransactionPaymentLineItemEntity, QAfterWhereClause>
-      paymentSeqGreaterThan(int paymentSeq, {bool include = false}) {
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterWhereClause> idGreaterThan(int id, {bool include = false}) {
     return addWhereClauseInternal(
-      IdWhereClause.greaterThan(lower: paymentSeq, includeLower: include),
+      IdWhereClause.greaterThan(lower: id, includeLower: include),
+    );
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterWhereClause> idLessThan(int id, {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: id, includeUpper: include),
     );
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
-          TransactionPaymentLineItemEntity, QAfterWhereClause>
-      paymentSeqLessThan(int paymentSeq, {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.lessThan(upper: paymentSeq, includeUpper: include),
-    );
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterWhereClause> paymentSeqBetween(
-    int lowerPaymentSeq,
-    int upperPaymentSeq, {
+      TransactionPaymentLineItemEntity, QAfterWhereClause> idBetween(
+    int lowerId,
+    int upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return addWhereClauseInternal(IdWhereClause.between(
-      lower: lowerPaymentSeq,
+      lower: lowerId,
       includeLower: includeLower,
-      upper: upperPaymentSeq,
+      upper: upperId,
       includeUpper: includeUpper,
     ));
   }
@@ -329,23 +379,134 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> discountGreaterThan(double value) {
+      QAfterFilterCondition> authCodeIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'authCode',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> authCodeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'authCode',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> authCodeGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
-      include: false,
-      property: 'discount',
+      include: include,
+      property: 'authCode',
       value: value,
+      caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> discountLessThan(double value) {
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> authCodeLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
-      include: false,
-      property: 'discount',
+      include: include,
+      property: 'authCode',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> authCodeBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'authCode',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> authCodeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'authCode',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> authCodeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'authCode',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+          TransactionPaymentLineItemEntity, QAfterFilterCondition>
+      authCodeContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'authCode',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+          TransactionPaymentLineItemEntity, QAfterFilterCondition>
+      authCodeMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'authCode',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> beginDateEqualTo(DateTime value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'beginDate',
       value: value,
     ));
   }
@@ -353,13 +514,293 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> discountBetween(double lower, double upper) {
+      QAfterFilterCondition> beginDateGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'beginDate',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> beginDateLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'beginDate',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> beginDateBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
     return addFilterConditionInternal(FilterCondition.between(
-      property: 'discount',
+      property: 'beginDate',
       lower: lower,
-      includeLower: false,
+      includeLower: includeLower,
       upper: upper,
-      includeUpper: false,
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> currencyIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'currencyId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> currencyIdGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'currencyId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> currencyIdLessThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'currencyId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> currencyIdBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'currencyId',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> currencyIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'currencyId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> currencyIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'currencyId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+          TransactionPaymentLineItemEntity, QAfterFilterCondition>
+      currencyIdContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'currencyId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+          TransactionPaymentLineItemEntity, QAfterFilterCondition>
+      currencyIdMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'currencyId',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> endDateIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'endDate',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> endDateEqualTo(DateTime? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'endDate',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> endDateGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'endDate',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> endDateLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'endDate',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> endDateBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'endDate',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> idIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'id',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> idEqualTo(int value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> idGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> idLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> idBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'id',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
     ));
   }
 
@@ -422,53 +863,14 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     ));
   }
 
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> priceGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'price',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> priceLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'price',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> priceBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'price',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productDescriptionEqualTo(
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tenderIdEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
-      property: 'productDescription',
+      property: 'tenderId',
       value: value,
       caseSensitive: caseSensitive,
     ));
@@ -477,7 +879,7 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productDescriptionGreaterThan(
+      QAfterFilterCondition> tenderIdGreaterThan(
     String value, {
     bool caseSensitive = true,
     bool include = false,
@@ -485,16 +887,14 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
-      property: 'productDescription',
+      property: 'tenderId',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productDescriptionLessThan(
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tenderIdLessThan(
     String value, {
     bool caseSensitive = true,
     bool include = false,
@@ -502,16 +902,14 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
-      property: 'productDescription',
+      property: 'tenderId',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productDescriptionBetween(
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tenderIdBetween(
     String lower,
     String upper, {
     bool caseSensitive = true,
@@ -519,7 +917,7 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     bool includeUpper = true,
   }) {
     return addFilterConditionInternal(FilterCondition.between(
-      property: 'productDescription',
+      property: 'tenderId',
       lower: lower,
       includeLower: includeLower,
       upper: upper,
@@ -531,28 +929,26 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productDescriptionStartsWith(
+      QAfterFilterCondition> tenderIdStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
-      property: 'productDescription',
+      property: 'tenderId',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productDescriptionEndsWith(
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tenderIdEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
-      property: 'productDescription',
+      property: 'tenderId',
       value: value,
       caseSensitive: caseSensitive,
     ));
@@ -560,10 +956,10 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionPaymentLineItemEntity,
           TransactionPaymentLineItemEntity, QAfterFilterCondition>
-      productDescriptionContains(String value, {bool caseSensitive = true}) {
+      tenderIdContains(String value, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
-      property: 'productDescription',
+      property: 'tenderId',
       value: value,
       caseSensitive: caseSensitive,
     ));
@@ -571,23 +967,25 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionPaymentLineItemEntity,
           TransactionPaymentLineItemEntity, QAfterFilterCondition>
-      productDescriptionMatches(String pattern, {bool caseSensitive = true}) {
+      tenderIdMatches(String pattern, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
-      property: 'productDescription',
+      property: 'tenderId',
       value: pattern,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterFilterCondition> productIdEqualTo(
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> tenderStatusCodeEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
-      property: 'productId',
+      property: 'tenderStatusCode',
       value: value,
       caseSensitive: caseSensitive,
     ));
@@ -596,7 +994,7 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productIdGreaterThan(
+      QAfterFilterCondition> tenderStatusCodeGreaterThan(
     String value, {
     bool caseSensitive = true,
     bool include = false,
@@ -604,7 +1002,7 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
-      property: 'productId',
+      property: 'tenderStatusCode',
       value: value,
       caseSensitive: caseSensitive,
     ));
@@ -613,7 +1011,7 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productIdLessThan(
+      QAfterFilterCondition> tenderStatusCodeLessThan(
     String value, {
     bool caseSensitive = true,
     bool include = false,
@@ -621,14 +1019,16 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
-      property: 'productId',
+      property: 'tenderStatusCode',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterFilterCondition> productIdBetween(
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> tenderStatusCodeBetween(
     String lower,
     String upper, {
     bool caseSensitive = true,
@@ -636,7 +1036,7 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     bool includeUpper = true,
   }) {
     return addFilterConditionInternal(FilterCondition.between(
-      property: 'productId',
+      property: 'tenderStatusCode',
       lower: lower,
       includeLower: includeLower,
       upper: upper,
@@ -648,13 +1048,13 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productIdStartsWith(
+      QAfterFilterCondition> tenderStatusCodeStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
-      property: 'productId',
+      property: 'tenderStatusCode',
       value: value,
       caseSensitive: caseSensitive,
     ));
@@ -663,13 +1063,13 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> productIdEndsWith(
+      QAfterFilterCondition> tenderStatusCodeEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
-      property: 'productId',
+      property: 'tenderStatusCode',
       value: value,
       caseSensitive: caseSensitive,
     ));
@@ -677,10 +1077,10 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionPaymentLineItemEntity,
           TransactionPaymentLineItemEntity, QAfterFilterCondition>
-      productIdContains(String value, {bool caseSensitive = true}) {
+      tenderStatusCodeContains(String value, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
-      property: 'productId',
+      property: 'tenderStatusCode',
       value: value,
       caseSensitive: caseSensitive,
     ));
@@ -688,10 +1088,10 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionPaymentLineItemEntity,
           TransactionPaymentLineItemEntity, QAfterFilterCondition>
-      productIdMatches(String pattern, {bool caseSensitive = true}) {
+      tenderStatusCodeMatches(String pattern, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
-      property: 'productId',
+      property: 'tenderStatusCode',
       value: pattern,
       caseSensitive: caseSensitive,
     ));
@@ -700,53 +1100,7 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> qtyGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'qty',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> qtyLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'qty',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> qtyBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'qty',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterFilterCondition> transIdIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'transId',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> transIdEqualTo(int? value) {
+      QAfterFilterCondition> transIdEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'transId',
@@ -758,7 +1112,7 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
       QAfterFilterCondition> transIdGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -771,7 +1125,7 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity, QAfterFilterCondition> transIdLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -784,8 +1138,8 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity, QAfterFilterCondition> transIdBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -802,7 +1156,18 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
 extension TransactionPaymentLineItemEntityQueryLinks on QueryBuilder<
     TransactionPaymentLineItemEntity,
     TransactionPaymentLineItemEntity,
-    QFilterCondition> {}
+    QFilterCondition> {
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> header(FilterQuery<TransactionHeaderEntity> q) {
+    return linkInternal(
+      isar.transactionHeaderEntitys,
+      q,
+      'header',
+    );
+  }
+}
 
 extension TransactionPaymentLineItemEntityQueryWhereSortBy on QueryBuilder<
     TransactionPaymentLineItemEntity,
@@ -819,13 +1184,53 @@ extension TransactionPaymentLineItemEntityQueryWhereSortBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> sortByDiscount() {
-    return addSortByInternal('discount', Sort.asc);
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByAuthCode() {
+    return addSortByInternal('authCode', Sort.asc);
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> sortByDiscountDesc() {
-    return addSortByInternal('discount', Sort.desc);
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByAuthCodeDesc() {
+    return addSortByInternal('authCode', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByBeginDate() {
+    return addSortByInternal('beginDate', Sort.asc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByBeginDateDesc() {
+    return addSortByInternal('beginDate', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByCurrencyId() {
+    return addSortByInternal('currencyId', Sort.asc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByCurrencyIdDesc() {
+    return addSortByInternal('currencyId', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByEndDate() {
+    return addSortByInternal('endDate', Sort.asc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByEndDateDesc() {
+    return addSortByInternal('endDate', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
@@ -839,47 +1244,25 @@ extension TransactionPaymentLineItemEntityQueryWhereSortBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> sortByPrice() {
-    return addSortByInternal('price', Sort.asc);
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByTenderId() {
+    return addSortByInternal('tenderId', Sort.asc);
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> sortByPriceDesc() {
-    return addSortByInternal('price', Sort.desc);
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByTenderIdDesc() {
+    return addSortByInternal('tenderId', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> sortByTenderStatusCode() {
+    return addSortByInternal('tenderStatusCode', Sort.asc);
   }
 
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterSortBy> sortByProductDescription() {
-    return addSortByInternal('productDescription', Sort.asc);
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterSortBy> sortByProductDescriptionDesc() {
-    return addSortByInternal('productDescription', Sort.desc);
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> sortByProductId() {
-    return addSortByInternal('productId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> sortByProductIdDesc() {
-    return addSortByInternal('productId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> sortByQty() {
-    return addSortByInternal('qty', Sort.asc);
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> sortByQtyDesc() {
-    return addSortByInternal('qty', Sort.desc);
+      QAfterSortBy> sortByTenderStatusCodeDesc() {
+    return addSortByInternal('tenderStatusCode', Sort.desc);
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
@@ -908,13 +1291,53 @@ extension TransactionPaymentLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> thenByDiscount() {
-    return addSortByInternal('discount', Sort.asc);
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByAuthCode() {
+    return addSortByInternal('authCode', Sort.asc);
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> thenByDiscountDesc() {
-    return addSortByInternal('discount', Sort.desc);
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByAuthCodeDesc() {
+    return addSortByInternal('authCode', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByBeginDate() {
+    return addSortByInternal('beginDate', Sort.asc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByBeginDateDesc() {
+    return addSortByInternal('beginDate', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByCurrencyId() {
+    return addSortByInternal('currencyId', Sort.asc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByCurrencyIdDesc() {
+    return addSortByInternal('currencyId', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByEndDate() {
+    return addSortByInternal('endDate', Sort.asc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByEndDateDesc() {
+    return addSortByInternal('endDate', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
@@ -928,47 +1351,25 @@ extension TransactionPaymentLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> thenByPrice() {
-    return addSortByInternal('price', Sort.asc);
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByTenderId() {
+    return addSortByInternal('tenderId', Sort.asc);
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> thenByPriceDesc() {
-    return addSortByInternal('price', Sort.desc);
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByTenderIdDesc() {
+    return addSortByInternal('tenderId', Sort.desc);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterSortBy> thenByTenderStatusCode() {
+    return addSortByInternal('tenderStatusCode', Sort.asc);
   }
 
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterSortBy> thenByProductDescription() {
-    return addSortByInternal('productDescription', Sort.asc);
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterSortBy> thenByProductDescriptionDesc() {
-    return addSortByInternal('productDescription', Sort.desc);
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> thenByProductId() {
-    return addSortByInternal('productId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> thenByProductIdDesc() {
-    return addSortByInternal('productId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> thenByQty() {
-    return addSortByInternal('qty', Sort.asc);
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterSortBy> thenByQtyDesc() {
-    return addSortByInternal('qty', Sort.desc);
+      QAfterSortBy> thenByTenderStatusCodeDesc() {
+    return addSortByInternal('tenderStatusCode', Sort.desc);
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
@@ -991,9 +1392,33 @@ extension TransactionPaymentLineItemEntityQueryWhereDistinct on QueryBuilder<
     return addDistinctByInternal('amount');
   }
 
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QDistinct> distinctByAuthCode({bool caseSensitive = true}) {
+    return addDistinctByInternal('authCode', caseSensitive: caseSensitive);
+  }
+
   QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QDistinct> distinctByDiscount() {
-    return addDistinctByInternal('discount');
+      TransactionPaymentLineItemEntity, QDistinct> distinctByBeginDate() {
+    return addDistinctByInternal('beginDate');
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QDistinct> distinctByCurrencyId({bool caseSensitive = true}) {
+    return addDistinctByInternal('currencyId', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QDistinct> distinctByEndDate() {
+    return addDistinctByInternal('endDate');
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QDistinct> distinctById() {
+    return addDistinctByInternal('id');
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
@@ -1001,29 +1426,19 @@ extension TransactionPaymentLineItemEntityQueryWhereDistinct on QueryBuilder<
     return addDistinctByInternal('paymentSeq');
   }
 
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QDistinct> distinctByPrice() {
-    return addDistinctByInternal('price');
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QDistinct> distinctByTenderId({bool caseSensitive = true}) {
+    return addDistinctByInternal('tenderId', caseSensitive: caseSensitive);
   }
 
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QDistinct> distinctByProductDescription({bool caseSensitive = true}) {
-    return addDistinctByInternal('productDescription',
+      QDistinct> distinctByTenderStatusCode({bool caseSensitive = true}) {
+    return addDistinctByInternal('tenderStatusCode',
         caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QDistinct> distinctByProductId({bool caseSensitive = true}) {
-    return addDistinctByInternal('productId', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QDistinct> distinctByQty() {
-    return addDistinctByInternal('qty');
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity,
@@ -1041,9 +1456,29 @@ extension TransactionPaymentLineItemEntityQueryProperty on QueryBuilder<
     return addPropertyNameInternal('amount');
   }
 
-  QueryBuilder<TransactionPaymentLineItemEntity, double, QQueryOperations>
-      discountProperty() {
-    return addPropertyNameInternal('discount');
+  QueryBuilder<TransactionPaymentLineItemEntity, String?, QQueryOperations>
+      authCodeProperty() {
+    return addPropertyNameInternal('authCode');
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity, DateTime, QQueryOperations>
+      beginDateProperty() {
+    return addPropertyNameInternal('beginDate');
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity, String, QQueryOperations>
+      currencyIdProperty() {
+    return addPropertyNameInternal('currencyId');
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity, DateTime?, QQueryOperations>
+      endDateProperty() {
+    return addPropertyNameInternal('endDate');
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity, int?, QQueryOperations>
+      idProperty() {
+    return addPropertyNameInternal('id');
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity, int, QQueryOperations>
@@ -1051,27 +1486,17 @@ extension TransactionPaymentLineItemEntityQueryProperty on QueryBuilder<
     return addPropertyNameInternal('paymentSeq');
   }
 
-  QueryBuilder<TransactionPaymentLineItemEntity, double, QQueryOperations>
-      priceProperty() {
-    return addPropertyNameInternal('price');
+  QueryBuilder<TransactionPaymentLineItemEntity, String, QQueryOperations>
+      tenderIdProperty() {
+    return addPropertyNameInternal('tenderId');
   }
 
   QueryBuilder<TransactionPaymentLineItemEntity, String, QQueryOperations>
-      productDescriptionProperty() {
-    return addPropertyNameInternal('productDescription');
+      tenderStatusCodeProperty() {
+    return addPropertyNameInternal('tenderStatusCode');
   }
 
-  QueryBuilder<TransactionPaymentLineItemEntity, String, QQueryOperations>
-      productIdProperty() {
-    return addPropertyNameInternal('productId');
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity, double, QQueryOperations>
-      qtyProperty() {
-    return addPropertyNameInternal('qty');
-  }
-
-  QueryBuilder<TransactionPaymentLineItemEntity, int?, QQueryOperations>
+  QueryBuilder<TransactionPaymentLineItemEntity, int, QQueryOperations>
       transIdProperty() {
     return addPropertyNameInternal('transId');
   }
