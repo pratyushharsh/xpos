@@ -47,40 +47,40 @@ class ReceiptDisplayBloc
 
       // build tax detail
       HashMap<String, List<TransactionLineItemEntity>> hsnCategory = HashMap();
-      for (TransactionLineItemEntity li in transaction.lineItems.toList()) {
-        if (li.hsn == null) continue;
-        hsnCategory.putIfAbsent(li.hsn!, () => List.empty(growable: true));
-        hsnCategory[li.hsn!]?.add(li);
-      }
+      // for (TransactionLineItemEntity li in transaction.lineItems.toList()) {
+      //   if (li.hsn == null) continue;
+      //   hsnCategory.putIfAbsent(li.hsn!, () => List.empty(growable: true));
+      //   hsnCategory[li.hsn!]?.add(li);
+      // }
 
-      var taxDetail = hsnCategory.entries
-          .map((e) => HsnTaxSummary(
-              hsn: e.key,
-              amount: e.value.fold(0.0,
-                  (previousValue, element) => previousValue + element.amount),
-              cgstRate: e.value.first.taxRate / 2,
-              cgstAmount: (e.value.fold<double>(
-                      0.0,
-                      (previousValue, element) =>
-                          previousValue + element.taxAmount)) /
-                  2,
-              sgstRate: e.value.first.taxRate / 2,
-              sgstAmont: e.value.fold<double>(
-                      0.0,
-                      (previousValue, element) =>
-                          previousValue + element.taxAmount) /
-                  2,
-              taxTotal: e.value.fold(
-                  0.0,
-                  (previousValue, element) =>
-                      previousValue + element.taxAmount)))
-          .toList(growable: false);
+      // var taxDetail = hsnCategory.entries
+      //     .map((e) => HsnTaxSummary(
+      //         hsn: e.key,
+      //         amount: e.value.fold(0.0,
+      //             (previousValue, element) => previousValue + element.amount),
+      //         cgstRate: e.value.first.taxRate / 2,
+      //         cgstAmount: (e.value.fold<double>(
+      //                 0.0,
+      //                 (previousValue, element) =>
+      //                     previousValue + element.taxAmount)) /
+      //             2,
+      //         sgstRate: e.value.first.taxRate / 2,
+      //         sgstAmont: e.value.fold<double>(
+      //                 0.0,
+      //                 (previousValue, element) =>
+      //                     previousValue + element.taxAmount) /
+      //             2,
+      //         taxTotal: e.value.fold(
+      //             0.0,
+      //             (previousValue, element) =>
+      //                 previousValue + element.taxAmount)))
+      //     .toList(growable: false);
 
       emit(state.copyWith(
           header: transaction,
           lineItems: transaction.lineItems.toList(),
           status: ReceiptDisplayStatus.success,
-          taxSummary: taxDetail));
+          taxSummary: []));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: ReceiptDisplayStatus.failure));

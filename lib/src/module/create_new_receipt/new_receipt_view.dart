@@ -13,6 +13,7 @@ import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
+import '../../entity/pos/entity.dart';
 import 'bloc/create_new_receipt_bloc.dart';
 
 class NewReceiptView extends StatelessWidget {
@@ -273,7 +274,7 @@ class TenderLineDisplay extends StatelessWidget {
 }
 
 class NewLineItem extends StatefulWidget {
-  final SaleLine saleLine;
+  final TransactionLineItemEntity saleLine;
 
   const NewLineItem({Key? key, required this.saleLine}) : super(key: key);
 
@@ -328,12 +329,10 @@ class _NewLineItemState extends State<NewLineItem> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.saleLine.product.description),
-                      Text(widget.saleLine.product.description),
+                      Text(widget.saleLine.itemDescription),
+                      Text(widget.saleLine.itemDescription),
                       Text(
-                        widget.saleLine.product.productId ??
-                            widget.saleLine.product.skuCode ??
-                            "",
+                        widget.saleLine.itemId,
                         style: NewLineItem.textStyle,
                       ),
                     ],
@@ -352,7 +351,7 @@ class _NewLineItemState extends State<NewLineItem> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "${Currency.inr}${widget.saleLine.amount.toStringAsFixed(2)}",
+                      "${Currency.inr}${widget.saleLine.extendedAmount.toStringAsFixed(2)}",
                       style: NewLineItem.textStyle,
                     ),
                   ),
@@ -361,7 +360,7 @@ class _NewLineItemState extends State<NewLineItem> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      widget.saleLine.qty.toString(),
+                      widget.saleLine.quantity.toString(),
                       style: NewLineItem.textStyle,
                     ),
                   ),
@@ -370,36 +369,36 @@ class _NewLineItemState extends State<NewLineItem> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "${Currency.inr}${widget.saleLine.amount.toStringAsFixed(2)}",
+                      "${Currency.inr}${widget.saleLine.extendedAmount.toStringAsFixed(2)}",
                       style: NewLineItem.textStyle,
                     ),
                   ),
                 ),
               ],
             ),
-            ...widget.saleLine.priceModifier
-                .map((e) => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: const [
-                            Padding(
-                                padding: EdgeInsets.only(right: 8, top: 4),
-                                child: Icon(
-                                  Icons.discount,
-                                  color: Colors.brown,
-                                  size: 16,
-                                )),
-                            Text("10% off on all"),
-                          ],
-                        ),
-                        const Text(
-                          "-${Currency.inr}50.00",
-                          style: NewLineItem.textStyle,
-                        )
-                      ],
-                    ))
-                .toList()
+            // ...widget.saleLine.priceModifier
+            //     .map((e) => Row(
+            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //           children: [
+            //             Row(
+            //               children: const [
+            //                 Padding(
+            //                     padding: EdgeInsets.only(right: 8, top: 4),
+            //                     child: Icon(
+            //                       Icons.discount,
+            //                       color: Colors.brown,
+            //                       size: 16,
+            //                     )),
+            //                 Text("10% off on all"),
+            //               ],
+            //             ),
+            //             const Text(
+            //               "-${Currency.inr}50.00",
+            //               style: NewLineItem.textStyle,
+            //             )
+            //           ],
+            //         ))
+            //     .toList()
           ],
         ),
       ),

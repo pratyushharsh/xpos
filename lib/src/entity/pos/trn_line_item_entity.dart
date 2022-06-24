@@ -4,96 +4,94 @@ import 'package:receipt_generator/src/entity/pos/entity.dart';
 part 'trn_line_item_entity.g.dart';
 
 @Collection()
-class TransactionLineItemEntity extends DynamoEntity {
-
+class TransactionLineItemEntity {
   @Id()
   final int? id;
-  final int? transId;
+
+  @Index()
+  final int storeId;
+  final DateTime businessDate;
+  final int posId;
   final int transSeq;
-  final String? brand;
-  final String productId;
-  final String? itemId;
-  final String? hsn;
-  final String productDescription;
-  final double qty;
-  final String uom;
-  final double amount;
-  final double salePrice;
-  final double listPrice;
-  final double itemDiscount;
-  final double orderDiscount;
-  final String taxClass;
-  final double taxRate;
+  final int lineItemSeq;
+  final String? category;
+  final String itemId;
+  final String itemDescription;
+  final double quantity;
+  final double grossQuantity;
+  final double netQuantity;
+  final double unitPrice;
+  final double extendedAmount;
+  final bool returnFlag;
+  final String itemIdEntryMethod;
+  final String priceEntryMethod;
+  final double netAmount;
+  final double grossAmount;
+  final String? serialNumber;
+  final String taxGroupId;
   final double taxAmount;
-  final String? shipmentId;
+
+  /// Return Parameters
+  final double? returnedQuantity;
+
+  @Index()
+  final int? originalPosId;
+  final int? originalTransSeq;
+  final int? originalLineItemSeq;
+  final DateTime? originalBusinessDate;
+  final String? returnReasonCode;
+  final String? returnComment;
+  final String? returnTypeCode;
+
+  final bool nonReturnableFlag;
+  final bool nonExchangeableFlag;
+
+  /// For DropShipping Items
+  final String? vendorId;
+  final double? shippingWeight;
 
   @Backlink(to: 'lineItems')
   final header = IsarLink<TransactionHeaderEntity>();
 
   TransactionLineItemEntity(
       {this.id,
-        required this.transId,
+      required this.storeId,
+      required this.businessDate,
+      required this.posId,
       required this.transSeq,
-      this.brand,
-      required this.productId,
-      this.itemId,
-      this.hsn,
-      required this.productDescription,
-      required this.qty,
-      required this.uom,
-      required this.amount,
-      required this.salePrice,
-      required this.listPrice,
-      required this.itemDiscount,
-      required this.orderDiscount,
-      required this.taxClass,
-      required this.taxRate,
-      required this.taxAmount, this.shipmentId});
+      required this.lineItemSeq,
+      this.category,
+      required this.itemId,
+      required this.itemDescription,
+      required this.quantity,
+      required this.grossQuantity,
+      required this.netQuantity,
+      required this.unitPrice,
+      required this.extendedAmount,
+      this.returnFlag = false,
+      required this.itemIdEntryMethod,
+      required this.priceEntryMethod,
+      required this.netAmount,
+      required this.grossAmount,
+      this.serialNumber,
+      required this.taxGroupId,
+      required this.taxAmount,
+      this.returnedQuantity,
+      this.originalPosId,
+      this.originalTransSeq,
+      this.originalLineItemSeq,
+      this.originalBusinessDate,
+      this.returnReasonCode,
+      this.returnComment,
+      this.returnTypeCode,
+      this.nonReturnableFlag = false,
+      this.nonExchangeableFlag = false,
+      this.vendorId,
+      this.shippingWeight});
+}
 
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-      'transId': transId,
-      'transSeq': transSeq,
-      'brand': brand,
-      'productId': productId,
-      'itemId': itemId,
-      'hsn': hsn,
-      'productDescription': productDescription,
-      'qty': qty,
-      'uom': uom,
-      'amount': amount,
-      'salePrice': salePrice,
-      'listPrice': listPrice,
-      'itemDiscount': itemDiscount,
-      'orderDiscount': orderDiscount,
-      'taxClass': taxClass,
-      'taxRate': taxRate,
-      'taxAmount': taxAmount,
-      'shipmentId': shipmentId,
-    };
-  }
+class ItemIdEntryMethod extends EntryMethod {}
 
-  factory TransactionLineItemEntity.fromMap(Map<String, dynamic> map) {
-    return TransactionLineItemEntity(
-      transId: map['transId'] as int,
-      transSeq: map['transSeq'] as int,
-      brand: map['brand'] as String,
-      productId: map['productId'] as String,
-      itemId: map['itemId'] as String,
-      hsn: map['hsn'] as String,
-      productDescription: map['productDescription'] as String,
-      qty: map['qty'] as double,
-      uom: map['uom'] as String,
-      amount: map['amount'] as double,
-      salePrice: map['salePrice'] as double,
-      listPrice: map['listPrice'] as double,
-      itemDiscount: map['itemDiscount'] as double,
-      orderDiscount: map['orderDiscount'] as double,
-      taxClass: map['taxClass'] as String,
-      taxRate: map['taxRate'] as double,
-      taxAmount: map['taxAmount'] as double,
-      shipmentId: map['shipmentId'] as String,
-    );
-  }
+class EntryMethod {
+  static const keyboard = "KEYBOARD";
 }

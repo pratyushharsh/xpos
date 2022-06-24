@@ -43,25 +43,25 @@ class SaleLine {
         discount: discount ?? this.discount);
   }
 
-  TransactionLineItemEntity toEntity(int transId) {
-    return TransactionLineItemEntity(
-      transId: transId,
-      transSeq: seq,
-      productId: product.skuCode ?? product.productId.toString(),
-      hsn: product.hsn,
-      productDescription: product.description,
-      qty: qty,
-      amount: amount,
-      itemDiscount: 0,
-      orderDiscount: 0,
-      listPrice: product.listPrice ?? price,
-      salePrice: price,
-      taxAmount: tax,
-      taxClass: "IGST",
-      taxRate: product.tax ?? 0.0,
-      uom: product.uom,
-    );
-  }
+  // TransactionLineItemEntity toEntity(int transId) {
+  //   return TransactionLineItemEntity(
+  //     transId: transId,
+  //     transSeq: seq,
+  //     productId: product.skuCode ?? product.productId.toString(),
+  //     hsn: product.hsn,
+  //     productDescription: product.description,
+  //     qty: qty,
+  //     amount: amount,
+  //     itemDiscount: 0,
+  //     orderDiscount: 0,
+  //     listPrice: product.listPrice ?? price,
+  //     salePrice: price,
+  //     taxAmount: tax,
+  //     taxClass: "IGST",
+  //     taxRate: product.tax ?? 0.0,
+  //     uom: product.uom,
+  //   );
+  // }
   // static SaleLine fromEntity(TransactionLineItemEntity lineItem) {
   //   return SaleLine(seq: lineItem.transSeq, product: product, price: lineItem.price);
   // }

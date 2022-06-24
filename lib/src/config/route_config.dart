@@ -17,6 +17,7 @@ import 'package:receipt_generator/src/module/receipt_setting/receipt_setting_vie
 import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.dart';
 
 import '../module/create_new_item/modify_line_item_screen.dart';
+import '../module/receipt_display/invoice_display.dart';
 
 class RouteConfig {
 
@@ -72,9 +73,12 @@ class RouteConfig {
       case receiptDisplayScreen:
         var transId = settings.arguments as int;
         return MaterialPageRoute(builder: (_) => ReceiptDisplayView(transactionId: transId,));
+      // case invoiceDisplayScreen:
+      //   var transId = settings.arguments as int;
+      //   return MaterialPageRoute(builder: (_) => InvoiceDisplayView(transactionId: transId,));
       case invoiceDisplayScreen:
         var transId = settings.arguments as int;
-        return MaterialPageRoute(builder: (_) => InvoiceDisplayView(transactionId: transId,));
+        return MaterialPageRoute(builder: (_) => AppInvoiceDisplay(transactionId: transId,));
       case customerDetailScreen:
         var contactId = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => CustomerDetailScreen(userId: contactId,));

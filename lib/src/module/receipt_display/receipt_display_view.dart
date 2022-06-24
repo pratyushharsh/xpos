@@ -460,23 +460,23 @@ class ReceiptLineItem extends StatelessWidget {
         Expanded(
             flex: 2,
             child: Text(
-              lineItem.productId,
+              lineItem.itemId,
             )),
         Expanded(
             flex: 5,
             child: Text(
-              lineItem.productDescription,
+              '$lineItem.productDescription',
             )),
         Expanded(
             flex: 1,
             child: Text(
-              "${lineItem.qty}",
+              "${lineItem.quantity}",
               textAlign: TextAlign.right,
             )),
         Expanded(
             flex: 2,
             child: Text(
-              "${Currency.inr}${lineItem.amount.toStringAsFixed(2)}",
+              "${Currency.inr}${lineItem.grossAmount.toStringAsFixed(2)}",
               textAlign: TextAlign.right,
             )),
       ],

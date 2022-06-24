@@ -1,4 +1,3 @@
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -33,13 +32,10 @@ class CreateNewReceiptBloc
       : super(const CreateNewReceiptState(
             status: CreateNewReceiptStatus.initial)) {
     on<AddItemToReceipt>(_onAddNewLineItem);
-    on<OnQuantityUpdate>(_onQuantityUpdate);
-    on<OnUnitPriceUpdate>(_onPriceUpdate);
+    // on<OnQuantityUpdate>(_onQuantityUpdate);
+    // on<OnUnitPriceUpdate>(_onPriceUpdate);
     on<OnInitiateNewTransaction>(_onInitiateTransaction);
     on<OnCreateNewTransaction>(_onCreateNewTransaction);
-    // on<OnCustomerNameChange>(_onCustomerNameChange);
-    // on<OnCustomerPhoneChange>(_onCustomerPhoneChange);
-    // on<OnCustomerAddressChange>(_onCustomerAddressChange);
     on<OnCustomerSelect>(_onCustomerSelectEvent);
     on<OnAddNewTenderLine>(_onAddNewTenderLineItem);
     on<OnChangeSaleStep>(_onChangeSaleStep);
@@ -57,45 +53,67 @@ class CreateNewReceiptBloc
       AddItemToReceipt event, Emitter<CreateNewReceiptState> emit) async {
     int seq = state.lineItem.length + state.tenderLine.length;
 
-    SaleLine newLine = SaleLine(
-        seq: seq + 1,
-        product: event.product,
-        price: event.product.listPrice ?? 0.00);
+    // SaleLine newLine = SaleLine(
+    //     seq: seq + 1,
+    //     product: event.product,
+    //     price: event.product.listPrice ?? 0.00);
+    // @TODO Change the business date from DateTime.now() to actual business date.
+    // @TODO Change the pos id also
+    // @TODO Change the entry method also
+    TransactionLineItemEntity newLine = TransactionLineItemEntity(
+        storeId: authenticationBloc.state.store!.rtlLocId,
+        businessDate: DateTime.now(),
+        posId: 1,
+        transSeq: state.transSeq,
+        lineItemSeq: seq,
+        itemId: event.product.productId!,
+        itemDescription: event.product.description,
+        quantity: 1,
+        grossQuantity: 1,
+        netQuantity: 1,
+        unitPrice: event.product.salePrice ?? event.product.listPrice!,
+        extendedAmount: event.product.salePrice ?? event.product.listPrice!,
+        itemIdEntryMethod: EntryMethod.keyboard,
+        priceEntryMethod: EntryMethod.keyboard,
+        netAmount: event.product.salePrice ?? event.product.listPrice!,
+        grossAmount: event.product.salePrice ?? event.product.listPrice!,
+        taxGroupId: "TAX_GROUP",
+        taxAmount: 0.00);
 
-    List<SaleTaxModifier> taxModifiers = TaxHelper.calculateTax(newLine);
-    newLine = newLine.copyWith(taxModifier: taxModifiers);
+    // List<SaleTaxModifier> taxModifiers = TaxHelper.calculateTax(newLine);
+    // newLine = newLine.copyWith(taxModifier: taxModifiers);
 
-    List<SaleLine> newList = [...state.lineItem, newLine];
+    List<TransactionLineItemEntity> newList = [...state.lineItem, newLine];
 
     emit(state.copyWith(lineItem: newList, step: CreateSaleStep.item));
     add(_VerifyOrderAndEmitState());
   }
 
-  void _onPriceUpdate(
-      OnUnitPriceUpdate event, Emitter<CreateNewReceiptState> emit) {
-    List<SaleLine> newList = state.lineItem.map((e) {
-      if (e == event.saleLine) {
-        return e.copyWith(price: event.unitPrice);
-      } else {
-        return e;
-      }
-    }).toList();
-    emit(state.copyWith(lineItem: newList));
-    add(_VerifyOrderAndEmitState());
-  }
+  // void _onPriceUpdate(
+  //     OnUnitPriceUpdate event, Emitter<CreateNewReceiptState> emit) {
+  //   List<TransactionLineItemEntity> newList = state.lineItem.map((e) {
+  //     if (e == event.saleLine) {
+  //       return e.copyWith(price: event.unitPrice);
+  //     } else {
+  //       return e;
+  //     }
+  //   }).toList();
+  //   emit(state.copyWith(lineItem: newList));
+  //   add(_VerifyOrderAndEmitState());
+  // }
 
-  void _onQuantityUpdate(
-      OnQuantityUpdate event, Emitter<CreateNewReceiptState> emit) {
-    List<SaleLine> newList = state.lineItem.map((e) {
-      if (e == event.saleLine) {
-        return e.copyWith(qty: event.quantity);
-      } else {
-        return e;
-      }
-    }).toList();
-    emit(state.copyWith(lineItem: newList));
-    add(_VerifyOrderAndEmitState());
-  }
+  // void _onQuantityUpdate(
+  //     OnQuantityUpdate event, Emitter<CreateNewReceiptState> emit) {
+  //   List<SaleLine> newList = state.lineItem.map((e) {
+  //     if (e == event.saleLine) {
+  //       return e.copyWith(qty: event.quantity);
+  //     } else {
+  //       return e;
+  //     }
+  //   }).toList();
+  //   emit(state.copyWith(lineItem: newList));
+  //   add(_VerifyOrderAndEmitState());
+  // }
 
   // @TODO List different transaction status INITIATED, SALE_COMPLETED, SUSPENDED, CANCELLED, RETURNED, EXCHANGED
   void _onCreateNewTransaction(
@@ -119,8 +137,7 @@ class CreateNewReceiptBloc
         shippingAddress: state.customer?.shippingAddress,
         storeId: storeId,
         createTime: DateTime.now());
-    List<TransactionLineItemEntity> lineItems =
-        state.lineItem.map((e) => e.toEntity(state.transSeq)).toList();
+    List<TransactionLineItemEntity> lineItems = state.lineItem;
 
     // Create If Contact Does not exist else override
     if (state.customer != null) {
@@ -137,7 +154,9 @@ class CreateNewReceiptBloc
 
     try {
       await transactionRepository.createNewSale(header, lineItems);
-      emit(state.copyWith(status: CreateNewReceiptStatus.saleComplete, step: CreateSaleStep.confirmed));
+      emit(state.copyWith(
+          status: CreateNewReceiptStatus.saleComplete,
+          step: CreateSaleStep.confirmed));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: CreateNewReceiptStatus.error));
@@ -155,9 +174,11 @@ class CreateNewReceiptBloc
   //   emit(state.copyWith(customerAddress: event.address));
   // }
 
-  void _onCustomerSelectEvent(OnCustomerSelect event,
-      Emitter<CreateNewReceiptState> emit) async {
-    emit(state.copyWith(customer: event.contact,));
+  void _onCustomerSelectEvent(
+      OnCustomerSelect event, Emitter<CreateNewReceiptState> emit) async {
+    emit(state.copyWith(
+      customer: event.contact,
+    ));
   }
 
   void _onAddNewTenderLineItem(
@@ -185,8 +206,8 @@ class CreateNewReceiptBloc
     emit(state.copyWith(step: event.step));
   }
 
-  void _onVerifyOrderAndEmitStep(
-      _VerifyOrderAndEmitState event, Emitter<CreateNewReceiptState> emit) async {
+  void _onVerifyOrderAndEmitStep(_VerifyOrderAndEmitState event,
+      Emitter<CreateNewReceiptState> emit) async {
     if (state.step == CreateSaleStep.confirmed) {
       return;
     }

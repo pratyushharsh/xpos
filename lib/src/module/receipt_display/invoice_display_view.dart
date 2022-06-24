@@ -311,37 +311,37 @@ class InvoiceBlock extends StatelessWidget {
               ...lineItems
                   .map((e) => InvoiceTableCells(
                         data: [
-                          InvoiceTableCellModel(
-                              label: e.transSeq.toString(), flex: 2),
-                          InvoiceTableCellModel(
-                              label: e.productDescription,
-                              flex: 11,
-                              fontWeight: FontWeight.bold),
-                          InvoiceTableCellModel(label: "${e.hsn}", flex: 5),
-                          InvoiceTableCellModel(label: "", flex: 4),
-                          InvoiceTableCellModel(
-                              label: e.qty.toString(),
-                              flex: 4,
-                              fontWeight: FontWeight.bold,
-                              textAlign: TextAlign.right),
-                          InvoiceTableCellModel(
-                              label: e.listPrice.toStringAsFixed(2),
-                              flex: 5,
-                              textAlign: TextAlign.right),
-                          InvoiceTableCellModel(
-                              label: e.salePrice.toStringAsFixed(2),
-                              flex: 5,
-                              textAlign: TextAlign.right),
-                          InvoiceTableCellModel(label: e.uom, flex: 3),
-                          InvoiceTableCellModel(
-                              label: (e.itemDiscount + e.orderDiscount)
-                                  .toStringAsFixed(2),
-                              flex: 3),
-                          InvoiceTableCellModel(
-                              label: e.amount.toStringAsFixed(2),
-                              flex: 6,
-                              fontWeight: FontWeight.bold,
-                              textAlign: TextAlign.right),
+                          // InvoiceTableCellModel(
+                          //     label: e.transSeq.toString(), flex: 2),
+                          // InvoiceTableCellModel(
+                          //     label: e.productDescription,
+                          //     flex: 11,
+                          //     fontWeight: FontWeight.bold),
+                          // InvoiceTableCellModel(label: "${e.hsn}", flex: 5),
+                          // InvoiceTableCellModel(label: "", flex: 4),
+                          // InvoiceTableCellModel(
+                          //     label: e.quantity.toString(),
+                          //     flex: 4,
+                          //     fontWeight: FontWeight.bold,
+                          //     textAlign: TextAlign.right),
+                          // InvoiceTableCellModel(
+                          //     label: e.listPrice.toStringAsFixed(2),
+                          //     flex: 5,
+                          //     textAlign: TextAlign.right),
+                          // InvoiceTableCellModel(
+                          //     label: e.salePrice.toStringAsFixed(2),
+                          //     flex: 5,
+                          //     textAlign: TextAlign.right),
+                          // InvoiceTableCellModel(label: e.uom, flex: 3),
+                          // InvoiceTableCellModel(
+                          //     label: (e.itemDiscount + e.orderDiscount)
+                          //         .toStringAsFixed(2),
+                          //     flex: 3),
+                          // InvoiceTableCellModel(
+                          //     label: e.amount.toStringAsFixed(2),
+                          //     flex: 6,
+                          //     fontWeight: FontWeight.bold,
+                          //     textAlign: TextAlign.right),
                         ],
                       ))
                   .toList(),
@@ -868,7 +868,7 @@ class InvoiceTableOrderSummary extends StatelessWidget {
                 InvoiceTableCellModel(label: "", flex: 4),
                 InvoiceTableCellModel(
                     label:
-                        "${state.lineItems!.fold<double>(0, (pv, e) => pv + e.qty)}",
+                        "${state.lineItems!.fold<double>(0, (pv, e) => pv + e.quantity)}",
                     flex: 4,
                     fontWeight: FontWeight.bold,
                     textAlign: TextAlign.right),
@@ -919,37 +919,37 @@ class InvoiceTableLineItems extends StatelessWidget {
           children: state.lineItems!
               .map((e) => InvoiceTableCells(
                     data: [
-                      InvoiceTableCellModel(
-                          label: e.transSeq.toString(), flex: 2),
-                      InvoiceTableCellModel(
-                          label: e.productDescription,
-                          flex: 11,
-                          fontWeight: FontWeight.bold),
-                      InvoiceTableCellModel(label: "${e.hsn}", flex: 5),
-                      InvoiceTableCellModel(label: "", flex: 4),
-                      InvoiceTableCellModel(
-                          label: e.qty.toString(),
-                          flex: 4,
-                          fontWeight: FontWeight.bold,
-                          textAlign: TextAlign.right),
-                      InvoiceTableCellModel(
-                          label: e.listPrice.toStringAsFixed(2),
-                          flex: 5,
-                          textAlign: TextAlign.right),
-                      InvoiceTableCellModel(
-                          label: e.salePrice.toStringAsFixed(2),
-                          flex: 5,
-                          textAlign: TextAlign.right),
-                      InvoiceTableCellModel(label: e.uom, flex: 3),
-                      InvoiceTableCellModel(
-                          label: (e.itemDiscount + e.orderDiscount)
-                              .toStringAsFixed(2),
-                          flex: 3),
-                      InvoiceTableCellModel(
-                          label: e.amount.toStringAsFixed(2),
-                          flex: 6,
-                          fontWeight: FontWeight.bold,
-                          textAlign: TextAlign.right),
+                      // InvoiceTableCellModel(
+                      //     label: e.transSeq.toString(), flex: 2),
+                      // InvoiceTableCellModel(
+                      //     label: e.productDescription,
+                      //     flex: 11,
+                      //     fontWeight: FontWeight.bold),
+                      // InvoiceTableCellModel(label: "${e.hsn}", flex: 5),
+                      // InvoiceTableCellModel(label: "", flex: 4),
+                      // InvoiceTableCellModel(
+                      //     label: e.qty.toString(),
+                      //     flex: 4,
+                      //     fontWeight: FontWeight.bold,
+                      //     textAlign: TextAlign.right),
+                      // InvoiceTableCellModel(
+                      //     label: e.listPrice.toStringAsFixed(2),
+                      //     flex: 5,
+                      //     textAlign: TextAlign.right),
+                      // InvoiceTableCellModel(
+                      //     label: e.salePrice.toStringAsFixed(2),
+                      //     flex: 5,
+                      //     textAlign: TextAlign.right),
+                      // InvoiceTableCellModel(label: e.uom, flex: 3),
+                      // InvoiceTableCellModel(
+                      //     label: (e.itemDiscount + e.orderDiscount)
+                      //         .toStringAsFixed(2),
+                      //     flex: 3),
+                      // InvoiceTableCellModel(
+                      //     label: e.amount.toStringAsFixed(2),
+                      //     flex: 6,
+                      //     fontWeight: FontWeight.bold,
+                      //     textAlign: TextAlign.right),
                     ],
                   ))
               .toList(),

@@ -14,7 +14,7 @@ enum CreateSaleStep { item, payment, customer, complete, confirmed }
 
 class CreateNewReceiptState extends Equatable {
   final int transSeq;
-  final List<SaleLine> lineItem;
+  final List<TransactionLineItemEntity> lineItem;
   final List<TenderLineItem> tenderLine;
   final ContactEntity? customer;
   final CreateNewReceiptStatus status;
@@ -30,17 +30,17 @@ class CreateNewReceiptState extends Equatable {
 
   double get subTotal {
     return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.amount);
+        0.0, (previousValue, element) => previousValue + element.extendedAmount);
   }
 
   double get discount {
     return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.discount);
+        0.0, (previousValue, element) => previousValue + 0.0);
   }
 
   double get tax {
     return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.tax);
+        0.0, (previousValue, element) => previousValue + element.taxAmount);
   }
 
   double get grandTotal {
@@ -49,7 +49,7 @@ class CreateNewReceiptState extends Equatable {
 
   double get items {
     return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.qty);
+        0.0, (previousValue, element) => previousValue + element.quantity);
   }
 
   double get paidAmount {
@@ -73,7 +73,7 @@ class CreateNewReceiptState extends Equatable {
 
   CreateNewReceiptState copyWith({
     int? transSeq,
-    List<SaleLine>? lineItem,
+    List<TransactionLineItemEntity>? lineItem,
     List<TenderLineItem>? tenderLine,
     ContactEntity? customer,
     CreateNewReceiptStatus? status,

@@ -35,7 +35,6 @@ class TransactionHeaderEntity extends BaseEntity {
   late int version;
 
   final lineItems = IsarLinks<TransactionLineItemEntity>();
-
   final paymentLineItems = IsarLinks<TransactionPaymentLineItemEntity>();
 
   TransactionHeaderEntity(
