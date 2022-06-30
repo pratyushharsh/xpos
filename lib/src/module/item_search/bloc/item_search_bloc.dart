@@ -20,12 +20,12 @@ class ItemSearchBloc extends Bloc<ItemSearchEvent, ItemSearchState> {
 
   void _onSearchItem(SearchItemByFilter event, Emitter<ItemSearchState> emit) async {
     if (event.filter.isEmpty) {
-      emit(state.copyWith(products: [], status: ItemSearchStatus.success));
+      emit(state.copyWith(products: [], filter: state.filter.copyWith(filterText: event.filter), status: ItemSearchStatus.success));
       return;
     }
 
     try {
-      emit(state.copyWith(status: ItemSearchStatus.loading));
+      emit(state.copyWith(status: ItemSearchStatus.loading, filter: state.filter.copyWith(filterText: event.filter)));
       var prod = await db.productEntitys
           .where()
           .productIdEqualTo(event.filter)
@@ -35,7 +35,7 @@ class ItemSearchBloc extends Bloc<ItemSearchEvent, ItemSearchState> {
           .findAll();
       log.info(prod);
       var newProd = prod.map((e) => ProductModel.fromEntity(e)).toList();
-      emit(state.copyWith(products: newProd, status: ItemSearchStatus.success));
+      emit(state.copyWith(products: newProd, status: ItemSearchStatus.success, filter: state.filter.copyWith(filterText: event.filter)));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: ItemSearchStatus.failure));

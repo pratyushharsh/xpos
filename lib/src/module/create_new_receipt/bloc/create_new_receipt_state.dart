@@ -16,26 +16,28 @@ class CreateNewReceiptState extends Equatable {
   final int transSeq;
   final List<TransactionLineItemEntity> lineItem;
   final List<TransactionPaymentLineItemEntity> tenderLine;
+  final Map<String, ProductModel> productMap;
   final ContactEntity? customer;
   final CreateNewReceiptStatus status;
   final CreateSaleStep step;
 
-  const CreateNewReceiptState(
-      {this.lineItem = const [],
-      this.tenderLine = const [],
-      this.transSeq = -1,
-      required this.status,
-      this.step = CreateSaleStep.item,
-      this.customer,});
+  const CreateNewReceiptState({
+    this.lineItem = const [],
+    this.tenderLine = const [],
+    this.transSeq = -1,
+    this.productMap = const {},
+    required this.status,
+    this.step = CreateSaleStep.item,
+    this.customer,
+  });
 
   double get subTotal {
-    return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.extendedAmount);
+    return lineItem.fold(0.0,
+        (previousValue, element) => previousValue + element.extendedAmount);
   }
 
   double get discount {
-    return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + 0.0);
+    return lineItem.fold(0.0, (previousValue, element) => previousValue + 0.0);
   }
 
   double get tax {
@@ -66,6 +68,7 @@ class CreateNewReceiptState extends Equatable {
         lineItem,
         transSeq,
         status,
+        productMap,
         step,
         tenderLine,
         customer,
@@ -76,6 +79,7 @@ class CreateNewReceiptState extends Equatable {
     List<TransactionLineItemEntity>? lineItem,
     List<TransactionPaymentLineItemEntity>? tenderLine,
     ContactEntity? customer,
+    Map<String, ProductModel>? productMap,
     CreateNewReceiptStatus? status,
     CreateSaleStep? step,
   }) {
@@ -83,6 +87,7 @@ class CreateNewReceiptState extends Equatable {
       transSeq: transSeq ?? this.transSeq,
       lineItem: lineItem ?? this.lineItem,
       tenderLine: tenderLine ?? this.tenderLine,
+      productMap: productMap ?? this.productMap,
       customer: customer ?? this.customer,
       status: status ?? this.status,
       step: step ?? this.step,

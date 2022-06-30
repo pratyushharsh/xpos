@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
@@ -26,10 +27,10 @@ class AddNewItemScreen extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => ItemBloc(
-            db: RepositoryProvider.of(context),
-            authenticationBloc: BlocProvider.of(context),
-            sequenceRepository: RepositoryProvider.of(context)
-          )..add(LoadExistingItem(productId)),
+              db: RepositoryProvider.of(context),
+              authenticationBloc: BlocProvider.of(context),
+              sequenceRepository: RepositoryProvider.of(context))
+            ..add(LoadExistingItem(productId)),
         )
       ],
       child: const AddNewItemForm(),
@@ -63,6 +64,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   late bool _inEditMode;
   late String? _productId;
   late bool _priceIncludeTax;
+  late List<String> _imageUrls;
 
   @override
   void initState() {
@@ -79,6 +81,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     _inEditMode = false;
     _productId = null;
     _priceIncludeTax = false;
+    _imageUrls = [];
   }
 
   @override
@@ -117,7 +120,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           purchasePrice: _purchasePriceController.text.isNotEmpty
               ? toFloat(_purchasePriceController.text)
               : null,
-          uom: _uom??"EACH",
+          uom: _uom ?? "EACH",
           brand:
               _brandController.text.isNotEmpty ? _brandController.text : null,
           hsn: _hsnController.text.isNotEmpty ? _hsnController.text : null,
@@ -172,9 +175,12 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
               state.existingProduct!.purchasePrice?.toString() ?? "";
           _brandController.text = state.existingProduct?.brand ?? "";
           _hsnController.text = state.existingProduct?.hsn ?? "";
-          _taxRateController.text = state.existingProduct!.tax?.toString() ?? "";
+          _taxRateController.text =
+              state.existingProduct!.tax?.toString() ?? "";
           _skuController.text = state.existingProduct!.skuCode ?? "";
           _formKey.currentState!.validate();
+          _imageUrls = state.existingProduct!.imageUrl;
+          setState(() {});
         }
       },
       child: Container(
@@ -204,6 +210,9 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                           const SizedBox(
                             height: 70,
                           ),
+                          ProductItemsImage(
+                            imageUrl: _imageUrls,
+                          ),
                           CustomTextField(
                             label: "Product Name",
                             validator:
@@ -212,8 +221,6 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                           ),
                           CustomTextField(
                             label: "Product Description",
-                            validator:
-                            NewProductFieldValidator.validateProductName,
                             controller: _productDescriptionController,
                             minLines: 5,
                             maxLines: 10,
@@ -236,7 +243,10 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                               Expanded(
                                 child: CustomDropDown<String>(
                                   value: _uom,
-                                  data: uom.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
+                                  data: uom
+                                      .map((e) => DropDownData(
+                                          key: e.code, value: e.value))
+                                      .toList(),
                                   label: 'UOM',
                                   onChanged: _onUomChange,
                                   validator:
@@ -297,8 +307,13 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                                   });
                                 },
                               ),
-                              const SizedBox(width: 5,),
-                              const Text("Price Include Tax", style: TextStyle(color: Color(0xFF6B7281)),)
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              const Text(
+                                "Price Include Tax",
+                                style: TextStyle(color: Color(0xFF6B7281)),
+                              )
                             ],
                           ),
                           const SizedBox(
@@ -405,6 +420,68 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ProductItemsImage extends StatefulWidget {
+  final List<String> imageUrl;
+  const ProductItemsImage({Key? key, required this.imageUrl}) : super(key: key);
+
+  @override
+  State<ProductItemsImage> createState() => _ProductItemsImageState();
+}
+
+class _ProductItemsImageState extends State<ProductItemsImage> {
+  String selectedUrl = "";
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      print(widget.imageUrl.toString());
+      selectedUrl = widget.imageUrl[0];
+      print("initial value $selectedUrl");
+    });
+  }
+  static int rendered = 1;
+
+  static const String basePath =
+      "/Users/pratyushharsh/Library/Containers/com.nearbai.receiptGenerator/Data/Documents/image/";
+
+  @override
+  Widget build(BuildContext context) {
+    print("rendered: $rendered");
+    rendered++;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 400,
+          width: 400,
+          child: selectedUrl.isNotEmpty ? Image.file(File(basePath + selectedUrl)) : Container(),
+        ),
+        SizedBox(
+          height: 400,
+          child: Wrap(
+            direction: Axis.vertical,
+            children: widget.imageUrl
+                .map((e) => InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedUrl = e;
+                        });
+                      },
+                      child: Image.file(
+                        File(basePath + e),
+                        height: 100,
+                        width: 100,
+                      ),
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 }

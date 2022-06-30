@@ -1,9 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipt_generator/src/config/constants.dart';
 import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-import 'package:receipt_generator/src/entity/pos/contact_entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/model/tender_line.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_mobile_view.dart';
@@ -106,6 +107,8 @@ class BuildLineItem extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: NewLineItem(
                         saleLine: state.lineItem[idx],
+                        productModel:
+                            state.productMap[state.lineItem[idx].itemId],
                       ),
                     ),
                     const Divider(
@@ -275,8 +278,10 @@ class TenderLineDisplay extends StatelessWidget {
 
 class NewLineItem extends StatefulWidget {
   final TransactionLineItemEntity saleLine;
+  final ProductModel? productModel;
 
-  const NewLineItem({Key? key, required this.saleLine}) : super(key: key);
+  const NewLineItem({Key? key, required this.saleLine, this.productModel})
+      : super(key: key);
 
   static const textStyle = TextStyle(
     fontWeight: FontWeight.bold,
@@ -309,18 +314,31 @@ class _NewLineItemState extends State<NewLineItem> {
               children: [
                 Container(
                     decoration: BoxDecoration(border: Border.all(width: 1)),
-                    child: Image.network(
-                      "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
-                      fit: BoxFit.cover,
-                      height: 50,
-                      width: 50,
-                      errorBuilder: (context, obj, trace) {
-                        return const SizedBox(
-                          height: 50,
-                          width: 50,
-                        );
-                      },
-                    )),
+                    child: (widget.productModel != null &&
+                            widget.productModel!.imageUrl.isNotEmpty)
+                        ? Image.file(
+                            File(Constants.baseImagePath +
+                                widget.productModel!.imageUrl[0]),
+                            fit: BoxFit.cover,
+                            height: 70,
+                            width: 70, errorBuilder: (context, obj, trace) {
+                            return const SizedBox(
+                              height: 70,
+                              width: 70,
+                            );
+                          })
+                        : Image.network(
+                            "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+                            fit: BoxFit.cover,
+                            height: 70,
+                            width: 70,
+                            errorBuilder: (context, obj, trace) {
+                              return const SizedBox(
+                                height: 70,
+                                width: 70,
+                              );
+                            },
+                          )),
                 const SizedBox(
                   width: 8,
                 ),
@@ -671,14 +689,12 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
                 builder: (context, st) {
               if (st.customer != null && !newCustomer) {
                 return InkWell(
-                  onLongPress: () {
-                    setState(() => {
-                      newCustomer = true
-                    });
-                  },
+                    onLongPress: () {
+                      setState(() => {newCustomer = true});
+                    },
                     child: SaleCustomerMobile(
-                  customer: st.customer!,
-                ));
+                      customer: st.customer!,
+                    ));
               } else {
                 return CustomTextField(
                   controller: _controller,
@@ -722,7 +738,8 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
                                     newCustomer = false;
                                     FocusScope.of(context)
                                         .requestFocus(FocusNode());
-                                    BlocProvider.of<CreateNewReceiptBloc>(context)
+                                    BlocProvider.of<CreateNewReceiptBloc>(
+                                            context)
                                         .add(OnCustomerSelect(e));
                                     BlocProvider.of<CustomerSearchBloc>(context)
                                         .add(OnSearchComplete());
@@ -750,7 +767,8 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
                                     newCustomer = false;
                                     FocusScope.of(context)
                                         .requestFocus(FocusNode());
-                                    BlocProvider.of<CreateNewReceiptBloc>(context)
+                                    BlocProvider.of<CreateNewReceiptBloc>(
+                                            context)
                                         .add(OnCustomerSelect(e));
                                     BlocProvider.of<CustomerSearchBloc>(context)
                                         .add(OnSearchComplete());

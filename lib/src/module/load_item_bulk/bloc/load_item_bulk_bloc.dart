@@ -50,9 +50,9 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
             displayName: e[1].toString(),
             description: e[2].toString(),
             listPrice:
-                e[3].toString().isNotEmpty ? double.parse(e[3].toString()) : 0,
+                e[3].toString().isNotEmpty ? double.parse(e[3].toString()) : 9999999.00,
             salePrice:
-                e[4].toString().isNotEmpty ? double.parse(e[3].toString()) : 0,
+                e[4].toString().isNotEmpty ? double.parse(e[3].toString()) : 9999999.00,
             uom: e[5].toString(),
             brand: e[6].toString(),
             skuCode: e[7].toString(),
@@ -60,7 +60,7 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
             tax: e[9].toString().isNotEmpty
                 ? double.parse(e[9].toString()) / 100
                 : 0,
-            imageUrl: e[10].toString(),
+            imageUrl: e[10].toString().isNotEmpty ? e[10].toString().split(";").where((element) => element.isNotEmpty).toList() : [],
             enable: true,
             productId: productId.toString(),
             storeId: auth.state.store!.rtlLocId,

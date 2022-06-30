@@ -19,9 +19,21 @@ class OrderSummaryBloc extends Bloc<OrderSummaryEvent, OrderSummaryState> {
       Emitter<OrderSummaryState> emit) async {
       emit(state.copyWith(status: OrderSummaryStatus.loading));
       TransactionHeaderEntity? order = await db.transactionHeaderEntitys.get(orderId);
-      order?.lineItems.loadSync();
-      order?.paymentLineItems.loadSync();
-      emit(state.copyWith(order: order));
-      emit(state.copyWith(status: OrderSummaryStatus.success));
+      if (order == null) {
+        emit(state.copyWith(status: OrderSummaryStatus.failure));
+        return;
+      }
+      Map<String, ProductEntity> pm = Map.from(state.productMap);
+      order.lineItems.loadSync();
+      order.paymentLineItems.loadSync();
+
+      for(var x in order.lineItems) {
+        ProductEntity? pe = db.productEntitys.where().productIdEqualTo(x.itemId).findFirstSync();
+        if (pe != null) {
+          pm.putIfAbsent(x.itemId, () => pe);
+        }
+      }
+
+      emit(state.copyWith(order: order, status: OrderSummaryStatus.success, productMap: pm));
   }
 }

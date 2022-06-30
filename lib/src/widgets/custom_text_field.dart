@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -22,6 +23,7 @@ class CustomTextField extends StatelessWidget {
   final GestureTapCallback? onTap;
   final bool? enabled;
   final ValueChanged<String>? onFieldSubmitted;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextField(
       {Key? key,
@@ -35,6 +37,7 @@ class CustomTextField extends StatelessWidget {
       this.onValueChange,
       this.textInputType,
       this.errorText,
+        this.inputFormatters,
       this.controller,
       this.focusNode,
       this.onTap,
@@ -86,6 +89,7 @@ class CustomTextField extends StatelessWidget {
             obscureText: obscureText,
             cursorColor: const Color(0xFFB1B4E6),
             textAlign: textAlign,
+            inputFormatters: inputFormatters,
             style: style,
             onTap: onTap,
             onFieldSubmitted: onFieldSubmitted,

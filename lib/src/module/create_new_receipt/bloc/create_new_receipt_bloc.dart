@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,6 @@ import 'package:receipt_generator/src/model/tender_line.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
-import 'package:receipt_generator/src/util/helper/tax_helper.dart';
 
 part 'create_new_receipt_event.dart';
 part 'create_new_receipt_state.dart';
@@ -51,6 +52,7 @@ class CreateNewReceiptBloc
 
   void _onAddNewLineItem(
       AddItemToReceipt event, Emitter<CreateNewReceiptState> emit) async {
+    assert(event.product.productId != null);
     int seq = state.lineItem.length + state.tenderLine.length;
 
     // SaleLine newLine = SaleLine(
@@ -72,21 +74,24 @@ class CreateNewReceiptBloc
         quantity: 1,
         grossQuantity: 1,
         netQuantity: 1,
-        unitPrice: event.product.salePrice ?? event.product.listPrice!,
-        extendedAmount: event.product.salePrice ?? event.product.listPrice!,
+        unitPrice: min(event.product.salePrice ?? 999999.00, event.product.listPrice ?? 999999.00),
+        extendedAmount: min(event.product.salePrice ?? 999999.00, event.product.listPrice ?? 999999.00),
         itemIdEntryMethod: EntryMethod.keyboard,
         priceEntryMethod: EntryMethod.keyboard,
-        netAmount: event.product.salePrice ?? event.product.listPrice!,
-        grossAmount: event.product.salePrice ?? event.product.listPrice!,
+        netAmount: min(event.product.salePrice ?? 999999.00, event.product.listPrice ?? 999999.00),
+        grossAmount: min(event.product.salePrice ?? 999999.00, event.product.listPrice ?? 999999.00),
         taxGroupId: "TAX_GROUP",
         taxAmount: 0.00);
 
     // List<SaleTaxModifier> taxModifiers = TaxHelper.calculateTax(newLine);
     // newLine = newLine.copyWith(taxModifier: taxModifiers);
 
+    Map<String, ProductModel> pm = Map.from(state.productMap);
+    pm.putIfAbsent(event.product.productId!, () => event.product);
+
     List<TransactionLineItemEntity> newList = [...state.lineItem, newLine];
 
-    emit(state.copyWith(lineItem: newList, step: CreateSaleStep.item));
+    emit(state.copyWith(lineItem: newList, step: CreateSaleStep.item, productMap: pm));
     add(_VerifyOrderAndEmitState());
   }
 

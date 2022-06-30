@@ -58,7 +58,7 @@ class ClientsView extends StatelessWidget {
           top: 5,
           left: 14,
           right: 14,
-          child: SearchBar(),
+          child: SearchBar(label: "clients"),
         ),
       ],
     );

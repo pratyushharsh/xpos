@@ -15,7 +15,7 @@ extension GetProductEntityCollection on Isar {
 const ProductEntitySchema = CollectionSchema(
   name: 'ProductEntity',
   schema:
-      '{"name":"ProductEntity","idName":"id","properties":[{"name":"brand","type":"String"},{"name":"createTime","type":"Long"},{"name":"description","type":"String"},{"name":"descriptionWords","type":"StringList"},{"name":"displayName","type":"String"},{"name":"enable","type":"Bool"},{"name":"hsn","type":"String"},{"name":"imageUrl","type":"String"},{"name":"lastSyncAt","type":"Long"},{"name":"listPrice","type":"Double"},{"name":"productId","type":"String"},{"name":"purchasePrice","type":"Double"},{"name":"salePrice","type":"Double"},{"name":"skuCode","type":"String"},{"name":"storeId","type":"Long"},{"name":"syncState","type":"Long"},{"name":"tax","type":"Double"},{"name":"uom","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"descriptionWords","unique":false,"properties":[{"name":"descriptionWords","type":"Value","caseSensitive":false}]},{"name":"productId","unique":true,"properties":[{"name":"productId","type":"Value","caseSensitive":true}]}],"links":[]}',
+      '{"name":"ProductEntity","idName":"id","properties":[{"name":"brand","type":"String"},{"name":"createTime","type":"Long"},{"name":"description","type":"String"},{"name":"descriptionWords","type":"StringList"},{"name":"displayName","type":"String"},{"name":"enable","type":"Bool"},{"name":"hsn","type":"String"},{"name":"imageUrl","type":"StringList"},{"name":"lastSyncAt","type":"Long"},{"name":"listPrice","type":"Double"},{"name":"productId","type":"String"},{"name":"purchasePrice","type":"Double"},{"name":"salePrice","type":"Double"},{"name":"skuCode","type":"String"},{"name":"storeId","type":"Long"},{"name":"syncState","type":"Long"},{"name":"tax","type":"Double"},{"name":"uom","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"descriptionWords","unique":false,"properties":[{"name":"descriptionWords","type":"Value","caseSensitive":false}]},{"name":"productId","unique":true,"properties":[{"name":"productId","type":"Value","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'brand': 0,
@@ -39,7 +39,7 @@ const ProductEntitySchema = CollectionSchema(
     'updateTime': 18,
     'version': 19
   },
-  listProperties: {'descriptionWords'},
+  listProperties: {'descriptionWords', 'imageUrl'},
   indexIds: {'descriptionWords': 0, 'productId': 1},
   indexValueTypes: {
     'descriptionWords': [
@@ -123,11 +123,14 @@ void _productEntitySerializeNative(
   }
   dynamicSize += (_hsn?.length ?? 0) as int;
   final value7 = object.imageUrl;
-  IsarUint8List? _imageUrl;
-  if (value7 != null) {
-    _imageUrl = IsarBinaryWriter.utf8Encoder.convert(value7);
+  dynamicSize += (value7.length) * 8;
+  final bytesList7 = <IsarUint8List>[];
+  for (var str in value7) {
+    final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
+    bytesList7.add(bytes);
+    dynamicSize += bytes.length as int;
   }
-  dynamicSize += (_imageUrl?.length ?? 0) as int;
+  final _imageUrl = bytesList7;
   final value8 = object.lastSyncAt;
   final _lastSyncAt = value8;
   final value9 = object.listPrice;
@@ -174,7 +177,7 @@ void _productEntitySerializeNative(
   writer.writeBytes(offsets[4], _displayName);
   writer.writeBool(offsets[5], _enable);
   writer.writeBytes(offsets[6], _hsn);
-  writer.writeBytes(offsets[7], _imageUrl);
+  writer.writeStringList(offsets[7], _imageUrl);
   writer.writeDateTime(offsets[8], _lastSyncAt);
   writer.writeDouble(offsets[9], _listPrice);
   writer.writeBytes(offsets[10], _productId);
@@ -202,7 +205,7 @@ ProductEntity _productEntityDeserializeNative(
     enable: reader.readBool(offsets[5]),
     hsn: reader.readStringOrNull(offsets[6]),
     id: id,
-    imageUrl: reader.readStringOrNull(offsets[7]),
+    imageUrl: reader.readStringList(offsets[7]) ?? [],
     lastSyncAt: reader.readDateTimeOrNull(offsets[8]),
     listPrice: reader.readDoubleOrNull(offsets[9]),
     productId: reader.readStringOrNull(offsets[10]),
@@ -239,7 +242,7 @@ P _productEntityDeserializePropNative<P>(
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 8:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 9:
@@ -314,7 +317,11 @@ ProductEntity _productEntityDeserializeWeb(
     enable: IsarNative.jsObjectGet(jsObj, 'enable') ?? false,
     hsn: IsarNative.jsObjectGet(jsObj, 'hsn'),
     id: IsarNative.jsObjectGet(jsObj, 'id'),
-    imageUrl: IsarNative.jsObjectGet(jsObj, 'imageUrl'),
+    imageUrl: (IsarNative.jsObjectGet(jsObj, 'imageUrl') as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>() ??
+        [],
     lastSyncAt: IsarNative.jsObjectGet(jsObj, 'lastSyncAt') != null
         ? DateTime.fromMillisecondsSinceEpoch(
                 IsarNative.jsObjectGet(jsObj, 'lastSyncAt'),
@@ -372,7 +379,11 @@ P _productEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
     case 'id':
       return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
     case 'imageUrl':
-      return (IsarNative.jsObjectGet(jsObj, 'imageUrl')) as P;
+      return ((IsarNative.jsObjectGet(jsObj, 'imageUrl') as List?)
+              ?.map((e) => e ?? '')
+              .toList()
+              .cast<String>() ??
+          []) as P;
     case 'lastSyncAt':
       return (IsarNative.jsObjectGet(jsObj, 'lastSyncAt') != null
           ? DateTime.fromMillisecondsSinceEpoch(
@@ -1400,17 +1411,8 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      imageUrlIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'imageUrl',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      imageUrlEqualTo(
-    String? value, {
+      imageUrlAnyEqualTo(
+    String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -1422,8 +1424,8 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      imageUrlGreaterThan(
-    String? value, {
+      imageUrlAnyGreaterThan(
+    String value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -1437,8 +1439,8 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      imageUrlLessThan(
-    String? value, {
+      imageUrlAnyLessThan(
+    String value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -1452,9 +1454,9 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      imageUrlBetween(
-    String? lower,
-    String? upper, {
+      imageUrlAnyBetween(
+    String lower,
+    String upper, {
     bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
@@ -1470,7 +1472,7 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      imageUrlStartsWith(
+      imageUrlAnyStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1483,7 +1485,7 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      imageUrlEndsWith(
+      imageUrlAnyEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1496,7 +1498,7 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      imageUrlContains(String value, {bool caseSensitive = true}) {
+      imageUrlAnyContains(String value, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'imageUrl',
@@ -1506,7 +1508,7 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      imageUrlMatches(String pattern, {bool caseSensitive = true}) {
+      imageUrlAnyMatches(String pattern, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
       property: 'imageUrl',
@@ -2350,15 +2352,6 @@ extension ProductEntityQueryWhereSortBy
     return addSortByInternal('id', Sort.desc);
   }
 
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByImageUrl() {
-    return addSortByInternal('imageUrl', Sort.asc);
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
-      sortByImageUrlDesc() {
-    return addSortByInternal('imageUrl', Sort.desc);
-  }
-
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByLastSyncAt() {
     return addSortByInternal('lastSyncAt', Sort.asc);
   }
@@ -2525,15 +2518,6 @@ extension ProductEntityQueryWhereSortThenBy
     return addSortByInternal('id', Sort.desc);
   }
 
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByImageUrl() {
-    return addSortByInternal('imageUrl', Sort.asc);
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
-      thenByImageUrlDesc() {
-    return addSortByInternal('imageUrl', Sort.desc);
-  }
-
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByLastSyncAt() {
     return addSortByInternal('lastSyncAt', Sort.asc);
   }
@@ -2673,11 +2657,6 @@ extension ProductEntityQueryWhereDistinct
     return addDistinctByInternal('id');
   }
 
-  QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByImageUrl(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('imageUrl', caseSensitive: caseSensitive);
-  }
-
   QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByLastSyncAt() {
     return addDistinctByInternal('lastSyncAt');
   }
@@ -2766,7 +2745,8 @@ extension ProductEntityQueryProperty
     return addPropertyNameInternal('id');
   }
 
-  QueryBuilder<ProductEntity, String?, QQueryOperations> imageUrlProperty() {
+  QueryBuilder<ProductEntity, List<String>, QQueryOperations>
+      imageUrlProperty() {
     return addPropertyNameInternal('imageUrl');
   }
 

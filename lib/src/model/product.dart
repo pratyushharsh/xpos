@@ -14,7 +14,7 @@ class ProductModel {
   final String? skuCode;
   final String? hsn;
   final double? tax;
-  final String? imageUrl;
+  final List<String> imageUrl;
 
   const ProductModel(
       {this.productId,
@@ -28,7 +28,7 @@ class ProductModel {
       this.skuCode,
       this.hsn,
       this.tax,
-      this.imageUrl});
+      this.imageUrl = const []});
 
   ProductModel copyWith(
       {String? productId,
@@ -42,7 +42,7 @@ class ProductModel {
       String? skuCode,
       String? hsn,
       double? tax,
-      String? imageUrl}) {
+      List<String>? imageUrl}) {
     return ProductModel(
         productId: productId ?? this.productId,
         description: description ?? this.description,
