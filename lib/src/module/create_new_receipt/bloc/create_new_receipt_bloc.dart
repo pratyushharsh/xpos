@@ -60,12 +60,13 @@ class CreateNewReceiptBloc
     // @TODO Change the business date from DateTime.now() to actual business date.
     // @TODO Change the pos id also
     // @TODO Change the entry method also
+    print(seq);
     TransactionLineItemEntity newLine = TransactionLineItemEntity(
         storeId: authenticationBloc.state.store!.rtlLocId,
         businessDate: DateTime.now(),
         posId: 1,
         transSeq: state.transSeq,
-        lineItemSeq: seq,
+        lineItemSeq: seq + 1, 
         itemId: event.product.productId!,
         itemDescription: event.product.description,
         quantity: 1,
@@ -153,7 +154,9 @@ class CreateNewReceiptBloc
     }
 
     try {
-      await transactionRepository.createNewSale(header, lineItems);
+      header.lineItems.addAll(lineItems);
+      header.paymentLineItems.addAll(state.tenderLine.toList());
+      await transactionRepository.createNewSale(header);
       emit(state.copyWith(
           status: CreateNewReceiptStatus.saleComplete,
           step: CreateSaleStep.confirmed));
@@ -183,18 +186,21 @@ class CreateNewReceiptBloc
 
   void _onAddNewTenderLineItem(
       OnAddNewTenderLine event, Emitter<CreateNewReceiptState> emit) async {
-    int seq = state.lineItem.length + state.tenderLine.length;
+    int seq =  state.tenderLine.length;
 
-    TenderLineItem newLine = TenderLineItem(
-        transSeq: state.transSeq,
-        lineItemSequence: seq + 1,
-        beginDate: DateTime.now(),
-        amount: event.amount,
-        currencyId: "INR",
-        tenderId: event.tenderType,
-        tenderStatusCode: "CNF");
 
-    List<TenderLineItem> newList = [...state.tenderLine, newLine];
+    TransactionPaymentLineItemEntity newLine = TransactionPaymentLineItemEntity(
+      transId: state.transSeq,
+      amount: event.amount,
+      beginDate: DateTime.now(),
+      currencyId: "INR",
+      paymentSeq: seq + 1,
+      tenderId: event.tenderType,
+      tenderStatusCode: "CNF",
+      endDate: DateTime.now()
+    );
+
+    List<TransactionPaymentLineItemEntity> newList = [...state.tenderLine, newLine];
 
     emit(state.copyWith(tenderLine: newList));
     add(_VerifyOrderAndEmitState());

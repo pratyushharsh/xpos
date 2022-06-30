@@ -23,7 +23,10 @@ class ReceiptDisplayBloc
   final AuthenticationBloc authBloc;
 
   ReceiptDisplayBloc(
-      {required this.transId, required this.db, required this.settingsRepo, required this.authBloc})
+      {required this.transId,
+      required this.db,
+      required this.settingsRepo,
+      required this.authBloc})
       : super(ReceiptDisplayState(taxSummary: List.empty())) {
     on<FetchReceiptDataEvent>(_onFetchReceiptData);
     on<UpdateReceiptStatusEvent>(_onUpdateReceiptStatusEvent);
@@ -34,10 +37,13 @@ class ReceiptDisplayBloc
       ReceiptDisplayEvent event, Emitter<ReceiptDisplayState> emit) async {
     try {
       ReceiptSettingsModel recSetting = await settingsRepo.getReceiptSettings();
-      emit(state.copyWith(
-          status: ReceiptDisplayStatus.loading, receiptSettings: recSetting));
+      emit(
+        state.copyWith(
+            status: ReceiptDisplayStatus.loading, receiptSettings: recSetting),
+      );
 
-      TransactionHeaderEntity? transaction = await db.transactionHeaderEntitys.get(transId);
+      TransactionHeaderEntity? transaction =
+          await db.transactionHeaderEntitys.get(transId);
       if (transaction == null) {
         log.severe("Transaction $transId does not exists");
         emit(state.copyWith(status: ReceiptDisplayStatus.failure));

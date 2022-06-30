@@ -12,11 +12,7 @@ class TransactionRepository {
 
   TransactionRepository({required this.db, required this.restClient });
 
-  Future<void> createNewSale(TransactionHeaderEntity header,
-      List<TransactionLineItemEntity> lineItems) async {
-
-    header.lineItems.addAll(lineItems);
-
+  Future<void> createNewSale(TransactionHeaderEntity header) async {
     await db.writeTxn((isar) async {
       await isar.transactionHeaderEntitys.put(header, saveLinks: true);
     });

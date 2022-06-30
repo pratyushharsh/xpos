@@ -52,6 +52,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _productNameController;
+  late TextEditingController _productDescriptionController;
   late TextEditingController _salePriceController;
   late TextEditingController _listPriceController;
   late TextEditingController _purchasePriceController;
@@ -67,6 +68,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   void initState() {
     super.initState();
     _productNameController = TextEditingController();
+    _productDescriptionController = TextEditingController();
     _salePriceController = TextEditingController();
     _listPriceController = TextEditingController();
     _purchasePriceController = TextEditingController();
@@ -82,6 +84,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   @override
   void dispose() {
     _productNameController.dispose();
+    _productDescriptionController.dispose();
     _salePriceController.dispose();
     _listPriceController.dispose();
     _purchasePriceController.dispose();
@@ -211,7 +214,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                             label: "Product Description",
                             validator:
                             NewProductFieldValidator.validateProductName,
-                            controller: _productNameController,
+                            controller: _productDescriptionController,
                             minLines: 5,
                             maxLines: 10,
                           ),

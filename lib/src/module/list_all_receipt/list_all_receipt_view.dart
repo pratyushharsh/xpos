@@ -54,7 +54,7 @@ class ReceiptHeaderCard extends StatelessWidget {
               arguments: receipt.transId);
         },
         onTap: () {
-          Navigator.of(context).pushNamed(RouteConfig.receiptDisplayScreen,
+          Navigator.of(context).pushNamed(RouteConfig.orderSummaryScreen,
               arguments: receipt.transId);
         },
         child: Container(

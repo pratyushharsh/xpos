@@ -15,7 +15,7 @@ enum CreateSaleStep { item, payment, customer, complete, confirmed }
 class CreateNewReceiptState extends Equatable {
   final int transSeq;
   final List<TransactionLineItemEntity> lineItem;
-  final List<TenderLineItem> tenderLine;
+  final List<TransactionPaymentLineItemEntity> tenderLine;
   final ContactEntity? customer;
   final CreateNewReceiptStatus status;
   final CreateSaleStep step;
@@ -74,7 +74,7 @@ class CreateNewReceiptState extends Equatable {
   CreateNewReceiptState copyWith({
     int? transSeq,
     List<TransactionLineItemEntity>? lineItem,
-    List<TenderLineItem>? tenderLine,
+    List<TransactionPaymentLineItemEntity>? tenderLine,
     ContactEntity? customer,
     CreateNewReceiptStatus? status,
     CreateSaleStep? step,

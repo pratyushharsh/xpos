@@ -245,7 +245,7 @@ class LineItemHeader extends StatelessWidget {
 }
 
 class TenderLineDisplay extends StatelessWidget {
-  final TenderLineItem tenderLine;
+  final TransactionPaymentLineItemEntity tenderLine;
   const TenderLineDisplay({Key? key, required this.tenderLine})
       : super(key: key);
 
@@ -293,7 +293,6 @@ class _NewLineItemState extends State<NewLineItem> {
     final Rect itemRect = itemBox.localToGlobal(Offset.zero,
             ancestor: navigator.context.findRenderObject()) &
         itemBox.size;
-    print(itemRect);
   }
 
   @override
@@ -652,7 +651,7 @@ class SaleCustomerMobile extends StatelessWidget {
 }
 
 class CustomerDetailWidget extends StatefulWidget {
-  CustomerDetailWidget({Key? key}) : super(key: key);
+  const CustomerDetailWidget({Key? key}) : super(key: key);
 
   @override
   State<CustomerDetailWidget> createState() => _CustomerDetailWidgetState();
