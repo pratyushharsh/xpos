@@ -31,13 +31,17 @@ class ClientsView extends StatelessWidget {
           right: 20,
           child: OpenContainer(
             transitionType: ContainerTransitionType.fade,
-            transitionDuration: const Duration(milliseconds: 500),
+            transitionDuration: const Duration(milliseconds: 300),
             openBuilder: (BuildContext context, VoidCallback _) {
               return const NewCustomerView();
             },
             closedElevation: 6.0,
             closedShape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30), bottomLeft: Radius.circular(30), bottomRight: Radius.circular(5)),
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30),
+                  topLeft: Radius.circular(30),
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(5)),
             ),
             closedBuilder: (BuildContext context, void Function() action) {
               return Container(

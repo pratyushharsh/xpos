@@ -1,11 +1,11 @@
-class BusinessAddress {
+class Address {
   final String? zipcode;
   final String? building;
   final String? street;
   final String? city;
   final String? state;
 
-  BusinessAddress(
+  Address(
       {required this.zipcode,
       required this.building,
       required this.street,

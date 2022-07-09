@@ -9,6 +9,7 @@ import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/list_all_item/bloc/list_all_item_bloc.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
+import '../../entity/pos/entity.dart';
 import '../create_new_item/add_new_item_view.dart';
 
 class AllProductsList extends StatelessWidget {
@@ -77,7 +78,7 @@ class AllProductsList extends StatelessWidget {
 }
 
 class ItemCard extends StatelessWidget {
-  final ProductModel product;
+  final ProductEntity product;
   const ItemCard({Key? key, required this.product}) : super(key: key);
 
   @override
@@ -116,7 +117,7 @@ class ItemCard extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     Text(
-                      product.description,
+                      product.displayName,
                       style: const TextStyle(fontWeight: FontWeight.normal),
                     ),
                     Text(

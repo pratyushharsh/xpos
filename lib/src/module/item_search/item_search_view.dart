@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/item_search/bloc/item_search_bloc.dart';
 import 'package:receipt_generator/src/widgets/custom_text_field.dart';
+
+import '../../entity/pos/entity.dart';
 
 
 class SearchItemView extends StatelessWidget {
   const SearchItemView({Key? key}) : super(key: key);
 
-  Widget buildItemCard(BuildContext context, ProductModel product) {
+  Widget buildItemCard(BuildContext context, ProductEntity product) {
     return InkWell(
       onTap: () {
         Navigator.of(context).pop(product);

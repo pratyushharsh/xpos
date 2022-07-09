@@ -21,7 +21,7 @@ class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
   void _onLoadItem(LoadAllItems event, Emitter<ListAllItemState> emit) async {
     try {
       emit(state.copyWith(status: ListAllItemStatus.loading));
-      var prod = [];
+      var prod = <ProductEntity>[];
       if (state.filterCriteria.filter != null && state.filterCriteria.filter!.isNotEmpty) {
         prod = await db.productEntitys
             .where()
@@ -33,10 +33,8 @@ class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
       } else {
         prod = await db.productEntitys.where().offset(state.products.length).limit(state.filterCriteria.limit).findAll();
       }
-
-      var newProd = prod.map((e) => ProductModel.fromEntity(e)).toList();
       emit(
-          state.copyWith(products: newProd, status: ListAllItemStatus.success));
+          state.copyWith(products: prod, status: ListAllItemStatus.success));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: ListAllItemStatus.failure));
@@ -46,7 +44,7 @@ class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
   void _onLoadNextProducts(LoadNextProduct event, Emitter<ListAllItemState> emit) async {
     emit(state.copyWith(status: ListAllItemStatus.loadingNextProducts));
     try {
-      var prod = [];
+      var prod = <ProductEntity>[];
       if (state.filterCriteria.filter != null && state.filterCriteria.filter!.isNotEmpty) {
         prod = await db.productEntitys
             .where()
@@ -58,9 +56,8 @@ class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
       } else {
         prod = await db.productEntitys.where().offset(state.products.length).limit(state.filterCriteria.limit).findAll();
       }
-      var newProd = prod.map((e) => ProductModel.fromEntity(e)).toList();
-      List<ProductModel> newProducts = [...state.products, ...newProd];
-      emit(state.copyWith(status: ListAllItemStatus.success, products: newProducts, end: newProd.isEmpty));
+      List<ProductEntity> newProducts = [...state.products, ...prod];
+      emit(state.copyWith(status: ListAllItemStatus.success, products: newProducts, end: prod.isEmpty));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: ListAllItemStatus.failure,));

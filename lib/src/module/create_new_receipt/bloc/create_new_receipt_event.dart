@@ -4,7 +4,7 @@ part of 'create_new_receipt_bloc.dart';
 abstract class CreateNewReceiptEvent {}
 
 class AddItemToReceipt extends CreateNewReceiptEvent {
-  final ProductModel product;
+  final ProductEntity product;
 
   AddItemToReceipt(this.product);
 }
@@ -56,3 +56,8 @@ class OnChangeSaleStep extends CreateNewReceiptEvent {
 }
 
 class _VerifyOrderAndEmitState extends CreateNewReceiptEvent {}
+
+class OnReturnLineItemEvent extends CreateNewReceiptEvent {
+  final Map<TransactionLineItemEntity, ReturnLineItemParameters> returnMap;
+  OnReturnLineItemEvent(this.returnMap);
+}

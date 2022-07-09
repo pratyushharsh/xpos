@@ -16,7 +16,7 @@ class CreateNewReceiptState extends Equatable {
   final int transSeq;
   final List<TransactionLineItemEntity> lineItem;
   final List<TransactionPaymentLineItemEntity> tenderLine;
-  final Map<String, ProductModel> productMap;
+  final Map<String, ProductEntity> productMap;
   final ContactEntity? customer;
   final CreateNewReceiptStatus status;
   final CreateSaleStep step;
@@ -79,7 +79,7 @@ class CreateNewReceiptState extends Equatable {
     List<TransactionLineItemEntity>? lineItem,
     List<TransactionPaymentLineItemEntity>? tenderLine,
     ContactEntity? customer,
-    Map<String, ProductModel>? productMap,
+    Map<String, ProductEntity>? productMap,
     CreateNewReceiptStatus? status,
     CreateSaleStep? step,
   }) {

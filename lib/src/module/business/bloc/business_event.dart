@@ -22,7 +22,7 @@ class OnBusinessContactChange extends BusinessEvent {
 }
 
 class OnBusinessAddressChange extends BusinessEvent {
-  final BusinessAddress address;
+  final Address address;
 
   OnBusinessAddressChange(this.address);
 }

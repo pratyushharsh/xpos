@@ -18,4 +18,18 @@ class TransactionRepository {
     });
   }
 
+  Future<TransactionHeaderEntity?> getTransaction(int id) async {
+    TransactionHeaderEntity? order = await db.transactionHeaderEntitys.get(id);
+    if (order != null) {
+      order.lineItems.loadSync();
+      order.paymentLineItems.loadSync();
+      return order;
+    }
+    return null;
+  }
+
+  Future<List<TransactionLineItemEntity>> getLineItemWithOriginalTransactionNo(int id) async {
+    List<TransactionLineItemEntity> order = await db.transactionLineItemEntitys.where().originalTransSeqEqualTo(id).findAll();
+    return order;
+  }
 }

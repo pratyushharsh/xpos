@@ -11,8 +11,4 @@ class CustomerParty {
       this.email,
       this.shippingAddress,
       this.billingAddress});
-
-
-
-
 }

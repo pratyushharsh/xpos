@@ -73,19 +73,19 @@ class ProductModel {
         uom: uom, createTime: DateTime.now(), storeId: 000);
   }
 
-  static ProductModel fromEntity(ProductEntity entity) {
-    return ProductModel(
-        productId: entity.productId,
-        description: entity.displayName,
-        listPrice: entity.listPrice,
-        salePrice: entity.salePrice,
-        enable: entity.enable,
-        brand: entity.brand,
-        uom: entity.uom,
-        tax: entity.tax,
-        purchasePrice: entity.purchasePrice,
-        hsn: entity.hsn,
-        imageUrl: entity.imageUrl,
-        skuCode: entity.skuCode);
-  }
+  // static ProductModel fromEntity(ProductEntity entity) {
+  //   return ProductModel(
+  //       productId: entity.productId,
+  //       description: entity.displayName,
+  //       listPrice: entity.listPrice,
+  //       salePrice: entity.salePrice,
+  //       enable: entity.enable,
+  //       brand: entity.brand,
+  //       uom: entity.uom,
+  //       tax: entity.tax,
+  //       purchasePrice: entity.purchasePrice,
+  //       hsn: entity.hsn,
+  //       imageUrl: entity.imageUrl,
+  //       skuCode: entity.skuCode);
+  // }
 }

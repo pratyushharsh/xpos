@@ -4,7 +4,7 @@ enum ListAllItemStatus { initial, loading, success, failure, loadingNextProducts
 
 class ListAllItemState {
   final ListAllItemStatus status;
-  final List<ProductModel> products;
+  final List<ProductEntity> products;
   final ProductFilterCriteria filterCriteria;
   final bool end;
 
@@ -12,11 +12,11 @@ class ListAllItemState {
       {this.status = ListAllItemStatus.initial,
       this.filterCriteria = const ProductFilterCriteria(),
       this.end = false,
-      this.products = const <ProductModel>[]});
+      this.products = const <ProductEntity>[]});
 
   ListAllItemState copyWith(
       {ListAllItemStatus? status,
-      List<ProductModel>? products,
+      List<ProductEntity>? products,
       bool? end,
       ProductFilterCriteria? filterCriteria}) {
     return ListAllItemState(

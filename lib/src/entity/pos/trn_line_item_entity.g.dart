@@ -16,7 +16,7 @@ extension GetTransactionLineItemEntityCollection on Isar {
 const TransactionLineItemEntitySchema = CollectionSchema(
   name: 'TransactionLineItemEntity',
   schema:
-      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'businessDate': 0,
@@ -54,9 +54,12 @@ const TransactionLineItemEntitySchema = CollectionSchema(
     'vendorId': 32
   },
   listProperties: {},
-  indexIds: {'originalPosId': 0, 'storeId': 1},
+  indexIds: {'originalPosId': 0, 'originalTransSeq': 1, 'storeId': 2},
   indexValueTypes: {
     'originalPosId': [
+      IndexValueType.long,
+    ],
+    'originalTransSeq': [
       IndexValueType.long,
     ],
     'storeId': [
@@ -585,6 +588,12 @@ extension TransactionLineItemEntityQueryWhereSort on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterWhere> anyOriginalTransSeq() {
+    return addWhereClauseInternal(
+        const IndexWhereClause.any(indexName: 'originalTransSeq'));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterWhere> anyStoreId() {
     return addWhereClauseInternal(
         const IndexWhereClause.any(indexName: 'storeId'));
@@ -735,6 +744,96 @@ extension TransactionLineItemEntityQueryWhere on QueryBuilder<
       lower: [lowerOriginalPosId],
       includeLower: includeLower,
       upper: [upperOriginalPosId],
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterWhereClause> originalTransSeqEqualTo(int? originalTransSeq) {
+    return addWhereClauseInternal(IndexWhereClause.equalTo(
+      indexName: 'originalTransSeq',
+      value: [originalTransSeq],
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterWhereClause> originalTransSeqNotEqualTo(int? originalTransSeq) {
+    if (whereSortInternal == Sort.asc) {
+      return addWhereClauseInternal(IndexWhereClause.lessThan(
+        indexName: 'originalTransSeq',
+        upper: [originalTransSeq],
+        includeUpper: false,
+      )).addWhereClauseInternal(IndexWhereClause.greaterThan(
+        indexName: 'originalTransSeq',
+        lower: [originalTransSeq],
+        includeLower: false,
+      ));
+    } else {
+      return addWhereClauseInternal(IndexWhereClause.greaterThan(
+        indexName: 'originalTransSeq',
+        lower: [originalTransSeq],
+        includeLower: false,
+      )).addWhereClauseInternal(IndexWhereClause.lessThan(
+        indexName: 'originalTransSeq',
+        upper: [originalTransSeq],
+        includeUpper: false,
+      ));
+    }
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterWhereClause> originalTransSeqIsNull() {
+    return addWhereClauseInternal(const IndexWhereClause.equalTo(
+      indexName: 'originalTransSeq',
+      value: [null],
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterWhereClause> originalTransSeqIsNotNull() {
+    return addWhereClauseInternal(const IndexWhereClause.greaterThan(
+      indexName: 'originalTransSeq',
+      lower: [null],
+      includeLower: false,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterWhereClause> originalTransSeqGreaterThan(
+    int? originalTransSeq, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(IndexWhereClause.greaterThan(
+      indexName: 'originalTransSeq',
+      lower: [originalTransSeq],
+      includeLower: include,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterWhereClause> originalTransSeqLessThan(
+    int? originalTransSeq, {
+    bool include = false,
+  }) {
+    return addWhereClauseInternal(IndexWhereClause.lessThan(
+      indexName: 'originalTransSeq',
+      upper: [originalTransSeq],
+      includeUpper: include,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterWhereClause> originalTransSeqBetween(
+    int? lowerOriginalTransSeq,
+    int? upperOriginalTransSeq, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addWhereClauseInternal(IndexWhereClause.between(
+      indexName: 'originalTransSeq',
+      lower: [lowerOriginalTransSeq],
+      includeLower: includeLower,
+      upper: [upperOriginalTransSeq],
       includeUpper: includeUpper,
     ));
   }

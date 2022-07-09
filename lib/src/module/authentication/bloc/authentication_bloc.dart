@@ -16,7 +16,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
 
   final log = Logger('AuthenticationBloc');
-  final bool test = true;
+  final bool test = false;
 
   final CognitoUserPool userPool;
   final Isar db;

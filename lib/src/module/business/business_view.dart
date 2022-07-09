@@ -219,11 +219,11 @@ class _BusinessDetailState extends State<BusinessDetail> {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
                     )),
-                    builder: (context) => const BusinessAddressDialog(),
+                    builder: (context) => const AddressFormDialog(),
                   ).then((value) => {
                         if (value != null &&
                             value.length > 0 &&
-                            value[0] is BusinessAddress)
+                            value[0] is Address)
                           {
                             BlocProvider.of<BusinessBloc>(context)
                                 .add(OnBusinessAddressChange(value[0]))
@@ -231,6 +231,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                       });
                 },
                 child: AddressWidget(
+                  label: "Business Address",
                   address: state.businessAddress?.toString() ?? "",
                 )),
             CustomTextField(
@@ -258,57 +259,14 @@ class _BusinessDetailState extends State<BusinessDetail> {
   }
 }
 
-class AddressWidget extends StatelessWidget {
-  final String address;
-  const AddressWidget({Key? key, required this.address}) : super(key: key);
+class AddressFormDialog extends StatefulWidget {
+  const AddressFormDialog({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Business Address",
-          style:
-              TextStyle(fontWeight: FontWeight.w400, color: Color(0xFF6B7281)),
-        ),
-        const SizedBox(
-          height: 1,
-        ),
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              //color: AppColor.background,
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(width: 0.8, color: const Color(0xFF6B7281))),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              minHeight: 100,
-              minWidth: double.infinity,
-              maxWidth: double.infinity,
-            ),
-            child: Text(
-              address,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-      ],
-    );
-  }
+  State<AddressFormDialog> createState() => _AddressFormDialogState();
 }
 
-class BusinessAddressDialog extends StatefulWidget {
-  const BusinessAddressDialog({Key? key}) : super(key: key);
-
-  @override
-  State<BusinessAddressDialog> createState() => _BusinessAddressDialogState();
-}
-
-class _BusinessAddressDialogState extends State<BusinessAddressDialog> {
+class _AddressFormDialogState extends State<AddressFormDialog> {
   late TextEditingController _zipcodeController;
   late TextEditingController _buildingController;
   late TextEditingController _streetController;
@@ -400,7 +358,7 @@ class _BusinessAddressDialogState extends State<BusinessAddressDialog> {
                   borderRadius: BorderRadius.circular(5.0),
                   onPressed: () {
                     Navigator.of(context).pop([
-                      BusinessAddress(
+                      Address(
                           zipcode: _zipcodeController.text,
                           building: _buildingController.text,
                           street: _streetController.text,

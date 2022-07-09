@@ -12,6 +12,7 @@ import '../../config/currency.dart';
 import '../../config/theme_settings.dart';
 import '../calculator/calculator.dart';
 import '../item_search/bloc/item_search_bloc.dart';
+import '../return_order/return_order_view.dart';
 import 'bloc/create_new_receipt_bloc.dart';
 import 'new_receipt_view.dart';
 
@@ -72,6 +73,7 @@ class NewReceiptDesktopView extends StatelessWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const ActionButtonBar(),
                               if (CreateSaleStep.item == state.step ||
                                   CreateSaleStep.complete == state.step)
                                 const Expanded(
@@ -93,14 +95,14 @@ class NewReceiptDesktopView extends StatelessWidget {
                         )
                       ],
                     ),
-                    const Positioned(
-                      child: Draggable(
-                        feedback: PosActionBar(),
-                        child: PosActionBar(),
-                      ),
-                      top: 0,
-                      left: 650,
-                    )
+                    // const Positioned(
+                    //   child: Draggable(
+                    //     feedback: PosActionBar(),
+                    //     child: PosActionBar(),
+                    //   ),
+                    //   top: 0,
+                    //   left: 650,
+                    // )
                   ],
                 );
               },
@@ -157,12 +159,13 @@ class _SearchUserDisplayDesktopState extends State<SearchUserDisplayDesktop> {
             ),
             Positioned(
               child: CustomTextField(
-                  label: "Search For Products",
-                  controller: _searchController,
-                  onValueChange: (val) {
-                    BlocProvider.of<ItemSearchBloc>(context)
-                        .add(SearchItemByFilter(val));
-                  },),
+                label: "Search For Products",
+                controller: _searchController,
+                onValueChange: (val) {
+                  BlocProvider.of<ItemSearchBloc>(context)
+                      .add(SearchItemByFilter(val));
+                },
+              ),
               bottom: 0,
               left: 0,
               right: 0,
@@ -223,7 +226,7 @@ class SearchItemProductsListDesktop extends StatelessWidget {
                                   ),
                                   Text(p.productId ?? p.skuCode ?? "Invalid"),
                                   Text(
-                                    p.description,
+                                    p.displayName,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
@@ -286,32 +289,39 @@ class CustomerDetailDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+      builder: (context, state) {
+        return Column(
           children: [
-            const CircleAvatar(
-              child: Icon(
-                Icons.person,
-                size: 40,
-              ),
-              radius: 60,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Column(
-              children: const [
-                Text("Customer Name: "),
-                Text("Customer Phone: "),
-                Text("Customer Email: "),
-                Text("Billing Address: "),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CircleAvatar(
+                  child: Icon(
+                    Icons.person,
+                    size: 40,
+                  ),
+                  radius: 60,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Customer Name: ${state.customer?.name ?? ""}"),
+                    Text(
+                        "Customer Phone: ${state.customer?.phoneNumber ?? ""}"),
+                    Text("Customer Email: ${state.customer?.email ?? ""}"),
+                    Text(
+                        "Billing Address: ${state.customer?.billingAddress ?? ""}"),
+                  ],
+                )
               ],
             )
           ],
-        )
-      ],
+        );
+      },
     );
   }
 }
@@ -590,5 +600,48 @@ class CardNumberFormatter extends TextInputFormatter {
         offset: string.length,
       ),
     );
+  }
+}
+
+class ActionButtonBar extends StatelessWidget {
+  const ActionButtonBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 60,
+        decoration: const BoxDecoration(
+          border: Border(right: BorderSide(color: Colors.black26)),
+        ),
+        child: Column(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.assignment_return_outlined),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return Dialog(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: const ReturnOrderView(),
+                        ),
+                      );
+                    }).then((value) => {
+                      if (value != null)
+                        {
+                          BlocProvider.of<CreateNewReceiptBloc>(context)
+                              .add(OnReturnLineItemEvent(value))
+                        }
+                    });
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings_accessibility),
+              onPressed: () {},
+            ),
+          ],
+        ));
   }
 }

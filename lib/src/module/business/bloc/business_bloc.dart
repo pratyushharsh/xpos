@@ -44,7 +44,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
             businessGst: data.gst,
             businessPan: data.pan,
             businessEmail: data.storeEmail,
-            businessAddress: BusinessAddress(
+            businessAddress: Address(
                 zipcode: data.postalCode,
                 building: data.address1,
                 street: data.address2,

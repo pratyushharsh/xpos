@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../create_new_receipt/bloc/create_new_receipt_bloc.dart';
 import '../return_order/return_order_view.dart';
 
 class PosActionBar extends StatelessWidget {
@@ -7,31 +9,34 @@ class PosActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              PosActionButton(
-                text: "Return",
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (ctx) {
-                        return Dialog(
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: const ReturnOrderView(),
-                          ),
-                        );
-                      });
-                },
-              ),
-            ],
-          ),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PosActionButton(
+              text: "Return",
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return Dialog(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: const ReturnOrderView(),
+                        ),
+                      );
+                    }).then((value) => {
+                      if (value != null) {
+                        BlocProvider.of<CreateNewReceiptBloc>(context)
+                            .add(OnReturnLineItemEvent(value))
+                      }
+                });
+              },
+            ),
+          ],
         ),
       ),
     );

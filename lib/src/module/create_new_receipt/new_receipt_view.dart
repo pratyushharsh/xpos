@@ -15,6 +15,7 @@ import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import '../../entity/pos/entity.dart';
+import '../line_item_modification/line_item_modification_view.dart';
 import 'bloc/create_new_receipt_bloc.dart';
 
 class NewReceiptView extends StatelessWidget {
@@ -100,21 +101,33 @@ class BuildLineItem extends StatelessWidget {
                   // Navigator.of(context)
                   //     .pushNamed(RouteConfig.editSaleLineItemScreen, arguments: state.lineItem[idx]);
                 },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: NewLineItem(
-                        saleLine: state.lineItem[idx],
-                        productModel:
-                            state.productMap[state.lineItem[idx].itemId],
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: state.lineItem[idx].returnFlag
+                            ? Colors.redAccent
+                            : Colors.blueAccent,
+                        width: 10,
                       ),
                     ),
-                    const Divider(
-                      height: 0,
-                    )
-                  ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: NewLineItem(
+                          saleLine: state.lineItem[idx],
+                          productModel:
+                              state.productMap[state.lineItem[idx].itemId],
+                        ),
+                      ),
+                      const Divider(
+                        height: 0,
+                      )
+                    ],
+                  ),
                 ),
               );
             }
@@ -278,7 +291,7 @@ class TenderLineDisplay extends StatelessWidget {
 
 class NewLineItem extends StatefulWidget {
   final TransactionLineItemEntity saleLine;
-  final ProductModel? productModel;
+  final ProductEntity? productModel;
 
   const NewLineItem({Key? key, required this.saleLine, this.productModel})
       : super(key: key);
@@ -287,17 +300,94 @@ class NewLineItem extends StatefulWidget {
     fontWeight: FontWeight.bold,
   );
 
+  static _NewLineItemState of(BuildContext context) {
+    final state = context.findAncestorStateOfType<_NewLineItemState>();
+    if (state != null) {
+      return state;
+    } else {
+      throw Exception('Please provide ShowCaseView context');
+    }
+  }
+
   @override
   State<NewLineItem> createState() => _NewLineItemState();
 }
 
 class _NewLineItemState extends State<NewLineItem> {
+  OverlayEntry? _overlayEntry;
+  late GlobalKey _key;
+
+  @override
+  initState() {
+    super.initState();
+    _key = LabeledGlobalKey("${widget.saleLine.transSeq}-${widget.saleLine.lineItemSeq}");
+  }
+
+  @override
+  dispose() {
+    _overlayEntry?.remove();
+    super.dispose();
+  }
+
+  // Widget buildLineItemButton() {
+  //   return Row(
+  //     children: [
+  //       ElevatedButton(
+  //         onPressed: () {},
+  //         child: const Text('Update Price'),
+  //       ),
+  //       ElevatedButton(
+  //         onPressed: () {},
+  //         child: const Text('Add Discount'),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // void onTap() {
+  //
+  //   if (_overlayEntry != null) {
+  //     _overlayEntry!.remove();
+  //   }
+  //
+  //   final RenderBox itemBox = _key.currentContext?.findRenderObject()! as RenderBox;
+  //   var boxOffset = itemBox.localToGlobal(Offset.zero);
+  //
+  //   _overlayEntry = OverlayEntry(
+  //     builder: (context) {
+  //       return Positioned(
+  //         top: boxOffset.dy + itemBox.size.height + 10,
+  //         left: boxOffset.dx,
+  //         child: Material(
+  //           color: Colors.transparent,
+  //           child: buildLineItemButton(),
+  //         ),
+  //       );
+  //     },
+  //   );
+  //
+  //   final overlay = Overlay.of(context);
+  //   overlay?.insert(_overlayEntry!);
+  // }
+
   void onTap() {
-    final NavigatorState navigator = Navigator.of(context);
-    final RenderBox itemBox = context.findRenderObject()! as RenderBox;
-    final Rect itemRect = itemBox.localToGlobal(Offset.zero,
-            ancestor: navigator.context.findRenderObject()) &
-        itemBox.size;
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return Dialog(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.8,
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: const LineItemModificationView(),
+            ),
+          );
+        }).then((value) => {
+      if (value != null)
+        {
+          BlocProvider.of<CreateNewReceiptBloc>(context)
+              .add(OnReturnLineItemEvent(value))
+        }
+    });
   }
 
   @override

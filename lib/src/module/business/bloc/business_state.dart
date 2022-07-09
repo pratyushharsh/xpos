@@ -18,7 +18,7 @@ class BusinessState extends Equatable {
   final String businessName;
   final String businessContact;
   final String? businessEmail;
-  final BusinessAddress? businessAddress;
+  final Address? businessAddress;
   final String businessGst;
   final String businessPan;
 
@@ -58,7 +58,7 @@ class BusinessState extends Equatable {
     String? businessName,
     String? businessContact,
     String? businessEmail,
-    BusinessAddress? businessAddress,
+    Address? businessAddress,
     String? businessGst,
     String? businessPan,
   }) {

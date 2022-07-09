@@ -9,10 +9,11 @@ import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
-import 'package:receipt_generator/src/model/tender_line.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
+
+import '../../return_order/bloc/return_order_bloc.dart';
 
 part 'create_new_receipt_event.dart';
 part 'create_new_receipt_state.dart';
@@ -41,6 +42,8 @@ class CreateNewReceiptBloc
     on<OnAddNewTenderLine>(_onAddNewTenderLineItem);
     on<OnChangeSaleStep>(_onChangeSaleStep);
     on<_VerifyOrderAndEmitState>(_onVerifyOrderAndEmitStep);
+
+    on<OnReturnLineItemEvent>(_onReturnLineItem);
   }
 
   void _onInitiateTransaction(OnInitiateNewTransaction event,
@@ -62,7 +65,6 @@ class CreateNewReceiptBloc
     // @TODO Change the business date from DateTime.now() to actual business date.
     // @TODO Change the pos id also
     // @TODO Change the entry method also
-    print(seq);
     TransactionLineItemEntity newLine = TransactionLineItemEntity(
         storeId: authenticationBloc.state.store!.rtlLocId,
         businessDate: DateTime.now(),
@@ -70,7 +72,7 @@ class CreateNewReceiptBloc
         transSeq: state.transSeq,
         lineItemSeq: seq + 1, 
         itemId: event.product.productId!,
-        itemDescription: event.product.description,
+        itemDescription: event.product.displayName,
         quantity: 1,
         grossQuantity: 1,
         netQuantity: 1,
@@ -86,7 +88,7 @@ class CreateNewReceiptBloc
     // List<SaleTaxModifier> taxModifiers = TaxHelper.calculateTax(newLine);
     // newLine = newLine.copyWith(taxModifier: taxModifiers);
 
-    Map<String, ProductModel> pm = Map.from(state.productMap);
+    Map<String, ProductEntity> pm = Map.from(state.productMap);
     pm.putIfAbsent(event.product.productId!, () => event.product);
 
     List<TransactionLineItemEntity> newList = [...state.lineItem, newLine];
@@ -94,32 +96,6 @@ class CreateNewReceiptBloc
     emit(state.copyWith(lineItem: newList, step: CreateSaleStep.item, productMap: pm));
     add(_VerifyOrderAndEmitState());
   }
-
-  // void _onPriceUpdate(
-  //     OnUnitPriceUpdate event, Emitter<CreateNewReceiptState> emit) {
-  //   List<TransactionLineItemEntity> newList = state.lineItem.map((e) {
-  //     if (e == event.saleLine) {
-  //       return e.copyWith(price: event.unitPrice);
-  //     } else {
-  //       return e;
-  //     }
-  //   }).toList();
-  //   emit(state.copyWith(lineItem: newList));
-  //   add(_VerifyOrderAndEmitState());
-  // }
-
-  // void _onQuantityUpdate(
-  //     OnQuantityUpdate event, Emitter<CreateNewReceiptState> emit) {
-  //   List<SaleLine> newList = state.lineItem.map((e) {
-  //     if (e == event.saleLine) {
-  //       return e.copyWith(qty: event.quantity);
-  //     } else {
-  //       return e;
-  //     }
-  //   }).toList();
-  //   emit(state.copyWith(lineItem: newList));
-  //   add(_VerifyOrderAndEmitState());
-  // }
 
   // @TODO List different transaction status INITIATED, SALE_COMPLETED, SUSPENDED, CANCELLED, RETURNED, EXCHANGED
   void _onCreateNewTransaction(
@@ -172,16 +148,6 @@ class CreateNewReceiptBloc
     add(_VerifyOrderAndEmitState());
   }
 
-  // void _onCustomerPhoneChange(
-  //     OnCustomerPhoneChange event, Emitter<CreateNewReceiptState> emit) async {
-  //   emit(state.copyWith(customerPhone: event.phone));
-  // }
-
-  // void _onCustomerAddressChange(OnCustomerAddressChange event,
-  //     Emitter<CreateNewReceiptState> emit) async {
-  //   emit(state.copyWith(customerAddress: event.address));
-  // }
-
   void _onCustomerSelectEvent(
       OnCustomerSelect event, Emitter<CreateNewReceiptState> emit) async {
     emit(state.copyWith(
@@ -228,5 +194,60 @@ class CreateNewReceiptBloc
     } else if (state.amountDue <= 0 && state.step != CreateSaleStep.complete) {
       emit(state.copyWith(step: CreateSaleStep.complete));
     }
+  }
+
+  void _onReturnLineItem(OnReturnLineItemEvent event, Emitter<CreateNewReceiptState> emit) async {
+    // Create a new Return Line Item
+    int seq = state.lineItem.length + state.tenderLine.length;
+
+    List<TransactionLineItemEntity> newList = [...state.lineItem];
+    Map<String, ProductEntity> pm = Map.from(state.productMap);
+
+    for(var line in event.returnMap.keys) {
+      var returnData = event.returnMap[line];
+      var returnLine = TransactionLineItemEntity(
+        storeId: line.storeId,
+        businessDate: DateTime.now(),
+        posId: line.posId,
+        extendedAmount: -line.extendedAmount,
+        grossAmount: -line.grossAmount,
+        grossQuantity: line.grossQuantity,
+        netQuantity: line.netQuantity,
+        itemDescription: line.itemDescription,
+        itemId: line.itemId,
+        itemIdEntryMethod: line.itemIdEntryMethod,
+        lineItemSeq: ++seq,
+        netAmount: -line.netAmount,
+        nonExchangeableFlag: line.nonExchangeableFlag,
+        nonReturnableFlag: line.nonReturnableFlag,
+        originalBusinessDate: line.businessDate,
+        originalLineItemSeq: line.lineItemSeq,
+        originalPosId: line.posId,
+        originalTransSeq: line.transSeq,
+        priceEntryMethod: line.priceEntryMethod,
+        quantity: line.quantity,
+        // @TODO Add Returned Comment
+        returnComment: "RETURN COMMENT",
+        returnFlag: true,
+        returnReasonCode: returnData!.reasonCode.toString(),
+        returnTypeCode: line.returnTypeCode,
+        returnedQuantity: line.quantity,
+        serialNumber: line.serialNumber,
+        taxAmount: line.taxAmount,
+        taxGroupId: line.taxGroupId,
+        unitPrice: -line.unitPrice,
+        vendorId: line.vendorId,
+        shippingWeight: line.shippingWeight, transSeq: state.transSeq,
+      );
+      newList.add(returnLine);
+
+      ProductEntity? pe = db.productEntitys.where().productIdEqualTo(line.itemId).findFirstSync();
+      if (pe != null) {
+        pm.putIfAbsent(line.itemId, () => pe);
+      }
+    }
+
+    emit(state.copyWith(lineItem: newList, step: CreateSaleStep.item, productMap: pm));
+    // add(_VerifyOrderAndEmitState());
   }
 }

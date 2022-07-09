@@ -20,11 +20,13 @@ class OrderSummaryView extends StatelessWidget {
         lazy: false,
         create: (context) => OrderSummaryBloc(
             db: RepositoryProvider.of(context), orderId: orderId),
-        child: Column(children: const [
-          CustomerAddress(),
-          OrderLine(),
-          PaymentLineDisplay()
-        ]),
+        child: SingleChildScrollView(
+          child: Column(children: const [
+            CustomerAddress(),
+            OrderLine(),
+            PaymentLineDisplay()
+          ]),
+        ),
       ),
     );
   }
@@ -164,12 +166,14 @@ class OrderItemDetailDisplay extends StatelessWidget {
                 ),
         ),
         const SizedBox(width: 10,),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(entity.itemId),
-            Text(entity.itemDescription)
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(entity.itemId),
+              Text(entity.itemDescription)
+            ],
+          ),
         ),
       ],
     );
@@ -188,7 +192,7 @@ class PaymentLineDisplay extends StatelessWidget {
         }
         return Card(
           child: Container(
-            margin: EdgeInsets.all(10.0),
+            margin: const EdgeInsets.all(10.0),
             width: double.infinity,
             child: DataTable(
               columns: [

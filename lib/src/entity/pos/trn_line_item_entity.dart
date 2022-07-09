@@ -36,6 +36,8 @@ class TransactionLineItemEntity {
 
   @Index()
   final int? originalPosId;
+
+  @Index()
   final int? originalTransSeq;
   final int? originalLineItemSeq;
   final DateTime? originalBusinessDate;
@@ -88,6 +90,7 @@ class TransactionLineItemEntity {
       this.nonExchangeableFlag = false,
       this.vendorId,
       this.shippingWeight});
+
 }
 
 class ItemIdEntryMethod extends EntryMethod {}
