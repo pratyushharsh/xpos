@@ -378,14 +378,14 @@ class _NewLineItemState extends State<NewLineItem> {
             child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.8,
               width: MediaQuery.of(context).size.width * 0.5,
-              child: const LineItemModificationView(),
+              child: LineItemModificationView(lineItem: widget.saleLine, productModel: widget.productModel),
             ),
           );
         }).then((value) => {
-      if (value != null)
+      if (value != null && value is CreateNewReceiptEvent)
         {
           BlocProvider.of<CreateNewReceiptBloc>(context)
-              .add(OnReturnLineItemEvent(value))
+              .add(value)
         }
     });
   }

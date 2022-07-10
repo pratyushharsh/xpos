@@ -8,11 +8,11 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
-import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 
+import '../../../util/helper/transaction_helper.dart';
 import '../../return_order/bloc/return_order_bloc.dart';
 
 part 'create_new_receipt_event.dart';
@@ -34,8 +34,8 @@ class CreateNewReceiptBloc
       : super(const CreateNewReceiptState(
             status: CreateNewReceiptStatus.initial)) {
     on<AddItemToReceipt>(_onAddNewLineItem);
-    // on<OnQuantityUpdate>(_onQuantityUpdate);
-    // on<OnUnitPriceUpdate>(_onPriceUpdate);
+    on<OnQuantityUpdate>(_onQuantityUpdate);
+    on<OnUnitPriceUpdate>(_onPriceUpdate);
     on<OnInitiateNewTransaction>(_onInitiateTransaction);
     on<OnCreateNewTransaction>(_onCreateNewTransaction);
     on<OnCustomerSelect>(_onCustomerSelectEvent);
@@ -155,10 +155,80 @@ class CreateNewReceiptBloc
     ));
   }
 
+  void _onQuantityUpdate(
+      OnQuantityUpdate event, Emitter<CreateNewReceiptState> emit) async {
+    List<TransactionLineItemEntity> newList = [];
+    for(var line in state.lineItem){
+      if (line == event.saleLine) {
+
+        double unitCost = line.unitPrice;
+        double extendedCost = unitCost * event.quantity;
+        double netCost = extendedCost - line.taxAmount;
+        double grossCost = extendedCost + line.taxAmount;
+        double taxCost = grossCost - netCost;
+
+        TransactionLineItemEntity newLine = TransactionLineItemEntity(
+          storeId: line.storeId,
+          businessDate: DateTime.now(),
+          posId: line.posId,
+
+          // Will Be Updated On Updating quantity
+          extendedAmount: extendedCost,
+          netAmount: netCost,
+          grossAmount: grossCost,
+          grossQuantity: event.quantity,
+          netQuantity: event.quantity,
+          quantity: event.quantity,
+          taxAmount: line.taxAmount,
+
+          unitPrice: line.unitPrice,
+          itemDescription: line.itemDescription,
+          itemId: line.itemId,
+          itemIdEntryMethod: line.itemIdEntryMethod,
+          lineItemSeq: line.lineItemSeq,
+          nonExchangeableFlag: line.nonExchangeableFlag,
+          nonReturnableFlag: line.nonReturnableFlag,
+          originalBusinessDate: line.businessDate,
+          originalLineItemSeq: line.lineItemSeq,
+          originalPosId: line.posId,
+          originalTransSeq: line.transSeq,
+          priceEntryMethod: line.priceEntryMethod,
+          returnComment: line.returnComment,
+          returnFlag: line.returnFlag,
+          returnReasonCode: line.returnReasonCode,
+          returnTypeCode: line.returnTypeCode,
+          returnedQuantity: line.quantity,
+          serialNumber: line.serialNumber,
+          taxGroupId: line.taxGroupId,
+          vendorId: line.vendorId,
+          shippingWeight: line.shippingWeight,
+          transSeq: line.transSeq,
+        );
+        newList.add(newLine);
+      } else {
+        newList.add(line);
+      }
+    }
+    emit(state.copyWith(lineItem: newList));
+  }
+
+  void _onPriceUpdate(
+      OnUnitPriceUpdate event, Emitter<CreateNewReceiptState> emit) async {
+    List<TransactionLineItemEntity> newList = [];
+    for(var line in state.lineItem){
+      if (line == event.saleLine) {
+        TransactionLineItemEntity newLineEntity = TransactionHelper.updateSaleReturnLineItemPrice(line, event.unitPrice, event.reason);
+        newList.add(newLineEntity);
+      } else {
+        newList.add(line);
+      }
+    }
+    emit(state.copyWith(lineItem: newList));
+  }
+
   void _onAddNewTenderLineItem(
       OnAddNewTenderLine event, Emitter<CreateNewReceiptState> emit) async {
     int seq =  state.tenderLine.length;
-
 
     TransactionPaymentLineItemEntity newLine = TransactionPaymentLineItemEntity(
       transId: state.transSeq,

@@ -10,17 +10,19 @@ class AddItemToReceipt extends CreateNewReceiptEvent {
 }
 
 class OnQuantityUpdate extends CreateNewReceiptEvent {
-  final SaleLine saleLine;
+  final TransactionLineItemEntity saleLine;
   final double quantity;
+  final String reason;
 
-  OnQuantityUpdate({required this.saleLine, required this.quantity});
+  OnQuantityUpdate({required this.saleLine, required this.quantity, required this.reason});
 }
 
 class OnUnitPriceUpdate extends CreateNewReceiptEvent {
-  final SaleLine saleLine;
+  final TransactionLineItemEntity saleLine;
   final double unitPrice;
+  final String reason;
 
-  OnUnitPriceUpdate({required this.saleLine, required this.unitPrice});
+  OnUnitPriceUpdate({required this.saleLine, required this.unitPrice, required this.reason});
 }
 
 class OnInitiateNewTransaction extends CreateNewReceiptEvent {}

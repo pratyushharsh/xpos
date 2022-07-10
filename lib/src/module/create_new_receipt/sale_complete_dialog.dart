@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/constants.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/bloc/create_new_receipt_bloc.dart';
 
+import '../../config/theme_settings.dart';
+
 typedef OnButtonCallback = void Function();
 
 class SaleCompleteDialog extends StatelessWidget {
-  const SaleCompleteDialog({Key? key })
-      : super(key: key);
+  const SaleCompleteDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,6 @@ class SaleCompleteDialog extends StatelessWidget {
                     label: "Continue",
                     onClick: () {
                       Navigator.of(context).pop(Constants.print);
-
                     },
                   ),
                 ],
@@ -64,19 +64,24 @@ class DialogButton extends StatelessWidget {
   final String label;
   final OnButtonCallback onClick;
   final Icon? icon;
+  final bool selected;
   const DialogButton(
-      {Key? key, required this.label, required this.onClick, this.icon})
+      {Key? key,
+      required this.label,
+      required this.onClick,
+      this.icon,
+      this.selected = false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       // shadowColor: Colors.green,
-      elevation: 10,
-      shape: const RoundedRectangleBorder(
-          // side: BorderSide(color: selected ? Colors.green : Colors.transparent),
-          // borderRadius: BorderRadius.circular(12.0),
-          ),
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: selected ? AppColor.primary : Colors.transparent),
+        // borderRadius: BorderRadius.circular(12.0),
+      ),
       child: InkWell(
         onTap: onClick,
         child: Container(

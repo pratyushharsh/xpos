@@ -31,6 +31,11 @@ class TransactionLineItemEntity {
   final String taxGroupId;
   final double taxAmount;
 
+  /// Price Override Reason
+  final bool priceOverride;
+  final double? priceOverrideAmount;
+  final String? priceOverrideReason;
+
   /// Return Parameters
   final double? returnedQuantity;
 
@@ -62,6 +67,9 @@ class TransactionLineItemEntity {
       required this.posId,
       required this.transSeq,
       required this.lineItemSeq,
+      this.priceOverride = false,
+      this.priceOverrideAmount,
+      this.priceOverrideReason,
       this.category,
       required this.itemId,
       required this.itemDescription,

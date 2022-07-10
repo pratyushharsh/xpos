@@ -16,7 +16,7 @@ extension GetTransactionLineItemEntityCollection on Isar {
 const TransactionLineItemEntitySchema = CollectionSchema(
   name: 'TransactionLineItemEntity',
   schema:
-      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'businessDate': 0,
@@ -38,20 +38,23 @@ const TransactionLineItemEntitySchema = CollectionSchema(
     'originalTransSeq': 16,
     'posId': 17,
     'priceEntryMethod': 18,
-    'quantity': 19,
-    'returnComment': 20,
-    'returnFlag': 21,
-    'returnReasonCode': 22,
-    'returnTypeCode': 23,
-    'returnedQuantity': 24,
-    'serialNumber': 25,
-    'shippingWeight': 26,
-    'storeId': 27,
-    'taxAmount': 28,
-    'taxGroupId': 29,
-    'transSeq': 30,
-    'unitPrice': 31,
-    'vendorId': 32
+    'priceOverride': 19,
+    'priceOverrideAmount': 20,
+    'priceOverrideReason': 21,
+    'quantity': 22,
+    'returnComment': 23,
+    'returnFlag': 24,
+    'returnReasonCode': 25,
+    'returnTypeCode': 26,
+    'returnedQuantity': 27,
+    'serialNumber': 28,
+    'shippingWeight': 29,
+    'storeId': 30,
+    'taxAmount': 31,
+    'taxGroupId': 32,
+    'transSeq': 33,
+    'unitPrice': 34,
+    'vendorId': 35
   },
   listProperties: {},
   indexIds: {'originalPosId': 0, 'originalTransSeq': 1, 'storeId': 2},
@@ -147,53 +150,63 @@ void _transactionLineItemEntitySerializeNative(
   final value18 = object.priceEntryMethod;
   final _priceEntryMethod = IsarBinaryWriter.utf8Encoder.convert(value18);
   dynamicSize += (_priceEntryMethod.length) as int;
-  final value19 = object.quantity;
-  final _quantity = value19;
-  final value20 = object.returnComment;
+  final value19 = object.priceOverride;
+  final _priceOverride = value19;
+  final value20 = object.priceOverrideAmount;
+  final _priceOverrideAmount = value20;
+  final value21 = object.priceOverrideReason;
+  IsarUint8List? _priceOverrideReason;
+  if (value21 != null) {
+    _priceOverrideReason = IsarBinaryWriter.utf8Encoder.convert(value21);
+  }
+  dynamicSize += (_priceOverrideReason?.length ?? 0) as int;
+  final value22 = object.quantity;
+  final _quantity = value22;
+  final value23 = object.returnComment;
   IsarUint8List? _returnComment;
-  if (value20 != null) {
-    _returnComment = IsarBinaryWriter.utf8Encoder.convert(value20);
+  if (value23 != null) {
+    _returnComment = IsarBinaryWriter.utf8Encoder.convert(value23);
   }
   dynamicSize += (_returnComment?.length ?? 0) as int;
-  final value21 = object.returnFlag;
-  final _returnFlag = value21;
-  final value22 = object.returnReasonCode;
+  final value24 = object.returnFlag;
+  final _returnFlag = value24;
+  final value25 = object.returnReasonCode;
   IsarUint8List? _returnReasonCode;
-  if (value22 != null) {
-    _returnReasonCode = IsarBinaryWriter.utf8Encoder.convert(value22);
+  if (value25 != null) {
+    _returnReasonCode = IsarBinaryWriter.utf8Encoder.convert(value25);
   }
   dynamicSize += (_returnReasonCode?.length ?? 0) as int;
-  final value23 = object.returnTypeCode;
+  final value26 = object.returnTypeCode;
   IsarUint8List? _returnTypeCode;
-  if (value23 != null) {
-    _returnTypeCode = IsarBinaryWriter.utf8Encoder.convert(value23);
+  if (value26 != null) {
+    _returnTypeCode = IsarBinaryWriter.utf8Encoder.convert(value26);
   }
   dynamicSize += (_returnTypeCode?.length ?? 0) as int;
-  final value24 = object.returnedQuantity;
-  final _returnedQuantity = value24;
-  final value25 = object.serialNumber;
+  final value27 = object.returnedQuantity;
+  final _returnedQuantity = value27;
+  final value28 = object.serialNumber;
   IsarUint8List? _serialNumber;
-  if (value25 != null) {
-    _serialNumber = IsarBinaryWriter.utf8Encoder.convert(value25);
+  if (value28 != null) {
+    _serialNumber = IsarBinaryWriter.utf8Encoder.convert(value28);
   }
   dynamicSize += (_serialNumber?.length ?? 0) as int;
-  final value26 = object.shippingWeight;
-  final _shippingWeight = value26;
-  final value27 = object.storeId;
-  final _storeId = value27;
-  final value28 = object.taxAmount;
-  final _taxAmount = value28;
-  final value29 = object.taxGroupId;
-  final _taxGroupId = IsarBinaryWriter.utf8Encoder.convert(value29);
+  final value29 = object.shippingWeight;
+  final _shippingWeight = value29;
+  final value30 = object.storeId;
+  final _storeId = value30;
+  final value31 = object.taxAmount;
+  final _taxAmount = value31;
+  final value32 = object.taxGroupId;
+  final _taxGroupId = IsarBinaryWriter.utf8Encoder.convert(value32);
   dynamicSize += (_taxGroupId.length) as int;
-  final value30 = object.transSeq;
-  final _transSeq = value30;
-  final value31 = object.unitPrice;
-  final _unitPrice = value31;
-  final value32 = object.vendorId;
+  final value33 = object.transSeq;
+  final _transSeq = value33;
+  final value34 = object.unitPrice;
+  final _unitPrice = value34;
+  final value35 = object.vendorId;
   IsarUint8List? _vendorId;
-  if (value32 != null) {
-    _vendorId = IsarBinaryWriter.utf8Encoder.convert(value32);
+  if (value35 != null) {
+    _vendorId = IsarBinaryWriter.utf8Encoder.convert(value35);
   }
   dynamicSize += (_vendorId?.length ?? 0) as int;
   final size = staticSize + dynamicSize;
@@ -221,20 +234,23 @@ void _transactionLineItemEntitySerializeNative(
   writer.writeLong(offsets[16], _originalTransSeq);
   writer.writeLong(offsets[17], _posId);
   writer.writeBytes(offsets[18], _priceEntryMethod);
-  writer.writeDouble(offsets[19], _quantity);
-  writer.writeBytes(offsets[20], _returnComment);
-  writer.writeBool(offsets[21], _returnFlag);
-  writer.writeBytes(offsets[22], _returnReasonCode);
-  writer.writeBytes(offsets[23], _returnTypeCode);
-  writer.writeDouble(offsets[24], _returnedQuantity);
-  writer.writeBytes(offsets[25], _serialNumber);
-  writer.writeDouble(offsets[26], _shippingWeight);
-  writer.writeLong(offsets[27], _storeId);
-  writer.writeDouble(offsets[28], _taxAmount);
-  writer.writeBytes(offsets[29], _taxGroupId);
-  writer.writeLong(offsets[30], _transSeq);
-  writer.writeDouble(offsets[31], _unitPrice);
-  writer.writeBytes(offsets[32], _vendorId);
+  writer.writeBool(offsets[19], _priceOverride);
+  writer.writeDouble(offsets[20], _priceOverrideAmount);
+  writer.writeBytes(offsets[21], _priceOverrideReason);
+  writer.writeDouble(offsets[22], _quantity);
+  writer.writeBytes(offsets[23], _returnComment);
+  writer.writeBool(offsets[24], _returnFlag);
+  writer.writeBytes(offsets[25], _returnReasonCode);
+  writer.writeBytes(offsets[26], _returnTypeCode);
+  writer.writeDouble(offsets[27], _returnedQuantity);
+  writer.writeBytes(offsets[28], _serialNumber);
+  writer.writeDouble(offsets[29], _shippingWeight);
+  writer.writeLong(offsets[30], _storeId);
+  writer.writeDouble(offsets[31], _taxAmount);
+  writer.writeBytes(offsets[32], _taxGroupId);
+  writer.writeLong(offsets[33], _transSeq);
+  writer.writeDouble(offsets[34], _unitPrice);
+  writer.writeBytes(offsets[35], _vendorId);
 }
 
 TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
@@ -263,20 +279,23 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
     originalTransSeq: reader.readLongOrNull(offsets[16]),
     posId: reader.readLong(offsets[17]),
     priceEntryMethod: reader.readString(offsets[18]),
-    quantity: reader.readDouble(offsets[19]),
-    returnComment: reader.readStringOrNull(offsets[20]),
-    returnFlag: reader.readBool(offsets[21]),
-    returnReasonCode: reader.readStringOrNull(offsets[22]),
-    returnTypeCode: reader.readStringOrNull(offsets[23]),
-    returnedQuantity: reader.readDoubleOrNull(offsets[24]),
-    serialNumber: reader.readStringOrNull(offsets[25]),
-    shippingWeight: reader.readDoubleOrNull(offsets[26]),
-    storeId: reader.readLong(offsets[27]),
-    taxAmount: reader.readDouble(offsets[28]),
-    taxGroupId: reader.readString(offsets[29]),
-    transSeq: reader.readLong(offsets[30]),
-    unitPrice: reader.readDouble(offsets[31]),
-    vendorId: reader.readStringOrNull(offsets[32]),
+    priceOverride: reader.readBool(offsets[19]),
+    priceOverrideAmount: reader.readDoubleOrNull(offsets[20]),
+    priceOverrideReason: reader.readStringOrNull(offsets[21]),
+    quantity: reader.readDouble(offsets[22]),
+    returnComment: reader.readStringOrNull(offsets[23]),
+    returnFlag: reader.readBool(offsets[24]),
+    returnReasonCode: reader.readStringOrNull(offsets[25]),
+    returnTypeCode: reader.readStringOrNull(offsets[26]),
+    returnedQuantity: reader.readDoubleOrNull(offsets[27]),
+    serialNumber: reader.readStringOrNull(offsets[28]),
+    shippingWeight: reader.readDoubleOrNull(offsets[29]),
+    storeId: reader.readLong(offsets[30]),
+    taxAmount: reader.readDouble(offsets[31]),
+    taxGroupId: reader.readString(offsets[32]),
+    transSeq: reader.readLong(offsets[33]),
+    unitPrice: reader.readDouble(offsets[34]),
+    vendorId: reader.readStringOrNull(offsets[35]),
   );
   _transactionLineItemEntityAttachLinks(collection, id, object);
   return object;
@@ -326,32 +345,38 @@ P _transactionLineItemEntityDeserializePropNative<P>(
     case 18:
       return (reader.readString(offset)) as P;
     case 19:
-      return (reader.readDouble(offset)) as P;
-    case 20:
-      return (reader.readStringOrNull(offset)) as P;
-    case 21:
       return (reader.readBool(offset)) as P;
-    case 22:
+    case 20:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 21:
       return (reader.readStringOrNull(offset)) as P;
+    case 22:
+      return (reader.readDouble(offset)) as P;
     case 23:
       return (reader.readStringOrNull(offset)) as P;
     case 24:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 25:
       return (reader.readStringOrNull(offset)) as P;
     case 26:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 27:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 28:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 29:
-      return (reader.readString(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 30:
       return (reader.readLong(offset)) as P;
     case 31:
       return (reader.readDouble(offset)) as P;
     case 32:
+      return (reader.readString(offset)) as P;
+    case 33:
+      return (reader.readLong(offset)) as P;
+    case 34:
+      return (reader.readDouble(offset)) as P;
+    case 35:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
@@ -386,6 +411,11 @@ dynamic _transactionLineItemEntitySerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'originalTransSeq', object.originalTransSeq);
   IsarNative.jsObjectSet(jsObj, 'posId', object.posId);
   IsarNative.jsObjectSet(jsObj, 'priceEntryMethod', object.priceEntryMethod);
+  IsarNative.jsObjectSet(jsObj, 'priceOverride', object.priceOverride);
+  IsarNative.jsObjectSet(
+      jsObj, 'priceOverrideAmount', object.priceOverrideAmount);
+  IsarNative.jsObjectSet(
+      jsObj, 'priceOverrideReason', object.priceOverrideReason);
   IsarNative.jsObjectSet(jsObj, 'quantity', object.quantity);
   IsarNative.jsObjectSet(jsObj, 'returnComment', object.returnComment);
   IsarNative.jsObjectSet(jsObj, 'returnFlag', object.returnFlag);
@@ -445,6 +475,9 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeWeb(
     originalTransSeq: IsarNative.jsObjectGet(jsObj, 'originalTransSeq'),
     posId: IsarNative.jsObjectGet(jsObj, 'posId') ?? double.negativeInfinity,
     priceEntryMethod: IsarNative.jsObjectGet(jsObj, 'priceEntryMethod') ?? '',
+    priceOverride: IsarNative.jsObjectGet(jsObj, 'priceOverride') ?? false,
+    priceOverrideAmount: IsarNative.jsObjectGet(jsObj, 'priceOverrideAmount'),
+    priceOverrideReason: IsarNative.jsObjectGet(jsObj, 'priceOverrideReason'),
     quantity:
         IsarNative.jsObjectGet(jsObj, 'quantity') ?? double.negativeInfinity,
     returnComment: IsarNative.jsObjectGet(jsObj, 'returnComment'),
@@ -531,6 +564,12 @@ P _transactionLineItemEntityDeserializePropWeb<P>(
           as P;
     case 'priceEntryMethod':
       return (IsarNative.jsObjectGet(jsObj, 'priceEntryMethod') ?? '') as P;
+    case 'priceOverride':
+      return (IsarNative.jsObjectGet(jsObj, 'priceOverride') ?? false) as P;
+    case 'priceOverrideAmount':
+      return (IsarNative.jsObjectGet(jsObj, 'priceOverrideAmount')) as P;
+    case 'priceOverrideReason':
+      return (IsarNative.jsObjectGet(jsObj, 'priceOverrideReason')) as P;
     case 'quantity':
       return (IsarNative.jsObjectGet(jsObj, 'quantity') ??
           double.negativeInfinity) as P;
@@ -2095,6 +2134,174 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideEqualTo(bool value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'priceOverride',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideAmountIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'priceOverrideAmount',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideAmountGreaterThan(double? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: false,
+      property: 'priceOverrideAmount',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideAmountLessThan(double? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: false,
+      property: 'priceOverrideAmount',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      priceOverrideAmountBetween(double? lower, double? upper) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'priceOverrideAmount',
+      lower: lower,
+      includeLower: false,
+      upper: upper,
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideReasonIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'priceOverrideReason',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideReasonEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'priceOverrideReason',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideReasonGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'priceOverrideReason',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideReasonLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'priceOverrideReason',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideReasonBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'priceOverrideReason',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideReasonStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'priceOverrideReason',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideReasonEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'priceOverrideReason',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      priceOverrideReasonContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'priceOverrideReason',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      priceOverrideReasonMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'priceOverrideReason',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> quantityGreaterThan(double value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
@@ -3295,6 +3502,36 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByPriceOverride() {
+    return addSortByInternal('priceOverride', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByPriceOverrideDesc() {
+    return addSortByInternal('priceOverride', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByPriceOverrideAmount() {
+    return addSortByInternal('priceOverrideAmount', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByPriceOverrideAmountDesc() {
+    return addSortByInternal('priceOverrideAmount', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByPriceOverrideReason() {
+    return addSortByInternal('priceOverrideReason', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByPriceOverrideReasonDesc() {
+    return addSortByInternal('priceOverrideReason', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortByQuantity() {
     return addSortByInternal('quantity', Sort.asc);
   }
@@ -3638,6 +3875,36 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByPriceOverride() {
+    return addSortByInternal('priceOverride', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByPriceOverrideDesc() {
+    return addSortByInternal('priceOverride', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByPriceOverrideAmount() {
+    return addSortByInternal('priceOverrideAmount', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByPriceOverrideAmountDesc() {
+    return addSortByInternal('priceOverrideAmount', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByPriceOverrideReason() {
+    return addSortByInternal('priceOverrideReason', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByPriceOverrideReasonDesc() {
+    return addSortByInternal('priceOverrideReason', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenByQuantity() {
     return addSortByInternal('quantity', Sort.asc);
   }
@@ -3884,6 +4151,22 @@ extension TransactionLineItemEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
+      distinctByPriceOverride() {
+    return addDistinctByInternal('priceOverride');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
+      distinctByPriceOverrideAmount() {
+    return addDistinctByInternal('priceOverrideAmount');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
+      distinctByPriceOverrideReason({bool caseSensitive = true}) {
+    return addDistinctByInternal('priceOverrideReason',
+        caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
       distinctByQuantity() {
     return addDistinctByInternal('quantity');
   }
@@ -4055,6 +4338,21 @@ extension TransactionLineItemEntityQueryProperty on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
       priceEntryMethodProperty() {
     return addPropertyNameInternal('priceEntryMethod');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, bool, QQueryOperations>
+      priceOverrideProperty() {
+    return addPropertyNameInternal('priceOverride');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, double?, QQueryOperations>
+      priceOverrideAmountProperty() {
+    return addPropertyNameInternal('priceOverrideAmount');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>
+      priceOverrideReasonProperty() {
+    return addPropertyNameInternal('priceOverrideReason');
   }
 
   QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
