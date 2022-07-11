@@ -609,13 +609,15 @@ class ActionButtonBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 60,
-        decoration: const BoxDecoration(
-          border: Border(right: BorderSide(color: Colors.black26)),
-        ),
-        child: Column(
-          children: [
-            IconButton(
+      width: 60,
+      decoration: const BoxDecoration(
+        border: Border(right: BorderSide(color: Colors.black26)),
+      ),
+      child: Column(
+        children: [
+          Tooltip(
+            message: "Return Item",
+            child: IconButton(
               icon: const Icon(Icons.assignment_return_outlined),
               onPressed: () {
                 showDialog(
@@ -637,11 +639,13 @@ class ActionButtonBar extends StatelessWidget {
                     });
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.settings_accessibility),
-              onPressed: () {},
-            ),
-          ],
-        ));
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_accessibility),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -36,6 +36,8 @@ class CreateNewReceiptBloc
     on<AddItemToReceipt>(_onAddNewLineItem);
     on<OnQuantityUpdate>(_onQuantityUpdate);
     on<OnUnitPriceUpdate>(_onPriceUpdate);
+    on<OnApplyDiscountAmount>(_onLineItemDiscount);
+    on<OnChangeLineItemTaxAmount>(_onChangeLineItemTaxAmount);
     on<OnInitiateNewTransaction>(_onInitiateTransaction);
     on<OnCreateNewTransaction>(_onCreateNewTransaction);
     on<OnCustomerSelect>(_onCustomerSelectEvent);
@@ -108,7 +110,7 @@ class CreateNewReceiptBloc
         businessDate: DateTime.now(),
         beginDatetime: DateTime.now(),
         transactionType: TransactionType.cashSale,
-        total: state.grandTotal,
+        total: state.subTotal,
         taxTotal: state.tax,
         subtotal: state.subTotal,
         roundTotal: 0.00,
@@ -161,49 +163,7 @@ class CreateNewReceiptBloc
     for(var line in state.lineItem){
       if (line == event.saleLine) {
 
-        double unitCost = line.unitPrice;
-        double extendedCost = unitCost * event.quantity;
-        double netCost = extendedCost - line.taxAmount;
-        double grossCost = extendedCost + line.taxAmount;
-        double taxCost = grossCost - netCost;
-
-        TransactionLineItemEntity newLine = TransactionLineItemEntity(
-          storeId: line.storeId,
-          businessDate: DateTime.now(),
-          posId: line.posId,
-
-          // Will Be Updated On Updating quantity
-          extendedAmount: extendedCost,
-          netAmount: netCost,
-          grossAmount: grossCost,
-          grossQuantity: event.quantity,
-          netQuantity: event.quantity,
-          quantity: event.quantity,
-          taxAmount: line.taxAmount,
-
-          unitPrice: line.unitPrice,
-          itemDescription: line.itemDescription,
-          itemId: line.itemId,
-          itemIdEntryMethod: line.itemIdEntryMethod,
-          lineItemSeq: line.lineItemSeq,
-          nonExchangeableFlag: line.nonExchangeableFlag,
-          nonReturnableFlag: line.nonReturnableFlag,
-          originalBusinessDate: line.businessDate,
-          originalLineItemSeq: line.lineItemSeq,
-          originalPosId: line.posId,
-          originalTransSeq: line.transSeq,
-          priceEntryMethod: line.priceEntryMethod,
-          returnComment: line.returnComment,
-          returnFlag: line.returnFlag,
-          returnReasonCode: line.returnReasonCode,
-          returnTypeCode: line.returnTypeCode,
-          returnedQuantity: line.quantity,
-          serialNumber: line.serialNumber,
-          taxGroupId: line.taxGroupId,
-          vendorId: line.vendorId,
-          shippingWeight: line.shippingWeight,
-          transSeq: line.transSeq,
-        );
+        TransactionLineItemEntity newLine = TransactionHelper.changeLineItemQuantity(line, event.quantity, event.reason);
         newList.add(newLine);
       } else {
         newList.add(line);
@@ -218,6 +178,34 @@ class CreateNewReceiptBloc
     for(var line in state.lineItem){
       if (line == event.saleLine) {
         TransactionLineItemEntity newLineEntity = TransactionHelper.updateSaleReturnLineItemPrice(line, event.unitPrice, event.reason);
+        newList.add(newLineEntity);
+      } else {
+        newList.add(line);
+      }
+    }
+    emit(state.copyWith(lineItem: newList));
+  }
+
+  void _onLineItemDiscount(
+      OnApplyDiscountAmount event, Emitter<CreateNewReceiptState> emit) async {
+    List<TransactionLineItemEntity> newList = [];
+    for(var line in state.lineItem){
+      if (line == event.saleLine) {
+        TransactionLineItemEntity newLineEntity = TransactionHelper.addNewLineItemDiscount(line, event.discountAmount, event.reason);
+        newList.add(newLineEntity);
+      } else {
+        newList.add(line);
+      }
+    }
+    emit(state.copyWith(lineItem: newList));
+  }
+
+  void _onChangeLineItemTaxAmount(
+      OnChangeLineItemTaxAmount event, Emitter<CreateNewReceiptState> emit) async {
+    List<TransactionLineItemEntity> newList = [];
+    for(var line in state.lineItem){
+      if (line == event.saleLine) {
+        TransactionLineItemEntity newLineEntity = TransactionHelper.changeLineItemTax(line, event.taxAmount, event.reason);
         newList.add(newLineEntity);
       } else {
         newList.add(line);

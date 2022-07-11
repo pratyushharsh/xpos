@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/config/constants.dart';
 import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-import 'package:receipt_generator/src/model/model.dart';
-import 'package:receipt_generator/src/model/tender_line.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_mobile_view.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_recipt_desktop_view.dart';
 import 'package:receipt_generator/src/module/customer_search/bloc/customer_search_bloc.dart';
@@ -16,6 +15,7 @@ import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import '../../entity/pos/entity.dart';
 import '../line_item_modification/line_item_modification_view.dart';
+import '../mobile_dialog/mobile_dialog_view.dart';
 import 'bloc/create_new_receipt_bloc.dart';
 
 class NewReceiptView extends StatelessWidget {
@@ -320,7 +320,8 @@ class _NewLineItemState extends State<NewLineItem> {
   @override
   initState() {
     super.initState();
-    _key = LabeledGlobalKey("${widget.saleLine.transSeq}-${widget.saleLine.lineItemSeq}");
+    _key = LabeledGlobalKey(
+        "${widget.saleLine.transSeq}-${widget.saleLine.lineItemSeq}");
   }
 
   @override
@@ -371,23 +372,36 @@ class _NewLineItemState extends State<NewLineItem> {
   // }
 
   void onTap() {
-    showDialog(
-        context: context,
-        builder: (ctx) {
-          return Dialog(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.8,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: LineItemModificationView(lineItem: widget.saleLine, productModel: widget.productModel),
-            ),
-          );
-        }).then((value) => {
-      if (value != null && value is CreateNewReceiptEvent)
-        {
-          BlocProvider.of<CreateNewReceiptBloc>(context)
-              .add(value)
-        }
-    });
+    if (Platform.isIOS || Platform.isAndroid) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => MobileDialogView(
+        child: LineItemModificationView(
+            lineItem: widget.saleLine,
+            productModel: widget.productModel),
+      ),
+      )).then((value) => {
+        if (value != null && value is CreateNewReceiptEvent)
+          {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
+      });
+    } else {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return Dialog(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: LineItemModificationView(
+                    lineItem: widget.saleLine,
+                    productModel: widget.productModel),
+              ),
+            );
+          }).then(
+        (value) => {
+          if (value != null && value is CreateNewReceiptEvent)
+            {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
+        },
+      );
+    }
   }
 
   @override
@@ -403,32 +417,33 @@ class _NewLineItemState extends State<NewLineItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                    decoration: BoxDecoration(border: Border.all(width: 1)),
-                    child: (widget.productModel != null &&
-                            widget.productModel!.imageUrl.isNotEmpty)
-                        ? Image.file(
-                            File(Constants.baseImagePath +
-                                widget.productModel!.imageUrl[0]),
-                            fit: BoxFit.cover,
+                  decoration: BoxDecoration(border: Border.all(width: 1)),
+                  child: (widget.productModel != null &&
+                          widget.productModel!.imageUrl.isNotEmpty)
+                      ? Image.file(
+                          File(Constants.baseImagePath +
+                              widget.productModel!.imageUrl[0]),
+                          fit: BoxFit.cover,
+                          height: 70,
+                          width: 70, errorBuilder: (context, obj, trace) {
+                          return const SizedBox(
                             height: 70,
-                            width: 70, errorBuilder: (context, obj, trace) {
+                            width: 70,
+                          );
+                        })
+                      : Image.network(
+                          "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+                          fit: BoxFit.cover,
+                          height: 70,
+                          width: 70,
+                          errorBuilder: (context, obj, trace) {
                             return const SizedBox(
                               height: 70,
                               width: 70,
                             );
-                          })
-                        : Image.network(
-                            "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
-                            fit: BoxFit.cover,
-                            height: 70,
-                            width: 70,
-                            errorBuilder: (context, obj, trace) {
-                              return const SizedBox(
-                                height: 70,
-                                width: 70,
-                              );
-                            },
-                          )),
+                          },
+                        ),
+                ),
                 const SizedBox(
                   width: 8,
                 ),
@@ -458,7 +473,8 @@ class _NewLineItemState extends State<NewLineItem> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "${Currency.inr}${widget.saleLine.extendedAmount.toStringAsFixed(2)}",
+                      NumberFormat.currency(locale: 'en_IN', symbol: '₹ ')
+                          .format(widget.saleLine.unitPrice),
                       style: NewLineItem.textStyle,
                     ),
                   ),
@@ -483,29 +499,35 @@ class _NewLineItemState extends State<NewLineItem> {
                 ),
               ],
             ),
-            // ...widget.saleLine.priceModifier
-            //     .map((e) => Row(
-            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //           children: [
-            //             Row(
-            //               children: const [
-            //                 Padding(
-            //                     padding: EdgeInsets.only(right: 8, top: 4),
-            //                     child: Icon(
-            //                       Icons.discount,
-            //                       color: Colors.brown,
-            //                       size: 16,
-            //                     )),
-            //                 Text("10% off on all"),
-            //               ],
-            //             ),
-            //             const Text(
-            //               "-${Currency.inr}50.00",
-            //               style: NewLineItem.textStyle,
-            //             )
-            //           ],
-            //         ))
-            //     .toList()
+            ...widget.saleLine.lineModifiers
+                .map(
+                  (e) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(right: 8, top: 4),
+                            child: Icon(
+                              Icons.discount,
+                              color: Colors.brown,
+                              size: 16,
+                            ),
+                          ),
+                          Text(e.description),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 60),
+                        child: Text(
+                          "-${Currency.inr}${e.amount.toStringAsFixed(2)}",
+                          style: NewLineItem.textStyle,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                .toList()
           ],
         ),
       ),
@@ -698,7 +720,7 @@ class NewReceiptSummaryWidget extends StatelessWidget {
             const Divider(),
             RetailSummaryDetailRow(
               title: "Grand Total",
-              value: "${Currency.inr} ${state.grandTotal.toStringAsFixed(2)}",
+              value: "${Currency.inr} ${state.subTotal.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
@@ -750,10 +772,8 @@ class SaleCustomerMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [Text(customer.name), Text('${customer.phoneNumber}')],
-      ),
+    return Column(
+      children: [Text(customer.name), Text('${customer.phoneNumber}')],
     );
   }
 }

@@ -4,13 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/bloc/create_new_receipt_bloc.dart';
 import 'package:receipt_generator/src/module/line_item_modification/bloc/line_item_modification_bloc.dart';
 
+import '../../config/theme_settings.dart';
 import '../../entity/pos/entity.dart';
 import '../../util/text_input_formatter/widget.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 import '../create_new_receipt/sale_complete_dialog.dart';
 
-enum LineItemModificationType { price, quantity, discount }
+enum LineItemModificationType { price, quantity, discount, tax }
+enum TaxCalculationMethod { percentage, amount }
+enum DiscountCalculationMethod { percentage, amount }
 
 class LineItemModificationView extends StatefulWidget {
   final TransactionLineItemEntity lineItem;
@@ -35,6 +38,8 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
         return const LineItemQuantityModifyView();
       case LineItemModificationType.discount:
         return const LineItemDiscountModifyView();
+      case LineItemModificationType.tax:
+        return const LineItemTaxModifyView();
       default:
         return const Center(child: Text("Select An Operation"));
     }
@@ -90,6 +95,15 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
                         },
                         selected:
                             selectedType == LineItemModificationType.discount,
+                      ),
+                      DialogButton(
+                        label: "Tax",
+                        onClick: () {
+                          setState(() {
+                            selectedType = LineItemModificationType.tax;
+                          });
+                        },
+                        selected: selectedType == LineItemModificationType.tax,
                       ),
                     ]),
                   ),
@@ -164,14 +178,15 @@ class _LineItemPriceModifyViewState extends State<LineItemPriceModifyView> {
                   onPressed: unitPrice >= 0
                       ? () {
                           Navigator.pop(
-                              context,
-                              OnUnitPriceUpdate(
-                                  saleLine:
-                                      BlocProvider.of<LineItemModificationBloc>(
-                                              context)
-                                          .lineItem,
-                                  unitPrice: unitPrice,
-                                  reason: "Quantity Changed"));
+                            context,
+                            OnUnitPriceUpdate(
+                                saleLine:
+                                    BlocProvider.of<LineItemModificationBloc>(
+                                            context)
+                                        .lineItem,
+                                unitPrice: unitPrice,
+                                reason: "Quantity Changed"),
+                          );
                         }
                       : null,
                 ),
@@ -265,11 +280,243 @@ class _LineItemQuantityModifyViewState
   }
 }
 
-class LineItemDiscountModifyView extends StatelessWidget {
+class LineItemDiscountModifyView extends StatefulWidget {
   const LineItemDiscountModifyView({Key? key}) : super(key: key);
 
   @override
+  State<LineItemDiscountModifyView> createState() =>
+      _LineItemDiscountModifyViewState();
+}
+
+class _LineItemDiscountModifyViewState
+    extends State<LineItemDiscountModifyView> {
+  late TextEditingController _controller;
+  double discountAmount = 0;
+  DiscountCalculationMethod method = DiscountCalculationMethod.amount;
+  @override
+  initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(child: Text("LineItemDiscountModifyView"));
+    return Container(
+      margin: const EdgeInsets.all(12),
+      child: Column(
+        children: [
+          Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    title: const Text('Amount Off'),
+                    leading: Radio<DiscountCalculationMethod>(
+                      fillColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
+                      focusColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
+                      value: DiscountCalculationMethod.amount,
+                      groupValue: method,
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            method = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    title: const Text('Percentage Off'),
+                    leading: Radio<DiscountCalculationMethod>(
+                      fillColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
+                      focusColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
+                      value: DiscountCalculationMethod.percentage,
+                      groupValue: method,
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            method = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ]
+          ),
+          CustomTextField(
+            label: "Enter Discount Amount",
+            controller: _controller,
+            textInputType: TextInputType.number,
+            inputFormatters: [CustomInputTextFormatter.positiveNumber],
+            onValueChange: (val) {
+              setState(() {
+                discountAmount = double.tryParse(val) ?? 0;
+              });
+            },
+          ),
+          Expanded(child: Container()),
+          Row(
+            children: [
+              Expanded(
+                child: RejectButton(
+                  label: "Cancel",
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: AcceptButton(
+                  label: "Apply Discount",
+                  onPressed: discountAmount >= 0
+                      ? () {
+                          Navigator.pop(
+                            context,
+                            OnApplyDiscountAmount(
+                                saleLine:
+                                    BlocProvider.of<LineItemModificationBloc>(
+                                            context)
+                                        .lineItem,
+                                discountAmount: discountAmount,
+                                reason: "Discount Amount Changed"),
+                          );
+                        }
+                      : null,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class LineItemTaxModifyView extends StatefulWidget {
+  const LineItemTaxModifyView({Key? key}) : super(key: key);
+
+  @override
+  State<LineItemTaxModifyView> createState() => _LineItemTaxModifyViewState();
+}
+
+class _LineItemTaxModifyViewState extends State<LineItemTaxModifyView> {
+  late TextEditingController _controller;
+  double taxAmount = 0;
+  TaxCalculationMethod method = TaxCalculationMethod.amount;
+
+  @override
+  initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(12),
+      child: Column(
+        children: [
+          Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    title: const Text('Amount Off'),
+                    leading: Radio<TaxCalculationMethod>(
+                      fillColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
+                      focusColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
+                      value: TaxCalculationMethod.amount,
+                      groupValue: method,
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            method = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    title: const Text('Percentage Off'),
+                    leading: Radio<TaxCalculationMethod>(
+                      fillColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
+                      focusColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
+                      value: TaxCalculationMethod.percentage,
+                      groupValue: method,
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            method = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ]
+          ),
+          CustomTextField(
+            label: "Enter Tax Amount",
+            textInputType: TextInputType.number,
+            controller: _controller,
+            onValueChange: (val) {
+              setState(() {
+                taxAmount = double.tryParse(val) ?? 0;
+              });
+            },
+            inputFormatters: [CustomInputTextFormatter.positiveNumber],
+          ),
+          Expanded(child: Container()),
+          Row(
+            children: [
+              Expanded(
+                child: RejectButton(
+                  label: "Cancel",
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: AcceptButton(
+                  label: "Change Tax",
+                  onPressed: taxAmount >= 0
+                      ? () {
+                          Navigator.pop(
+                            context,
+                            OnChangeLineItemTaxAmount(
+                                saleLine:
+                                    BlocProvider.of<LineItemModificationBloc>(
+                                            context)
+                                        .lineItem,
+                                taxAmount: taxAmount,
+                                reason: "Tax Changed"),
+                          );
+                        }
+                      : null,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

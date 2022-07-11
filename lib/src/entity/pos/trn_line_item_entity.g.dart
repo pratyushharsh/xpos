@@ -16,45 +16,46 @@ extension GetTransactionLineItemEntityCollection on Isar {
 const TransactionLineItemEntitySchema = CollectionSchema(
   name: 'TransactionLineItemEntity',
   schema:
-      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[]}',
+      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"discountAmount","type":"Double"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[{"name":"lineModifiers","target":"TransactionLineItemModifierEntity"}]}',
   idName: 'id',
   propertyIds: {
     'businessDate': 0,
     'category': 1,
-    'extendedAmount': 2,
-    'grossAmount': 3,
-    'grossQuantity': 4,
-    'itemDescription': 5,
-    'itemId': 6,
-    'itemIdEntryMethod': 7,
-    'lineItemSeq': 8,
-    'netAmount': 9,
-    'netQuantity': 10,
-    'nonExchangeableFlag': 11,
-    'nonReturnableFlag': 12,
-    'originalBusinessDate': 13,
-    'originalLineItemSeq': 14,
-    'originalPosId': 15,
-    'originalTransSeq': 16,
-    'posId': 17,
-    'priceEntryMethod': 18,
-    'priceOverride': 19,
-    'priceOverrideAmount': 20,
-    'priceOverrideReason': 21,
-    'quantity': 22,
-    'returnComment': 23,
-    'returnFlag': 24,
-    'returnReasonCode': 25,
-    'returnTypeCode': 26,
-    'returnedQuantity': 27,
-    'serialNumber': 28,
-    'shippingWeight': 29,
-    'storeId': 30,
-    'taxAmount': 31,
-    'taxGroupId': 32,
-    'transSeq': 33,
-    'unitPrice': 34,
-    'vendorId': 35
+    'discountAmount': 2,
+    'extendedAmount': 3,
+    'grossAmount': 4,
+    'grossQuantity': 5,
+    'itemDescription': 6,
+    'itemId': 7,
+    'itemIdEntryMethod': 8,
+    'lineItemSeq': 9,
+    'netAmount': 10,
+    'netQuantity': 11,
+    'nonExchangeableFlag': 12,
+    'nonReturnableFlag': 13,
+    'originalBusinessDate': 14,
+    'originalLineItemSeq': 15,
+    'originalPosId': 16,
+    'originalTransSeq': 17,
+    'posId': 18,
+    'priceEntryMethod': 19,
+    'priceOverride': 20,
+    'priceOverrideAmount': 21,
+    'priceOverrideReason': 22,
+    'quantity': 23,
+    'returnComment': 24,
+    'returnFlag': 25,
+    'returnReasonCode': 26,
+    'returnTypeCode': 27,
+    'returnedQuantity': 28,
+    'serialNumber': 29,
+    'shippingWeight': 30,
+    'storeId': 31,
+    'taxAmount': 32,
+    'taxGroupId': 33,
+    'transSeq': 34,
+    'unitPrice': 35,
+    'vendorId': 36
   },
   listProperties: {},
   indexIds: {'originalPosId': 0, 'originalTransSeq': 1, 'storeId': 2},
@@ -69,7 +70,7 @@ const TransactionLineItemEntitySchema = CollectionSchema(
       IndexValueType.long,
     ]
   },
-  linkIds: {'header': 0},
+  linkIds: {'lineModifiers': 0, 'header': 1},
   backlinkLinkNames: {'header': 'lineItems'},
   getId: _transactionLineItemEntityGetId,
   getLinks: _transactionLineItemEntityGetLinks,
@@ -93,7 +94,7 @@ int? _transactionLineItemEntityGetId(TransactionLineItemEntity object) {
 
 List<IsarLinkBase> _transactionLineItemEntityGetLinks(
     TransactionLineItemEntity object) {
-  return [object.header];
+  return [object.lineModifiers, object.header];
 }
 
 void _transactionLineItemEntitySerializeNative(
@@ -112,101 +113,103 @@ void _transactionLineItemEntitySerializeNative(
     _category = IsarBinaryWriter.utf8Encoder.convert(value1);
   }
   dynamicSize += (_category?.length ?? 0) as int;
-  final value2 = object.extendedAmount;
-  final _extendedAmount = value2;
-  final value3 = object.grossAmount;
-  final _grossAmount = value3;
-  final value4 = object.grossQuantity;
-  final _grossQuantity = value4;
-  final value5 = object.itemDescription;
-  final _itemDescription = IsarBinaryWriter.utf8Encoder.convert(value5);
+  final value2 = object.discountAmount;
+  final _discountAmount = value2;
+  final value3 = object.extendedAmount;
+  final _extendedAmount = value3;
+  final value4 = object.grossAmount;
+  final _grossAmount = value4;
+  final value5 = object.grossQuantity;
+  final _grossQuantity = value5;
+  final value6 = object.itemDescription;
+  final _itemDescription = IsarBinaryWriter.utf8Encoder.convert(value6);
   dynamicSize += (_itemDescription.length) as int;
-  final value6 = object.itemId;
-  final _itemId = IsarBinaryWriter.utf8Encoder.convert(value6);
+  final value7 = object.itemId;
+  final _itemId = IsarBinaryWriter.utf8Encoder.convert(value7);
   dynamicSize += (_itemId.length) as int;
-  final value7 = object.itemIdEntryMethod;
-  final _itemIdEntryMethod = IsarBinaryWriter.utf8Encoder.convert(value7);
+  final value8 = object.itemIdEntryMethod;
+  final _itemIdEntryMethod = IsarBinaryWriter.utf8Encoder.convert(value8);
   dynamicSize += (_itemIdEntryMethod.length) as int;
-  final value8 = object.lineItemSeq;
-  final _lineItemSeq = value8;
-  final value9 = object.netAmount;
-  final _netAmount = value9;
-  final value10 = object.netQuantity;
-  final _netQuantity = value10;
-  final value11 = object.nonExchangeableFlag;
-  final _nonExchangeableFlag = value11;
-  final value12 = object.nonReturnableFlag;
-  final _nonReturnableFlag = value12;
-  final value13 = object.originalBusinessDate;
-  final _originalBusinessDate = value13;
-  final value14 = object.originalLineItemSeq;
-  final _originalLineItemSeq = value14;
-  final value15 = object.originalPosId;
-  final _originalPosId = value15;
-  final value16 = object.originalTransSeq;
-  final _originalTransSeq = value16;
-  final value17 = object.posId;
-  final _posId = value17;
-  final value18 = object.priceEntryMethod;
-  final _priceEntryMethod = IsarBinaryWriter.utf8Encoder.convert(value18);
+  final value9 = object.lineItemSeq;
+  final _lineItemSeq = value9;
+  final value10 = object.netAmount;
+  final _netAmount = value10;
+  final value11 = object.netQuantity;
+  final _netQuantity = value11;
+  final value12 = object.nonExchangeableFlag;
+  final _nonExchangeableFlag = value12;
+  final value13 = object.nonReturnableFlag;
+  final _nonReturnableFlag = value13;
+  final value14 = object.originalBusinessDate;
+  final _originalBusinessDate = value14;
+  final value15 = object.originalLineItemSeq;
+  final _originalLineItemSeq = value15;
+  final value16 = object.originalPosId;
+  final _originalPosId = value16;
+  final value17 = object.originalTransSeq;
+  final _originalTransSeq = value17;
+  final value18 = object.posId;
+  final _posId = value18;
+  final value19 = object.priceEntryMethod;
+  final _priceEntryMethod = IsarBinaryWriter.utf8Encoder.convert(value19);
   dynamicSize += (_priceEntryMethod.length) as int;
-  final value19 = object.priceOverride;
-  final _priceOverride = value19;
-  final value20 = object.priceOverrideAmount;
-  final _priceOverrideAmount = value20;
-  final value21 = object.priceOverrideReason;
+  final value20 = object.priceOverride;
+  final _priceOverride = value20;
+  final value21 = object.priceOverrideAmount;
+  final _priceOverrideAmount = value21;
+  final value22 = object.priceOverrideReason;
   IsarUint8List? _priceOverrideReason;
-  if (value21 != null) {
-    _priceOverrideReason = IsarBinaryWriter.utf8Encoder.convert(value21);
+  if (value22 != null) {
+    _priceOverrideReason = IsarBinaryWriter.utf8Encoder.convert(value22);
   }
   dynamicSize += (_priceOverrideReason?.length ?? 0) as int;
-  final value22 = object.quantity;
-  final _quantity = value22;
-  final value23 = object.returnComment;
+  final value23 = object.quantity;
+  final _quantity = value23;
+  final value24 = object.returnComment;
   IsarUint8List? _returnComment;
-  if (value23 != null) {
-    _returnComment = IsarBinaryWriter.utf8Encoder.convert(value23);
+  if (value24 != null) {
+    _returnComment = IsarBinaryWriter.utf8Encoder.convert(value24);
   }
   dynamicSize += (_returnComment?.length ?? 0) as int;
-  final value24 = object.returnFlag;
-  final _returnFlag = value24;
-  final value25 = object.returnReasonCode;
+  final value25 = object.returnFlag;
+  final _returnFlag = value25;
+  final value26 = object.returnReasonCode;
   IsarUint8List? _returnReasonCode;
-  if (value25 != null) {
-    _returnReasonCode = IsarBinaryWriter.utf8Encoder.convert(value25);
+  if (value26 != null) {
+    _returnReasonCode = IsarBinaryWriter.utf8Encoder.convert(value26);
   }
   dynamicSize += (_returnReasonCode?.length ?? 0) as int;
-  final value26 = object.returnTypeCode;
+  final value27 = object.returnTypeCode;
   IsarUint8List? _returnTypeCode;
-  if (value26 != null) {
-    _returnTypeCode = IsarBinaryWriter.utf8Encoder.convert(value26);
+  if (value27 != null) {
+    _returnTypeCode = IsarBinaryWriter.utf8Encoder.convert(value27);
   }
   dynamicSize += (_returnTypeCode?.length ?? 0) as int;
-  final value27 = object.returnedQuantity;
-  final _returnedQuantity = value27;
-  final value28 = object.serialNumber;
+  final value28 = object.returnedQuantity;
+  final _returnedQuantity = value28;
+  final value29 = object.serialNumber;
   IsarUint8List? _serialNumber;
-  if (value28 != null) {
-    _serialNumber = IsarBinaryWriter.utf8Encoder.convert(value28);
+  if (value29 != null) {
+    _serialNumber = IsarBinaryWriter.utf8Encoder.convert(value29);
   }
   dynamicSize += (_serialNumber?.length ?? 0) as int;
-  final value29 = object.shippingWeight;
-  final _shippingWeight = value29;
-  final value30 = object.storeId;
-  final _storeId = value30;
-  final value31 = object.taxAmount;
-  final _taxAmount = value31;
-  final value32 = object.taxGroupId;
-  final _taxGroupId = IsarBinaryWriter.utf8Encoder.convert(value32);
+  final value30 = object.shippingWeight;
+  final _shippingWeight = value30;
+  final value31 = object.storeId;
+  final _storeId = value31;
+  final value32 = object.taxAmount;
+  final _taxAmount = value32;
+  final value33 = object.taxGroupId;
+  final _taxGroupId = IsarBinaryWriter.utf8Encoder.convert(value33);
   dynamicSize += (_taxGroupId.length) as int;
-  final value33 = object.transSeq;
-  final _transSeq = value33;
-  final value34 = object.unitPrice;
-  final _unitPrice = value34;
-  final value35 = object.vendorId;
+  final value34 = object.transSeq;
+  final _transSeq = value34;
+  final value35 = object.unitPrice;
+  final _unitPrice = value35;
+  final value36 = object.vendorId;
   IsarUint8List? _vendorId;
-  if (value35 != null) {
-    _vendorId = IsarBinaryWriter.utf8Encoder.convert(value35);
+  if (value36 != null) {
+    _vendorId = IsarBinaryWriter.utf8Encoder.convert(value36);
   }
   dynamicSize += (_vendorId?.length ?? 0) as int;
   final size = staticSize + dynamicSize;
@@ -217,40 +220,41 @@ void _transactionLineItemEntitySerializeNative(
   final writer = IsarBinaryWriter(buffer, staticSize);
   writer.writeDateTime(offsets[0], _businessDate);
   writer.writeBytes(offsets[1], _category);
-  writer.writeDouble(offsets[2], _extendedAmount);
-  writer.writeDouble(offsets[3], _grossAmount);
-  writer.writeDouble(offsets[4], _grossQuantity);
-  writer.writeBytes(offsets[5], _itemDescription);
-  writer.writeBytes(offsets[6], _itemId);
-  writer.writeBytes(offsets[7], _itemIdEntryMethod);
-  writer.writeLong(offsets[8], _lineItemSeq);
-  writer.writeDouble(offsets[9], _netAmount);
-  writer.writeDouble(offsets[10], _netQuantity);
-  writer.writeBool(offsets[11], _nonExchangeableFlag);
-  writer.writeBool(offsets[12], _nonReturnableFlag);
-  writer.writeDateTime(offsets[13], _originalBusinessDate);
-  writer.writeLong(offsets[14], _originalLineItemSeq);
-  writer.writeLong(offsets[15], _originalPosId);
-  writer.writeLong(offsets[16], _originalTransSeq);
-  writer.writeLong(offsets[17], _posId);
-  writer.writeBytes(offsets[18], _priceEntryMethod);
-  writer.writeBool(offsets[19], _priceOverride);
-  writer.writeDouble(offsets[20], _priceOverrideAmount);
-  writer.writeBytes(offsets[21], _priceOverrideReason);
-  writer.writeDouble(offsets[22], _quantity);
-  writer.writeBytes(offsets[23], _returnComment);
-  writer.writeBool(offsets[24], _returnFlag);
-  writer.writeBytes(offsets[25], _returnReasonCode);
-  writer.writeBytes(offsets[26], _returnTypeCode);
-  writer.writeDouble(offsets[27], _returnedQuantity);
-  writer.writeBytes(offsets[28], _serialNumber);
-  writer.writeDouble(offsets[29], _shippingWeight);
-  writer.writeLong(offsets[30], _storeId);
-  writer.writeDouble(offsets[31], _taxAmount);
-  writer.writeBytes(offsets[32], _taxGroupId);
-  writer.writeLong(offsets[33], _transSeq);
-  writer.writeDouble(offsets[34], _unitPrice);
-  writer.writeBytes(offsets[35], _vendorId);
+  writer.writeDouble(offsets[2], _discountAmount);
+  writer.writeDouble(offsets[3], _extendedAmount);
+  writer.writeDouble(offsets[4], _grossAmount);
+  writer.writeDouble(offsets[5], _grossQuantity);
+  writer.writeBytes(offsets[6], _itemDescription);
+  writer.writeBytes(offsets[7], _itemId);
+  writer.writeBytes(offsets[8], _itemIdEntryMethod);
+  writer.writeLong(offsets[9], _lineItemSeq);
+  writer.writeDouble(offsets[10], _netAmount);
+  writer.writeDouble(offsets[11], _netQuantity);
+  writer.writeBool(offsets[12], _nonExchangeableFlag);
+  writer.writeBool(offsets[13], _nonReturnableFlag);
+  writer.writeDateTime(offsets[14], _originalBusinessDate);
+  writer.writeLong(offsets[15], _originalLineItemSeq);
+  writer.writeLong(offsets[16], _originalPosId);
+  writer.writeLong(offsets[17], _originalTransSeq);
+  writer.writeLong(offsets[18], _posId);
+  writer.writeBytes(offsets[19], _priceEntryMethod);
+  writer.writeBool(offsets[20], _priceOverride);
+  writer.writeDouble(offsets[21], _priceOverrideAmount);
+  writer.writeBytes(offsets[22], _priceOverrideReason);
+  writer.writeDouble(offsets[23], _quantity);
+  writer.writeBytes(offsets[24], _returnComment);
+  writer.writeBool(offsets[25], _returnFlag);
+  writer.writeBytes(offsets[26], _returnReasonCode);
+  writer.writeBytes(offsets[27], _returnTypeCode);
+  writer.writeDouble(offsets[28], _returnedQuantity);
+  writer.writeBytes(offsets[29], _serialNumber);
+  writer.writeDouble(offsets[30], _shippingWeight);
+  writer.writeLong(offsets[31], _storeId);
+  writer.writeDouble(offsets[32], _taxAmount);
+  writer.writeBytes(offsets[33], _taxGroupId);
+  writer.writeLong(offsets[34], _transSeq);
+  writer.writeDouble(offsets[35], _unitPrice);
+  writer.writeBytes(offsets[36], _vendorId);
 }
 
 TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
@@ -261,41 +265,42 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
   final object = TransactionLineItemEntity(
     businessDate: reader.readDateTime(offsets[0]),
     category: reader.readStringOrNull(offsets[1]),
-    extendedAmount: reader.readDouble(offsets[2]),
-    grossAmount: reader.readDouble(offsets[3]),
-    grossQuantity: reader.readDouble(offsets[4]),
+    discountAmount: reader.readDouble(offsets[2]),
+    extendedAmount: reader.readDouble(offsets[3]),
+    grossAmount: reader.readDouble(offsets[4]),
+    grossQuantity: reader.readDouble(offsets[5]),
     id: id,
-    itemDescription: reader.readString(offsets[5]),
-    itemId: reader.readString(offsets[6]),
-    itemIdEntryMethod: reader.readString(offsets[7]),
-    lineItemSeq: reader.readLong(offsets[8]),
-    netAmount: reader.readDouble(offsets[9]),
-    netQuantity: reader.readDouble(offsets[10]),
-    nonExchangeableFlag: reader.readBool(offsets[11]),
-    nonReturnableFlag: reader.readBool(offsets[12]),
-    originalBusinessDate: reader.readDateTimeOrNull(offsets[13]),
-    originalLineItemSeq: reader.readLongOrNull(offsets[14]),
-    originalPosId: reader.readLongOrNull(offsets[15]),
-    originalTransSeq: reader.readLongOrNull(offsets[16]),
-    posId: reader.readLong(offsets[17]),
-    priceEntryMethod: reader.readString(offsets[18]),
-    priceOverride: reader.readBool(offsets[19]),
-    priceOverrideAmount: reader.readDoubleOrNull(offsets[20]),
-    priceOverrideReason: reader.readStringOrNull(offsets[21]),
-    quantity: reader.readDouble(offsets[22]),
-    returnComment: reader.readStringOrNull(offsets[23]),
-    returnFlag: reader.readBool(offsets[24]),
-    returnReasonCode: reader.readStringOrNull(offsets[25]),
-    returnTypeCode: reader.readStringOrNull(offsets[26]),
-    returnedQuantity: reader.readDoubleOrNull(offsets[27]),
-    serialNumber: reader.readStringOrNull(offsets[28]),
-    shippingWeight: reader.readDoubleOrNull(offsets[29]),
-    storeId: reader.readLong(offsets[30]),
-    taxAmount: reader.readDouble(offsets[31]),
-    taxGroupId: reader.readString(offsets[32]),
-    transSeq: reader.readLong(offsets[33]),
-    unitPrice: reader.readDouble(offsets[34]),
-    vendorId: reader.readStringOrNull(offsets[35]),
+    itemDescription: reader.readString(offsets[6]),
+    itemId: reader.readString(offsets[7]),
+    itemIdEntryMethod: reader.readString(offsets[8]),
+    lineItemSeq: reader.readLong(offsets[9]),
+    netAmount: reader.readDouble(offsets[10]),
+    netQuantity: reader.readDouble(offsets[11]),
+    nonExchangeableFlag: reader.readBool(offsets[12]),
+    nonReturnableFlag: reader.readBool(offsets[13]),
+    originalBusinessDate: reader.readDateTimeOrNull(offsets[14]),
+    originalLineItemSeq: reader.readLongOrNull(offsets[15]),
+    originalPosId: reader.readLongOrNull(offsets[16]),
+    originalTransSeq: reader.readLongOrNull(offsets[17]),
+    posId: reader.readLong(offsets[18]),
+    priceEntryMethod: reader.readString(offsets[19]),
+    priceOverride: reader.readBool(offsets[20]),
+    priceOverrideAmount: reader.readDoubleOrNull(offsets[21]),
+    priceOverrideReason: reader.readStringOrNull(offsets[22]),
+    quantity: reader.readDouble(offsets[23]),
+    returnComment: reader.readStringOrNull(offsets[24]),
+    returnFlag: reader.readBool(offsets[25]),
+    returnReasonCode: reader.readStringOrNull(offsets[26]),
+    returnTypeCode: reader.readStringOrNull(offsets[27]),
+    returnedQuantity: reader.readDoubleOrNull(offsets[28]),
+    serialNumber: reader.readStringOrNull(offsets[29]),
+    shippingWeight: reader.readDoubleOrNull(offsets[30]),
+    storeId: reader.readLong(offsets[31]),
+    taxAmount: reader.readDouble(offsets[32]),
+    taxGroupId: reader.readString(offsets[33]),
+    transSeq: reader.readLong(offsets[34]),
+    unitPrice: reader.readDouble(offsets[35]),
+    vendorId: reader.readStringOrNull(offsets[36]),
   );
   _transactionLineItemEntityAttachLinks(collection, id, object);
   return object;
@@ -317,66 +322,68 @@ P _transactionLineItemEntityDeserializePropNative<P>(
     case 4:
       return (reader.readDouble(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
       return (reader.readString(offset)) as P;
     case 8:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 9:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 10:
       return (reader.readDouble(offset)) as P;
     case 11:
-      return (reader.readBool(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 12:
       return (reader.readBool(offset)) as P;
     case 13:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 14:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 15:
       return (reader.readLongOrNull(offset)) as P;
     case 16:
       return (reader.readLongOrNull(offset)) as P;
     case 17:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 18:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 19:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 20:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 21:
-      return (reader.readStringOrNull(offset)) as P;
-    case 22:
-      return (reader.readDouble(offset)) as P;
-    case 23:
-      return (reader.readStringOrNull(offset)) as P;
-    case 24:
       return (reader.readBool(offset)) as P;
-    case 25:
+    case 21:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 22:
       return (reader.readStringOrNull(offset)) as P;
+    case 23:
+      return (reader.readDouble(offset)) as P;
+    case 24:
+      return (reader.readStringOrNull(offset)) as P;
+    case 25:
+      return (reader.readBool(offset)) as P;
     case 26:
       return (reader.readStringOrNull(offset)) as P;
     case 27:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 28:
       return (reader.readStringOrNull(offset)) as P;
-    case 29:
+    case 28:
       return (reader.readDoubleOrNull(offset)) as P;
+    case 29:
+      return (reader.readStringOrNull(offset)) as P;
     case 30:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 31:
-      return (reader.readDouble(offset)) as P;
-    case 32:
-      return (reader.readString(offset)) as P;
-    case 33:
       return (reader.readLong(offset)) as P;
-    case 34:
+    case 32:
       return (reader.readDouble(offset)) as P;
+    case 33:
+      return (reader.readString(offset)) as P;
+    case 34:
+      return (reader.readLong(offset)) as P;
     case 35:
+      return (reader.readDouble(offset)) as P;
+    case 36:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
@@ -390,6 +397,7 @@ dynamic _transactionLineItemEntitySerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'businessDate',
       object.businessDate.toUtc().millisecondsSinceEpoch);
   IsarNative.jsObjectSet(jsObj, 'category', object.category);
+  IsarNative.jsObjectSet(jsObj, 'discountAmount', object.discountAmount);
   IsarNative.jsObjectSet(jsObj, 'extendedAmount', object.extendedAmount);
   IsarNative.jsObjectSet(jsObj, 'grossAmount', object.grossAmount);
   IsarNative.jsObjectSet(jsObj, 'grossQuantity', object.grossQuantity);
@@ -443,6 +451,8 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeWeb(
             .toLocal()
         : DateTime.fromMillisecondsSinceEpoch(0),
     category: IsarNative.jsObjectGet(jsObj, 'category'),
+    discountAmount: IsarNative.jsObjectGet(jsObj, 'discountAmount') ??
+        double.negativeInfinity,
     extendedAmount: IsarNative.jsObjectGet(jsObj, 'extendedAmount') ??
         double.negativeInfinity,
     grossAmount:
@@ -515,6 +525,9 @@ P _transactionLineItemEntityDeserializePropWeb<P>(
           : DateTime.fromMillisecondsSinceEpoch(0)) as P;
     case 'category':
       return (IsarNative.jsObjectGet(jsObj, 'category')) as P;
+    case 'discountAmount':
+      return (IsarNative.jsObjectGet(jsObj, 'discountAmount') ??
+          double.negativeInfinity) as P;
     case 'extendedAmount':
       return (IsarNative.jsObjectGet(jsObj, 'extendedAmount') ??
           double.negativeInfinity) as P;
@@ -610,6 +623,8 @@ P _transactionLineItemEntityDeserializePropWeb<P>(
 
 void _transactionLineItemEntityAttachLinks(
     IsarCollection col, int id, TransactionLineItemEntity object) {
+  object.lineModifiers.attach(
+      col, col.isar.transactionLineItemModifierEntitys, 'lineModifiers', id);
   object.header.attach(col, col.isar.transactionHeaderEntitys, 'header', id);
 }
 
@@ -1119,6 +1134,37 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
       property: 'category',
       value: pattern,
       caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> discountAmountGreaterThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: false,
+      property: 'discountAmount',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> discountAmountLessThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: false,
+      property: 'discountAmount',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> discountAmountBetween(double lower, double upper) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'discountAmount',
+      lower: lower,
+      includeLower: false,
+      upper: upper,
+      includeUpper: false,
     ));
   }
 
@@ -3290,6 +3336,16 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
 extension TransactionLineItemEntityQueryLinks on QueryBuilder<
     TransactionLineItemEntity, TransactionLineItemEntity, QFilterCondition> {
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      lineModifiers(FilterQuery<TransactionLineItemModifierEntity> q) {
+    return linkInternal(
+      isar.transactionLineItemModifierEntitys,
+      q,
+      'lineModifiers',
+    );
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> header(FilterQuery<TransactionHeaderEntity> q) {
     return linkInternal(
       isar.transactionHeaderEntitys,
@@ -3319,6 +3375,16 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortByCategoryDesc() {
     return addSortByInternal('category', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByDiscountAmount() {
+    return addSortByInternal('discountAmount', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByDiscountAmountDesc() {
+    return addSortByInternal('discountAmount', Sort.desc);
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3695,6 +3761,16 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByDiscountAmount() {
+    return addSortByInternal('discountAmount', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByDiscountAmountDesc() {
+    return addSortByInternal('discountAmount', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenByExtendedAmount() {
     return addSortByInternal('extendedAmount', Sort.asc);
   }
@@ -4058,6 +4134,11 @@ extension TransactionLineItemEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
+      distinctByDiscountAmount() {
+    return addDistinctByInternal('discountAmount');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
       distinctByExtendedAmount() {
     return addDistinctByInternal('extendedAmount');
   }
@@ -4249,6 +4330,11 @@ extension TransactionLineItemEntityQueryProperty on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>
       categoryProperty() {
     return addPropertyNameInternal('category');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
+      discountAmountProperty() {
+    return addPropertyNameInternal('discountAmount');
   }
 
   QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>

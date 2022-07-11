@@ -63,3 +63,17 @@ class OnReturnLineItemEvent extends CreateNewReceiptEvent {
   final Map<TransactionLineItemEntity, ReturnLineItemParameters> returnMap;
   OnReturnLineItemEvent(this.returnMap);
 }
+
+class OnApplyDiscountAmount extends CreateNewReceiptEvent {
+  final TransactionLineItemEntity saleLine;
+  final String reason;
+  final double discountAmount;
+  OnApplyDiscountAmount({required this.saleLine, required this.discountAmount, required this.reason,});
+}
+
+class OnChangeLineItemTaxAmount extends CreateNewReceiptEvent {
+  final TransactionLineItemEntity saleLine;
+  final String reason;
+  final double taxAmount;
+  OnChangeLineItemTaxAmount({required this.saleLine, required this.taxAmount, required this.reason,});
+}

@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
+import 'package:receipt_generator/src/entity/pos/trn_line_item_modifier.dart';
 
 part 'trn_line_item_entity.g.dart';
 
@@ -30,6 +31,7 @@ class TransactionLineItemEntity {
   final String? serialNumber;
   final String taxGroupId;
   final double taxAmount;
+  final double discountAmount;
 
   /// Price Override Reason
   final bool priceOverride;
@@ -60,6 +62,8 @@ class TransactionLineItemEntity {
   @Backlink(to: 'lineItems')
   final header = IsarLink<TransactionHeaderEntity>();
 
+  final lineModifiers = IsarLinks<TransactionLineItemModifierEntity>();
+
   TransactionLineItemEntity(
       {this.id,
       required this.storeId,
@@ -78,6 +82,7 @@ class TransactionLineItemEntity {
       required this.netQuantity,
       required this.unitPrice,
       required this.extendedAmount,
+      this.discountAmount = 0.00,
       this.returnFlag = false,
       required this.itemIdEntryMethod,
       required this.priceEntryMethod,
@@ -98,7 +103,6 @@ class TransactionLineItemEntity {
       this.nonExchangeableFlag = false,
       this.vendorId,
       this.shippingWeight});
-
 }
 
 class ItemIdEntryMethod extends EntryMethod {}

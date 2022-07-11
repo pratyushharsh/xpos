@@ -440,7 +440,9 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
     super.initState();
     setState(() {
       print(widget.imageUrl.toString());
-      selectedUrl = widget.imageUrl[0];
+      if (widget.imageUrl.isNotEmpty) {
+        selectedUrl = widget.imageUrl[0];
+      }
       print("initial value $selectedUrl");
     });
   }
