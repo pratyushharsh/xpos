@@ -92,7 +92,7 @@ class TransactionHelper {
     return res;
   }
 
-  static TransactionLineItemEntity addNewLineItemDiscount(TransactionLineItemEntity line, double discountAmount, String reasonCode) {
+  static TransactionLineItemEntity addNewLineItemDiscount(TransactionLineItemEntity line, double discountAmount, String reasonCode, double discountPercent) {
     TransactionLineItemModifierEntity modifier = TransactionLineItemModifierEntity(
       amount: discountAmount,
       lineItemSeq: line.lineItemSeq,
@@ -150,7 +150,6 @@ class TransactionHelper {
   }
 
   static TransactionLineItemEntity changeLineItemTax(TransactionLineItemEntity line, double taxAmount, String reasonCode) {
-
 
     double grossAmount = line.unitPrice * line.quantity;
     double taxAmt = taxAmount * line.quantity;
