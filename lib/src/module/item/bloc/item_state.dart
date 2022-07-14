@@ -2,6 +2,8 @@ part of 'item_bloc.dart';
 
 enum ItemStatus {
   initial,
+  newProduct,
+  viewProduct,
   addingProduct,
   addingSuccess,
   addingFailure,

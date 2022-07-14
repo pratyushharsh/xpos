@@ -36,6 +36,7 @@ class CustomDropDown<T> extends StatelessWidget {
               // color: AppColor.background,
               borderRadius: BorderRadius.circular(5)),
           child: DropdownButtonFormField<T>(
+            autovalidateMode: AutovalidateMode.always,
             validator: validator,
             // style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
             decoration: const InputDecoration(

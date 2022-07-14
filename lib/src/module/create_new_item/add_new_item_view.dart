@@ -15,6 +15,8 @@ import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 import 'package:receipt_generator/src/widgets/loading.dart';
 import 'package:validators/sanitizers.dart';
 
+import '../../widgets/my_loader.dart';
+
 enum NewItemScreenState { editItem, createItem }
 
 class AddNewItemScreen extends StatelessWidget {
@@ -142,7 +144,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   Widget build(BuildContext context) {
     var repo = RepositoryProvider.of<ConfigRepository>(context);
     var uom = repo.getCodeByCategory("UOM");
-    return BlocListener<ItemBloc, ItemState>(
+    return BlocConsumer<ItemBloc, ItemState>(
       listener: (context, state) {
         if (state.status == ItemStatus.addingProduct) {
           showLoadingDialog(context);
@@ -162,271 +164,278 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           Navigator.of(context).pop();
         } else if (ItemStatus.editProduct == state.status) {
-          _inEditMode = true;
-          _uom = state.existingProduct!.uom;
-          _productId = state.existingProduct!.skuCode ??
-              state.existingProduct!.productId;
-          _productNameController.text = state.existingProduct!.displayName;
-          _salePriceController.text =
-              state.existingProduct!.salePrice!.toString();
-          _listPriceController.text =
-              state.existingProduct!.listPrice?.toString() ?? "";
-          _purchasePriceController.text =
-              state.existingProduct!.purchasePrice?.toString() ?? "";
-          _brandController.text = state.existingProduct?.brand ?? "";
-          _hsnController.text = state.existingProduct?.hsn ?? "";
-          _taxRateController.text =
-              state.existingProduct!.tax?.toString() ?? "";
-          _skuController.text = state.existingProduct!.skuCode ?? "";
-          _formKey.currentState!.validate();
-          _imageUrls = state.existingProduct!.imageUrl;
-          setState(() {});
+          setState(() {
+            _inEditMode = true;
+            _uom = state.existingProduct!.uom;
+            _productId = state.existingProduct!.skuCode ??
+                state.existingProduct!.productId;
+            _productNameController.text = state.existingProduct!.displayName;
+            _salePriceController.text =
+                state.existingProduct!.salePrice!.toString();
+            _listPriceController.text =
+                state.existingProduct!.listPrice?.toString() ?? "";
+            _purchasePriceController.text =
+                state.existingProduct!.purchasePrice?.toString() ?? "";
+            _brandController.text = state.existingProduct?.brand ?? "";
+            _hsnController.text = state.existingProduct?.hsn ?? "";
+            _taxRateController.text =
+                state.existingProduct!.tax?.toString() ?? "";
+            _skuController.text = state.existingProduct!.skuCode ?? "";
+            _formKey.currentState!.validate();
+            _imageUrls = state.existingProduct!.imageUrl;
+          });
         }
       },
-      child: Container(
-        color: Colors.white,
-        child: SafeArea(
-          maintainBottomViewPadding: false,
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            body: Form(
-              key: _formKey,
-              onChanged: () {
-                setState(() {
-                  _formValid = _formKey.currentState!.validate();
-                });
-              },
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  SingleChildScrollView(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 70,
-                          ),
-                          ProductItemsImage(
-                            imageUrl: _imageUrls,
-                          ),
-                          CustomTextField(
-                            label: "Product Name",
-                            validator:
-                                NewProductFieldValidator.validateProductName,
-                            controller: _productNameController,
-                          ),
-                          CustomTextField(
-                            label: "Product Description",
-                            controller: _productDescriptionController,
-                            minLines: 5,
-                            maxLines: 10,
-                          ),
-                          Row(
+      builder: (context, state) {
+        return Container(
+          color: Colors.white,
+          child: SafeArea(
+            maintainBottomViewPadding: false,
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              body: Form(
+                key: _formKey,
+                onChanged: () {
+                  setState(() {
+                    _formValid = _formKey.currentState!.validate();
+                  });
+                },
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (state.status != ItemStatus.loading || state.status != ItemStatus.initial)
+                      SingleChildScrollView(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 16),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  label: "Sale Price",
-                                  textInputType: TextInputType.number,
-                                  validator:
-                                      NewProductFieldValidator.validatePrice,
-                                  controller: _salePriceController,
-                                ),
-                              ),
                               const SizedBox(
-                                width: 8,
+                                height: 70,
                               ),
-                              Expanded(
-                                child: CustomDropDown<String>(
-                                  value: _uom,
-                                  data: uom
-                                      .map((e) => DropDownData(
-                                          key: e.code, value: e.value))
-                                      .toList(),
-                                  label: 'UOM',
-                                  onChanged: _onUomChange,
-                                  validator:
-                                      NewProductFieldValidator.validateUOM,
-                                ),
-                              )
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  label: "List Price",
-                                  textInputType: TextInputType.number,
-                                  validator:
-                                      NewProductFieldValidator.validatePrice,
-                                  controller: _listPriceController,
-                                ),
+                              ProductItemsImage(
+                                imageUrl: _imageUrls,
                               ),
-                              const SizedBox(
-                                width: 8,
+                              CustomTextField(
+                                label: "Product Name",
+                                validator: NewProductFieldValidator
+                                    .validateProductName,
+                                controller: _productNameController,
                               ),
-                              Expanded(
-                                child: CustomTextField(
-                                  label: "Brand",
-                                  controller: _brandController,
-                                ),
+                              CustomTextField(
+                                label: "Product Description",
+                                controller: _productDescriptionController,
+                                minLines: 5,
+                                maxLines: 10,
                               ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                              decoration: const BoxDecoration(
-                                  // border: Border(
-                                  //   bottom: BorderSide(color: AppColor.primary),
-                                  // ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: CustomTextField(
+                                      label: "Sale Price",
+                                      textInputType: TextInputType.number,
+                                      validator: NewProductFieldValidator
+                                          .validatePrice,
+                                      controller: _salePriceController,
+                                    ),
                                   ),
-                              child: const Text(
-                                "Tax Detail",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
-                                    color: AppColor.primary),
-                              )),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            children: [
-                              CustomCheckbox(
-                                value: _priceIncludeTax,
-                                onChanged: (val) {
-                                  setState(() {
-                                    _priceIncludeTax = val;
-                                  });
-                                },
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Expanded(
+                                    child: CustomDropDown<String>(
+                                      value: _uom,
+                                      data: uom
+                                          .map((e) => DropDownData(
+                                              key: e.code, value: e.value))
+                                          .toList(),
+                                      label: 'UOM',
+                                      onChanged: _onUomChange,
+                                      validator:
+                                          NewProductFieldValidator.validateUOM,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: CustomTextField(
+                                      label: "List Price",
+                                      textInputType: TextInputType.number,
+                                      validator: NewProductFieldValidator
+                                          .validatePrice,
+                                      controller: _listPriceController,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Expanded(
+                                    child: CustomTextField(
+                                      label: "Brand",
+                                      controller: _brandController,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
-                                width: 5,
+                                height: 20,
                               ),
-                              const Text(
-                                "Price Include Tax",
-                                style: TextStyle(color: Color(0xFF6B7281)),
+                              Container(
+                                  decoration: const BoxDecoration(
+                                      // border: Border(
+                                      //   bottom: BorderSide(color: AppColor.primary),
+                                      // ),
+                                      ),
+                                  child: const Text(
+                                    "Tax Detail",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: AppColor.primary),
+                                  )),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                children: [
+                                  CustomCheckbox(
+                                    value: _priceIncludeTax,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _priceIncludeTax = val;
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Text(
+                                    "Price Include Tax",
+                                    style: TextStyle(color: Color(0xFF6B7281)),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: CustomTextField(
+                                      label: "HSN",
+                                      controller: _hsnController,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Expanded(
+                                    child: CustomTextField(
+                                      label: "Tax Rate",
+                                      textInputType: TextInputType.number,
+                                      validator: NewProductFieldValidator
+                                          .validateTaxRate,
+                                      controller: _taxRateController,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              CustomTextField(
+                                label: "Barcode / SKU",
+                                controller: _skuController,
+                                validator:
+                                    NewProductFieldValidator.validateSkuData,
+                              ),
+                              const SizedBox(
+                                height: 300,
                               )
                             ],
                           ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  label: "HSN",
-                                  controller: _hsnController,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Expanded(
-                                child: CustomTextField(
-                                  label: "Tax Rate",
-                                  textInputType: TextInputType.number,
-                                  validator:
-                                      NewProductFieldValidator.validateTaxRate,
-                                  controller: _taxRateController,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          CustomTextField(
-                            label: "Barcode / SKU",
-                            controller: _skuController,
-                            validator: NewProductFieldValidator.validateSkuData,
-                          ),
-                          const SizedBox(
-                            height: 300,
-                          )
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 20,
-                    left: 16,
-                    child: AppBarLeading(
-                      heading: _productId ?? "New Product",
-                      icon: Icons.arrow_back,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
-                  if (!_inEditMode)
                     Positioned(
                       top: 20,
-                      right: 16,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed(RouteConfig.loadItemsInBulkScreen);
+                      left: 16,
+                      child: AppBarLeading(
+                        heading: _productId ?? "New Product",
+                        icon: Icons.arrow_back,
+                        onTap: () {
+                          Navigator.of(context).pop();
                         },
-                        child: const Text(
-                          "Bulk Import",
-                          style: TextStyle(color: AppColor.primary),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 10),
-                          primary: AppColor.color8,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0)),
-                        ),
                       ),
                     ),
-                  Positioned(
-                    bottom: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child:
-                                RejectButton(label: "Cancel", onPressed: () {}),
+                    if (!_inEditMode)
+                      Positioned(
+                        top: 20,
+                        right: 16,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(RouteConfig.loadItemsInBulkScreen);
+                          },
+                          child: const Text(
+                            "Bulk Import",
+                            style: TextStyle(color: AppColor.primary),
                           ),
-                          const SizedBox(
-                            width: 12,
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 10),
+                            primary: AppColor.color8,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0)),
                           ),
-                          Expanded(
-                              child: AcceptButton(
-                            label: _inEditMode ? "Update" : "Save",
-                            onPressed: _formValid ? _onSubmit : null,
-                          ))
-                        ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: RejectButton(
+                                  label: "Cancel", onPressed: () {}),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            Expanded(
+                                child: AcceptButton(
+                              label: _inEditMode ? "Update" : "Save",
+                              onPressed: _formValid ? _onSubmit : null,
+                            ))
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class ProductItemsImage extends StatefulWidget {
   final List<String> imageUrl;
-  const ProductItemsImage({Key? key, required this.imageUrl}) : super(key: key);
+  ProductItemsImage({Key? key, required this.imageUrl}) : super(key: key) {
+   print("URLS: $imageUrl");
+  }
 
   @override
   State<ProductItemsImage> createState() => _ProductItemsImageState();
@@ -439,29 +448,37 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
   void initState() {
     super.initState();
     setState(() {
-      print(widget.imageUrl.toString());
       if (widget.imageUrl.isNotEmpty) {
         selectedUrl = widget.imageUrl[0];
       }
-      print("initial value $selectedUrl");
     });
   }
-  static int rendered = 1;
+
+
+  @override
+  void didUpdateWidget(ProductItemsImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {
+      if (widget.imageUrl.isNotEmpty) {
+        selectedUrl = widget.imageUrl[0];
+      }
+    });
+  }
 
   static const String basePath =
       "/Users/pratyushharsh/Library/Containers/com.nearbai.receiptGenerator/Data/Documents/image/";
 
   @override
   Widget build(BuildContext context) {
-    print("rendered: $rendered");
-    rendered++;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
           height: 400,
           width: 400,
-          child: selectedUrl.isNotEmpty ? Image.file(File(basePath + selectedUrl)) : Container(),
+          child: selectedUrl.isNotEmpty
+              ? Image.file(File(basePath + selectedUrl))
+              : Container(),
         ),
         SizedBox(
           height: 400,

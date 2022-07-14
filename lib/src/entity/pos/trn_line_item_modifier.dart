@@ -17,23 +17,41 @@ class TransactionLineItemModifierEntity {
   final int lineItemSeq;
   final int lineItemModSeq;
 
-  final String category;
   final double amount;
-  final String description;
+  final double extendedAmount;
+  final String? notes;
+
+  final double? percent;
+  final String priceModifierReasonCode;
+
+  final String? description;
+  final String? promotionId;
+  final String? dealId;
+  final String? discountCode;
+  final String? groupDiscountId;
+  final String? discountReasonCode;
 
   @Backlink(to: 'lineModifiers')
   final lineItem = IsarLink<TransactionLineItemEntity>();
 
-
   TransactionLineItemModifierEntity({
-      this.id,
-      required this.storeId,
-      required this.businessDate,
-      required this.posId,
-      required this.transSeq,
-      required this.lineItemSeq,
-      required this.lineItemModSeq,
-      required this.category,
-      required this.amount,
-      required this.description});
+    this.id,
+    required this.storeId,
+    required this.businessDate,
+    required this.posId,
+    required this.transSeq,
+    required this.lineItemSeq,
+    required this.lineItemModSeq,
+    required this.amount,
+    required this.extendedAmount,
+    this.notes,
+    this.percent,
+    required this.priceModifierReasonCode,
+    this.description,
+    this.promotionId,
+    this.dealId,
+    this.discountCode,
+    this.groupDiscountId,
+    this.discountReasonCode,
+  });
 }

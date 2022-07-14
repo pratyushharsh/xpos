@@ -1,9 +1,9 @@
 import '../../entity/pos/entity.dart';
-import '../../entity/pos/trn_line_item_modifier.dart';
+import '../config/config.dart';
 
 class TransactionHelper {
-
-  static TransactionLineItemEntity copyLineItem(TransactionLineItemEntity line) {
+  static TransactionLineItemEntity copyLineItem(
+      TransactionLineItemEntity line) {
     return TransactionLineItemEntity(
       storeId: line.storeId,
       businessDate: line.businessDate,
@@ -43,14 +43,19 @@ class TransactionHelper {
     );
   }
 
-  static TransactionLineItemEntity updateSaleReturnLineItemPrice(TransactionLineItemEntity line, double unitPrice, String reasonCode) {
-
-    double unitTaxAmount = line.taxAmount / line.quantity;
+  static TransactionLineItemEntity updateSaleReturnLineItemPrice(
+      TransactionLineItemEntity line, double unitPrice, String reasonCode) {
+    // Calculate all the amount again for the item and assign
+    double discountAmount = 0.00;
 
     double grossAmount = unitPrice * line.quantity;
-    double taxAmount = unitTaxAmount * line.quantity;
-    double extendedAmount = grossAmount - line.discountAmount + taxAmount;
-    double netAmount = grossAmount;
+    double netAmount = grossAmount - discountAmount;
+
+    // @TODO Recalculate the tax based on the new discount amount
+    double unitTaxAmount = line.taxAmount / line.quantity;
+    double taxAmt = unitTaxAmount * line.quantity;
+
+    double extendedAmount = netAmount + taxAmt;
 
     TransactionLineItemEntity res = TransactionLineItemEntity(
       storeId: line.storeId,
@@ -58,12 +63,14 @@ class TransactionHelper {
       posId: line.posId,
       extendedAmount: extendedAmount,
       grossAmount: grossAmount,
+      taxAmount: taxAmt,
+      netAmount: netAmount,
+      discountAmount: discountAmount,
       grossQuantity: line.grossQuantity,
       itemDescription: line.itemDescription,
       itemId: line.itemId,
       itemIdEntryMethod: line.itemIdEntryMethod,
       lineItemSeq: line.lineItemSeq,
-      netAmount: netAmount,
       netQuantity: line.netQuantity,
       nonExchangeableFlag: line.nonExchangeableFlag,
       nonReturnableFlag: line.nonReturnableFlag,
@@ -79,7 +86,6 @@ class TransactionHelper {
       returnTypeCode: line.returnTypeCode,
       returnedQuantity: line.returnedQuantity,
       serialNumber: line.serialNumber,
-      taxAmount: taxAmount,
       taxGroupId: line.taxGroupId,
       unitPrice: unitPrice,
       vendorId: line.vendorId,
@@ -92,31 +98,41 @@ class TransactionHelper {
     return res;
   }
 
-  static TransactionLineItemEntity addNewLineItemDiscount(TransactionLineItemEntity line, double discountAmount, String reasonCode, double discountPercent) {
-    TransactionLineItemModifierEntity modifier = TransactionLineItemModifierEntity(
-      amount: discountAmount,
-      lineItemSeq: line.lineItemSeq,
-      posId: line.posId,
-      storeId: line.storeId,
-      transSeq: line.transSeq,
-      businessDate: DateTime.now(),
-      category: "Discount",
-      description: "Amount Discount",
-      lineItemModSeq: line.lineModifiers.length + 1,
-    );
+  ///
+  /// On addition of new ine item modifier amount discounted will changes
+  /// based on that tax needs to recalculated again and
+  /// extended amount will be recalculated again.
+  ///
+  static TransactionLineItemEntity addNewLineItemModifier(
+      TransactionLineItemEntity line,
+      TransactionLineItemModifierEntity modifier) {
+    // Calculate all the amount again for the item and assign
+    double discountAmount = line.lineModifiers.fold(modifier.amount,
+        (previousValue, element) => previousValue + element.amount);
+
+    double grossAmount = line.unitPrice * line.quantity;
+    double netAmount = grossAmount - discountAmount;
+
+    // @TODO Recalculate the tax based on the new discount amount
+    double unitTaxAmount = line.taxAmount / line.quantity;
+    double taxAmt = unitTaxAmount * line.quantity;
+
+    double extendedAmount = netAmount + taxAmt;
 
     TransactionLineItemEntity modifiedLine = TransactionLineItemEntity(
       storeId: line.storeId,
       businessDate: line.businessDate,
       posId: line.posId,
-      extendedAmount: line.extendedAmount,
-      grossAmount: line.grossAmount,
+      extendedAmount: extendedAmount,
+      grossAmount: grossAmount,
+      taxAmount: taxAmt,
+      netAmount: netAmount,
+      discountAmount: discountAmount,
       grossQuantity: line.grossQuantity,
       itemDescription: line.itemDescription,
       itemId: line.itemId,
       itemIdEntryMethod: line.itemIdEntryMethod,
       lineItemSeq: line.lineItemSeq,
-      netAmount: line.netAmount,
       netQuantity: line.netQuantity,
       nonExchangeableFlag: line.nonExchangeableFlag,
       nonReturnableFlag: line.nonReturnableFlag,
@@ -132,7 +148,6 @@ class TransactionHelper {
       returnTypeCode: line.returnTypeCode,
       returnedQuantity: line.returnedQuantity,
       serialNumber: line.serialNumber,
-      taxAmount: line.taxAmount,
       taxGroupId: line.taxGroupId,
       unitPrice: line.unitPrice,
       vendorId: line.vendorId,
@@ -141,21 +156,34 @@ class TransactionHelper {
       priceOverride: line.priceOverride,
       priceOverrideAmount: line.priceOverrideAmount,
       priceOverrideReason: line.priceOverrideReason,
-      discountAmount: line.lineModifiers.fold(discountAmount,
-              (previousValue, element) => previousValue + element.amount)
     );
     modifiedLine.lineModifiers.addAll(line.lineModifiers);
     modifiedLine.lineModifiers.add(modifier);
     return modifiedLine;
   }
 
-  static TransactionLineItemEntity changeLineItemTax(TransactionLineItemEntity line, double taxAmount, String reasonCode) {
-
-    double grossAmount = line.unitPrice * line.quantity;
-    double taxAmt = taxAmount * line.quantity;
-    double extendedAmount = grossAmount - line.discountAmount + taxAmt;
-    double netAmount = grossAmount;
+  static TransactionLineItemEntity changeLineItemTax(
+      TransactionLineItemEntity line, double taxAmount, String reasonCode,
+      {required TaxCalculationMethod taxCalculationMethod,
+      required TaxApplicationMethod taxApplicationMethod}) {
+    // Calculate all the amount again for the item and assign
     double discountAmount = line.discountAmount;
+    double unitPrice = line.unitPrice;
+
+    double grossAmount = unitPrice * line.quantity;
+    double netAmount = grossAmount - discountAmount;
+
+    // @TODO Recalculate the tax based on the new discount amount
+    double unitTaxAmount = taxAmount;
+    if (TaxCalculationMethod.percentage == taxCalculationMethod) {
+      unitTaxAmount = unitPrice * taxAmount / 100;
+    } else if (TaxCalculationMethod.amount == taxCalculationMethod) {
+      unitTaxAmount = taxAmount;
+    }
+
+    double taxAmt = unitTaxAmount * line.quantity;
+
+    double extendedAmount = netAmount + taxAmt;
 
     TransactionLineItemEntity res = TransactionLineItemEntity(
       storeId: line.storeId,
@@ -163,12 +191,14 @@ class TransactionHelper {
       posId: line.posId,
       extendedAmount: extendedAmount,
       grossAmount: grossAmount,
+      taxAmount: taxAmt,
+      netAmount: netAmount,
+      discountAmount: discountAmount,
       grossQuantity: line.grossQuantity,
       itemDescription: line.itemDescription,
       itemId: line.itemId,
       itemIdEntryMethod: line.itemIdEntryMethod,
       lineItemSeq: line.lineItemSeq,
-      netAmount: netAmount,
       netQuantity: line.netQuantity,
       nonExchangeableFlag: line.nonExchangeableFlag,
       nonReturnableFlag: line.nonReturnableFlag,
@@ -184,8 +214,6 @@ class TransactionHelper {
       returnTypeCode: line.returnTypeCode,
       returnedQuantity: line.returnedQuantity,
       serialNumber: line.serialNumber,
-      taxAmount: taxAmt,
-      discountAmount: discountAmount,
       taxGroupId: line.taxGroupId,
       unitPrice: line.unitPrice,
       vendorId: line.vendorId,
@@ -199,14 +227,19 @@ class TransactionHelper {
     return res;
   }
 
-  static TransactionLineItemEntity changeLineItemQuantity(TransactionLineItemEntity line, double quantity, String reasonCode) {
+  static TransactionLineItemEntity changeLineItemQuantity(
+      TransactionLineItemEntity line, double quantity, String reasonCode) {
+    // Calculate all the amount again for the item and assign
+    double discountAmount = 0.0;
 
-    double unitTaxAmount = line.taxAmount / line.quantity;
     double grossAmount = line.unitPrice * quantity;
+    double netAmount = grossAmount - discountAmount;
+
+    // @TODO Recalculate the tax based on the new discount amount
+    double unitTaxAmount = line.taxAmount / line.quantity;
     double taxAmt = unitTaxAmount * quantity;
-    double extendedAmount = grossAmount - line.discountAmount + taxAmt;
-    double netAmount = grossAmount;
-    double discountAmount = line.discountAmount;
+
+    double extendedAmount = netAmount + taxAmt;
 
     TransactionLineItemEntity res = TransactionLineItemEntity(
       storeId: line.storeId,
@@ -214,12 +247,14 @@ class TransactionHelper {
       posId: line.posId,
       extendedAmount: extendedAmount,
       grossAmount: grossAmount,
+      netAmount: netAmount,
+      taxAmount: taxAmt,
+      discountAmount: discountAmount,
       grossQuantity: line.grossQuantity,
       itemDescription: line.itemDescription,
       itemId: line.itemId,
       itemIdEntryMethod: line.itemIdEntryMethod,
       lineItemSeq: line.lineItemSeq,
-      netAmount: netAmount,
       netQuantity: line.netQuantity,
       nonExchangeableFlag: line.nonExchangeableFlag,
       nonReturnableFlag: line.nonReturnableFlag,
@@ -235,8 +270,6 @@ class TransactionHelper {
       returnTypeCode: line.returnTypeCode,
       returnedQuantity: line.returnedQuantity,
       serialNumber: line.serialNumber,
-      taxAmount: taxAmt,
-      discountAmount: discountAmount,
       taxGroupId: line.taxGroupId,
       unitPrice: line.unitPrice,
       vendorId: line.vendorId,
@@ -246,7 +279,6 @@ class TransactionHelper {
       priceOverrideAmount: line.priceOverrideAmount,
       priceOverrideReason: line.priceOverrideReason,
     );
-    res.lineModifiers.addAll(line.lineModifiers);
     return res;
   }
 }

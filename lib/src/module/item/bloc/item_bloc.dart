@@ -25,7 +25,11 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
   }
 
   void _onLoadExistingItem(LoadExistingItem event, Emitter<ItemState> emit) async {
-    if (event.productId == null) return;
+    if (event.productId == null) {
+      emit(state.copyWith(status: ItemStatus.newProduct));
+      return;
+    }
+    emit(state.copyWith(status: ItemStatus.loading,));
     try {
       var product = await db.productEntitys.getByProductId(event.productId);
       if (product != null) {

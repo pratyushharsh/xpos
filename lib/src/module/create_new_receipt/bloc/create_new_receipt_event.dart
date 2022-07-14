@@ -64,11 +64,18 @@ class OnReturnLineItemEvent extends CreateNewReceiptEvent {
   OnReturnLineItemEvent(this.returnMap);
 }
 
-class OnApplyDiscountAmount extends CreateNewReceiptEvent {
+class OnApplyLineItemDiscountAmount extends CreateNewReceiptEvent {
   final TransactionLineItemEntity saleLine;
   final String reason;
   final double discountAmount;
-  OnApplyDiscountAmount({required this.saleLine, required this.discountAmount, required this.reason,});
+  OnApplyLineItemDiscountAmount({required this.saleLine, required this.discountAmount, required this.reason,});
+}
+
+class OnApplyLineItemDiscountPercent extends CreateNewReceiptEvent {
+  final TransactionLineItemEntity saleLine;
+  final String reason;
+  final double discountPercent;
+  OnApplyLineItemDiscountPercent({required this.saleLine, required this.discountPercent, required this.reason,});
 }
 
 class OnChangeLineItemTaxAmount extends CreateNewReceiptEvent {
@@ -76,4 +83,11 @@ class OnChangeLineItemTaxAmount extends CreateNewReceiptEvent {
   final String reason;
   final double taxAmount;
   OnChangeLineItemTaxAmount({required this.saleLine, required this.taxAmount, required this.reason,});
+}
+
+class OnChangeLineItemTaxPercent extends CreateNewReceiptEvent {
+  final TransactionLineItemEntity saleLine;
+  final String reason;
+  final double taxPercent;
+  OnChangeLineItemTaxPercent({required this.saleLine, required this.taxPercent, required this.reason,});
 }

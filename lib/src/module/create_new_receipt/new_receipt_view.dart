@@ -300,76 +300,11 @@ class NewLineItem extends StatefulWidget {
     fontWeight: FontWeight.bold,
   );
 
-  static _NewLineItemState of(BuildContext context) {
-    final state = context.findAncestorStateOfType<_NewLineItemState>();
-    if (state != null) {
-      return state;
-    } else {
-      throw Exception('Please provide ShowCaseView context');
-    }
-  }
-
   @override
   State<NewLineItem> createState() => _NewLineItemState();
 }
 
 class _NewLineItemState extends State<NewLineItem> {
-  OverlayEntry? _overlayEntry;
-  late GlobalKey _key;
-
-  @override
-  initState() {
-    super.initState();
-    _key = LabeledGlobalKey(
-        "${widget.saleLine.transSeq}-${widget.saleLine.lineItemSeq}");
-  }
-
-  @override
-  dispose() {
-    _overlayEntry?.remove();
-    super.dispose();
-  }
-
-  // Widget buildLineItemButton() {
-  //   return Row(
-  //     children: [
-  //       ElevatedButton(
-  //         onPressed: () {},
-  //         child: const Text('Update Price'),
-  //       ),
-  //       ElevatedButton(
-  //         onPressed: () {},
-  //         child: const Text('Add Discount'),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // void onTap() {
-  //
-  //   if (_overlayEntry != null) {
-  //     _overlayEntry!.remove();
-  //   }
-  //
-  //   final RenderBox itemBox = _key.currentContext?.findRenderObject()! as RenderBox;
-  //   var boxOffset = itemBox.localToGlobal(Offset.zero);
-  //
-  //   _overlayEntry = OverlayEntry(
-  //     builder: (context) {
-  //       return Positioned(
-  //         top: boxOffset.dy + itemBox.size.height + 10,
-  //         left: boxOffset.dx,
-  //         child: Material(
-  //           color: Colors.transparent,
-  //           child: buildLineItemButton(),
-  //         ),
-  //       );
-  //     },
-  //   );
-  //
-  //   final overlay = Overlay.of(context);
-  //   overlay?.insert(_overlayEntry!);
-  // }
 
   void onTap() {
     if (Platform.isIOS || Platform.isAndroid) {
@@ -492,7 +427,7 @@ class _NewLineItemState extends State<NewLineItem> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "${Currency.inr}${widget.saleLine.extendedAmount.toStringAsFixed(2)}",
+                      "${Currency.inr}${widget.saleLine.netAmount.toStringAsFixed(2)}",
                       style: NewLineItem.textStyle,
                     ),
                   ),
@@ -514,7 +449,7 @@ class _NewLineItemState extends State<NewLineItem> {
                               size: 16,
                             ),
                           ),
-                          Text(e.description),
+                          Text(e.description ?? ""),
                         ],
                       ),
                       Padding(

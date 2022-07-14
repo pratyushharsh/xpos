@@ -85,8 +85,7 @@ class ItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onTap: () {},
-        onLongPress: () {
+        onTap: () {
           Navigator.of(context).pushNamed(RouteConfig.editItemScreen,
               arguments: product.productId);
         },

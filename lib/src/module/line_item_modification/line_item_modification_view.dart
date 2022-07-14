@@ -10,9 +10,12 @@ import '../../util/text_input_formatter/widget.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 import '../create_new_receipt/sale_complete_dialog.dart';
+import 'line_item_tax_modification.dart';
 
 enum LineItemModificationType { price, quantity, discount, tax }
+
 enum TaxCalculationMethod { percentage, amount }
+
 enum DiscountCalculationMethod { percentage, amount }
 
 class LineItemModificationView extends StatefulWidget {
@@ -290,18 +293,22 @@ class LineItemDiscountModifyView extends StatefulWidget {
 
 class _LineItemDiscountModifyViewState
     extends State<LineItemDiscountModifyView> {
-  late TextEditingController _controller;
+  late TextEditingController _discountAmountController;
+  late TextEditingController _discountPercentageController;
   double discountAmount = 0;
+  double discountPercentage = 0;
   DiscountCalculationMethod method = DiscountCalculationMethod.amount;
   @override
   initState() {
     super.initState();
-    _controller = TextEditingController();
+    _discountAmountController = TextEditingController();
+    _discountPercentageController = TextEditingController();
   }
 
   @override
   dispose() {
-    _controller.dispose();
+    _discountAmountController.dispose();
+    _discountPercentageController.dispose();
     super.dispose();
   }
 
@@ -311,57 +318,72 @@ class _LineItemDiscountModifyViewState
       margin: const EdgeInsets.all(12),
       child: Column(
         children: [
-          Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    title: const Text('Amount Off'),
-                    leading: Radio<DiscountCalculationMethod>(
-                      fillColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
-                      focusColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
-                      value: DiscountCalculationMethod.amount,
-                      groupValue: method,
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            method = value;
-                          });
-                        }
-                      },
-                    ),
-                  ),
+          Row(children: [
+            Expanded(
+              child: ListTile(
+                title: const Text('Amount Off'),
+                leading: Radio<DiscountCalculationMethod>(
+                  fillColor: MaterialStateColor.resolveWith(
+                      (states) => AppColor.primary),
+                  focusColor: MaterialStateColor.resolveWith(
+                      (states) => AppColor.primary),
+                  value: DiscountCalculationMethod.amount,
+                  groupValue: method,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        method = value;
+                      });
+                    }
+                  },
                 ),
-                Expanded(
-                  child: ListTile(
-                    title: const Text('Percentage Off'),
-                    leading: Radio<DiscountCalculationMethod>(
-                      fillColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
-                      focusColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
-                      value: DiscountCalculationMethod.percentage,
-                      groupValue: method,
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            method = value;
-                          });
-                        }
-                      },
-                    ),
-                  ),
+              ),
+            ),
+            Expanded(
+              child: ListTile(
+                title: const Text('Percentage Off'),
+                leading: Radio<DiscountCalculationMethod>(
+                  fillColor: MaterialStateColor.resolveWith(
+                      (states) => AppColor.primary),
+                  focusColor: MaterialStateColor.resolveWith(
+                      (states) => AppColor.primary),
+                  value: DiscountCalculationMethod.percentage,
+                  groupValue: method,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        method = value;
+                      });
+                    }
+                  },
                 ),
-              ]
-          ),
-          CustomTextField(
-            label: "Enter Discount Amount",
-            controller: _controller,
-            textInputType: TextInputType.number,
-            inputFormatters: [CustomInputTextFormatter.positiveNumber],
-            onValueChange: (val) {
-              setState(() {
-                discountAmount = double.tryParse(val) ?? 0;
-              });
-            },
-          ),
+              ),
+            ),
+          ]),
+          if (method == DiscountCalculationMethod.amount)
+            CustomTextField(
+              label: "Enter Discount Amount",
+              controller: _discountAmountController,
+              textInputType: TextInputType.number,
+              inputFormatters: [CustomInputTextFormatter.positiveNumber],
+              onValueChange: (val) {
+                setState(() {
+                  discountAmount = double.tryParse(val) ?? 0;
+                });
+              },
+            ),
+          if (method == DiscountCalculationMethod.percentage)
+            CustomTextField(
+              label: "Enter Discount Percentage",
+              controller: _discountPercentageController,
+              textInputType: TextInputType.number,
+              inputFormatters: [CustomInputTextFormatter.positiveNumber],
+              onValueChange: (val) {
+                setState(() {
+                  discountPercentage = double.tryParse(val) ?? 0;
+                });
+              },
+            ),
           Expanded(child: Container()),
           Row(
             children: [
@@ -374,145 +396,48 @@ class _LineItemDiscountModifyViewState
                 ),
               ),
               const SizedBox(width: 10),
-              Expanded(
-                child: AcceptButton(
-                  label: "Apply Discount",
-                  onPressed: discountAmount >= 0
-                      ? () {
-                          Navigator.pop(
-                            context,
-                            OnApplyDiscountAmount(
+              if (method == DiscountCalculationMethod.amount)
+                Expanded(
+                  child: AcceptButton(
+                    label: "Apply Discount",
+                    onPressed: discountAmount >= 0
+                        ? () {
+                            Navigator.pop(
+                              context,
+                              OnApplyLineItemDiscountAmount(
+                                  saleLine:
+                                      BlocProvider.of<LineItemModificationBloc>(
+                                              context)
+                                          .lineItem,
+                                  discountAmount: discountAmount,
+                                  reason: "Discount Amount Changed"),
+                            );
+                          }
+                        : null,
+                  ),
+                ),
+              if (method == DiscountCalculationMethod.percentage)
+                Expanded(
+                  child: AcceptButton(
+                    label: "Apply Discount Percentage",
+                    onPressed: discountPercentage >= 0 &&
+                            discountPercentage <= 100
+                        ? () {
+                            Navigator.pop(
+                              context,
+                              OnApplyLineItemDiscountPercent(
                                 saleLine:
                                     BlocProvider.of<LineItemModificationBloc>(
                                             context)
                                         .lineItem,
-                                discountAmount: discountAmount,
-                                reason: "Discount Amount Changed"),
-                          );
-                        }
-                      : null,
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class LineItemTaxModifyView extends StatefulWidget {
-  const LineItemTaxModifyView({Key? key}) : super(key: key);
-
-  @override
-  State<LineItemTaxModifyView> createState() => _LineItemTaxModifyViewState();
-}
-
-class _LineItemTaxModifyViewState extends State<LineItemTaxModifyView> {
-  late TextEditingController _controller;
-  double taxAmount = 0;
-  TaxCalculationMethod method = TaxCalculationMethod.amount;
-
-  @override
-  initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    title: const Text('Amount Off'),
-                    leading: Radio<TaxCalculationMethod>(
-                      fillColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
-                      focusColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
-                      value: TaxCalculationMethod.amount,
-                      groupValue: method,
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            method = value;
-                          });
-                        }
-                      },
-                    ),
+                                discountPercent: discountPercentage,
+                                reason: "Discount Percentage Changed",
+                              ),
+                            );
+                          }
+                        : null,
                   ),
                 ),
-                Expanded(
-                  child: ListTile(
-                    title: const Text('Percentage Off'),
-                    leading: Radio<TaxCalculationMethod>(
-                      fillColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
-                      focusColor: MaterialStateColor.resolveWith((states) => AppColor.primary),
-                      value: TaxCalculationMethod.percentage,
-                      groupValue: method,
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            method = value;
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ]
-          ),
-          CustomTextField(
-            label: "Enter Tax Amount",
-            textInputType: TextInputType.number,
-            controller: _controller,
-            onValueChange: (val) {
-              setState(() {
-                taxAmount = double.tryParse(val) ?? 0;
-              });
-            },
-            inputFormatters: [CustomInputTextFormatter.positiveNumber],
-          ),
-          Expanded(child: Container()),
-          Row(
-            children: [
-              Expanded(
-                child: RejectButton(
-                  label: "Cancel",
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: AcceptButton(
-                  label: "Change Tax",
-                  onPressed: taxAmount >= 0
-                      ? () {
-                          Navigator.pop(
-                            context,
-                            OnChangeLineItemTaxAmount(
-                                saleLine:
-                                    BlocProvider.of<LineItemModificationBloc>(
-                                            context)
-                                        .lineItem,
-                                taxAmount: taxAmount,
-                                reason: "Tax Changed"),
-                          );
-                        }
-                      : null,
-                ),
-              ),
             ],
           )
         ],

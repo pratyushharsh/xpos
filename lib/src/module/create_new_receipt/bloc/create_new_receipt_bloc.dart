@@ -12,7 +12,9 @@ import 'package:receipt_generator/src/module/authentication/bloc/authentication_
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 
-import '../../../util/helper/transaction_helper.dart';
+import '../../../pos/config/config.dart';
+import '../../../pos/helper/discount_helper.dart';
+import '../../../pos/helper/transaction_helper.dart';
 import '../../return_order/bloc/return_order_bloc.dart';
 
 part 'create_new_receipt_event.dart';
@@ -28,16 +30,18 @@ class CreateNewReceiptBloc
 
   CreateNewReceiptBloc(
       {required this.db,
-      required this.transactionRepository,
-      required this.authenticationBloc,
-      required this.sequenceRepository})
+        required this.transactionRepository,
+        required this.authenticationBloc,
+        required this.sequenceRepository})
       : super(const CreateNewReceiptState(
-            status: CreateNewReceiptStatus.initial)) {
+      status: CreateNewReceiptStatus.initial)) {
     on<AddItemToReceipt>(_onAddNewLineItem);
     on<OnQuantityUpdate>(_onQuantityUpdate);
     on<OnUnitPriceUpdate>(_onPriceUpdate);
-    on<OnApplyDiscountAmount>(_onLineItemDiscount);
+    on<OnApplyLineItemDiscountAmount>(_onLineItemDiscountAmount);
+    on<OnApplyLineItemDiscountPercent>(_onLineItemDiscountPercent);
     on<OnChangeLineItemTaxAmount>(_onChangeLineItemTaxAmount);
+    on<OnChangeLineItemTaxPercent>(_onChangeLineItemTaxPercent);
     on<OnInitiateNewTransaction>(_onInitiateTransaction);
     on<OnCreateNewTransaction>(_onCreateNewTransaction);
     on<OnCustomerSelect>(_onCustomerSelectEvent);
@@ -72,18 +76,22 @@ class CreateNewReceiptBloc
         businessDate: DateTime.now(),
         posId: 1,
         transSeq: state.transSeq,
-        lineItemSeq: seq + 1, 
+        lineItemSeq: seq + 1,
         itemId: event.product.productId!,
         itemDescription: event.product.displayName,
         quantity: 1,
         grossQuantity: 1,
         netQuantity: 1,
-        unitPrice: min(event.product.salePrice ?? 999999.00, event.product.listPrice ?? 999999.00),
-        extendedAmount: min(event.product.salePrice ?? 999999.00, event.product.listPrice ?? 999999.00),
+        unitPrice: min(event.product.salePrice ?? 999999.00,
+            event.product.listPrice ?? 999999.00),
+        extendedAmount: min(event.product.salePrice ?? 999999.00,
+            event.product.listPrice ?? 999999.00),
         itemIdEntryMethod: EntryMethod.keyboard,
         priceEntryMethod: EntryMethod.keyboard,
-        netAmount: min(event.product.salePrice ?? 999999.00, event.product.listPrice ?? 999999.00),
-        grossAmount: min(event.product.salePrice ?? 999999.00, event.product.listPrice ?? 999999.00),
+        netAmount: min(event.product.salePrice ?? 999999.00,
+            event.product.listPrice ?? 999999.00),
+        grossAmount: min(event.product.salePrice ?? 999999.00,
+            event.product.listPrice ?? 999999.00),
         taxGroupId: "TAX_GROUP",
         taxAmount: 0.00);
 
@@ -95,7 +103,8 @@ class CreateNewReceiptBloc
 
     List<TransactionLineItemEntity> newList = [...state.lineItem, newLine];
 
-    emit(state.copyWith(lineItem: newList, step: CreateSaleStep.item, productMap: pm));
+    emit(state.copyWith(
+        lineItem: newList, step: CreateSaleStep.item, productMap: pm));
     add(_VerifyOrderAndEmitState());
   }
 
@@ -114,7 +123,7 @@ class CreateNewReceiptBloc
         taxTotal: state.tax,
         subtotal: state.subTotal,
         roundTotal: 0.00,
-        status: SaleStatus.pending,
+        status: SaleStatus.completed,
         customerId: state.customer?.contactId,
         customerName: state.customer?.name,
         customerPhone: state.customer?.phoneNumber,
@@ -160,10 +169,11 @@ class CreateNewReceiptBloc
   void _onQuantityUpdate(
       OnQuantityUpdate event, Emitter<CreateNewReceiptState> emit) async {
     List<TransactionLineItemEntity> newList = [];
-    for(var line in state.lineItem){
+    for (var line in state.lineItem) {
       if (line == event.saleLine) {
-
-        TransactionLineItemEntity newLine = TransactionHelper.changeLineItemQuantity(line, event.quantity, event.reason);
+        TransactionLineItemEntity newLine =
+        TransactionHelper.changeLineItemQuantity(
+            line, event.quantity, event.reason);
         newList.add(newLine);
       } else {
         newList.add(line);
@@ -175,9 +185,11 @@ class CreateNewReceiptBloc
   void _onPriceUpdate(
       OnUnitPriceUpdate event, Emitter<CreateNewReceiptState> emit) async {
     List<TransactionLineItemEntity> newList = [];
-    for(var line in state.lineItem){
+    for (var line in state.lineItem) {
       if (line == event.saleLine) {
-        TransactionLineItemEntity newLineEntity = TransactionHelper.updateSaleReturnLineItemPrice(line, event.unitPrice, event.reason);
+        TransactionLineItemEntity newLineEntity =
+        TransactionHelper.updateSaleReturnLineItemPrice(
+            line, event.unitPrice, event.reason);
         newList.add(newLineEntity);
       } else {
         newList.add(line);
@@ -186,12 +198,75 @@ class CreateNewReceiptBloc
     emit(state.copyWith(lineItem: newList));
   }
 
-  void _onLineItemDiscount(
-      OnApplyDiscountAmount event, Emitter<CreateNewReceiptState> emit) async {
+  void _onLineItemDiscountAmount(OnApplyLineItemDiscountAmount event,
+      Emitter<CreateNewReceiptState> emit) async {
     List<TransactionLineItemEntity> newList = [];
-    for(var line in state.lineItem){
+    for (var line in state.lineItem) {
       if (line == event.saleLine) {
-        TransactionLineItemEntity newLineEntity = TransactionHelper.addNewLineItemDiscount(line, event.discountAmount, event.reason);
+        DiscountEntity discount = DiscountEntity(
+            discountId: 'DUMMY_DISCOUNT_ID',
+            amount: event.discountAmount,
+            discountType: DiscountCalculationMethod.amount.name,
+            description: '\$ ${event.discountAmount} OFF',
+            discountCode: 'MANUAL_DISCOUNT_CODE');
+
+        TransactionLineItemModifierEntity? discountLine =
+        DiscountHelper.createNewDiscountLineModifier(
+            line, discount, event.reason);
+        if (discountLine != null) {
+          TransactionLineItemEntity newLineEntity =
+          TransactionHelper.addNewLineItemModifier(line, discountLine);
+          newList.add(newLineEntity);
+        } else {
+          newList.add(line);
+        }
+      } else {
+        newList.add(line);
+      }
+    }
+    emit(state.copyWith(lineItem: newList));
+  }
+
+  void _onLineItemDiscountPercent(OnApplyLineItemDiscountPercent event,
+      Emitter<CreateNewReceiptState> emit) async {
+    List<TransactionLineItemEntity> newList = [];
+    for (var line in state.lineItem) {
+      if (line == event.saleLine) {
+        DiscountEntity discount = DiscountEntity(
+            discountId: 'DUMMY_DISCOUNT_ID',
+            percent: event.discountPercent,
+            discountType: DiscountCalculationMethod.percentage.name,
+            description: '${event.discountPercent} % Discount OFF}',
+            discountCode: 'MANUAL_DISCOUNT_CODE');
+
+        TransactionLineItemModifierEntity? discountLine =
+        DiscountHelper.createNewDiscountLineModifier(
+            line, discount, event.reason);
+        if (discountLine != null) {
+          TransactionLineItemEntity newLineEntity =
+          TransactionHelper.addNewLineItemModifier(line, discountLine);
+          newList.add(newLineEntity);
+        } else {
+          newList.add(line);
+        }
+      } else {
+        newList.add(line);
+      }
+    }
+    emit(state.copyWith(lineItem: newList));
+  }
+
+  void _onChangeLineItemTaxAmount(OnChangeLineItemTaxAmount event,
+      Emitter<CreateNewReceiptState> emit) async {
+    List<TransactionLineItemEntity> newList = [];
+    for (var line in state.lineItem) {
+      if (line == event.saleLine) {
+        TransactionLineItemEntity newLineEntity =
+        TransactionHelper.changeLineItemTax(
+            line, event.taxAmount, event.reason,
+            taxApplicationMethod: TaxApplicationMethod.all,
+            taxCalculationMethod: TaxCalculationMethod.amount
+        );
         newList.add(newLineEntity);
       } else {
         newList.add(line);
@@ -200,12 +275,17 @@ class CreateNewReceiptBloc
     emit(state.copyWith(lineItem: newList));
   }
 
-  void _onChangeLineItemTaxAmount(
-      OnChangeLineItemTaxAmount event, Emitter<CreateNewReceiptState> emit) async {
+  void _onChangeLineItemTaxPercent(OnChangeLineItemTaxPercent event,
+      Emitter<CreateNewReceiptState> emit) async {
     List<TransactionLineItemEntity> newList = [];
-    for(var line in state.lineItem){
+    for (var line in state.lineItem) {
       if (line == event.saleLine) {
-        TransactionLineItemEntity newLineEntity = TransactionHelper.changeLineItemTax(line, event.taxAmount, event.reason);
+        TransactionLineItemEntity newLineEntity =
+        TransactionHelper.changeLineItemTax(
+            line, event.taxPercent, event.reason,
+            taxApplicationMethod: TaxApplicationMethod.all,
+            taxCalculationMethod: TaxCalculationMethod.percentage
+        );
         newList.add(newLineEntity);
       } else {
         newList.add(line);
@@ -216,20 +296,22 @@ class CreateNewReceiptBloc
 
   void _onAddNewTenderLineItem(
       OnAddNewTenderLine event, Emitter<CreateNewReceiptState> emit) async {
-    int seq =  state.tenderLine.length;
+    int seq = state.tenderLine.length;
 
     TransactionPaymentLineItemEntity newLine = TransactionPaymentLineItemEntity(
-      transId: state.transSeq,
-      amount: event.amount,
-      beginDate: DateTime.now(),
-      currencyId: "INR",
-      paymentSeq: seq + 1,
-      tenderId: event.tenderType,
-      tenderStatusCode: "CNF",
-      endDate: DateTime.now()
-    );
+        transId: state.transSeq,
+        amount: event.amount,
+        beginDate: DateTime.now(),
+        currencyId: "INR",
+        paymentSeq: seq + 1,
+        tenderId: event.tenderType,
+        tenderStatusCode: "CNF",
+        endDate: DateTime.now());
 
-    List<TransactionPaymentLineItemEntity> newList = [...state.tenderLine, newLine];
+    List<TransactionPaymentLineItemEntity> newList = [
+      ...state.tenderLine,
+      newLine
+    ];
 
     emit(state.copyWith(tenderLine: newList));
     add(_VerifyOrderAndEmitState());
@@ -254,14 +336,15 @@ class CreateNewReceiptBloc
     }
   }
 
-  void _onReturnLineItem(OnReturnLineItemEvent event, Emitter<CreateNewReceiptState> emit) async {
+  void _onReturnLineItem(
+      OnReturnLineItemEvent event, Emitter<CreateNewReceiptState> emit) async {
     // Create a new Return Line Item
     int seq = state.lineItem.length + state.tenderLine.length;
 
     List<TransactionLineItemEntity> newList = [...state.lineItem];
     Map<String, ProductEntity> pm = Map.from(state.productMap);
 
-    for(var line in event.returnMap.keys) {
+    for (var line in event.returnMap.keys) {
       var returnData = event.returnMap[line];
       var returnLine = TransactionLineItemEntity(
         storeId: line.storeId,
@@ -299,13 +382,17 @@ class CreateNewReceiptBloc
       );
       newList.add(returnLine);
 
-      ProductEntity? pe = db.productEntitys.where().productIdEqualTo(line.itemId).findFirstSync();
+      ProductEntity? pe = db.productEntitys
+          .where()
+          .productIdEqualTo(line.itemId)
+          .findFirstSync();
       if (pe != null) {
         pm.putIfAbsent(line.itemId, () => pe);
       }
     }
 
-    emit(state.copyWith(lineItem: newList, step: CreateSaleStep.item, productMap: pm));
+    emit(state.copyWith(
+        lineItem: newList, step: CreateSaleStep.item, productMap: pm));
     // add(_VerifyOrderAndEmitState());
   }
 }
