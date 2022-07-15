@@ -22,6 +22,8 @@ import 'package:receipt_generator/src/repositories/sync_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
+import 'src/repositories/reason_code_repository.dart';
+
 class MyApp extends StatelessWidget {
   final Isar database;
   final CognitoUserPool userPool;
@@ -72,6 +74,10 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(
             create: (context) =>
                 ConfigRepository(db: database),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                ReasonCodeRepository(db: database, restClient: restClient),
           ),
         ],
         child: MultiBlocProvider(providers: [

@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/bloc/create_new_receipt_bloc.dart';
 import 'package:receipt_generator/src/module/line_item_modification/bloc/line_item_modification_bloc.dart';
 
+import '../../config/constants.dart';
 import '../../config/theme_settings.dart';
 import '../../entity/pos/entity.dart';
 import '../../util/text_input_formatter/widget.dart';
@@ -60,6 +64,10 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           const Divider(),
+          ModifyLineItemViewCard(
+            lineItem: widget.lineItem,
+            productModel: widget.productModel,
+          ),
           SizedBox(
             height: 90,
             child: Row(
@@ -121,6 +129,63 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
     );
   }
 }
+
+class ModifyLineItemViewCard extends StatelessWidget {
+  final TransactionLineItemEntity lineItem;
+  final ProductEntity? productModel;
+  const ModifyLineItemViewCard({Key? key, required this.lineItem, this.productModel}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          (productModel != null && productModel!.imageUrl.isNotEmpty) ?
+          Image.file(
+              File(Constants.baseImagePath + productModel!.imageUrl[0]),
+              fit: BoxFit.cover,
+              height: 100,
+              width: 100, errorBuilder: (context, obj, trace) {
+            return const SizedBox(
+              height: 100,
+              width: 100,
+            );
+          }) : Image.network(
+            "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+            fit: BoxFit.cover,
+            height: 100,
+            width: 100,
+            errorBuilder: (context, obj, trace) {
+              return const SizedBox(
+                height: 100,
+                width: 100,
+              );
+            },
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                productModel?.displayName ?? "",
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "SKU Code: ${productModel?.skuCode ?? ""}",
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
+              ),
+              Text(
+                "Sale Price: ${NumberFormat.simpleCurrency(locale: "en_IN").format(lineItem.unitPrice)}",
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
+              )
+            ]
+          )
+        ]
+      )
+    );
+  }
+}
+
 
 class LineItemPriceModifyView extends StatefulWidget {
   const LineItemPriceModifyView({Key? key}) : super(key: key);

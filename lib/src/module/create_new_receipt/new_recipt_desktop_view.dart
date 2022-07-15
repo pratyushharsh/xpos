@@ -10,6 +10,8 @@ import 'package:receipt_generator/src/widgets/widgets.dart';
 import '../../config/constants.dart';
 import '../../config/currency.dart';
 import '../../config/theme_settings.dart';
+import '../../util/text_input_formatter/currency_text_input_formatter.dart';
+import '../../widgets/keypad_overlay/keypad_overlay.dart';
 import '../calculator/calculator.dart';
 import '../item_search/bloc/item_search_bloc.dart';
 import '../return_order/return_order_view.dart';
@@ -337,6 +339,7 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
   String selectedTender = "";
   String amount = "";
   late TextEditingController tenderController;
+  GlobalKey _Calkey = GlobalKey();
 
   void _printLatestValue() {
     setState(() {
@@ -371,16 +374,12 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Calculator(
-            controller: tenderController,
-          ),
           Positioned(
-            child: SizedBox(
-                width: 250,
-                child: NumberTextBox(
-                  controller: tenderController,
-                )),
-            right: 10,
+            child: NumberTextBox(
+              controller: tenderController,
+            ),
+            right: 0,
+            left: 0,
             top: 10,
           ),
           Positioned(
@@ -537,67 +536,62 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
   }
 }
 
-class NumberTextBox extends StatelessWidget {
+class NumberTextBox extends StatefulWidget {
   final TextEditingController controller;
+
   const NumberTextBox({Key? key, required this.controller}) : super(key: key);
 
   @override
+  State<NumberTextBox> createState() => _NumberTextBoxState();
+}
+
+class _NumberTextBoxState extends State<NumberTextBox> {
+  final GlobalKey _overlayKey = GlobalKey();
+  final FocusNode _focus = FocusNode();
+  bool _isNodeFocus = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(_onFocusChange);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _focus.removeListener(_onFocusChange);
+    _focus.dispose();
+  }
+
+  void _onFocusChange() {
+    debugPrint("Focus: ${_focus.hasFocus.toString()}");
+    setState(() {
+      _isNodeFocus = _focus.hasFocus;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      autocorrect: false,
-      decoration: const InputDecoration(
-        border: InputBorder.none,
+    return KeypadOverlay(
+      overlayPadding: const EdgeInsets.all(0),
+      key: _overlayKey,
+      showOverlay: _isNodeFocus,
+      child: TextFormField(
+        focusNode: _focus,
+        controller: widget.controller,
+        autocorrect: false,
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+        ),
+        textAlign: TextAlign.right,
+        style: const TextStyle(
+          fontSize: 40,
+        ),
+        inputFormatters: [CurrencyTextInputFormatter(locale: "en_IE")],
+        cursorColor: Colors.black,
       ),
-      textAlign: TextAlign.right,
-      style: const TextStyle(
-        fontSize: 40,
-      ),
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        CardNumberFormatter()
-      ],
-      cursorColor: Colors.black,
-    );
-  }
-}
-
-class CurrencyInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    print("OLD VALUE: $oldValue");
-    print("NEW VALUE: $newValue");
-    return newValue;
-  }
-}
-
-class CardNumberFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue prevValue,
-    TextEditingValue nextValue,
-  ) {
-    var inputText = nextValue.text;
-
-    if (nextValue.selection.baseOffset == 0) {
-      return nextValue;
-    }
-
-    var bufferString = StringBuffer();
-    for (int i = 0; i < inputText.length; i++) {
-      bufferString.write(inputText[i]);
-      var nonZeroIndexValue = i + 1;
-      if (nonZeroIndexValue % 4 == 0 && nonZeroIndexValue != inputText.length) {
-        bufferString.write(' ');
-      }
-    }
-
-    var string = bufferString.toString();
-    return nextValue.copyWith(
-      text: string,
-      selection: TextSelection.collapsed(
-        offset: string.length,
+      overlayWidget: Keypad(
+        controller: widget.controller,
       ),
     );
   }

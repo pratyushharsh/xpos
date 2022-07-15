@@ -7,13 +7,13 @@ import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:receipt_generator/src/entity/config/code_value_entity.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
-import 'package:receipt_generator/src/entity/pos/trn_line_item_modifier.dart';
 import 'package:receipt_generator/src/repositories/custom_storage.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 import 'bloc_observer.dart';
 import 'log.dart';
 import 'my_app.dart';
+import 'src/entity/pos/reason_code_entity.dart';
 
 final log = Logger('Main');
 
@@ -40,7 +40,8 @@ Future<void> main() {
         TransactionLineItemEntitySchema,
         TransactionPaymentLineItemEntitySchema,
         TransactionLineItemModifierEntitySchema,
-        CodeValueEntitySchema
+        CodeValueEntitySchema,
+        ReasonCodeEntitySchema
       ],
       directory: dir.path,
     );

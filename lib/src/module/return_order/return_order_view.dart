@@ -4,7 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
+import '../../entity/pos/reason_code_entity.dart';
+import '../../repositories/reason_code_repository.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_dropdown.dart';
 import 'bloc/return_order_bloc.dart';
 
 // Step To Return A Order
@@ -142,6 +145,7 @@ class ReturnOrderLineItem extends StatefulWidget {
 
 class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
   bool _checked = false;
+  ReasonCodeEntity? _reasonCode;
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +169,8 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                           BlocProvider.of<ReturnOrderBloc>(context).add(
                             AddLineItemToReturn(
                               lineItem: widget.lineItem,
-                              returnLineItemParameters: ReturnLineItemParameters(
+                              returnLineItemParameters:
+                                  ReturnLineItemParameters(
                                 quantity: widget.lineItem.quantity -
                                     widget.returnedQuantity,
                                 reasonCode: ["RETURNED"],
@@ -174,7 +179,8 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                           );
                         } else {
                           BlocProvider.of<ReturnOrderBloc>(context).add(
-                              RemoveLineItemFromReturn(lineItem: widget.lineItem));
+                              RemoveLineItemFromReturn(
+                                  lineItem: widget.lineItem));
                         }
                       }
                     });
@@ -201,7 +207,26 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                   ),
                 ),
               ]),
-              Row(children: [],)
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomDropDown<ReasonCodeEntity>(
+                      value: _reasonCode,
+                      data: RepositoryProvider.of<ReasonCodeRepository>(context)
+                          .getReasonCodeByTypeCode("RETURN")
+                          .map((e) => DropDownData<ReasonCodeEntity>(
+                              key: e, value: e.description))
+                          .toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          _reasonCode = val;
+                        });
+                      },
+                      label: 'State',
+                    ),
+                  )
+                ],
+              )
             ],
           ),
         ),

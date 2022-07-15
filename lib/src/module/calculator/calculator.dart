@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class Calculator extends StatefulWidget {
+class Keypad extends StatefulWidget {
   final TextEditingController? controller;
-  const Calculator({Key? key, this.controller}) : super(key: key);
+  const Keypad({Key? key, this.controller}) : super(key: key);
 
   @override
-  State<Calculator> createState() => _CalculatorState();
+  State<Keypad> createState() => _KeypadState();
 }
 
-class _CalculatorState extends State<Calculator> {
+class _KeypadState extends State<Keypad> {
   late TextEditingController? controller;
-
-  _CalculatorState({this.controller});
 
   @override
   void initState() {
@@ -24,12 +23,22 @@ class _CalculatorState extends State<Calculator> {
   }
 
   void onClick(String val) {
-    String tmp = controller!.text;
+    String tmp = controller!.text.replaceAll(RegExp(r'\D'),'');
+
     if (val == "<" && tmp.isNotEmpty) {
-      controller!.text = tmp.substring(0, tmp.length - 1);
+      tmp = tmp.substring(0, tmp.length - 1);
     } else if (val != "<") {
-      controller!.text = tmp + val; 
+      tmp = tmp + val;
     }
+
+    final formatter = NumberFormat.simpleCurrency(locale: 'uk');
+
+    String newText = formatter.format((double.tryParse(tmp) ?? 0.0) / 100);
+
+    controller!.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newText.length)
+    );
   }
 
   @override

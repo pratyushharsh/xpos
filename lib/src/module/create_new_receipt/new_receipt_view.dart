@@ -570,6 +570,9 @@ class NewInvoiceButtonBar extends StatelessWidget {
                         ? () {
                             BlocProvider.of<CreateNewReceiptBloc>(context)
                                 .add(OnChangeSaleStep(CreateSaleStep.payment));
+                            if (Platform.isIOS || Platform.isAndroid) {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => AcceptTenderDisplayMobile()));
+                            }
                           }
                         : null,
                     label: "Proceed To Pay",

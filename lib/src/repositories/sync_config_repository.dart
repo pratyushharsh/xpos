@@ -15,6 +15,8 @@ class SyncConfigRepository {
 
   SyncConfigRepository({ required this.db });
 
+
+
   Future<void> getDataFromServer() async {
     String url = "https://xpos-user-dev.s3.ap-south-1.amazonaws.com/config/config.zip";
     final response = await http.get(Uri.parse(url));
@@ -39,8 +41,6 @@ class SyncConfigRepository {
           isar.codeValueEntitys.put(CodeValueEntity(category: category, code: c[0].toString(), value: c[1].toString(), description: c[1].toString()), replaceOnConflict: true);
         }
       });
-
-      log.info(res);
     }
   }
 
