@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/sale_complete_dialog.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
@@ -319,48 +320,34 @@ class TenderDisplayDesktop extends StatefulWidget {
 
 class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
   String selectedTender = "";
-  String amount = "";
   late MoneyEditingController tenderController;
   late FocusNode tenderFocusNode;
-
-  void _printLatestValue() {
-    setState(() {
-      amount =
-          "${Currency.inr} ${((double.tryParse(tenderController.text) ?? 0.0) * 0.01).toStringAsFixed(2)}";
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    tenderController = MoneyEditingController(text: "0.00");
-    tenderController.addListener(_printLatestValue);
+    tenderController = MoneyEditingController(formatter: NumberFormat.simpleCurrency(locale: "en_IN"));
     tenderFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     tenderController.dispose();
-    super.dispose();
     tenderFocusNode.dispose();
+    super.dispose();
   }
 
   void onSelectNewTender(String val) {
     setState(() {
       selectedTender = val;
-      if (val.isNotEmpty) {
-        FocusScope.of(context).requestFocus(tenderFocusNode);
-      }
     });
+    FocusScope.of(context).requestFocus(tenderFocusNode);
   }
 
   double validAmount() {
     try {
-      String amount = tenderController.text;
-      int idx = amount.length -  amount.indexOf(".");
-      num baseFactor = idx > 0 ? pow(10, idx) : 1.0;
-      double value = double.parse(amount.replaceAll(RegExp(r'\D'),'')) / baseFactor;
-      return value;
+      MoneyTextEditingValue amount = tenderController.value as MoneyTextEditingValue;
+      return amount.moneyValue;
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -657,7 +644,6 @@ class _TenderAmountTextFieldState extends State<TenderAmountTextField> {
         style: const TextStyle(
           fontSize: 70,
         ),
-        inputFormatters: [ CurrencyTextInputFormatter(locale: "en_IN")],
         keyboardType: TextInputType.number,
         cursorColor: Colors.black,
       ),

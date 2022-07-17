@@ -73,7 +73,6 @@ class _KeypadWidgetState extends State<KeypadWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.position);
     return Positioned(
         right: widget.parentPosition.right,
         top: widget.parentPosition.bottom,

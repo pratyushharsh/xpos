@@ -19,10 +19,9 @@ class CurrencyTextInputFormatter extends TextInputFormatter {
     double value = double.parse(newValue.text.replaceAll(RegExp(r'\D'),''));
 
     final formatter = NumberFormat.simpleCurrency(locale: locale);
-
     String newText = formatter.format(value / 100);
 
-    return newValue.copyWith(
+    return oldValue.copyWith(
         text: newText,
         selection: TextSelection(
             baseOffset: newText.length,

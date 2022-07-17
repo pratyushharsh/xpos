@@ -107,7 +107,7 @@ class _CashTenderState extends State<CashTender> {
             keyboardType: TextInputType.number,
             style: const TextStyle(
                 fontSize: 40, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-            inputFormatters: [CurrencyTextInputFormatter(locale: "en_IN")],
+            inputFormatters: [],
           ),
         ]));
   }

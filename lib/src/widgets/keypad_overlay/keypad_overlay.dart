@@ -53,10 +53,10 @@ class _KeypadOverlayState extends State<KeypadOverlay> {
           screenWidth: size.width,
           screenHeight: size.height,
         );
-        print('rectBound: $rectBound');
-        print('rectBound Size: ${rectBound.size}');
-        print('offset: $offset');
-        print('size: $size');
+        // print('rectBound: $rectBound');
+        // print('rectBound Size: ${rectBound.size}');
+        // print('offset: $offset');
+        // print('size: $size');
         return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
       },
     );
@@ -73,7 +73,7 @@ class _KeypadOverlayState extends State<KeypadOverlay> {
     // Set blur to 0 if application is running on web and
     // provided blur is less than 0.
     blur = kIsWeb && blur < 0 ? 0 : blur;
-    print("Building Taget");
+    // print("Building Taget");
     return Stack(
       children: [
         KeypadWidget(showArrow: true, position: position, offset: offset, parentPosition: rectBound, child: widget.overlayWidget),

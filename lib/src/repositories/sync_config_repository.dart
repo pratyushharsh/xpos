@@ -72,7 +72,7 @@ class SyncConfigRepository {
 
   Future<void> loadSampleProductAndImages() async {
     await loadSampleProductData();
-    // await loadSampleProductImageData();
+    await loadSampleProductImageData();
   }
 
   Future<void> loadSampleProductImageData() async {
