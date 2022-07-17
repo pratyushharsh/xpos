@@ -31,7 +31,7 @@ class _KeypadState extends State<Keypad> {
       tmp = tmp + val;
     }
 
-    final formatter = NumberFormat.simpleCurrency(locale: 'uk');
+    final formatter = NumberFormat.simpleCurrency(locale: 'en_IN');
 
     String newText = formatter.format((double.tryParse(tmp) ?? 0.0) / 100);
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/constants.dart';
-import 'package:receipt_generator/src/module/create_new_receipt/bloc/create_new_receipt_bloc.dart';
 
 import '../../config/theme_settings.dart';
+import '../../widgets/custom_button.dart';
 
 typedef OnButtonCallback = void Function();
 
@@ -12,49 +12,57 @@ class SaleCompleteDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Card(
-        color: Colors.white,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 750, maxHeight: 750),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 8,
-              ),
-              const Text(
-                "Sale Complete",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-              ),
-              const Divider(),
-              Expanded(child: Container()),
-              Wrap(
-                children: [
-                  DialogButton(
-                    label: "Cancel",
-                    onClick: () {
-                      Navigator.of(context).pop(Constants.cancel);
-                    },
-                  ),
-                  DialogButton(
-                    label: "Print And Email",
-                    onClick: () {
-                      Navigator.of(context).pop(Constants.printAndEmail);
-                    },
-                  ),
-                  DialogButton(
-                    label: "Continue",
-                    onClick: () {
-                      Navigator.of(context).pop(Constants.print);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              )
-            ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(
+            height: 8,
           ),
-        ),
+          const Icon(Icons.check_circle_outlined, color: Colors.green, size: 150,),
+          const Text(
+            "Sale Complete",
+            style: TextStyle(fontWeight: FontWeight.w200, fontSize: 40,),
+
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          const Text(
+            "Change Due : \$0.00",
+            style: TextStyle(fontWeight: FontWeight.w100, fontSize: 20, color: AppColor.formInputText),
+          ),
+          const SizedBox(
+            height: 50,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelStyle: const TextStyle(fontWeight: FontWeight.w100, color: AppColor.formInputText),
+                hintText: "Email Invoice",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              keyboardType: TextInputType.emailAddress,
+              style: const TextStyle(fontWeight: FontWeight.w100, color: AppColor.formInputText),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Row(
+              children: [
+                Expanded(child: AcceptButton(onPressed: () {
+                  Navigator.of(context).pop("EMAIL");
+                }, label: 'Email Invoice'),),
+                const SizedBox(width: 8,),
+                Expanded(child: AcceptButton(onPressed: () {
+                  Navigator.of(context).pop("PRINT");
+                }, label: 'Print Invoice'),),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

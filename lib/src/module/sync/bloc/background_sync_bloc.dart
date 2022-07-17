@@ -29,6 +29,7 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     on<StartSyncEvent>(_onStartSyncEvent);
     on<SyncAllDataEvent>(_onSyncAllDataEvent);
     on<SyncAllConfigDataEvent>(_onSyncAllConfigEvent);
+    on<LoadSampleData>(_onLoadSampleDataEvent);
     on<StopSyncEvent>(_onStopSyncEvent);
   }
 
@@ -54,6 +55,10 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
 
   void _onSyncAllConfigEvent(SyncAllConfigDataEvent event, Emitter<BackgroundSyncState> emit) async {
     await syncConfigRepository.getSyncConfigDetails();
+  }
+
+  void _onLoadSampleDataEvent(LoadSampleData event, Emitter<BackgroundSyncState> emit) async {
+    await syncConfigRepository.loadSampleProductAndImages();
   }
 
   void _onSyncAllDataEvent(SyncAllDataEvent event, Emitter<BackgroundSyncState> emit) async {

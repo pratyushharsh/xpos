@@ -3,6 +3,7 @@ part of 'create_new_receipt_bloc.dart';
 enum CreateNewReceiptStatus {
   initial,
   created,
+  saleError,
   saleComplete,
   paymentAwaiting,
   loading,
@@ -10,7 +11,7 @@ enum CreateNewReceiptStatus {
   error
 }
 
-enum CreateSaleStep { item, payment, customer, complete, confirmed }
+enum SaleStep { item, payment, customer, complete, printAndEmail, confirmed }
 
 class CreateNewReceiptState extends Equatable {
   final int transSeq;
@@ -19,7 +20,7 @@ class CreateNewReceiptState extends Equatable {
   final Map<String, ProductEntity> productMap;
   final ContactEntity? customer;
   final CreateNewReceiptStatus status;
-  final CreateSaleStep step;
+  final SaleStep step;
 
   const CreateNewReceiptState({
     this.lineItem = const [],
@@ -27,7 +28,7 @@ class CreateNewReceiptState extends Equatable {
     this.transSeq = -1,
     this.productMap = const {},
     required this.status,
-    this.step = CreateSaleStep.item,
+    this.step = SaleStep.item,
     this.customer,
   });
 
@@ -77,7 +78,7 @@ class CreateNewReceiptState extends Equatable {
     ContactEntity? customer,
     Map<String, ProductEntity>? productMap,
     CreateNewReceiptStatus? status,
-    CreateSaleStep? step,
+    SaleStep? step,
   }) {
     return CreateNewReceiptState(
       transSeq: transSeq ?? this.transSeq,

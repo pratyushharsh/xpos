@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:receipt_generator/src/config/constants.dart';
 import 'package:receipt_generator/src/entity/config/code_value_entity.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/repositories/custom_storage.dart';
@@ -25,6 +26,7 @@ Future<void> main() {
     // Database Configuration
     final dir = await getApplicationSupportDirectory();
     final appDoc = await getApplicationDocumentsDirectory();
+    await Constants.getImageBasePath();
     print(appDoc);
     print(dir);
     final isar = await Isar.open(

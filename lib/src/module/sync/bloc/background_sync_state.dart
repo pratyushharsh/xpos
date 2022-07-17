@@ -1,6 +1,16 @@
 part of 'background_sync_bloc.dart';
 
-enum BackgroundSyncStatus { initial, started, inProgress, success }
+enum BackgroundSyncStatus {
+  initial,
+  started,
+  inProgress,
+  success,
+  sampleDataLoading,
+  sampleDataSuccess,
+  sampleDataFailure,
+  sampleImageLoading,
+  sampleImageFailure
+}
 
 class BackgroundSyncState {
   final BackgroundSyncStatus status;
@@ -14,8 +24,7 @@ class BackgroundSyncState {
             ? storeId != null
             : true);
 
-  BackgroundSyncState copyWith(
-      {BackgroundSyncStatus? status, int? storeId}) {
+  BackgroundSyncState copyWith({BackgroundSyncStatus? status, int? storeId}) {
     return BackgroundSyncState(
         status: status ?? this.status, storeId: storeId ?? this.storeId);
   }

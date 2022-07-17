@@ -15,6 +15,7 @@ import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 import 'package:receipt_generator/src/widgets/loading.dart';
 import 'package:validators/sanitizers.dart';
 
+import '../../config/constants.dart';
 import '../../widgets/my_loader.dart';
 
 enum NewItemScreenState { editItem, createItem }
@@ -223,12 +224,14 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                                 validator: NewProductFieldValidator
                                     .validateProductName,
                                 controller: _productNameController,
+                                minLines: 1,
+                                maxLines: 3,
                               ),
                               CustomTextField(
                                 label: "Product Description",
                                 controller: _productDescriptionController,
-                                minLines: 5,
-                                maxLines: 10,
+                                minLines: 7,
+                                maxLines: 20,
                               ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -433,10 +436,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
 
 class ProductItemsImage extends StatefulWidget {
   final List<String> imageUrl;
-  ProductItemsImage({Key? key, required this.imageUrl}) : super(key: key) {
-   print("URLS: $imageUrl");
-  }
-
+  const ProductItemsImage({Key? key, required this.imageUrl}) : super(key: key);
   @override
   State<ProductItemsImage> createState() => _ProductItemsImageState();
 }
@@ -465,11 +465,8 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
     });
   }
 
-  static const String basePath =
-      "/Users/pratyushharsh/Library/Containers/com.nearbai.receiptGenerator/Data/Documents/image/";
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildHorizontal() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -477,7 +474,7 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
           height: 400,
           width: 400,
           child: selectedUrl.isNotEmpty
-              ? Image.file(File(basePath + selectedUrl))
+              ? Image.file(File('${Constants.baseImagePath}/$selectedUrl'))
               : Container(),
         ),
         SizedBox(
@@ -486,21 +483,58 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
             direction: Axis.vertical,
             children: widget.imageUrl
                 .map((e) => InkWell(
-                      onTap: () {
-                        setState(() {
-                          selectedUrl = e;
-                        });
-                      },
-                      child: Image.file(
-                        File(basePath + e),
-                        height: 100,
-                        width: 100,
-                      ),
-                    ))
+              onTap: () {
+                setState(() {
+                  selectedUrl = e;
+                });
+              },
+              child: Image.file(
+                File('${Constants.baseImagePath}/$e'),
+                height: 100,
+                width: 100,
+              ),
+            ))
                 .toList(),
           ),
         ),
       ],
     );
+  }
+
+  Widget _buildVertical() {
+    return Column(
+      children: [
+        selectedUrl.isNotEmpty
+            ? Image.file(File('${Constants.baseImagePath}/$selectedUrl'))
+            : Container(),
+        Wrap(
+          direction: Axis.horizontal,
+          children: widget.imageUrl
+              .map((e) => InkWell(
+            onTap: () {
+              setState(() {
+                selectedUrl = e;
+              });
+            },
+            child: Image.file(
+              File('${Constants.baseImagePath}/$e'),
+              height: 60,
+              width: 50,
+            ),
+          ))
+              .toList(),
+        )
+      ],
+    );
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    Size size = MediaQuery.of(context).size;
+
+    return size.width < 600 ? _buildVertical() : _buildHorizontal();
   }
 }

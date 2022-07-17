@@ -85,9 +85,11 @@ class SettingsScreen extends StatelessWidget {
               subtitle: "Reach us with your feedback and question",
               icon: Icons.mail_rounded,
               children: [
+                SettingsItem(text: "Load Sample Data", onTap: () {
+                  BlocProvider.of<BackgroundSyncBloc>(context).add(LoadSampleData());
+                }),
                 SettingsItem(text: "FAQ and Videos", onTap: () {}),
                 SettingsItem(text: "Contact us", onTap: () {
-                  Navigator.of(context).pushNamed(RouteConfig.splashScreen);
                 }),
               ],
             ),

@@ -104,7 +104,7 @@ class CreateNewReceiptBloc
     List<TransactionLineItemEntity> newList = [...state.lineItem, newLine];
 
     emit(state.copyWith(
-        lineItem: newList, step: CreateSaleStep.item, productMap: pm));
+        lineItem: newList, step: SaleStep.item, productMap: pm));
     add(_VerifyOrderAndEmitState());
   }
 
@@ -151,12 +151,12 @@ class CreateNewReceiptBloc
       await transactionRepository.createNewSale(header);
       emit(state.copyWith(
           status: CreateNewReceiptStatus.saleComplete,
-          step: CreateSaleStep.confirmed));
+          step: SaleStep.printAndEmail));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: CreateNewReceiptStatus.error));
     }
-    add(_VerifyOrderAndEmitState());
+    // add(_VerifyOrderAndEmitState());
   }
 
   void _onCustomerSelectEvent(
@@ -319,20 +319,24 @@ class CreateNewReceiptBloc
 
   void _onChangeSaleStep(
       OnChangeSaleStep event, Emitter<CreateNewReceiptState> emit) async {
-    // @TODO Add logic
-    emit(state.copyWith(step: event.step));
+    // @TODO Add logic to handle the change of sale step
+    if (state.amountDue <= 0 && event.step == SaleStep.complete) {
+      add(OnCreateNewTransaction());
+    } else {
+      emit(state.copyWith(step: event.step));
+    }
   }
 
   void _onVerifyOrderAndEmitStep(_VerifyOrderAndEmitState event,
       Emitter<CreateNewReceiptState> emit) async {
-    if (state.step == CreateSaleStep.confirmed) {
+    if (state.step == SaleStep.confirmed) {
       return;
     }
 
-    if (state.amountDue > 0 && state.step == CreateSaleStep.complete) {
-      emit(state.copyWith(step: CreateSaleStep.payment));
-    } else if (state.amountDue <= 0 && state.step != CreateSaleStep.complete) {
-      emit(state.copyWith(step: CreateSaleStep.complete));
+    if (state.amountDue > 0 && state.step == SaleStep.complete) {
+      emit(state.copyWith(step: SaleStep.payment));
+    } else if (state.amountDue <= 0 && state.step != SaleStep.complete) {
+      emit(state.copyWith(step: SaleStep.complete));
     }
   }
 
@@ -392,7 +396,7 @@ class CreateNewReceiptBloc
     }
 
     emit(state.copyWith(
-        lineItem: newList, step: CreateSaleStep.item, productMap: pm));
+        lineItem: newList, step: SaleStep.item, productMap: pm));
     // add(_VerifyOrderAndEmitState());
   }
 }

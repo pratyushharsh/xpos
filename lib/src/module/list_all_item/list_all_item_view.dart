@@ -9,6 +9,7 @@ import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/list_all_item/bloc/list_all_item_bloc.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
+import '../../config/constants.dart';
 import '../../entity/pos/entity.dart';
 import '../create_new_item/add_new_item_view.dart';
 
@@ -99,9 +100,7 @@ class ItemCard extends StatelessWidget {
                 width: 100,
                 child: product.imageUrl.isNotEmpty
                     ? Image.file(
-                        File(
-                            "/Users/pratyushharsh/Library/Containers/com.nearbai.receiptGenerator/Data/Documents/image/" +
-                                product.imageUrl[0]),
+                        File('${Constants.baseImagePath}/${product.imageUrl[0]}'),
                         cacheHeight: 200,
                         cacheWidth: 200,
                       )
@@ -117,10 +116,6 @@ class ItemCard extends StatelessWidget {
                     ),
                     Text(
                       product.displayName,
-                      style: const TextStyle(fontWeight: FontWeight.normal),
-                    ),
-                    Text(
-                      product.imageUrl.toString(),
                       style: const TextStyle(fontWeight: FontWeight.normal),
                     ),
                   ],

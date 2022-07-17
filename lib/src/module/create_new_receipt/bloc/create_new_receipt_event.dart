@@ -52,7 +52,7 @@ class OnAddNewTenderLine extends CreateNewReceiptEvent {
 }
 
 class OnChangeSaleStep extends CreateNewReceiptEvent {
-  final CreateSaleStep step;
+  final SaleStep step;
 
   OnChangeSaleStep(this.step);
 }

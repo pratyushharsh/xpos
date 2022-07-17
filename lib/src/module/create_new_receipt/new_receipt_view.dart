@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,7 @@ import '../../entity/pos/entity.dart';
 import '../line_item_modification/line_item_modification_view.dart';
 import '../mobile_dialog/mobile_dialog_view.dart';
 import 'bloc/create_new_receipt_bloc.dart';
+import 'sale_complete_dialog.dart';
 
 class NewReceiptView extends StatelessWidget {
   const NewReceiptView({Key? key}) : super(key: key);
@@ -41,14 +43,43 @@ class NewReceiptView extends StatelessWidget {
           ),
         ),
       ],
-      child: LayoutBuilder(
-        builder: (context, constrain) {
-          if (constrain.maxWidth > 800) {
-            return const NewReceiptDesktopView();
-          } else {
-            return const NewReceiptMobileView();
+      child: BlocListener<CreateNewReceiptBloc, CreateNewReceiptState>(
+        listener: (context, state) {
+          if (state.step == SaleStep.printAndEmail) {
+            // Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (context) => const SaleCompleteDialog(),
+            //   ),
+            // );
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (ctx) => Dialog(
+                child: SizedBox(
+                  width: min(MediaQuery.of(context).size.width * 0.8, 600),
+                  height: 700,
+                  child: const SaleCompleteDialog(),
+                ),
+              ),
+            ).then((value) => {
+                  if (value != null)
+                    {
+                      Navigator.of(context).pop(),
+                    }
+                });
+          } else if (state.step == SaleStep.confirmed) {
+            Navigator.of(context).pop();
           }
         },
+        child: LayoutBuilder(
+          builder: (context, constrain) {
+            if (constrain.maxWidth > 800) {
+              return const NewReceiptDesktopView();
+            } else {
+              return const NewReceiptMobileView();
+            }
+          },
+        ),
       ),
     );
   }
@@ -305,18 +336,19 @@ class NewLineItem extends StatefulWidget {
 }
 
 class _NewLineItemState extends State<NewLineItem> {
-
   void onTap() {
     if (Platform.isIOS || Platform.isAndroid) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) => MobileDialogView(
-        child: LineItemModificationView(
-            lineItem: widget.saleLine,
-            productModel: widget.productModel),
-      ),
-      )).then((value) => {
-        if (value != null && value is CreateNewReceiptEvent)
-          {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
-      });
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+            builder: (_) => MobileDialogView(
+              child: LineItemModificationView(
+                  lineItem: widget.saleLine, productModel: widget.productModel),
+            ),
+          ))
+          .then((value) => {
+                if (value != null && value is CreateNewReceiptEvent)
+                  {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
+              });
     } else {
       showDialog(
           context: context,
@@ -522,9 +554,9 @@ class NewInvoiceButtonBar extends StatelessWidget {
                 child: RejectButton(
                   onPressed: () {
                     // @TODO Void All the tender
-                    if (state.step == CreateSaleStep.payment) {
+                    if (state.step == SaleStep.payment) {
                       BlocProvider.of<CreateNewReceiptBloc>(context)
-                          .add(OnChangeSaleStep(CreateSaleStep.item));
+                          .add(OnChangeSaleStep(SaleStep.item));
                       return;
                     }
 
@@ -562,28 +594,32 @@ class NewInvoiceButtonBar extends StatelessWidget {
               const SizedBox(
                 width: 8,
               ),
-              if (state.step == CreateSaleStep.item ||
-                  state.step == CreateSaleStep.payment)
+              if (state.step == SaleStep.item || state.step == SaleStep.payment)
                 Expanded(
                   child: AcceptButton(
                     onPressed: state.transSeq > 0 && state.lineItem.isNotEmpty
                         ? () {
                             BlocProvider.of<CreateNewReceiptBloc>(context)
-                                .add(OnChangeSaleStep(CreateSaleStep.payment));
+                                .add(OnChangeSaleStep(SaleStep.payment));
                             if (Platform.isIOS || Platform.isAndroid) {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => AcceptTenderDisplayMobile()));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => AcceptTenderDisplayMobile(
+                                        onTender: BlocProvider.of<
+                                                CreateNewReceiptBloc>(context)
+                                            .add,
+                                      )));
                             }
                           }
                         : null,
                     label: "Proceed To Pay",
                   ),
                 ),
-              if (state.step == CreateSaleStep.complete)
+              if (state.step == SaleStep.complete)
                 Expanded(
                   child: AcceptButton(
                     onPressed: () {
                       BlocProvider.of<CreateNewReceiptBloc>(context)
-                          .add(OnChangeSaleStep(CreateSaleStep.complete));
+                          .add(OnChangeSaleStep(SaleStep.complete));
                     },
                     label: "Complete Sale",
                   ),
@@ -657,8 +693,8 @@ class NewReceiptSummaryWidget extends StatelessWidget {
             ),
             const Divider(),
             RetailSummaryDetailRow(
-              title: "Grand Total",
-              value: "${Currency.inr} ${state.subTotal.toStringAsFixed(2)}",
+              title: "Amount Due",
+              value: "${Currency.inr} ${state.amountDue.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,

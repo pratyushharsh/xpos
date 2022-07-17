@@ -1,16 +1,19 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/sale_complete_dialog.dart';
-import 'package:receipt_generator/src/module/pos_action_bar/pos_action_bar.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import '../../config/constants.dart';
 import '../../config/currency.dart';
+import '../../config/tender_config.dart';
 import '../../config/theme_settings.dart';
 import '../../util/text_input_formatter/currency_text_input_formatter.dart';
+import '../../util/text_input_formatter/money_editing_controller.dart';
+import '../../widgets/custom_button.dart';
 import '../../widgets/keypad_overlay/keypad_overlay.dart';
 import '../calculator/calculator.dart';
 import '../item_search/bloc/item_search_bloc.dart';
@@ -33,28 +36,6 @@ class NewReceiptDesktopView extends StatelessWidget {
             create: (ctx) => ItemSearchBloc(db: RepositoryProvider.of(ctx)),
             child: BlocConsumer<CreateNewReceiptBloc, CreateNewReceiptState>(
               listener: (context, state) {
-                if (state.step == CreateSaleStep.complete) {
-                  showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (ctx) => const SaleCompleteDialog())
-                      .then((value) => {
-                            if (value == Constants.print)
-                              {
-                                BlocProvider.of<CreateNewReceiptBloc>(context)
-                                    .add(OnCreateNewTransaction())
-                              }
-                            else if (value == Constants.printAndEmail)
-                              {
-                                BlocProvider.of<CreateNewReceiptBloc>(context)
-                                    .add(OnCreateNewTransaction())
-                              }
-                            else if (value == Constants.cancel)
-                              {}
-                          });
-                } else if (state.step == CreateSaleStep.confirmed) {
-                  Navigator.of(context).pop();
-                }
               },
               builder: (context, state) {
                 return Stack(
@@ -76,11 +57,11 @@ class NewReceiptDesktopView extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const ActionButtonBar(),
-                              if (CreateSaleStep.item == state.step ||
-                                  CreateSaleStep.complete == state.step)
+                              if (SaleStep.item == state.step ||
+                                  SaleStep.complete == state.step)
                                 const Expanded(
                                     child: SearchUserDisplayDesktop()),
-                              if (CreateSaleStep.payment == state.step)
+                              if (SaleStep.payment == state.step)
                                 const Expanded(child: TenderDisplayDesktop()),
                               const Expanded(child: SaleReturnDisplayDesktop()),
                             ],
@@ -329,7 +310,8 @@ class CustomerDetailDesktop extends StatelessWidget {
 }
 
 class TenderDisplayDesktop extends StatefulWidget {
-  const TenderDisplayDesktop({Key? key}) : super(key: key);
+  final Function? onTender;
+  const TenderDisplayDesktop({Key? key, this.onTender}) : super(key: key);
 
   @override
   State<TenderDisplayDesktop> createState() => _TenderDisplayDesktopState();
@@ -338,8 +320,8 @@ class TenderDisplayDesktop extends StatefulWidget {
 class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
   String selectedTender = "";
   String amount = "";
-  late TextEditingController tenderController;
-  GlobalKey _Calkey = GlobalKey();
+  late MoneyEditingController tenderController;
+  late FocusNode tenderFocusNode;
 
   void _printLatestValue() {
     setState(() {
@@ -351,20 +333,40 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
   @override
   void initState() {
     super.initState();
-    tenderController = TextEditingController();
+    tenderController = MoneyEditingController(text: "0.00");
     tenderController.addListener(_printLatestValue);
+    tenderFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     tenderController.dispose();
     super.dispose();
+    tenderFocusNode.dispose();
   }
 
   void onSelectNewTender(String val) {
     setState(() {
       selectedTender = val;
+      if (val.isNotEmpty) {
+        FocusScope.of(context).requestFocus(tenderFocusNode);
+      }
     });
+  }
+
+  double validAmount() {
+    try {
+      String amount = tenderController.text;
+      int idx = amount.length -  amount.indexOf(".");
+      num baseFactor = idx > 0 ? pow(10, idx) : 1.0;
+      double value = double.parse(amount.replaceAll(RegExp(r'\D'),'')) / baseFactor;
+      return value;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    return 0.0;
   }
 
   @override
@@ -374,47 +376,106 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Positioned(
-            child: NumberTextBox(
-              controller: tenderController,
-            ),
-            right: 0,
-            left: 0,
+          const Positioned(
             top: 10,
+            left: 10,
+            child: Text(
+              "Tender Amount",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           Positioned(
-            child: DisplayTenderList(
-              selectedTender: selectedTender,
-              onSelectNewTender: onSelectNewTender,
-            ),
-            bottom: 100,
-            left: 0,
+            top: 0,
             right: 0,
-          ),
-          Positioned(
-            child: CustomTextField(
-              controller: tenderController,
-              enabled: selectedTender.isNotEmpty,
-              label: "Enter Tender Amount",
-              onFieldSubmitted: (val) {
-                BlocProvider.of<CreateNewReceiptBloc>(context).add(
-                    OnAddNewTenderLine(
-                        tenderType: selectedTender, amount: double.parse(val)));
-                tenderController.text = '';
-                onSelectNewTender('');
-              },
-            ),
+            left: 0,
             bottom: 0,
-            left: 0,
-            right: 0,
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(tenderIconMapping[selectedTender] ?? tenderIconMapping["OTHER"]!, size: 80),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    TenderAmountTextField(
+                      controller: tenderController,
+                      selectedTender: selectedTender,
+                      focusNode: tenderFocusNode,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    DisplayTenderList(
+                      selectedTender: selectedTender,
+                      onSelectNewTender: onSelectNewTender,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 10,
+            left: 10,
+            right: 10,
+            child: Row(
+              children: [
+                Expanded(
+                  child: RejectButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    label: "Cancel",
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: AcceptButton(
+                    onPressed: validAmount() > 0 ? () {
+
+                      if (widget.onTender != null) {
+                        widget.onTender!(OnAddNewTenderLine(
+                            tenderType: selectedTender, amount: validAmount()));
+
+                      } else {
+                        BlocProvider.of<CreateNewReceiptBloc>(context).add(
+                            OnAddNewTenderLine(
+                                tenderType: selectedTender, amount: validAmount()));
+                      }
+                      onSelectNewTender('');
+                      tenderController.text = '';
+                      if (Platform.isIOS || Platform.isAndroid) {
+                        Navigator.of(context).pop();
+                      }
+                    } : null,
+                    label: "Accept Payment",
+                  ),
+                ),
+              ],
+            ),
           )
+          // Positioned(
+          //   child: CustomTextField(
+          //     controller: tenderController,
+          //     enabled: selectedTender.isNotEmpty,
+          //     label: "Enter Tender Amount",
+          //     onFieldSubmitted: (val) {
+
+          //     },
+          //   ),
+          //   bottom: 0,
+          //   left: 0,
+          //   right: 0,
+          // )
         ],
       ),
     );
   }
 }
-
-const tenderList = ["CASH", "CARD", "CHECK", "UPI"];
 
 class DisplayTenderList extends StatelessWidget {
   final String selectedTender;
@@ -465,8 +526,15 @@ class TenderListDisplayCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           height: 80,
           width: 120,
-          child: Column(
-            children: [Text(tenderType)],
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(tenderIconMapping[tenderType] ?? tenderIconMapping["OTHER"]!),
+                const SizedBox(height: 10),
+                Text(tenderType)
+              ],
+            ),
           ),
         ),
       ),
@@ -536,37 +604,38 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
   }
 }
 
-class NumberTextBox extends StatefulWidget {
+class TenderAmountTextField extends StatefulWidget {
   final TextEditingController controller;
+  final FocusNode focusNode;
+  final String selectedTender;
 
-  const NumberTextBox({Key? key, required this.controller}) : super(key: key);
+  const TenderAmountTextField({Key? key, required this.controller, required this.selectedTender, required this.focusNode}) : super(key: key);
 
   @override
-  State<NumberTextBox> createState() => _NumberTextBoxState();
+  State<TenderAmountTextField> createState() => _TenderAmountTextFieldState();
 }
 
-class _NumberTextBoxState extends State<NumberTextBox> {
+class _TenderAmountTextFieldState extends State<TenderAmountTextField> {
   final GlobalKey _overlayKey = GlobalKey();
-  final FocusNode _focus = FocusNode();
   bool _isNodeFocus = false;
 
   @override
   void initState() {
     super.initState();
-    _focus.addListener(_onFocusChange);
+    widget.focusNode.addListener(_onFocusChange);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _focus.removeListener(_onFocusChange);
-    _focus.dispose();
+    widget.focusNode.removeListener(_onFocusChange);
   }
 
   void _onFocusChange() {
-    debugPrint("Focus: ${_focus.hasFocus.toString()}");
     setState(() {
-      _isNodeFocus = _focus.hasFocus;
+      if (!Platform.isAndroid) {
+        _isNodeFocus = widget.focusNode.hasFocus;
+      }
     });
   }
 
@@ -577,17 +646,19 @@ class _NumberTextBoxState extends State<NumberTextBox> {
       key: _overlayKey,
       showOverlay: _isNodeFocus,
       child: TextFormField(
-        focusNode: _focus,
+        enabled: widget.selectedTender.isNotEmpty,
+        focusNode: widget.focusNode,
         controller: widget.controller,
         autocorrect: false,
         decoration: const InputDecoration(
           border: InputBorder.none,
         ),
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.center,
         style: const TextStyle(
-          fontSize: 40,
+          fontSize: 70,
         ),
-        inputFormatters: [CurrencyTextInputFormatter(locale: "en_IE")],
+        inputFormatters: [ CurrencyTextInputFormatter(locale: "en_IN")],
+        keyboardType: TextInputType.number,
         cursorColor: Colors.black,
       ),
       overlayWidget: Keypad(

@@ -13,3 +13,5 @@ class StopSyncEvent extends BackgroundSyncEvent {}
 class SyncAllDataEvent extends BackgroundSyncEvent {}
 
 class SyncAllConfigDataEvent extends BackgroundSyncEvent {}
+
+class LoadSampleData extends BackgroundSyncEvent {}
