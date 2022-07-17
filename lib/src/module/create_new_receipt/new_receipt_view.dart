@@ -1,81 +1,84 @@
+import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:receipt_generator/src/config/constants.dart';
 import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-import 'package:receipt_generator/src/entity/contact_entity.dart';
-import 'package:receipt_generator/src/model/model.dart';
+import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_mobile_view.dart';
+import 'package:receipt_generator/src/module/create_new_receipt/new_recipt_desktop_view.dart';
+import 'package:receipt_generator/src/module/customer_search/bloc/customer_search_bloc.dart';
 import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
-import '../../widgets/appbar_leading.dart';
+import '../../entity/pos/entity.dart';
+import '../line_item_modification/line_item_modification_view.dart';
+import '../mobile_dialog/mobile_dialog_view.dart';
 import 'bloc/create_new_receipt_bloc.dart';
+import 'sale_complete_dialog.dart';
 
 class NewReceiptView extends StatelessWidget {
   const NewReceiptView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      lazy: false,
-      create: (ctx) => CreateNewReceiptBloc(
-        db: RepositoryProvider.of(ctx),
-        contactDb: RepositoryProvider.of(ctx),
-      )..add(OnInitiateNewTransaction()),
-      child: Container(
-        color: AppColor.background,
-        child: SafeArea(
-          child: Scaffold(
-            backgroundColor: AppColor.background,
-            body: SingleChildScrollView(
-              child: Stack(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 80,
-                        ),
-                        CustomerDetailWidget(),
-                        // const Divider(
-                        //   thickness: 8,
-                        // ),
-                        const LineItemHeader(),
-                        const Divider(),
-                        const BuildLineItem(),
-                        const SearchAndAddItem(),
-                        const Divider(),
-                        const NewReceiptSummaryWidget(),
-                        const Divider(),
-                        // NewInvoiceButtonBar(),
-                        const SizedBox(
-                          height: 50,
-                        )
-                      ],
-                    ),
-                  ),
-                  BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
-                    builder: (context, state) {
-                      return Positioned(
-                        top: 20,
-                        left: 16,
-                        child: AppBarLeading(
-                          heading: "Receipt  #${state.transSeq.toString()}",
-                          icon: Icons.arrow_back,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            bottomNavigationBar: const NewInvoiceButtonBar(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          lazy: false,
+          create: (ctx) => CreateNewReceiptBloc(
+              db: RepositoryProvider.of(ctx),
+              authenticationBloc: BlocProvider.of(ctx),
+              sequenceRepository: RepositoryProvider.of(ctx),
+              transactionRepository: RepositoryProvider.of(ctx))
+            ..add(OnInitiateNewTransaction()),
+        ),
+        BlocProvider(
+          create: (ctx) => CustomerSearchBloc(
+            contactDb: RepositoryProvider.of(ctx),
+            db: RepositoryProvider.of(ctx),
           ),
+        ),
+      ],
+      child: BlocListener<CreateNewReceiptBloc, CreateNewReceiptState>(
+        listener: (context, state) {
+          if (state.step == SaleStep.printAndEmail) {
+            // Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (context) => const SaleCompleteDialog(),
+            //   ),
+            // );
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (ctx) => Dialog(
+                child: SizedBox(
+                  width: min(MediaQuery.of(context).size.width * 0.8, 600),
+                  height: 700,
+                  child: const SaleCompleteDialog(),
+                ),
+              ),
+            ).then((value) => {
+                  if (value != null)
+                    {
+                      Navigator.of(context).pop(),
+                    }
+                });
+          } else if (state.step == SaleStep.confirmed) {
+            Navigator.of(context).pop();
+          }
+        },
+        child: LayoutBuilder(
+          builder: (context, constrain) {
+            if (constrain.maxWidth > 800) {
+              return const NewReceiptDesktopView();
+            } else {
+              return const NewReceiptMobileView();
+            }
+          },
         ),
       ),
     );
@@ -94,7 +97,7 @@ class CustomerSuggestionWidget extends StatelessWidget {
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
           BlocProvider.of<CreateNewReceiptBloc>(context)
-              .add(OnSuggestedCustomerSelect(contactEntity));
+              .add(OnCustomerSelect(contactEntity));
         },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -120,13 +123,68 @@ class BuildLineItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
         builder: (context, state) {
-      return Column(
-        children: state.lineItem
-            .map((e) => NewLineItem(
-                  saleLine: e,
-                ))
-            .toList(),
-      );
+      return ListView.builder(
+          itemCount: state.lineItem.length + state.tenderLine.length,
+          itemBuilder: (itemBuilder, idx) {
+            if (idx < state.lineItem.length) {
+              return InkWell(
+                onTap: () {
+                  // Navigator.of(context)
+                  //     .pushNamed(RouteConfig.editSaleLineItemScreen, arguments: state.lineItem[idx]);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: state.lineItem[idx].returnFlag
+                            ? Colors.redAccent
+                            : Colors.blueAccent,
+                        width: 10,
+                      ),
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: NewLineItem(
+                          saleLine: state.lineItem[idx],
+                          productModel:
+                              state.productMap[state.lineItem[idx].itemId],
+                        ),
+                      ),
+                      const Divider(
+                        height: 0,
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            if (idx >= state.lineItem.length) {
+              return InkWell(
+                onTap: () {},
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: TenderLineDisplay(
+                        tenderLine:
+                            state.tenderLine[idx - state.lineItem.length],
+                      ),
+                    ),
+                    const Divider(
+                      height: 0,
+                    )
+                  ],
+                ),
+              );
+            }
+            return Container();
+          });
     });
   }
 }
@@ -195,28 +253,31 @@ class LineItemHeader extends StatelessWidget {
     return Row(
       children: const [
         Expanded(
-          flex: 3,
-          child: Text(
-            "Product Name",
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-        Expanded(
           flex: 2,
           child: Text(
-            "Unit Price",
+            "Product Description",
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
         Expanded(
-          flex: 1,
-          child: Text(
-            "Qty",
-            style: TextStyle(fontWeight: FontWeight.w600),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              "UnitCost",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
         ),
         Expanded(
-          flex: 2,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              "Qty",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+        Expanded(
           child: Align(
             alignment: Alignment.centerRight,
             child: Text(
@@ -230,75 +291,212 @@ class LineItemHeader extends StatelessWidget {
   }
 }
 
-class NewLineItem extends StatelessWidget {
-  final SaleLine saleLine;
-
-  const NewLineItem({Key? key, required this.saleLine}) : super(key: key);
+class TenderLineDisplay extends StatelessWidget {
+  final TransactionPaymentLineItemEntity tenderLine;
+  const TenderLineDisplay({Key? key, required this.tenderLine})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(2),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
       child: Row(
         children: [
+          const Expanded(child: Icon(Icons.currency_rupee)),
           Expanded(
-            flex: 3,
-            child: Text(
-              saleLine.product.description,
-            ),
-          ),
+              child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(tenderLine.tenderId))),
           Expanded(
-            flex: 2,
-            child: TextFormField(
-              textAlign: TextAlign.right,
-              initialValue: saleLine.price.toStringAsFixed(2),
-              keyboardType: TextInputType.number,
-              onChanged: (val) {
-                BlocProvider.of<CreateNewReceiptBloc>(context).add(
-                    OnUnitPriceUpdate(
-                        saleLine: saleLine, unitPrice: double.parse(val)));
-              },
-              decoration: const InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 3),
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            flex: 1,
-            child: TextFormField(
-              textAlign: TextAlign.right,
-              keyboardType: TextInputType.number,
-              onChanged: (val) {
-                BlocProvider.of<CreateNewReceiptBloc>(context).add(
-                    OnQuantityUpdate(
-                        saleLine: saleLine, quantity: double.parse(val)));
-              },
-              initialValue: saleLine.qty.toString(),
-              decoration: const InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 3),
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            flex: 2,
-            child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                    "${Currency.inr}${saleLine.amount.toStringAsFixed(2)}")),
-          ),
+              child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '${Currency.inr} ${tenderLine.amount.toStringAsFixed(2)}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ))),
         ],
+      ),
+    );
+  }
+}
+
+class NewLineItem extends StatefulWidget {
+  final TransactionLineItemEntity saleLine;
+  final ProductEntity? productModel;
+
+  const NewLineItem({Key? key, required this.saleLine, this.productModel})
+      : super(key: key);
+
+  static const textStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+  );
+
+  @override
+  State<NewLineItem> createState() => _NewLineItemState();
+}
+
+class _NewLineItemState extends State<NewLineItem> {
+  void onTap() {
+    if (Platform.isIOS || Platform.isAndroid) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+            builder: (_) => MobileDialogView(
+              child: LineItemModificationView(
+                  lineItem: widget.saleLine, productModel: widget.productModel),
+            ),
+          ))
+          .then((value) => {
+                if (value != null && value is CreateNewReceiptEvent)
+                  {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
+              });
+    } else {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return Dialog(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: LineItemModificationView(
+                    lineItem: widget.saleLine,
+                    productModel: widget.productModel),
+              ),
+            );
+          }).then(
+        (value) => {
+          if (value != null && value is CreateNewReceiptEvent)
+            {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
+        },
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(border: Border.all(width: 1)),
+                  child: (widget.productModel != null &&
+                          widget.productModel!.imageUrl.isNotEmpty)
+                      ? Image.file(
+                          File(Constants.baseImagePath +
+                              widget.productModel!.imageUrl[0]),
+                          fit: BoxFit.cover,
+                          height: 70,
+                          width: 70, errorBuilder: (context, obj, trace) {
+                          return const SizedBox(
+                            height: 70,
+                            width: 70,
+                          );
+                        })
+                      : Image.network(
+                          "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+                          fit: BoxFit.cover,
+                          height: 70,
+                          width: 70,
+                          errorBuilder: (context, obj, trace) {
+                            return const SizedBox(
+                              height: 70,
+                              width: 70,
+                            );
+                          },
+                        ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.saleLine.itemDescription),
+                      Text(widget.saleLine.itemDescription),
+                      Text(
+                        widget.saleLine.itemId,
+                        style: NewLineItem.textStyle,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Container(),
+                  flex: 2,
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      NumberFormat.currency(locale: 'en_IN', symbol: '₹ ')
+                          .format(widget.saleLine.unitPrice),
+                      style: NewLineItem.textStyle,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      widget.saleLine.quantity.toString(),
+                      style: NewLineItem.textStyle,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "${Currency.inr}${widget.saleLine.netAmount.toStringAsFixed(2)}",
+                      style: NewLineItem.textStyle,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            ...widget.saleLine.lineModifiers
+                .map(
+                  (e) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(right: 8, top: 4),
+                            child: Icon(
+                              Icons.discount,
+                              color: Colors.brown,
+                              size: 16,
+                            ),
+                          ),
+                          Text(e.description ?? ""),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 60),
+                        child: Text(
+                          "-${Currency.inr}${e.amount.toStringAsFixed(2)}",
+                          style: NewLineItem.textStyle,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                .toList()
+          ],
+        ),
       ),
     );
   }
@@ -349,12 +547,19 @@ class NewInvoiceButtonBar extends StatelessWidget {
       },
       builder: (context, state) {
         return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          margin: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             children: [
               Expanded(
                 child: RejectButton(
                   onPressed: () {
+                    // @TODO Void All the tender
+                    if (state.step == SaleStep.payment) {
+                      BlocProvider.of<CreateNewReceiptBloc>(context)
+                          .add(OnChangeSaleStep(SaleStep.item));
+                      return;
+                    }
+
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -389,46 +594,36 @@ class NewInvoiceButtonBar extends StatelessWidget {
               const SizedBox(
                 width: 8,
               ),
-              Expanded(
-                child: AcceptButton(
-                  onPressed: state.transSeq > 0 && state.lineItem.isNotEmpty
-                      ? () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Sale Confirmation"),
-                                content: const Text(
-                                    "Would you like to continue the sale transaction?"),
-                                actions: [
-                                  ElevatedButton(
-                                    child: const Text("Cancel"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  ElevatedButton(
-                                    child: const Text("Continue"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(true);
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          ).then((value) => {
-                                if (value != null && value)
-                                  {
-                                    BlocProvider.of<CreateNewReceiptBloc>(
-                                            context)
-                                        .add(OnCreateNewTransaction())
-                                  }
-                              });
-                        }
-                      : null,
-                  label: "Next",
+              if (state.step == SaleStep.item || state.step == SaleStep.payment)
+                Expanded(
+                  child: AcceptButton(
+                    onPressed: state.transSeq > 0 && state.lineItem.isNotEmpty
+                        ? () {
+                            BlocProvider.of<CreateNewReceiptBloc>(context)
+                                .add(OnChangeSaleStep(SaleStep.payment));
+                            if (Platform.isIOS || Platform.isAndroid) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => AcceptTenderDisplayMobile(
+                                        onTender: BlocProvider.of<
+                                                CreateNewReceiptBloc>(context)
+                                            .add,
+                                      )));
+                            }
+                          }
+                        : null,
+                    label: "Proceed To Pay",
+                  ),
                 ),
-              ),
+              if (state.step == SaleStep.complete)
+                Expanded(
+                  child: AcceptButton(
+                    onPressed: () {
+                      BlocProvider.of<CreateNewReceiptBloc>(context)
+                          .add(OnChangeSaleStep(SaleStep.complete));
+                    },
+                    label: "Complete Sale",
+                  ),
+                ),
             ],
           ),
         );
@@ -436,6 +631,38 @@ class NewInvoiceButtonBar extends StatelessWidget {
     );
   }
 }
+//OnChangeSaleStep
+// showDialog(
+// context: context,
+// builder: (BuildContext context) {
+// return AlertDialog(
+// title: const Text("Sale Confirmation"),
+// content: const Text(
+// "Would you like to continue the sale transaction?"),
+// actions: [
+// ElevatedButton(
+// child: const Text("Cancel"),
+// onPressed: () {
+// Navigator.of(context).pop();
+// },
+// ),
+// ElevatedButton(
+// child: const Text("Continue"),
+// onPressed: () {
+// Navigator.of(context).pop(true);
+// },
+// ),
+// ],
+// );
+// },
+// ).then((value) => {
+// if (value != null && value)
+// {
+// BlocProvider.of<CreateNewReceiptBloc>(
+// context)
+//     .add(OnCreateNewTransaction())
+// }
+// });
 
 class NewReceiptSummaryWidget extends StatelessWidget {
   const NewReceiptSummaryWidget({Key? key}) : super(key: key);
@@ -448,30 +675,26 @@ class NewReceiptSummaryWidget extends StatelessWidget {
           children: [
             RetailSummaryDetailRow(
               title: "Sub Total",
-              value: state.subTotal.toStringAsFixed(2),
-              currency: Currency.inr,
+              value: "${Currency.inr} ${state.subTotal.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Discount",
-              value: state.discount.toStringAsFixed(2),
-              currency: Currency.inr,
+              value: "${Currency.inr} ${state.discount.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Tax",
-              value: state.tax.toStringAsFixed(2),
-              currency: Currency.inr,
+              value: "${Currency.inr} ${state.tax.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             const Divider(),
             RetailSummaryDetailRow(
-              title: "Grand Total",
-              value: state.grandTotal.toStringAsFixed(2),
-              currency: Currency.inr,
+              title: "Amount Due",
+              value: "${Currency.inr} ${state.amountDue.toStringAsFixed(2)}",
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
@@ -487,28 +710,28 @@ class NewReceiptSummaryWidget extends StatelessWidget {
 class RetailSummaryDetailRow extends StatelessWidget {
   final String title;
   final String value;
-  final String currency;
   final TextStyle? textStyle;
+  final MainAxisAlignment mainAxisAlignment;
 
   const RetailSummaryDetailRow(
       {Key? key,
       required this.title,
       required this.value,
-      required this.currency,
+      this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
       this.textStyle})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: mainAxisAlignment,
       children: [
         Text(
           title,
           style: textStyle,
         ),
         Text(
-          currency + value,
+          value,
           style: textStyle,
         )
       ],
@@ -516,28 +739,59 @@ class RetailSummaryDetailRow extends StatelessWidget {
   }
 }
 
-class CustomerDetailWidget extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController();
-  CustomerDetailWidget({Key? key}) : super(key: key);
+class SaleCustomerMobile extends StatelessWidget {
+  final ContactEntity customer;
+  const SaleCustomerMobile({Key? key, required this.customer})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+    return Column(
+      children: [Text(customer.name), Text('${customer.phoneNumber}')],
+    );
+  }
+}
+
+class CustomerDetailWidget extends StatefulWidget {
+  const CustomerDetailWidget({Key? key}) : super(key: key);
+
+  @override
+  State<CustomerDetailWidget> createState() => _CustomerDetailWidgetState();
+}
+
+class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
+  final TextEditingController _controller = TextEditingController();
+  var newCustomer = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CustomerSearchBloc, CustomerSearchState>(
       builder: (context, state) {
-        if (state.selectedCustomer != null) {
-          _controller.text = state.selectedCustomer!.name;
-        }
         return Column(
           children: [
-            CustomTextField(
-              controller: _controller,
-              label: "Customer Detail",
-              onValueChange: (value) {
-                BlocProvider.of<CreateNewReceiptBloc>(context)
-                    .add(OnCustomerNameChange(name: value));
-              },
-            ),
-            if (CustomerSearchState.searching == state.customerSearchState)
+            BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+                builder: (context, st) {
+              if (st.customer != null && !newCustomer) {
+                return InkWell(
+                    onLongPress: () {
+                      setState(() => {newCustomer = true});
+                    },
+                    child: SaleCustomerMobile(
+                      customer: st.customer!,
+                    ));
+              } else {
+                return CustomTextField(
+                  controller: _controller,
+                  label: "Customer Detail",
+                  onValueChange: (value) {
+                    BlocProvider.of<CustomerSearchBloc>(context)
+                        .add(OnCustomerNameChange(name: value));
+                  },
+                  suffixIcon: newCustomer ? const Icon(Icons.close) : null,
+                );
+              }
+            }),
+            if (CustomerSearchStateStatus.searching == state.status)
               Card(
                 elevation: 4,
                 child: Container(
@@ -564,10 +818,16 @@ class CustomerDetailWidget extends StatelessWidget {
                       ...state.customerSuggestion
                           .map((e) => InkWell(
                                 onTap: () {
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                  BlocProvider.of<CreateNewReceiptBloc>(context)
-                                      .add(OnSuggestedCustomerSelect(e));
+                                  setState(() {
+                                    newCustomer = false;
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    BlocProvider.of<CreateNewReceiptBloc>(
+                                            context)
+                                        .add(OnCustomerSelect(e));
+                                    BlocProvider.of<CustomerSearchBloc>(context)
+                                        .add(OnSearchComplete());
+                                  });
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -584,13 +844,19 @@ class CustomerDetailWidget extends StatelessWidget {
                       const Divider(
                         height: 0,
                       ),
-                      ...state.phoneContactSuggestion
+                      ...state.phoneBookSuggestion
                           .map((e) => InkWell(
                                 onTap: () {
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                  BlocProvider.of<CreateNewReceiptBloc>(context)
-                                      .add(OnSuggestedCustomerSelect(e));
+                                  setState(() {
+                                    newCustomer = false;
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    BlocProvider.of<CreateNewReceiptBloc>(
+                                            context)
+                                        .add(OnCustomerSelect(e));
+                                    BlocProvider.of<CustomerSearchBloc>(context)
+                                        .add(OnSearchComplete());
+                                  });
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -615,6 +881,32 @@ class CustomerDetailWidget extends StatelessWidget {
                 ),
               )
           ],
+        );
+      },
+    );
+  }
+}
+
+class SaleHeaderBlock extends StatelessWidget {
+  const SaleHeaderBlock({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+      builder: (context, state) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          height: 35,
+          color: Colors.black,
+          child: Row(
+            children: [
+              Text(
+                'Transaction No#  ${state.transSeq}',
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
         );
       },
     );

@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 
 @immutable
-class Product {
+class ProductModel {
   final String? productId;
   final String description;
   final double? listPrice;
   final double? salePrice;
   final double? purchasePrice;
-  final String? uom;
+  final String uom;
   final bool enable;
   final String? brand;
   final String? skuCode;
   final String? hsn;
   final double? tax;
-  final String? imageUrl;
+  final List<String> imageUrl;
 
-  const Product(
+  const ProductModel(
       {this.productId,
       required this.description,
       required this.listPrice,
       required this.salePrice,
       this.purchasePrice,
-      this.uom,
+      required this.uom,
       this.enable = true,
       this.brand,
       this.skuCode,
       this.hsn,
       this.tax,
-      this.imageUrl});
+      this.imageUrl = const []});
 
-  Product copyWith(
+  ProductModel copyWith(
       {String? productId,
       String? description,
       double? listPrice,
@@ -42,8 +42,8 @@ class Product {
       String? skuCode,
       String? hsn,
       double? tax,
-      String? imageUrl}) {
-    return Product(
+      List<String>? imageUrl}) {
+    return ProductModel(
         productId: productId ?? this.productId,
         description: description ?? this.description,
         listPrice: listPrice ?? this.listPrice,
@@ -60,7 +60,7 @@ class Product {
   ProductEntity toEntity() {
     return ProductEntity(
         productId: skuCode ?? productId,
-        description: description,
+        displayName: description,
         listPrice: listPrice,
         salePrice: salePrice,
         enable: enable,
@@ -70,22 +70,22 @@ class Product {
         hsn: hsn,
         purchasePrice: purchasePrice,
         tax: tax,
-        uom: uom);
+        uom: uom, createTime: DateTime.now(), storeId: 000);
   }
 
-  static Product fromEntity(ProductEntity entity) {
-    return Product(
-        productId: entity.productId,
-        description: entity.description,
-        listPrice: entity.listPrice,
-        salePrice: entity.salePrice,
-        enable: entity.enable,
-        brand: entity.brand,
-        uom: entity.uom,
-        tax: entity.tax,
-        purchasePrice: entity.purchasePrice,
-        hsn: entity.hsn,
-        imageUrl: entity.imageUrl,
-        skuCode: entity.skuCode);
-  }
+  // static ProductModel fromEntity(ProductEntity entity) {
+  //   return ProductModel(
+  //       productId: entity.productId,
+  //       description: entity.displayName,
+  //       listPrice: entity.listPrice,
+  //       salePrice: entity.salePrice,
+  //       enable: entity.enable,
+  //       brand: entity.brand,
+  //       uom: entity.uom,
+  //       tax: entity.tax,
+  //       purchasePrice: entity.purchasePrice,
+  //       hsn: entity.hsn,
+  //       imageUrl: entity.imageUrl,
+  //       skuCode: entity.skuCode);
+  // }
 }

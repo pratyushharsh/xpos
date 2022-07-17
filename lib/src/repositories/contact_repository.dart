@@ -1,5 +1,5 @@
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:receipt_generator/src/entity/contact_entity.dart';
+import 'package:receipt_generator/src/entity/pos/contact_entity.dart';
 
 class ContactRepository {
   List<ContactEntity>? _contacts;
@@ -7,6 +7,7 @@ class ContactRepository {
   Future<List<ContactEntity>> getContact() async {
     if (_contacts == null) {
       var data = await _getContactFromPhonebook();
+      print(data);
       if (data == null) {
         _contacts = List.empty();
       } else {
@@ -31,7 +32,7 @@ class ContactRepository {
                 contactId: 'P${e.id}',
                 name: '${e.name.first} ${e.name.last}',
                 phoneNumber: ph?.number,
-                email: em?.address
+                email: em?.address, storeId: '', createTime: DateTime.now()
               );
         },)
             .toList();
@@ -43,8 +44,10 @@ class ContactRepository {
   }
 
   Future<List<Contact>?> _getContactFromPhonebook() async {
-    if (await FlutterContacts.requestPermission(readonly: true)) {
-      return FlutterContacts.getContacts(withProperties: true);
+    if (!await FlutterContacts.requestPermission(readonly: true)) {
+      print("Permission Denied");
+    } else {
+      return await FlutterContacts.getContacts(withProperties: true);
     }
     return null;
   }

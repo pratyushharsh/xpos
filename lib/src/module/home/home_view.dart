@@ -17,6 +17,10 @@ typedef _LetIndexPage = void Function(int value);
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => const HomeScreen());
+  }
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -177,7 +181,7 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
                   ),
                   IconButton(
                     icon: FaIcon(
-                      FontAwesomeIcons.boxes,
+                      FontAwesomeIcons.boxesStacked,
                       color: widget.selectedIndex == 3
                           ? AppColor.primary
                           : AppColor.iconColor,
@@ -324,53 +328,6 @@ class SaleOptionButton extends StatelessWidget {
         primary: AppColor.color8,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-      ),
-    );
-  }
-}
-
-class HomeScreenOld extends StatelessWidget {
-  const HomeScreenOld({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed(RouteConfig.addItemScreen);
-        },
-        child: const Icon(Icons.add),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(RouteConfig.createReceiptScreen);
-                },
-                child: const Text("Create New Receipt")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(RouteConfig.allReceiptScreen);
-                },
-                child: const Text("List Previous Receipts")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(RouteConfig.invoiceViewScreen);
-                },
-                child: const Text("Invoice View Screen")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(RouteConfig.allCustomerScreen);
-                },
-                child: const Text("All Customer View")),
-            const LoadCustomerFromPhoneButton()
-          ],
-        ),
       ),
     );
   }

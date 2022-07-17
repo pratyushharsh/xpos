@@ -3,6 +3,7 @@ part of 'create_new_receipt_bloc.dart';
 enum CreateNewReceiptStatus {
   initial,
   created,
+  saleError,
   saleComplete,
   paymentAwaiting,
   loading,
@@ -10,66 +11,53 @@ enum CreateNewReceiptStatus {
   error
 }
 
-enum CustomerSearchState { initial, searching, selected }
+enum SaleStep { item, payment, customer, complete, printAndEmail, confirmed }
 
 class CreateNewReceiptState extends Equatable {
   final int transSeq;
-  final List<SaleLine> lineItem;
-  final ContactEntity? selectedCustomer;
+  final List<TransactionLineItemEntity> lineItem;
+  final List<TransactionPaymentLineItemEntity> tenderLine;
+  final Map<String, ProductEntity> productMap;
+  final ContactEntity? customer;
   final CreateNewReceiptStatus status;
-  final List<ContactEntity> customerSuggestion;
-  final List<ContactEntity> phoneContactSuggestion;
-  final CustomerSearchState customerSearchState;
+  final SaleStep step;
 
-  const CreateNewReceiptState(
-      {this.lineItem = const [],
-      this.transSeq = -1,
-      required this.status,
-      this.selectedCustomer,
-      this.customerSearchState = CustomerSearchState.initial,
-      this.phoneContactSuggestion = const [],
-      this.customerSuggestion = const []});
+  const CreateNewReceiptState({
+    this.lineItem = const [],
+    this.tenderLine = const [],
+    this.transSeq = -1,
+    this.productMap = const {},
+    required this.status,
+    this.step = SaleStep.item,
+    this.customer,
+  });
 
   double get subTotal {
-    return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.amount);
+    return - tax + lineItem.fold(0.0,
+        (previousValue, element) => previousValue + element.extendedAmount);
   }
 
   double get discount {
-    return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.discount);
+    return lineItem.fold(0.0, (previousValue, element) => previousValue + element.discountAmount);
   }
 
   double get tax {
     return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.tax);
+        0.0, (previousValue, element) => previousValue + element.taxAmount);
   }
 
-  double get grandTotal {
-    return subTotal - discount + tax;
+  double get items {
+    return lineItem.fold(
+        0.0, (previousValue, element) => previousValue + element.quantity);
   }
 
-  CreateNewReceiptState copyWith(
-      {List<SaleLine>? lineItem,
-      int? transSeq,
-      CreateNewReceiptStatus? status,
-      String? customerId,
-      String? customerPhone,
-      String? customerAddress,
-      String? customerName,
-      ContactEntity? selectedCustomer,
-      CustomerSearchState? customerSearchState,
-      List<ContactEntity>? customerSuggestion,
-      List<ContactEntity>? phoneContactSuggestion}) {
-    return CreateNewReceiptState(
-        lineItem: lineItem ?? this.lineItem,
-        transSeq: transSeq ?? this.transSeq,
-        status: status ?? this.status,
-        selectedCustomer: selectedCustomer ?? this.selectedCustomer,
-        customerSearchState: customerSearchState ?? this.customerSearchState,
-        customerSuggestion: customerSuggestion ?? this.customerSuggestion,
-        phoneContactSuggestion:
-            phoneContactSuggestion ?? this.phoneContactSuggestion);
+  double get paidAmount {
+    return tenderLine.fold(
+        0.0, (previousValue, element) => previousValue + element.amount);
+  }
+
+  double get amountDue {
+    return subTotal + tax - paidAmount - discount;
   }
 
   @override
@@ -77,9 +65,29 @@ class CreateNewReceiptState extends Equatable {
         lineItem,
         transSeq,
         status,
-        customerSuggestion,
-        selectedCustomer,
-        phoneContactSuggestion,
-        customerSearchState
+        productMap,
+        step,
+        tenderLine,
+        customer,
       ];
+
+  CreateNewReceiptState copyWith({
+    int? transSeq,
+    List<TransactionLineItemEntity>? lineItem,
+    List<TransactionPaymentLineItemEntity>? tenderLine,
+    ContactEntity? customer,
+    Map<String, ProductEntity>? productMap,
+    CreateNewReceiptStatus? status,
+    SaleStep? step,
+  }) {
+    return CreateNewReceiptState(
+      transSeq: transSeq ?? this.transSeq,
+      lineItem: lineItem ?? this.lineItem,
+      tenderLine: tenderLine ?? this.tenderLine,
+      productMap: productMap ?? this.productMap,
+      customer: customer ?? this.customer,
+      status: status ?? this.status,
+      step: step ?? this.step,
+    );
+  }
 }

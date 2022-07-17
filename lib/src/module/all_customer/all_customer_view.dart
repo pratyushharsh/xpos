@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/config/route_config.dart';
+import 'package:receipt_generator/src/config/theme_settings.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/module/all_customer/bloc/all_customer_bloc.dart';
+import 'package:receipt_generator/src/widgets/my_loader.dart';
 
 class AllCustomerView extends StatelessWidget {
   const AllCustomerView({Key? key}) : super(key: key);
@@ -15,7 +18,7 @@ class AllCustomerView extends StatelessWidget {
       child: BlocBuilder<AllCustomerBloc, AllCustomerState>(
         builder: (context, state) {
           if (state.status == AllCustomerStatus.loading) {
-            return const CircularProgressIndicator();
+            return const MyLoader(color: AppColor.color6,);
           }
           return RefreshIndicator(
             onRefresh: () async {
@@ -40,21 +43,26 @@ class CustomerViewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              contact.name,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-            if (contact.phoneNumber != null) Text('${contact.phoneNumber}'),
-            if (contact.email != null) Text('${contact.email}'),
-            if (contact.billingAddress != null )
-            Text(
-                '${contact.billingAddress}'),
-          ],
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).pushNamed(RouteConfig.customerDetailScreen, arguments: contact.contactId);
+        },
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                contact.name,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              if (contact.phoneNumber != null) Text('${contact.phoneNumber}'),
+              if (contact.email != null) Text('${contact.email}'),
+              if (contact.billingAddress != null )
+              Text(
+                  '${contact.billingAddress}'),
+            ],
+          ),
         ),
       ),
     );

@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 
-const String BLACK = '\u001b[30m';
-const String BLUE = '\u001b[34m';
-const String RED = '\u001b[31m';
-const String BRIGHT_RED = '\u001b[31;1m';
-const String GREEN = '\u001b[32m';
-const String YELLOW = '\u001b[33m';
-const String RESET = '\u001b[0m';
+const String black = '\u001b[30m';
+const String blue = '\u001b[34m';
+const String red = '\u001b[31m';
+const String brightRed = '\u001b[31;1m';
+const String green = '\u001b[32m';
+const String yellow = '\u001b[33m';
+const String reset = '\u001b[0m';
 
 void initRootLogger() {
   // only enable logging for debug mode
@@ -26,21 +26,21 @@ void initRootLogger() {
       return;
     }
 
-    var start = RESET;
-    const end = RESET;
+    var start = reset;
+    const end = reset;
 
     switch (record.level.name) {
       case 'INFO':
-        start = BLUE;
+        start = blue;
         break;
       case 'WARNING':
-        start = YELLOW;
+        start = yellow;
         break;
       case 'SEVERE':
-        start = BRIGHT_RED;
+        start = brightRed;
         break;
       case 'SHOUT':
-        start = RED;
+        start = red;
         break;
     }
 

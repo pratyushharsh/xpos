@@ -4,8 +4,10 @@ import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/formatter.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/config/theme_settings.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/module/list_all_receipt/bloc/list_all_receipt_bloc.dart';
+import 'package:receipt_generator/src/widgets/my_loader.dart';
 
 class ListAllReceiptView extends StatelessWidget {
   const ListAllReceiptView({Key? key}) : super(key: key);
@@ -20,7 +22,7 @@ class ListAllReceiptView extends StatelessWidget {
       child: BlocBuilder<ListAllReceiptBloc, ListAllReceiptState>(
         builder: (context, state) {
           if (state.status == ListAllReceiptStatus.loading) {
-            return const CircularProgressIndicator();
+            return const MyLoader(color: AppColor.color6,);
           }
           return RefreshIndicator(
             onRefresh: () async {
@@ -47,8 +49,12 @@ class ReceiptHeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
+        onDoubleTap: () {
+          Navigator.of(context).pushNamed(RouteConfig.invoiceDisplayScreen,
+              arguments: receipt.transId);
+        },
         onTap: () {
-          Navigator.of(context).pushNamed(RouteConfig.receiptDisplayScreen,
+          Navigator.of(context).pushNamed(RouteConfig.orderSummaryScreen,
               arguments: receipt.transId);
         },
         child: Container(
@@ -63,7 +69,7 @@ class ReceiptHeaderCard extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    '${Currency.inr}${receipt.total}',
+                    '${Currency.inr}${receipt.total.toStringAsFixed(2)}',
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 20),
                   )
@@ -100,8 +106,7 @@ class ReceiptHeaderCard extends StatelessWidget {
               Row(
                 children: [
                   Text(AppFormatter.dateFormatter.format(
-                      DateTime.fromMicrosecondsSinceEpoch(
-                          receipt.businessDate)))
+                      receipt.businessDate))
                 ],
               )
             ],

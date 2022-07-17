@@ -1,31 +1,72 @@
-
 import 'package:bloc/bloc.dart';
+import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
-import 'package:receipt_generator/src/repositories/app_database.dart';
 
 part 'list_all_item_event.dart';
 part 'list_all_item_state.dart';
 
 class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
-
   final log = Logger('ListAllItemBloc');
-  final AppDatabase db;
+  final Isar db;
 
   ListAllItemBloc({required this.db}) : super(ListAllItemState()) {
     on<LoadAllItems>(_onLoadItem);
+    on<LoadNextProduct>(_onLoadNextProducts);
+    on<SearchProductByNameFilter>(_filerProductsByDisplayName);
   }
 
   void _onLoadItem(LoadAllItems event, Emitter<ListAllItemState> emit) async {
     try {
       emit(state.copyWith(status: ListAllItemStatus.loading));
-      var prod = await db.productDao.findAllProducts();
-      var newProd = prod.map((e) => Product.fromEntity(e)).toList();
-      emit(state.copyWith(products: newProd, status: ListAllItemStatus.success));
+      var prod = <ProductEntity>[];
+      if (state.filterCriteria.filter != null && state.filterCriteria.filter!.isNotEmpty) {
+        prod = await db.productEntitys
+            .where()
+            .productIdEqualTo(state.filterCriteria.filter)
+            .or()
+            .descriptionWordsAnyStartsWith(state.filterCriteria.filter!)
+            .offset(state.products.length)
+            .limit(state.filterCriteria.limit).findAll();
+      } else {
+        prod = await db.productEntitys.where().offset(state.products.length).limit(state.filterCriteria.limit).findAll();
+      }
+      emit(
+          state.copyWith(products: prod, status: ListAllItemStatus.success));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: ListAllItemStatus.failure));
     }
+  }
+
+  void _onLoadNextProducts(LoadNextProduct event, Emitter<ListAllItemState> emit) async {
+    emit(state.copyWith(status: ListAllItemStatus.loadingNextProducts));
+    try {
+      var prod = <ProductEntity>[];
+      if (state.filterCriteria.filter != null && state.filterCriteria.filter!.isNotEmpty) {
+        prod = await db.productEntitys
+            .where()
+            .productIdEqualTo(state.filterCriteria.filter)
+            .or()
+            .descriptionWordsAnyStartsWith(state.filterCriteria.filter!)
+            .offset(state.products.length)
+            .limit(state.filterCriteria.limit).findAll();
+      } else {
+        prod = await db.productEntitys.where().offset(state.products.length).limit(state.filterCriteria.limit).findAll();
+      }
+      List<ProductEntity> newProducts = [...state.products, ...prod];
+      emit(state.copyWith(status: ListAllItemStatus.success, products: newProducts, end: prod.isEmpty));
+    } catch (e) {
+      log.severe(e);
+      emit(state.copyWith(status: ListAllItemStatus.failure,));
+    }
+  }
+
+  void _filerProductsByDisplayName(SearchProductByNameFilter event, Emitter<ListAllItemState> emit) async {
+    var fc = state.filterCriteria;
+    emit(state.copyWith(filterCriteria: fc.copyWith(filter: event.filterString)));
+    add(LoadAllItems());
   }
 }

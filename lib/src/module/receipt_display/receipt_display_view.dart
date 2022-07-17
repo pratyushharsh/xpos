@@ -10,7 +10,7 @@ import 'package:pdf/pdf.dart';
 import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-import 'package:receipt_generator/src/entity/entity.dart';
+import 'package:receipt_generator/src/entity/pos/entity.dart';
 
 import '../../widgets/appbar_leading.dart';
 import 'bloc/receipt_display_bloc.dart';
@@ -75,7 +75,10 @@ class ReceiptDisplayView extends StatelessWidget {
     return BlocProvider(
       lazy: false,
       create: (context) => ReceiptDisplayBloc(
-          transId: transactionId, db: RepositoryProvider.of(context))
+          transId: transactionId,
+          db: RepositoryProvider.of(context),
+          authBloc: RepositoryProvider.of(context),
+          settingsRepo: RepositoryProvider.of(context))
         ..add(FetchReceiptDataEvent()),
       child: Container(
         color: AppColor.background,
@@ -94,7 +97,9 @@ class ReceiptDisplayView extends StatelessWidget {
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
-                                const SizedBox(height: 80,),
+                                const SizedBox(
+                                  height: 80,
+                                ),
                                 ReceiptBlock(
                                   printKey: _printKey,
                                 ),
@@ -218,9 +223,9 @@ class ReceiptBlock extends StatelessWidget {
             margin: const EdgeInsets.all(10),
             width: math.min(MediaQuery.of(context).size.width, 380),
             decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border.symmetric(vertical: BorderSide(color: Colors.black))
-            ),
+                color: Colors.white,
+                border: Border.symmetric(
+                    vertical: BorderSide(color: Colors.black))),
             child: Column(
               children: [
                 CustomPaint(
@@ -345,8 +350,7 @@ class ReceiptDate extends StatelessWidget {
     return BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
       builder: (context, state) {
         return Text(
-          formatter.format(
-              DateTime.fromMicrosecondsSinceEpoch(state.header!.businessDate)),
+          formatter.format(state.header!.businessDate),
         );
       },
     );
@@ -358,13 +362,27 @@ class ReceiptBusinessDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: const [
-        Text("NearBai Private Limited"),
-        Text("Block B, Connaught Palace"),
-        Text("Delhi, 110001"),
-        Text("Ph: +919430123120")
-      ],
+    return BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            Text(
+              "${state.receiptSettings?.tagLine}",
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ...?state.receiptSettings?.storeAddress
+                ?.split("\n")
+                .map(
+                  (e) => Text(e),
+                )
+                .toList(),
+            Text("Ph: ${state.receiptSettings?.storeNumber}")
+          ],
+        );
+      },
     );
   }
 }
@@ -442,23 +460,23 @@ class ReceiptLineItem extends StatelessWidget {
         Expanded(
             flex: 2,
             child: Text(
-              lineItem.productId,
+              lineItem.itemId,
             )),
         Expanded(
             flex: 5,
             child: Text(
-              lineItem.productDescription,
+              '$lineItem.productDescription',
             )),
         Expanded(
             flex: 1,
             child: Text(
-              "${lineItem.qty}",
+              "${lineItem.quantity}",
               textAlign: TextAlign.right,
             )),
         Expanded(
             flex: 2,
             child: Text(
-              "${Currency.inr}${lineItem.amount}",
+              "${Currency.inr}${lineItem.grossAmount.toStringAsFixed(2)}",
               textAlign: TextAlign.right,
             )),
       ],
@@ -502,7 +520,7 @@ class ReceiptSummary extends StatelessWidget {
                   "Subtotal",
                   style: style,
                 ),
-                Text("${Currency.inr}${state.header!.subtotal}")
+                Text("${Currency.inr}${state.header!.subtotal.toStringAsFixed(2)}")
               ],
             ),
             Row(
@@ -519,14 +537,14 @@ class ReceiptSummary extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Tax", style: style),
-                Text("${Currency.inr}${state.header!.taxTotal}")
+                Text("${Currency.inr}${state.header!.taxTotal.toStringAsFixed(2)}")
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Total", style: style),
-                Text("${Currency.inr}${state.header!.total}")
+                Text("${Currency.inr}${state.header!.total.toStringAsFixed(2)}")
               ],
             ),
           ],
@@ -547,7 +565,7 @@ class ReceiptBarcode extends StatelessWidget {
         return BarcodeWidget(
           barcode: Barcode.code128(), // Barcode type and settings
           data:
-              '${formatter.format(DateTime.fromMicrosecondsSinceEpoch(state.header!.businessDate))}${state.header!.transId}', // Content
+              '${formatter.format(state.header!.businessDate)}${state.header!.transId}', // Content
           width: 200,
           height: 80,
         );
@@ -561,9 +579,21 @@ class ReceiptFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      "Thank You For Shopping With Us.",
-      style: TextStyle(fontWeight: FontWeight.bold),
+    return BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            if (state.receiptSettings?.footerTitle != null)
+              Text(
+                "${state.receiptSettings!.footerTitle}",
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            const SizedBox(height: 20),
+            if (state.receiptSettings?.footerSubtitle != null)
+              Text("${state.receiptSettings!.footerSubtitle}")
+          ],
+        );
+      },
     );
   }
 }
@@ -624,8 +654,8 @@ class DrawCircularArcLine extends CustomPainter {
     }
 
     for (double i = 0; i <= size.width; i += (size.height)) {
-
-      canvas.drawLine(Offset(i, y), Offset(math.min(i + gap, size.width), y), _paint);
+      canvas.drawLine(
+          Offset(i, y), Offset(math.min(i + gap, size.width), y), _paint);
       i += gap;
       if (i + size.height <= size.width) {
         canvas.drawArc(
@@ -643,7 +673,8 @@ class DrawCircularArcLine extends CustomPainter {
             false,
             _paint);
       } else {
-        canvas.drawLine(Offset(i, y), Offset(math.min(i + gap, size.width), y), _paint);
+        canvas.drawLine(
+            Offset(i, y), Offset(math.min(i + gap, size.width), y), _paint);
       }
     }
   }

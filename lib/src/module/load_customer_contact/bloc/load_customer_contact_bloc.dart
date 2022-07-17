@@ -1,10 +1,8 @@
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:receipt_generator/src/entity/contact_entity.dart';
-import 'package:receipt_generator/src/repositories/app_database.dart';
 
 part 'load_customer_contact_event.dart';
 part 'load_customer_contact_state.dart';
@@ -13,7 +11,7 @@ class LoadCustomerContactBloc
     extends Bloc<LoadCustomerContactEvent, LoadCustomerContactState> {
 
   final log = Logger('LoadCustomerContactBloc');
-  final AppDatabase db;
+  final Isar db;
   
   LoadCustomerContactBloc({ required this.db }) : super(LoadCustomerContactState()) {
     on<LoadCustomerContactFromPhone>(_loadCustomerContactFromPhone);

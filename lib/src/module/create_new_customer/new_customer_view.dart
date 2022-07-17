@@ -1,3 +1,4 @@
+import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
@@ -9,7 +10,10 @@ import 'package:receipt_generator/src/widgets/custom_checkbox.dart';
 import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 import 'package:receipt_generator/src/widgets/loading.dart';
 
+import '../../model/address.dart';
+import '../../widgets/address_widget.dart';
 import '../../widgets/appbar_leading.dart';
+import '../business/business_view.dart';
 
 class NewCustomerView extends StatelessWidget {
   const NewCustomerView({Key? key}) : super(key: key);
@@ -18,7 +22,9 @@ class NewCustomerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
-      create: (context) => NewCustomerBloc(db: RepositoryProvider.of(context)),
+      create: (context) => NewCustomerBloc(
+          db: RepositoryProvider.of(context),
+          sequenceRepository: RepositoryProvider.of(context)),
       child: const CreateNewCustomerForm(),
     );
   }
@@ -39,8 +45,10 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
   late TextEditingController _customerNameController;
   late TextEditingController _customerPhoneController;
   late TextEditingController _customerEmailController;
-  late TextEditingController _customerShipAddressController;
-  late TextEditingController _customerBillAddressController;
+  late TextEditingController _customerPanController;
+  late TextEditingController _customerGstController;
+  Address? _customerShipAddress;
+  Address? _customerBillAddress;
 
   @override
   void initState() {
@@ -48,8 +56,8 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
     _customerNameController = TextEditingController();
     _customerPhoneController = TextEditingController();
     _customerEmailController = TextEditingController();
-    _customerShipAddressController = TextEditingController();
-    _customerBillAddressController = TextEditingController();
+    _customerPanController = TextEditingController();
+    _customerGstController = TextEditingController();
   }
 
   @override
@@ -57,18 +65,23 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
     _customerNameController.dispose();
     _customerPhoneController.dispose();
     _customerEmailController.dispose();
-    _customerShipAddressController.dispose();
-    _customerBillAddressController.dispose();
+    _customerPanController.dispose();
+    _customerGstController.dispose();
     super.dispose();
   }
 
   void _onSubmit() {
     CustomerParty customer = CustomerParty(
-      name: _customerNameController.text,
-      phoneNumber: _customerPhoneController.text.isNotEmpty ? _customerPhoneController.text : null,
-      email: _customerEmailController.text.isNotEmpty ? _customerEmailController.text : null,
-      billingAddress: _customerBillAddressController.text.isNotEmpty ? _customerBillAddressController.text : null
-    );
+        name: _customerNameController.text,
+        phoneNumber: _customerPhoneController.text.isNotEmpty
+            ? _customerPhoneController.text
+            : null,
+        email: _customerEmailController.text.isNotEmpty
+            ? _customerEmailController.text
+            : null,
+        billingAddress: _customerBillAddress?.toString(),
+        shippingAddress: _sameAddress ? _customerBillAddress?.toString() : _customerShipAddress.toString());
+
     BlocProvider.of<NewCustomerBloc>(context)
         .add(OnCreateCustomer(customer: customer));
   }
@@ -139,11 +152,21 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
                               label: "Email",
                               validator:
                                   NewPartyFieldValidator.validatePartyEmail,
-                              textInputType: TextInputType.phone,
+                              textInputType: TextInputType.emailAddress,
                               controller: _customerEmailController,
                             ),
+                            CustomTextField(
+                              label: "GST",
+                              textInputType: TextInputType.phone,
+                              controller: _customerGstController,
+                            ),
+                            CustomTextField(
+                              label: "PAN",
+                              textInputType: TextInputType.phone,
+                              controller: _customerPanController,
+                            ),
                             const SizedBox(
-                              height: 30,
+                              height: 20,
                             ),
                             Row(
                               children: [
@@ -168,20 +191,77 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
                             const SizedBox(
                               height: 10,
                             ),
-                            CustomTextField(
-                              label: "Billing Address",
-                              minLines: 4,
-                              maxLines: 5,
-                              controller: _customerBillAddressController,
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (ctx) {
+                                      return Dialog(
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context).size.height * 0.8,
+                                          width: MediaQuery.of(context).size.width * 0.5,
+                                          child: const AddressFormDialog(),
+                                        ),
+                                      );
+                                    }).then((value) => {
+                                  if (value != null) {
+                                    setState(() {
+                                      _customerBillAddress = value[0];
+                                    })
+                                  }
+                                });
+                              },
+                              child: AddressWidget(
+                                label: "Billing Address",
+                                address: _customerBillAddress.toString(),
+                              ),
                             ),
                             if (!_sameAddress)
-                              CustomTextField(
-                                label: "Shipping Address",
-                                minLines: 4,
-                                maxLines: 5,
-                                controller: _customerShipAddressController,
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (ctx) {
+                                        return Dialog(
+                                          child: SizedBox(
+                                            height: MediaQuery.of(context).size.height * 0.8,
+                                            width: MediaQuery.of(context).size.width * 0.5,
+                                            child: const AddressFormDialog(),
+                                          ),
+                                        );
+                                      }).then((value) => {
+                                    if (value != null) {
+                                      setState(() {
+                                        _customerShipAddress = value[0];
+                                      })
+                                    }
+                                  });
+                                },
+                                child: AddressWidget(
+                                  label: "Shipping Address",
+                                  address: _customerShipAddress.toString(),
+                                ),
                               ),
+                            const SizedBox(
+                              height: 250,
+                            ),
                           ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: BlurryContainer(
+                        blur: 8,
+                        height: 70,
+                        elevation: 0,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(0)),
+                        color: Colors.white.withOpacity(0.6),
+                        child: const SizedBox(
+                          height: 70,
                         ),
                       ),
                     ),

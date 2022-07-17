@@ -146,10 +146,11 @@ class DownloadSampleFileButton extends StatelessWidget {
   generateSampleCsv() async {
     List<List<String>> data = [
       [
-        "Product Description*",
+        "ProductId",
+        "Display Name",
+        "Description*",
         "List Price",
         "Sale Price",
-        "Purchase Price",
         "Unit Of Measure",
         "Brand",
         "Sku Code",
@@ -158,11 +159,12 @@ class DownloadSampleFileButton extends StatelessWidget {
         "Image Url"
       ],
       [
-        "Apple 20W USB-C Power Adapter",
+        "700000001",
+        "Apple 20W USB-C Power Adapter"
+        "Apple 20W USB-C Power Adapter. 2O W, 768 12313",
         "1899.00",
         "899.00",
-        "699.00",
-        "SQFT",
+        "SQF",
         "Century",
         "FG546",
         "45647764",

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:receipt_generator/src/config/theme_settings.dart';
 
 class CustomDropDown<T> extends StatelessWidget {
   final String label;
@@ -37,6 +36,7 @@ class CustomDropDown<T> extends StatelessWidget {
               // color: AppColor.background,
               borderRadius: BorderRadius.circular(5)),
           child: DropdownButtonFormField<T>(
+            autovalidateMode: AutovalidateMode.always,
             validator: validator,
             // style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
             decoration: const InputDecoration(

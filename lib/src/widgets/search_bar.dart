@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 
+import '../module/home/clients_view.dart';
+
 class SearchBar extends StatefulWidget {
-  const SearchBar({Key? key}) : super(key: key);
+  final String label;
+  final ValueChanged<String>? onChanged;
+  const SearchBar({Key? key, required this.label, this.onChanged}) : super(key: key);
 
   @override
   State<SearchBar> createState() => _SearchBarState();
 }
 
 class _SearchBarState extends State<SearchBar> {
-  GlobalKey actionKey = LabeledGlobalKey('sort');
+  late GlobalKey actionKey;
 
   OverlayEntry? sortOverlay;
   double? height, width, dx, dy;
@@ -25,7 +29,7 @@ class _SearchBarState extends State<SearchBar> {
     dy = offset?.dy;
   }
 
-  /*
+
   OverlayEntry _createFloatingOverlay(BuildContext ctx) {
     return OverlayEntry(builder: (context) {
       return Positioned(
@@ -60,12 +64,12 @@ class _SearchBarState extends State<SearchBar> {
       );
     });
   }
-   */
 
   @override
   void initState() {
     super.initState();
     sortDropdownOpened = false;
+    actionKey = LabeledGlobalKey(widget.label);
   }
 
   @override
@@ -80,10 +84,10 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: TextField(
             cursorColor: AppColor.primary,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               isDense: true,
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.search, color: AppColor.primary,),
@@ -95,6 +99,7 @@ class _SearchBarState extends State<SearchBar> {
               focusColor: AppColor.primary,
               hoverColor: AppColor.primary,
             ),
+            onChanged: widget.onChanged,
           ),
         ),
         const SizedBox(
@@ -102,19 +107,19 @@ class _SearchBarState extends State<SearchBar> {
         ),
         InkWell(
           key: actionKey,
-          onTap: null
-          //     () {
-          //   setState(() {
-          //     if (sortDropdownOpened!) {
-          //       sortOverlay?.remove();
-          //     } else {
-          //       findDropdownData();
-          //       sortOverlay = _createFloatingOverlay(context);
-          //       Overlay.of(context)?.insert(sortOverlay!);
-          //     }
-          //     sortDropdownOpened = !sortDropdownOpened!;
-          //   });
-          // }
+          onTap:
+              () {
+            setState(() {
+              if (sortDropdownOpened!) {
+                sortOverlay?.remove();
+              } else {
+                findDropdownData();
+                sortOverlay = _createFloatingOverlay(context);
+                Overlay.of(context)?.insert(sortOverlay!);
+              }
+              sortDropdownOpened = !sortDropdownOpened!;
+            });
+          }
           ,
           child: Container(
             padding: const EdgeInsets.all(7),

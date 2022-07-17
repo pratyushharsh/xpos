@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
+import 'package:receipt_generator/src/model/address.dart';
+import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
+import 'package:receipt_generator/src/repositories/config_repository.dart';
+import 'package:receipt_generator/src/widgets/custom_button.dart';
+import 'package:receipt_generator/src/widgets/custom_dropdown.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
@@ -8,17 +13,28 @@ import '../../widgets/appbar_leading.dart';
 import 'bloc/business_bloc.dart';
 
 class BusinessView extends StatelessWidget {
-  const BusinessView({Key? key}) : super(key: key);
+  final BusinessOperation operation;
+  final int? businessId;
+
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => const BusinessView());
+  }
+
+  const BusinessView(
+      {Key? key, this.operation = BusinessOperation.create, this.businessId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BusinessBloc(db: RepositoryProvider.of(context))
-        ..add(LoadBusinessDetail()),
+      create: (context) => BusinessBloc(
+          repo: RepositoryProvider.of(context), operation: operation)
+        ..add(LoadBusinessDetail(businessId)),
       child: Container(
         color: Colors.white,
         child: SafeArea(
           child: Scaffold(
+            resizeToAvoidBottomInset: true,
             backgroundColor: Colors.white,
             body: Stack(
               fit: StackFit.expand,
@@ -36,7 +52,7 @@ class BusinessView extends StatelessWidget {
                             tag: "business-logo",
                             child: CircleAvatar(
                               backgroundImage: NetworkImage(
-                                  'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1650499200&v=beta&t=f3QRa7swHNX0eWlIK6TT00OhoWBusgZaAqcOiIpRHsE'),
+                                  'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1656547200&v=beta&t=73Ztd907MxvHLxmQV6Pb-TShp6qj4mGOKN4ckWWjvuQ'),
                               maxRadius: 60,
                               child: Text(
                                 "",
@@ -54,11 +70,17 @@ class BusinessView extends StatelessWidget {
                   top: 20,
                   left: 16,
                   child: AppBarLeading(
-                    heading: "Modify Business",
-                    icon: Icons.arrow_back,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
+                    heading: operation == BusinessOperation.update
+                        ? "Modify Business"
+                        : "Create Business",
+                    icon: operation == BusinessOperation.update
+                        ? Icons.arrow_back
+                        : null,
+                    onTap: operation == BusinessOperation.update
+                        ? () {
+                            Navigator.of(context).pop();
+                          }
+                        : null,
                   ),
                 ),
                 BlocBuilder<BusinessBloc, BusinessState>(
@@ -69,7 +91,13 @@ class BusinessView extends StatelessWidget {
                         right: 16,
                         child: ElevatedButton(
                           onPressed: () {
-                            BlocProvider.of<BusinessBloc>(context).add(OnSaveBusiness());
+                            if (BusinessOperation.create == state.operation) {
+                              BlocProvider.of<BusinessBloc>(context)
+                                  .add(OnCreateNewBusiness());
+                            } else {
+                              BlocProvider.of<BusinessBloc>(context)
+                                  .add(OnSaveBusiness());
+                            }
                           },
                           child: const Text(
                             "Save",
@@ -108,27 +136,38 @@ class BusinessDetail extends StatefulWidget {
 class _BusinessDetailState extends State<BusinessDetail> {
   late TextEditingController _businessNameController;
   late TextEditingController _businessContactController;
-  late TextEditingController _businessAddressController;
+  late TextEditingController _businessEmailController;
+  late TextEditingController _businessGstController;
+  late TextEditingController _businessPanController;
 
   @override
   void initState() {
     super.initState();
     _businessNameController = TextEditingController();
     _businessContactController = TextEditingController();
-    _businessAddressController = TextEditingController();
+    _businessEmailController = TextEditingController();
+    _businessGstController = TextEditingController();
+    _businessPanController = TextEditingController();
   }
 
   @override
   void dispose() {
     _businessNameController.dispose();
     _businessContactController.dispose();
-    _businessAddressController.dispose();
+    _businessEmailController.dispose();
+    _businessGstController.dispose();
+    _businessPanController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BusinessBloc, BusinessState>(
+    return BlocConsumer<BusinessBloc, BusinessState>(
+      listener: (context, state) {
+        if (BusinessStatus.newBusinessCreated == state.status) {
+          BlocProvider.of<AuthenticationBloc>(context).add(InitialAuthEvent());
+        }
+      },
       builder: (context, state) {
         if (BusinessStatus.loading == state.status) {
           return const MyLoader(
@@ -136,9 +175,11 @@ class _BusinessDetailState extends State<BusinessDetail> {
           );
         }
         if (BusinessStatus.success == state.status) {
-          _businessNameController.text = state.entity?.storeName ?? '';
-          _businessContactController.text = state.entity?.storeContact ?? '';
-          _businessAddressController.text =  state.entity?.address1 ?? '';
+          _businessNameController.text = state.businessName;
+          _businessContactController.text = state.businessContact;
+          _businessEmailController.text = state.businessEmail ?? "";
+          _businessGstController.text = state.businessGst;
+          _businessPanController.text = state.businessPan;
         }
         return Column(
           children: [
@@ -159,18 +200,178 @@ class _BusinessDetailState extends State<BusinessDetail> {
               },
             ),
             CustomTextField(
-              controller: _businessAddressController,
-              label: "Business Address",
-              minLines: 4,
-              maxLines: 4,
+              controller: _businessEmailController,
+              label: "Email",
+              textInputType: TextInputType.emailAddress,
               onValueChange: (val) {
                 BlocProvider.of<BusinessBloc>(context)
-                    .add(OnBusinessAddressChange(val));
+                    .add(OnBusinessEmailChange(val));
               },
-            )
+            ),
+            GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: AppColor.background,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    )),
+                    builder: (context) => const AddressFormDialog(),
+                  ).then((value) => {
+                        if (value != null &&
+                            value.length > 0 &&
+                            value[0] is Address)
+                          {
+                            BlocProvider.of<BusinessBloc>(context)
+                                .add(OnBusinessAddressChange(value[0]))
+                          }
+                      });
+                },
+                child: AddressWidget(
+                  label: "Business Address",
+                  address: state.businessAddress?.toString() ?? "",
+                )),
+            CustomTextField(
+              controller: _businessGstController,
+              label: "GST Number",
+              textCapitalization: TextCapitalization.characters,
+              onValueChange: (val) {
+                BlocProvider.of<BusinessBloc>(context)
+                    .add(OnBusinessGstChange(val.toUpperCase()));
+              },
+            ),
+            CustomTextField(
+              controller: _businessPanController,
+              label: "PAN Number",
+              textCapitalization: TextCapitalization.characters,
+              onValueChange: (val) {
+                BlocProvider.of<BusinessBloc>(context)
+                    .add(OnBusinessPanChange(val.toUpperCase()));
+              },
+            ),
           ],
         );
       },
+    );
+  }
+}
+
+class AddressFormDialog extends StatefulWidget {
+  const AddressFormDialog({Key? key}) : super(key: key);
+
+  @override
+  State<AddressFormDialog> createState() => _AddressFormDialogState();
+}
+
+class _AddressFormDialogState extends State<AddressFormDialog> {
+  late TextEditingController _zipcodeController;
+  late TextEditingController _buildingController;
+  late TextEditingController _streetController;
+  late TextEditingController _cityController;
+  late TextEditingController _stateController;
+  late String? _country;
+  late String? _state;
+
+  @override
+  void initState() {
+    super.initState();
+    _zipcodeController = TextEditingController();
+    _buildingController = TextEditingController();
+    _streetController = TextEditingController();
+    _cityController = TextEditingController();
+    _stateController = TextEditingController();
+    _country = null;
+    _state = null;
+  }
+
+  @override
+  void dispose() {
+    _zipcodeController.dispose();
+    _buildingController.dispose();
+    _streetController.dispose();
+    _cityController.dispose();
+    _stateController.dispose();
+    super.dispose();
+  }
+
+  void _onCountryChange(String? value) {
+    setState(() {
+      _country = value;
+    });
+  }
+
+  void _onStateChange(String? value) {
+    setState(() {
+      _state = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var repo = RepositoryProvider.of<ConfigRepository>(context);
+    var countryCode = repo.getCodeByCategory("COUNTRY_CODE");
+    var stateCode = repo.getCodeByCategory("IN_STATE");
+    return SingleChildScrollView(
+      child: Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          padding: const EdgeInsets.all(14.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomDropDown<String>(
+                value: _country,
+                data: countryCode.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
+                onChanged: _onCountryChange,
+                label: 'Country',
+              ),
+              CustomTextField(
+                label: "Pincode",
+                controller: _zipcodeController,
+                textInputType: TextInputType.number,
+              ),
+              CustomTextField(
+                label: "Building, Company, Apartment",
+                controller: _buildingController,
+              ),
+              CustomTextField(
+                label: "Area, Street",
+                controller: _streetController,
+              ),
+              CustomTextField(
+                label: "Town/City",
+                controller: _cityController,
+              ),
+              CustomDropDown<String>(
+                value: _state,
+                data: stateCode.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
+                onChanged: _onStateChange,
+                label: 'State',
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: AcceptButton(
+                  label: "Save",
+                  borderRadius: BorderRadius.circular(5.0),
+                  onPressed: () {
+                    Navigator.of(context).pop([
+                      Address(
+                          zipcode: _zipcodeController.text,
+                          building: _buildingController.text,
+                          street: _streetController.text,
+                          city: _cityController.text,
+                          state: _stateController.text)
+                    ]);
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

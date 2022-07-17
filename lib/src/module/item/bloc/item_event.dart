@@ -8,10 +8,15 @@ abstract class ItemEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class LoadExistingItem extends ItemEvent {
+  final String? productId;
+  const LoadExistingItem(this.productId);
+}
+
 class LoadItems extends ItemEvent{}
 
 class AddItem extends ItemEvent {
-  final Product product;
+  final ProductModel product;
 
   const AddItem(this.product);
 }
