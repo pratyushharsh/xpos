@@ -31,11 +31,9 @@ class SaleCompleteDialog extends StatelessWidget {
             "Change Due : \$0.00",
             style: TextStyle(fontWeight: FontWeight.w100, fontSize: 20, color: AppColor.formInputText),
           ),
-          const SizedBox(
-            height: 50,
-          ),
+          Expanded(child: Container()),
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
             child: TextFormField(
               decoration: InputDecoration(
                 labelStyle: const TextStyle(fontWeight: FontWeight.w100, color: AppColor.formInputText),
@@ -49,7 +47,7 @@ class SaleCompleteDialog extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
             child: Row(
               children: [
                 Expanded(child: AcceptButton(onPressed: () {

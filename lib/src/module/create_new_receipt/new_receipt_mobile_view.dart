@@ -27,7 +27,9 @@ class NewReceiptMobileView extends StatelessWidget {
                     SizedBox(
                       height: 80,
                     ),
-                    CustomerDetailWidget(),
+                    // CustomerDetailWidget(),
+                    CustomerWidget(),
+                    SizedBox(height: 10,),
                     // const Divider(
                     //   thickness: 8,
                     // ),

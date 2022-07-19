@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/config/constants.dart';
 import 'package:receipt_generator/src/config/currency.dart';
@@ -15,6 +16,7 @@ import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import '../../entity/pos/entity.dart';
+import '../customer_search/customer_search_widget.dart';
 import '../line_item_modification/line_item_modification_view.dart';
 import '../mobile_dialog/mobile_dialog_view.dart';
 import 'bloc/create_new_receipt_bloc.dart';
@@ -57,7 +59,7 @@ class NewReceiptView extends StatelessWidget {
               builder: (ctx) => Dialog(
                 child: SizedBox(
                   width: min(MediaQuery.of(context).size.width * 0.8, 600),
-                  height: 700,
+                  height: 450,
                   child: const SaleCompleteDialog(),
                 ),
               ),
@@ -119,6 +121,42 @@ class CustomerSuggestionWidget extends StatelessWidget {
 class BuildLineItem extends StatelessWidget {
   const BuildLineItem({Key? key}) : super(key: key);
 
+  void onTap(BuildContext context, TransactionLineItemEntity saleLine, ProductEntity? product) {
+    if (Platform.isIOS || Platform.isAndroid) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+        builder: (_) => MobileDialogView(
+          child: LineItemModificationView(
+              lineItem: saleLine, productModel: product),
+        ),
+      ))
+          .then((value) => {
+        if (value != null && value is CreateNewReceiptEvent)
+          {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
+      });
+    } else {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return Dialog(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: LineItemModificationView(
+                    lineItem: saleLine,
+                    productModel: product),
+              ),
+            );
+          }).then(
+            (value) => {
+          if (value != null && value is CreateNewReceiptEvent)
+            {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
+        },
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
@@ -129,8 +167,7 @@ class BuildLineItem extends StatelessWidget {
             if (idx < state.lineItem.length) {
               return InkWell(
                 onTap: () {
-                  // Navigator.of(context)
-                  //     .pushNamed(RouteConfig.editSaleLineItemScreen, arguments: state.lineItem[idx]);
+                  onTap(context, state.lineItem[idx], state.productMap[state.lineItem[idx].itemId]);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -320,7 +357,7 @@ class TenderLineDisplay extends StatelessWidget {
   }
 }
 
-class NewLineItem extends StatefulWidget {
+class NewLineItem extends StatelessWidget {
   final TransactionLineItemEntity saleLine;
   final ProductEntity? productModel;
 
@@ -332,171 +369,128 @@ class NewLineItem extends StatefulWidget {
   );
 
   @override
-  State<NewLineItem> createState() => _NewLineItemState();
-}
-
-class _NewLineItemState extends State<NewLineItem> {
-  void onTap() {
-    if (Platform.isIOS || Platform.isAndroid) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(
-            builder: (_) => MobileDialogView(
-              child: LineItemModificationView(
-                  lineItem: widget.saleLine, productModel: widget.productModel),
-            ),
-          ))
-          .then((value) => {
-                if (value != null && value is CreateNewReceiptEvent)
-                  {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
-              });
-    } else {
-      showDialog(
-          context: context,
-          builder: (ctx) {
-            return Dialog(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.8,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: LineItemModificationView(
-                    lineItem: widget.saleLine,
-                    productModel: widget.productModel),
-              ),
-            );
-          }).then(
-        (value) => {
-          if (value != null && value is CreateNewReceiptEvent)
-            {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
-        },
-      );
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(border: Border.all(width: 1)),
-                  child: (widget.productModel != null &&
-                          widget.productModel!.imageUrl.isNotEmpty)
-                      ? Image.file(
-                          File(Constants.baseImagePath +
-                              widget.productModel!.imageUrl[0]),
-                          fit: BoxFit.cover,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(border: Border.all(width: 1)),
+                child: (productModel != null &&
+                        productModel!.imageUrl.isNotEmpty)
+                    ? Image.file(
+                        File(Constants.baseImagePath +
+                            productModel!.imageUrl[0]),
+                        fit: BoxFit.cover,
+                        height: 70,
+                        width: 70, errorBuilder: (context, obj, trace) {
+                        return const SizedBox(
                           height: 70,
-                          width: 70, errorBuilder: (context, obj, trace) {
+                          width: 70,
+                        );
+                      })
+                    : Image.network(
+                        "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+                        fit: BoxFit.cover,
+                        height: 70,
+                        width: 70,
+                        errorBuilder: (context, obj, trace) {
                           return const SizedBox(
                             height: 70,
                             width: 70,
                           );
-                        })
-                      : Image.network(
-                          "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
-                          fit: BoxFit.cover,
-                          height: 70,
-                          width: 70,
-                          errorBuilder: (context, obj, trace) {
-                            return const SizedBox(
-                              height: 70,
-                              width: 70,
-                            );
-                          },
+                        },
+                      ),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(saleLine.itemDescription),
+                    Text(saleLine.itemDescription),
+                    Text(
+                      saleLine.itemId,
+                      style: NewLineItem.textStyle,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: Container(),
+                flex: 2,
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    NumberFormat.currency(locale: 'en_IN', symbol: '₹ ')
+                        .format(saleLine.unitPrice),
+                    style: NewLineItem.textStyle,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    saleLine.quantity.toString(),
+                    style: NewLineItem.textStyle,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "${Currency.inr}${saleLine.netAmount.toStringAsFixed(2)}",
+                    style: NewLineItem.textStyle,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          ...saleLine.lineModifiers
+              .map(
+                (e) => Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(right: 8, top: 4),
+                          child: Icon(
+                            Icons.discount,
+                            color: Colors.brown,
+                            size: 16,
+                          ),
                         ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(widget.saleLine.itemDescription),
-                      Text(widget.saleLine.itemDescription),
-                      Text(
-                        widget.saleLine.itemId,
+                        Text(e.description ?? ""),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 60),
+                      child: Text(
+                        "-${Currency.inr}${e.amount.toStringAsFixed(2)}",
                         style: NewLineItem.textStyle,
                       ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: Container(),
-                  flex: 2,
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      NumberFormat.currency(locale: 'en_IN', symbol: '₹ ')
-                          .format(widget.saleLine.unitPrice),
-                      style: NewLineItem.textStyle,
                     ),
-                  ),
+                  ],
                 ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      widget.saleLine.quantity.toString(),
-                      style: NewLineItem.textStyle,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      "${Currency.inr}${widget.saleLine.netAmount.toStringAsFixed(2)}",
-                      style: NewLineItem.textStyle,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            ...widget.saleLine.lineModifiers
-                .map(
-                  (e) => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: 8, top: 4),
-                            child: Icon(
-                              Icons.discount,
-                              color: Colors.brown,
-                              size: 16,
-                            ),
-                          ),
-                          Text(e.description ?? ""),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 60),
-                        child: Text(
-                          "-${Currency.inr}${e.amount.toStringAsFixed(2)}",
-                          style: NewLineItem.textStyle,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-                .toList()
-          ],
-        ),
+              )
+              .toList()
+        ],
       ),
     );
   }
@@ -752,141 +746,6 @@ class SaleCustomerMobile extends StatelessWidget {
   }
 }
 
-class CustomerDetailWidget extends StatefulWidget {
-  const CustomerDetailWidget({Key? key}) : super(key: key);
-
-  @override
-  State<CustomerDetailWidget> createState() => _CustomerDetailWidgetState();
-}
-
-class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
-  final TextEditingController _controller = TextEditingController();
-  var newCustomer = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CustomerSearchBloc, CustomerSearchState>(
-      builder: (context, state) {
-        return Column(
-          children: [
-            BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
-                builder: (context, st) {
-              if (st.customer != null && !newCustomer) {
-                return InkWell(
-                    onLongPress: () {
-                      setState(() => {newCustomer = true});
-                    },
-                    child: SaleCustomerMobile(
-                      customer: st.customer!,
-                    ));
-              } else {
-                return CustomTextField(
-                  controller: _controller,
-                  label: "Customer Detail",
-                  onValueChange: (value) {
-                    BlocProvider.of<CustomerSearchBloc>(context)
-                        .add(OnCustomerNameChange(name: value));
-                  },
-                  suffixIcon: newCustomer ? const Icon(Icons.close) : null,
-                );
-              }
-            }),
-            if (CustomerSearchStateStatus.searching == state.status)
-              Card(
-                elevation: 4,
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColor.subtitleColorPrimary),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 4),
-                        child: Row(
-                          children: const [
-                            Icon(Icons.add),
-                            Text("Create New Customer")
-                          ],
-                        ),
-                      ),
-                      const Divider(
-                        height: 0,
-                      ),
-                      ...state.customerSuggestion
-                          .map((e) => InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    newCustomer = false;
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                    BlocProvider.of<CreateNewReceiptBloc>(
-                                            context)
-                                        .add(OnCustomerSelect(e));
-                                    BlocProvider.of<CustomerSearchBloc>(context)
-                                        .add(OnSearchComplete());
-                                  });
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 8),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                          '${e.name}${e.phoneNumber != null ? ' \u2022' : ''} ${e.phoneNumber ?? ''}')
-                                    ],
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                      const Divider(
-                        height: 0,
-                      ),
-                      ...state.phoneBookSuggestion
-                          .map((e) => InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    newCustomer = false;
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                    BlocProvider.of<CreateNewReceiptBloc>(
-                                            context)
-                                        .add(OnCustomerSelect(e));
-                                    BlocProvider.of<CustomerSearchBloc>(context)
-                                        .add(OnSearchComplete());
-                                  });
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                          '${e.name} \u2022 ${e.phoneNumber ?? ''}'),
-                                      const Icon(
-                                        Icons.phone,
-                                        size: 15,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                    ],
-                  ),
-                ),
-              )
-          ],
-        );
-      },
-    );
-  }
-}
-
 class SaleHeaderBlock extends StatelessWidget {
   const SaleHeaderBlock({Key? key}) : super(key: key);
 
@@ -909,6 +768,101 @@ class SaleHeaderBlock extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class CustomerWidget extends StatelessWidget {
+  const CustomerWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(4),
+      child: BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+        builder: (context, state) {
+          return InkWell(
+            onTap: !state.isCustomerPresent
+                ? () {
+                    if (Platform.isMacOS || Platform.isWindows) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (ctx) => Dialog(
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            child: const CustomerSearch(),
+                          ),
+                        ),
+                      ).then((value) => {
+                            if (value != null && value is OnCustomerSelect)
+                              {
+                                BlocProvider.of<CreateNewReceiptBloc>(context)
+                                    .add(value)
+                              }
+                          });
+                    } else {
+                      Navigator.of(context)
+                          .push(
+                            MaterialPageRoute(
+                              builder: (context) => const CustomerSearch(),
+                            ),
+                          )
+                          .then((value) => {
+                                if (value != null && value is OnCustomerSelect)
+                                  {
+                                    BlocProvider.of<CreateNewReceiptBloc>(
+                                            context)
+                                        .add(value)
+                                  }
+                              });
+                    }
+                  }
+                : null,
+            child: Container(
+                color: AppColor.headerBackground,
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const FaIcon(
+                          FontAwesomeIcons.circleUser,
+                          color: AppColor.primary,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          state.isCustomerPresent
+                              ? state.customer!.name
+                              : "Add Customer",
+                          style: const TextStyle(
+                              fontSize: 18, color: AppColor.primary),
+                        )
+                      ],
+                    ),
+                    if (!state.isCustomerPresent)
+                      const FaIcon(
+                        FontAwesomeIcons.personCirclePlus,
+                        color: AppColor.primary,
+                      ),
+                    if (state.isCustomerPresent)
+                      InkWell(
+                        onTap: () {
+                          BlocProvider.of<CreateNewReceiptBloc>(context)
+                              .add(OnCustomerRemove());
+                        },
+                        child: const FaIcon(
+                          FontAwesomeIcons.circleXmark,
+                          color: AppColor.primary,
+                        ),
+                      ),
+                  ],
+                )),
+          );
+        },
+      ),
     );
   }
 }

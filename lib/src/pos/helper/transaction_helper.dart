@@ -2,46 +2,6 @@ import '../../entity/pos/entity.dart';
 import '../config/config.dart';
 
 class TransactionHelper {
-  static TransactionLineItemEntity copyLineItem(
-      TransactionLineItemEntity line) {
-    return TransactionLineItemEntity(
-      storeId: line.storeId,
-      businessDate: line.businessDate,
-      posId: line.posId,
-      extendedAmount: line.extendedAmount,
-      grossAmount: line.grossAmount,
-      grossQuantity: line.grossQuantity,
-      itemDescription: line.itemDescription,
-      itemId: line.itemId,
-      itemIdEntryMethod: line.itemIdEntryMethod,
-      lineItemSeq: line.lineItemSeq,
-      netAmount: line.netAmount,
-      netQuantity: line.netQuantity,
-      nonExchangeableFlag: line.nonExchangeableFlag,
-      nonReturnableFlag: line.nonReturnableFlag,
-      originalBusinessDate: line.originalBusinessDate,
-      originalLineItemSeq: line.originalLineItemSeq,
-      originalPosId: line.originalPosId,
-      originalTransSeq: line.originalTransSeq,
-      priceEntryMethod: line.priceEntryMethod,
-      quantity: line.quantity,
-      returnComment: line.returnComment,
-      returnFlag: line.returnFlag,
-      returnReasonCode: line.returnReasonCode,
-      returnTypeCode: line.returnTypeCode,
-      returnedQuantity: line.returnedQuantity,
-      serialNumber: line.serialNumber,
-      taxAmount: line.taxAmount,
-      taxGroupId: line.taxGroupId,
-      unitPrice: line.unitPrice,
-      vendorId: line.vendorId,
-      shippingWeight: line.shippingWeight,
-      transSeq: line.transSeq,
-      priceOverride: line.priceOverride,
-      priceOverrideAmount: line.priceOverrideAmount,
-      priceOverrideReason: line.priceOverrideReason,
-    );
-  }
 
   static TransactionLineItemEntity updateSaleReturnLineItemPrice(
       TransactionLineItemEntity line, double unitPrice, String reasonCode) {
@@ -92,6 +52,7 @@ class TransactionHelper {
       shippingWeight: line.shippingWeight,
       transSeq: line.transSeq,
       priceOverride: true,
+      uom: line.uom,
       priceOverrideAmount: unitPrice,
       priceOverrideReason: reasonCode,
     );
@@ -154,6 +115,7 @@ class TransactionHelper {
       shippingWeight: line.shippingWeight,
       transSeq: line.transSeq,
       priceOverride: line.priceOverride,
+      uom: line.uom,
       priceOverrideAmount: line.priceOverrideAmount,
       priceOverrideReason: line.priceOverrideReason,
     );
@@ -217,6 +179,7 @@ class TransactionHelper {
       taxGroupId: line.taxGroupId,
       unitPrice: line.unitPrice,
       vendorId: line.vendorId,
+      uom: line.uom,
       shippingWeight: line.shippingWeight,
       transSeq: line.transSeq,
       priceOverride: line.priceOverride,
@@ -273,6 +236,7 @@ class TransactionHelper {
       taxGroupId: line.taxGroupId,
       unitPrice: line.unitPrice,
       vendorId: line.vendorId,
+      uom: line.uom,
       shippingWeight: line.shippingWeight,
       transSeq: line.transSeq,
       priceOverride: line.priceOverride,

@@ -16,7 +16,7 @@ extension GetTransactionLineItemEntityCollection on Isar {
 const TransactionLineItemEntitySchema = CollectionSchema(
   name: 'TransactionLineItemEntity',
   schema:
-      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"discountAmount","type":"Double"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[{"name":"lineModifiers","target":"TransactionLineItemModifierEntity"}]}',
+      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"discountAmount","type":"Double"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"uom","type":"String"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[{"name":"lineModifiers","target":"TransactionLineItemModifierEntity"}]}',
   idName: 'id',
   propertyIds: {
     'businessDate': 0,
@@ -55,7 +55,8 @@ const TransactionLineItemEntitySchema = CollectionSchema(
     'taxGroupId': 33,
     'transSeq': 34,
     'unitPrice': 35,
-    'vendorId': 36
+    'uom': 36,
+    'vendorId': 37
   },
   listProperties: {},
   indexIds: {'originalPosId': 0, 'originalTransSeq': 1, 'storeId': 2},
@@ -206,10 +207,13 @@ void _transactionLineItemEntitySerializeNative(
   final _transSeq = value34;
   final value35 = object.unitPrice;
   final _unitPrice = value35;
-  final value36 = object.vendorId;
+  final value36 = object.uom;
+  final _uom = IsarBinaryWriter.utf8Encoder.convert(value36);
+  dynamicSize += (_uom.length) as int;
+  final value37 = object.vendorId;
   IsarUint8List? _vendorId;
-  if (value36 != null) {
-    _vendorId = IsarBinaryWriter.utf8Encoder.convert(value36);
+  if (value37 != null) {
+    _vendorId = IsarBinaryWriter.utf8Encoder.convert(value37);
   }
   dynamicSize += (_vendorId?.length ?? 0) as int;
   final size = staticSize + dynamicSize;
@@ -254,7 +258,8 @@ void _transactionLineItemEntitySerializeNative(
   writer.writeBytes(offsets[33], _taxGroupId);
   writer.writeLong(offsets[34], _transSeq);
   writer.writeDouble(offsets[35], _unitPrice);
-  writer.writeBytes(offsets[36], _vendorId);
+  writer.writeBytes(offsets[36], _uom);
+  writer.writeBytes(offsets[37], _vendorId);
 }
 
 TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
@@ -300,7 +305,8 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
     taxGroupId: reader.readString(offsets[33]),
     transSeq: reader.readLong(offsets[34]),
     unitPrice: reader.readDouble(offsets[35]),
-    vendorId: reader.readStringOrNull(offsets[36]),
+    uom: reader.readString(offsets[36]),
+    vendorId: reader.readStringOrNull(offsets[37]),
   );
   _transactionLineItemEntityAttachLinks(collection, id, object);
   return object;
@@ -384,6 +390,8 @@ P _transactionLineItemEntityDeserializePropNative<P>(
     case 35:
       return (reader.readDouble(offset)) as P;
     case 36:
+      return (reader.readString(offset)) as P;
+    case 37:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
@@ -437,6 +445,7 @@ dynamic _transactionLineItemEntitySerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'taxGroupId', object.taxGroupId);
   IsarNative.jsObjectSet(jsObj, 'transSeq', object.transSeq);
   IsarNative.jsObjectSet(jsObj, 'unitPrice', object.unitPrice);
+  IsarNative.jsObjectSet(jsObj, 'uom', object.uom);
   IsarNative.jsObjectSet(jsObj, 'vendorId', object.vendorId);
   return jsObj;
 }
@@ -506,6 +515,7 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeWeb(
         IsarNative.jsObjectGet(jsObj, 'transSeq') ?? double.negativeInfinity,
     unitPrice:
         IsarNative.jsObjectGet(jsObj, 'unitPrice') ?? double.negativeInfinity,
+    uom: IsarNative.jsObjectGet(jsObj, 'uom') ?? '',
     vendorId: IsarNative.jsObjectGet(jsObj, 'vendorId'),
   );
   _transactionLineItemEntityAttachLinks(
@@ -614,6 +624,8 @@ P _transactionLineItemEntityDeserializePropWeb<P>(
     case 'unitPrice':
       return (IsarNative.jsObjectGet(jsObj, 'unitPrice') ??
           double.negativeInfinity) as P;
+    case 'uom':
+      return (IsarNative.jsObjectGet(jsObj, 'uom') ?? '') as P;
     case 'vendorId':
       return (IsarNative.jsObjectGet(jsObj, 'vendorId')) as P;
     default:
@@ -3215,6 +3227,115 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomLessThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'uom',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      uomContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      uomMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'uom',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> vendorIdIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
@@ -3728,6 +3849,16 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByUom() {
+    return addSortByInternal('uom', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByUomDesc() {
+    return addSortByInternal('uom', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortByVendorId() {
     return addSortByInternal('vendorId', Sort.asc);
   }
@@ -4111,6 +4242,16 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByUom() {
+    return addSortByInternal('uom', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByUomDesc() {
+    return addSortByInternal('uom', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenByVendorId() {
     return addSortByInternal('vendorId', Sort.asc);
   }
@@ -4315,6 +4456,11 @@ extension TransactionLineItemEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
+      distinctByUom({bool caseSensitive = true}) {
+    return addDistinctByInternal('uom', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
       distinctByVendorId({bool caseSensitive = true}) {
     return addDistinctByInternal('vendorId', caseSensitive: caseSensitive);
   }
@@ -4504,6 +4650,11 @@ extension TransactionLineItemEntityQueryProperty on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
       unitPriceProperty() {
     return addPropertyNameInternal('unitPrice');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
+      uomProperty() {
+    return addPropertyNameInternal('uom');
   }
 
   QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>

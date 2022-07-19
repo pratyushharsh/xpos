@@ -11,6 +11,8 @@ enum CreateNewReceiptStatus {
   error
 }
 
+enum CustomerAction { remove, add }
+
 enum SaleStep { item, payment, customer, complete, printAndEmail, confirmed }
 
 class CreateNewReceiptState extends Equatable {
@@ -32,13 +34,19 @@ class CreateNewReceiptState extends Equatable {
     this.customer,
   });
 
+  bool get isCustomerPresent {
+    return customer != null;
+  }
+
   double get subTotal {
-    return - tax + lineItem.fold(0.0,
-        (previousValue, element) => previousValue + element.extendedAmount);
+    return -tax +
+        lineItem.fold(0.0,
+            (previousValue, element) => previousValue + element.extendedAmount);
   }
 
   double get discount {
-    return lineItem.fold(0.0, (previousValue, element) => previousValue + element.discountAmount);
+    return lineItem.fold(0.0,
+        (previousValue, element) => previousValue + element.discountAmount);
   }
 
   double get tax {
@@ -79,13 +87,18 @@ class CreateNewReceiptState extends Equatable {
     Map<String, ProductEntity>? productMap,
     CreateNewReceiptStatus? status,
     SaleStep? step,
+    CustomerAction? customerAction,
   }) {
     return CreateNewReceiptState(
       transSeq: transSeq ?? this.transSeq,
       lineItem: lineItem ?? this.lineItem,
       tenderLine: tenderLine ?? this.tenderLine,
       productMap: productMap ?? this.productMap,
-      customer: customer ?? this.customer,
+      customer: customerAction != null
+          ? (CustomerAction.remove == customerAction
+              ? null
+              : (customer ?? this.customer))
+          : (customer ?? this.customer),
       status: status ?? this.status,
       step: step ?? this.step,
     );

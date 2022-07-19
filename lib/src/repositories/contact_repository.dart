@@ -7,7 +7,6 @@ class ContactRepository {
   Future<List<ContactEntity>> getContact() async {
     if (_contacts == null) {
       var data = await _getContactFromPhonebook();
-      print(data);
       if (data == null) {
         _contacts = List.empty();
       } else {

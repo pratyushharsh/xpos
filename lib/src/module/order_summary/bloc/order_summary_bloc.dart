@@ -25,6 +25,7 @@ class OrderSummaryBloc extends Bloc<OrderSummaryEvent, OrderSummaryState> {
       }
       Map<String, ProductEntity> pm = Map.from(state.productMap);
       order.lineItems.loadSync();
+      for (var element in order.lineItems) {element.lineModifiers.loadSync();}
       order.paymentLineItems.loadSync();
 
       for(var x in order.lineItems) {

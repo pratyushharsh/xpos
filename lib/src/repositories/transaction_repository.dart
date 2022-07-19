@@ -14,7 +14,10 @@ class TransactionRepository {
 
   Future<void> createNewSale(TransactionHeaderEntity header) async {
     await db.writeTxn((isar) async {
-      await isar.transactionHeaderEntitys.put(header, saveLinks: true);
+      await isar.transactionHeaderEntitys.put(header, replaceOnConflict: true);
+      await header.lineItems.save();
+      await header.paymentLineItems.save();
+      for (var element in header.lineItems) {await element.lineModifiers.save();}
     });
   }
 
@@ -22,6 +25,7 @@ class TransactionRepository {
     TransactionHeaderEntity? order = await db.transactionHeaderEntitys.get(id);
     if (order != null) {
       order.lineItems.loadSync();
+      for (var element in order.lineItems) {element.lineModifiers.loadSync();}
       order.paymentLineItems.loadSync();
       return order;
     }

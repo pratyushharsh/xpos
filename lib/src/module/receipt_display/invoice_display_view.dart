@@ -104,6 +104,7 @@ class _InvoiceDisplayViewState extends State<InvoiceDisplayView> {
       create: (context) => ReceiptDisplayBloc(
           transId: widget.transactionId,
           db: RepositoryProvider.of(context),
+          transactionRepo: RepositoryProvider.of(context),
           authBloc: RepositoryProvider.of(context),
           settingsRepo: RepositoryProvider.of(context))
         ..add(FetchReceiptDataEvent()),

@@ -36,8 +36,7 @@ class NewReceiptDesktopView extends StatelessWidget {
             lazy: true,
             create: (ctx) => ItemSearchBloc(db: RepositoryProvider.of(ctx)),
             child: BlocConsumer<CreateNewReceiptBloc, CreateNewReceiptState>(
-              listener: (context, state) {
-              },
+              listener: (context, state) {},
               builder: (context, state) {
                 return Stack(
                   fit: StackFit.expand,
@@ -134,7 +133,12 @@ class _SearchUserDisplayDesktopState extends State<SearchUserDisplayDesktop> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            const CustomerDetailDesktop(),
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: CustomerWidget(),
+            ),
             const Positioned(
               child: SearchItemProductsListDesktop(),
               bottom: 70,
@@ -268,48 +272,6 @@ class SaleReturnDisplayDesktop extends StatelessWidget {
   }
 }
 
-class CustomerDetailDesktop extends StatelessWidget {
-  const CustomerDetailDesktop({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
-      builder: (context, state) {
-        return Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CircleAvatar(
-                  child: Icon(
-                    Icons.person,
-                    size: 40,
-                  ),
-                  radius: 60,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Customer Name: ${state.customer?.name ?? ""}"),
-                    Text(
-                        "Customer Phone: ${state.customer?.phoneNumber ?? ""}"),
-                    Text("Customer Email: ${state.customer?.email ?? ""}"),
-                    Text(
-                        "Billing Address: ${state.customer?.billingAddress ?? ""}"),
-                  ],
-                )
-              ],
-            )
-          ],
-        );
-      },
-    );
-  }
-}
-
 class TenderDisplayDesktop extends StatefulWidget {
   final Function? onTender;
   const TenderDisplayDesktop({Key? key, this.onTender}) : super(key: key);
@@ -326,7 +288,8 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
   @override
   void initState() {
     super.initState();
-    tenderController = MoneyEditingController(formatter: NumberFormat.simpleCurrency(locale: "en_IN"));
+    tenderController = MoneyEditingController(
+        formatter: NumberFormat.simpleCurrency(locale: "en_IN"));
     tenderFocusNode = FocusNode();
   }
 
@@ -346,7 +309,8 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
 
   double validAmount() {
     try {
-      MoneyTextEditingValue amount = tenderController.value as MoneyTextEditingValue;
+      MoneyTextEditingValue amount =
+          tenderController.value as MoneyTextEditingValue;
       return amount.moneyValue;
     } catch (e) {
       if (kDebugMode) {
@@ -384,7 +348,10 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(tenderIconMapping[selectedTender] ?? tenderIconMapping["OTHER"]!, size: 80),
+                    Icon(
+                        tenderIconMapping[selectedTender] ??
+                            tenderIconMapping["OTHER"]!,
+                        size: 80),
                     const SizedBox(
                       height: 50,
                     ),
@@ -422,23 +389,25 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: AcceptButton(
-                    onPressed: validAmount() > 0 ? () {
-
-                      if (widget.onTender != null) {
-                        widget.onTender!(OnAddNewTenderLine(
-                            tenderType: selectedTender, amount: validAmount()));
-
-                      } else {
-                        BlocProvider.of<CreateNewReceiptBloc>(context).add(
-                            OnAddNewTenderLine(
-                                tenderType: selectedTender, amount: validAmount()));
-                      }
-                      onSelectNewTender('');
-                      tenderController.text = '';
-                      if (Platform.isIOS || Platform.isAndroid) {
-                        Navigator.of(context).pop();
-                      }
-                    } : null,
+                    onPressed: validAmount() > 0
+                        ? () {
+                            if (widget.onTender != null) {
+                              widget.onTender!(OnAddNewTenderLine(
+                                  tenderType: selectedTender,
+                                  amount: validAmount()));
+                            } else {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnAddNewTenderLine(
+                                      tenderType: selectedTender,
+                                      amount: validAmount()));
+                            }
+                            onSelectNewTender('');
+                            tenderController.text = '';
+                            if (Platform.isIOS || Platform.isAndroid) {
+                              Navigator.of(context).pop();
+                            }
+                          }
+                        : null,
                     label: "Accept Payment",
                   ),
                 ),
@@ -517,7 +486,8 @@ class TenderListDisplayCard extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(tenderIconMapping[tenderType] ?? tenderIconMapping["OTHER"]!),
+                Icon(tenderIconMapping[tenderType] ??
+                    tenderIconMapping["OTHER"]!),
                 const SizedBox(height: 10),
                 Text(tenderType)
               ],
@@ -596,7 +566,12 @@ class TenderAmountTextField extends StatefulWidget {
   final FocusNode focusNode;
   final String selectedTender;
 
-  const TenderAmountTextField({Key? key, required this.controller, required this.selectedTender, required this.focusNode}) : super(key: key);
+  const TenderAmountTextField(
+      {Key? key,
+      required this.controller,
+      required this.selectedTender,
+      required this.focusNode})
+      : super(key: key);
 
   @override
   State<TenderAmountTextField> createState() => _TenderAmountTextFieldState();

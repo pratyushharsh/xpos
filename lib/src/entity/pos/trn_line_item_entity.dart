@@ -1,6 +1,5 @@
 import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
-import 'package:receipt_generator/src/entity/pos/trn_line_item_modifier.dart';
 
 part 'trn_line_item_entity.g.dart';
 
@@ -32,6 +31,7 @@ class TransactionLineItemEntity {
   final String taxGroupId;
   final double taxAmount;
   final double discountAmount;
+  final String uom;
 
   /// Price Override Reason
   final bool priceOverride;
@@ -91,6 +91,7 @@ class TransactionLineItemEntity {
       this.serialNumber,
       required this.taxGroupId,
       required this.taxAmount,
+      required this.uom,
       this.returnedQuantity,
       this.originalPosId,
       this.originalTransSeq,

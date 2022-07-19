@@ -45,6 +45,7 @@ class CreateNewReceiptBloc
     on<OnInitiateNewTransaction>(_onInitiateTransaction);
     on<OnCreateNewTransaction>(_onCreateNewTransaction);
     on<OnCustomerSelect>(_onCustomerSelectEvent);
+    on<OnCustomerRemove>(_onCustomerRemoveEvent);
     on<OnAddNewTenderLine>(_onAddNewTenderLineItem);
     on<OnChangeSaleStep>(_onChangeSaleStep);
     on<_VerifyOrderAndEmitState>(_onVerifyOrderAndEmitStep);
@@ -82,6 +83,7 @@ class CreateNewReceiptBloc
         quantity: 1,
         grossQuantity: 1,
         netQuantity: 1,
+        uom: event.product.uom,
         unitPrice: min(event.product.salePrice ?? 999999.00,
             event.product.listPrice ?? 999999.00),
         extendedAmount: min(event.product.salePrice ?? 999999.00,
@@ -123,6 +125,7 @@ class CreateNewReceiptBloc
         taxTotal: state.tax,
         subtotal: state.subTotal,
         roundTotal: 0.00,
+        discountTotal: 0.00,
         status: SaleStatus.completed,
         customerId: state.customer?.contactId,
         customerName: state.customer?.name,
@@ -163,6 +166,14 @@ class CreateNewReceiptBloc
       OnCustomerSelect event, Emitter<CreateNewReceiptState> emit) async {
     emit(state.copyWith(
       customer: event.contact,
+    ));
+  }
+
+  void _onCustomerRemoveEvent(
+      OnCustomerRemove event, Emitter<CreateNewReceiptState> emit) async {
+    emit(state.copyWith(
+      customer: null,
+      customerAction: CustomerAction.remove
     ));
   }
 
@@ -236,7 +247,7 @@ class CreateNewReceiptBloc
             discountId: 'DUMMY_DISCOUNT_ID',
             percent: event.discountPercent,
             discountType: DiscountCalculationMethod.percentage.name,
-            description: '${event.discountPercent} % Discount OFF}',
+            description: '${event.discountPercent} % Discount OFF',
             discountCode: 'MANUAL_DISCOUNT_CODE');
 
         TransactionLineItemModifierEntity? discountLine =
@@ -382,6 +393,7 @@ class CreateNewReceiptBloc
         taxGroupId: line.taxGroupId,
         unitPrice: -line.unitPrice,
         vendorId: line.vendorId,
+        uom: line.uom,
         shippingWeight: line.shippingWeight, transSeq: state.transSeq,
       );
       newList.add(returnLine);

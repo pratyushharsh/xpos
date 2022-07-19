@@ -53,7 +53,7 @@ class CustomerSearchBloc
                 return true;
               }
             })
-            .take(5)
+            .take(50)
             .toList();
         emit(state.copyWith(
             customerSuggestion: customer,

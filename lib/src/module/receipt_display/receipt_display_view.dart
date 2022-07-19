@@ -78,6 +78,7 @@ class ReceiptDisplayView extends StatelessWidget {
           transId: transactionId,
           db: RepositoryProvider.of(context),
           authBloc: RepositoryProvider.of(context),
+          transactionRepo: RepositoryProvider.of(context),
           settingsRepo: RepositoryProvider.of(context))
         ..add(FetchReceiptDataEvent()),
       child: Container(
@@ -465,7 +466,7 @@ class ReceiptLineItem extends StatelessWidget {
         Expanded(
             flex: 5,
             child: Text(
-              '$lineItem.productDescription',
+              lineItem.itemDescription,
             )),
         Expanded(
             flex: 1,
