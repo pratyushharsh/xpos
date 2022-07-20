@@ -58,7 +58,7 @@ dependencies:
 #  amplify_api: ^0.4.0
 #  firebase_core: ^1.12.0
 #  firebase_auth: ^3.3.7
-  amazon_cognito_identity_dart_2: ^1.0.5
+  amazon_cognito_identity_dart_2: ^3.0.0
   otp_text_field: ^1.1.2
   shared_preferences: ^2.0.13
   device_info_plus: ^3.2.4
@@ -68,7 +68,7 @@ dependencies:
   isar: ^2.5.0
   isar_flutter_libs: ^2.5.0
   archive: ^3.3.0
-  firebase_messaging: ^11.4.1
+#  firebase_messaging: ^11.4.1
 
 dev_dependencies:
   flutter_test:
