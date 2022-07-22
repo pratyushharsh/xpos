@@ -12,6 +12,16 @@ class AuthenticationUserChanged extends AuthenticationEvent {
   AuthenticationUserChanged(this.user, this.stores);
 }
 
-class VerifyUser extends AuthenticationEvent{}
+class VerifyUserOtpStep extends AuthenticationEvent{
+  final Map<String, dynamic> parameterMap;
+
+  VerifyUserOtpStep(this.parameterMap);
+}
+
+class VerifyUserDeviceStep extends AuthenticationEvent {
+  final Map<String, dynamic> parameterMap;
+
+  VerifyUserDeviceStep(this.parameterMap);
+}
 
 class LogOutUserEvent extends AuthenticationEvent{}

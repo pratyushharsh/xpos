@@ -10,6 +10,7 @@ import 'package:receipt_generator/src/module/home/home_view.dart';
 import 'package:receipt_generator/src/module/load_item_bulk/bloc/load_item_bulk_bloc.dart';
 import 'package:receipt_generator/src/module/login/bloc/login_bloc.dart';
 import 'package:receipt_generator/src/module/login/login_view.dart';
+import 'package:receipt_generator/src/module/login/verify_user_device_view.dart';
 import 'package:receipt_generator/src/module/login/verify_user_view.dart';
 import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
@@ -156,6 +157,9 @@ class _MyAppViewState extends State<MyAppView> {
                 _navigator.push<void>(
                   BusinessView.route(),
                 );
+                break;
+              case AuthenticationStatus.verifyUserDevice:
+                _navigator.push(VerifyUserDeviceView.route());
                 break;
               default:
                 break;

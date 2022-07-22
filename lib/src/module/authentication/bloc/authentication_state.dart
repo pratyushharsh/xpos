@@ -4,6 +4,7 @@ enum AuthenticationStatus {
   authenticated,
   unauthenticated,
   verifyUser,
+  verifyUserDevice,
   unknown,
   newUser
 }
@@ -40,6 +41,11 @@ class AuthenticationState extends Equatable {
       : this._(
           status: AuthenticationStatus.verifyUser,
         );
+
+  const AuthenticationState.verifyUserDevice()
+      : this._(
+    status: AuthenticationStatus.verifyUserDevice,
+  );
 
   @override
   List<Object?> get props => [status, user, userStores, store];

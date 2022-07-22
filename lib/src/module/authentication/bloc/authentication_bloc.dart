@@ -27,7 +27,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     // signInIfSessionAvailable();
     on<AuthenticationUserChanged>(_onUserChanged);
     on<InitialAuthEvent>(_onInitialAuth);
-    on<VerifyUser>(_onVerifyUser);
+    on<VerifyUserOtpStep>(_onVerifyUser);
+    on<VerifyUserDeviceStep>(_onVerifyUserDevice);
     on<LogOutUserEvent>(_logOutUser);
   }
   // signInIfSessionAvailable() async {
@@ -50,24 +51,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   void _onInitialAuth(InitialAuthEvent event, Emitter<AuthenticationState> emit) async {
     try {
 
-      // @TODO Remove after testing
-      if (test) {
-        emit(AuthenticationState.authenticated(CognitoUser("pratyush-test", CognitoUserPool(
-          "ap-south-1_gXgaeT7lu",
-          "366tbopn6vh1f3v88e4u2drn34"
-        )), "100026", RetailLocationEntity(
-          rtlLocId: 100026, createTime: DateTime.now(),
-        )));
-        return;
-      }
-
       var user = await userPool.getCurrentUser();
       if (user != null) {
         // Three Scenario when user logged in
         // He is new user need to register for a business.
         // He owns multiple business need to choose which one to login. @TODO
         // Only one business directly login to system.
-        await user.getSession();
+
+        var session = await user.getSession();
         var attrib = await user.getUserAttributes();
 
         CognitoUserAttribute? stores;
@@ -114,8 +105,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   }
 
-  void _onVerifyUser(VerifyUser event, Emitter<AuthenticationState> emit) async {
+  void _onVerifyUser(VerifyUserOtpStep event, Emitter<AuthenticationState> emit) async {
     emit(AuthenticationState.verifyUser());
+  }
+
+  void _onVerifyUserDevice(VerifyUserDeviceStep event, Emitter<AuthenticationState> emit) async {
+    emit(AuthenticationState.verifyUserDevice());
   }
 
   void _logOutUser(LogOutUserEvent event, Emitter<AuthenticationState> emit) async {
