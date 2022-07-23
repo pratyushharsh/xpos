@@ -53,7 +53,7 @@ class CustomerViewCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                contact.name,
+                contact.firstName + ' ' + contact.lastName,
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               if (contact.phoneNumber != null) Text('${contact.phoneNumber}'),

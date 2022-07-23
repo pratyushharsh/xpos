@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/module/customer_detail/bloc/customer_detail_bloc.dart';
 import 'package:receipt_generator/src/module/list_all_receipt/list_all_receipt_view.dart';
@@ -28,7 +29,7 @@ class CustomerDetailScreen extends StatelessWidget {
                   top: 20,
                   left: 16,
                   child: AppBarLeading(
-                    heading: "User# $userId",
+                    heading: "Customer Detail# $userId",
                     icon: Icons.arrow_back,
                     onTap: () {
                       Navigator.of(context).pop();
@@ -40,9 +41,10 @@ class CustomerDetailScreen extends StatelessWidget {
                   left: 0,
                   right: 0,
                   child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height - 60,
-                      child: const UserProfileDetail()),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height - 60,
+                    child: const UserProfileDetail(),
+                  ),
                 )
               ],
             ),
@@ -59,7 +61,7 @@ class UserProfileDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Column(
         children: const [
           TabBar(
@@ -67,42 +69,22 @@ class UserProfileDetail extends StatelessWidget {
             unselectedLabelColor: AppColor.subtitleColorPrimary,
             labelColor: AppColor.primary,
             tabs: [
-              Tab(icon: Icon(Icons.directions_car)),
-              Tab(icon: Icon(Icons.directions_transit)),
-              Tab(icon: Icon(Icons.directions_bike)),
+              Tab(icon: FaIcon(FontAwesomeIcons.list)),
+              Tab(icon: FaIcon(FontAwesomeIcons.circleUser)),
             ],
           ),
-          Expanded(
-            child: TabBarView(
-              children: [
-                CustomerPurchaseListDisplay(),
-                Icon(Icons.directions_transit),
-                Icon(Icons.directions_bike),
-              ],
-            ),
-          )
+          // Expanded(
+          //   child: TabBarView(
+          //     children: [
+          //       CustomerPurchaseListDisplay(),
+          //       Icon(Icons.directions_transit),
+          //     ],
+          //   ),
+          // )
         ],
       ),
     );
   }
 }
 
-class CustomerPurchaseListDisplay extends StatelessWidget {
-  const CustomerPurchaseListDisplay({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CustomerDetailBloc, CustomerDetailState>(
-      builder: (context, state) {
-        if (state.purchaseHistory.isNotEmpty) {
-          return ListView.builder(
-              itemCount: state.purchaseHistory.length,
-              itemBuilder: (ctx, idx) {
-                return ReceiptHeaderCard(receipt: state.purchaseHistory[idx]);
-              });
-        }
-        return Container();
-      },
-    );
-  }
-}

@@ -1,3 +1,5 @@
+
+
 class Address {
   final String? zipcode;
   final String? building;
@@ -16,4 +18,19 @@ class Address {
   String toString() {
     return '$building, $street \n$city, $state \nPin-$zipcode';
   }
+
+  Address.fromJson(Map<String, dynamic> json)
+      : zipcode = json['zipcode'],
+        building = json['building'],
+        street = json['street'],
+        city = json['city'],
+        state = json['state'];
+
+  Map<String, dynamic> toJson() => {
+        'zipcode': zipcode,
+        'building': building,
+        'street': street,
+        'city': city,
+        'state': state,
+  };
 }

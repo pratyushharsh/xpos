@@ -207,6 +207,7 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                   ),
                 ),
               ]),
+              if (_checked)
               Row(
                 children: [
                   Expanded(

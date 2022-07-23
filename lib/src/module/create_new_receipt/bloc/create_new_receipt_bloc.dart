@@ -128,7 +128,7 @@ class CreateNewReceiptBloc
         discountTotal: 0.00,
         status: SaleStatus.completed,
         customerId: state.customer?.contactId,
-        customerName: state.customer?.name,
+        customerName: '${state.customer?.firstName} ${state.customer?.lastName}',
         customerPhone: state.customer?.phoneNumber,
         shippingAddress: state.customer?.shippingAddress,
         storeId: storeId,

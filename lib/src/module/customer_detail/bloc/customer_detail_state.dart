@@ -12,16 +12,15 @@ enum CustomerPurchaseHistoryStatus {
 class CustomerDetailState extends Equatable {
   final List<TransactionHeaderEntity> purchaseHistory;
   final CustomerPurchaseHistoryStatus purchaseHistoryStatus;
+  final ContactEntity? customer;
 
   const CustomerDetailState(
       {this.purchaseHistory = const [],
+      this.customer,
       this.purchaseHistoryStatus = CustomerPurchaseHistoryStatus.initial});
 
   @override
-  List<Object?> get props => [
-    purchaseHistory,
-    purchaseHistoryStatus
-  ];
+  List<Object?> get props => [purchaseHistory, purchaseHistoryStatus, customer];
 
   CustomerDetailState copyWith({
     List<TransactionHeaderEntity>? purchaseHistory,

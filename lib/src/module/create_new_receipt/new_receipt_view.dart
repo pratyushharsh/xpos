@@ -107,7 +107,7 @@ class CustomerSuggestionWidget extends StatelessWidget {
             children: [
               Expanded(
                   child: Text(
-                "${contactEntity.name} | ${contactEntity.phoneNumber ?? ''}",
+                "${contactEntity.firstName} | ${contactEntity.phoneNumber ?? ''}",
                 overflow: TextOverflow.ellipsis,
               )),
             ],
@@ -741,7 +741,7 @@ class SaleCustomerMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [Text(customer.name), Text('${customer.phoneNumber}')],
+      children: [Text(customer.firstName), Text('${customer.phoneNumber}')],
     );
   }
 }
@@ -835,7 +835,7 @@ class CustomerWidget extends StatelessWidget {
                         const SizedBox(width: 10),
                         Text(
                           state.isCustomerPresent
-                              ? state.customer!.name
+                              ? state.customer!.firstName
                               : "Add Customer",
                           style: const TextStyle(
                               fontSize: 18, color: AppColor.primary),

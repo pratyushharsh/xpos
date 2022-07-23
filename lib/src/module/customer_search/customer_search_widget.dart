@@ -84,7 +84,7 @@ class CustomerSearchEntity extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(contactEntity.name),
+              Text(contactEntity.firstName),
               if (contactEntity.phoneNumber != null)
                 Text(contactEntity.phoneNumber!),
             ]

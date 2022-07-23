@@ -17,6 +17,7 @@ import 'package:receipt_generator/src/module/receipt_display/receipt_display_vie
 import 'package:receipt_generator/src/module/receipt_setting/receipt_setting_view.dart';
 import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.dart';
 
+import '../module/create_edit_customer/create_edit_customer_view.dart';
 import '../module/create_new_item/modify_line_item_screen.dart';
 import '../module/receipt_display/invoice_display.dart';
 
@@ -83,7 +84,7 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => AppInvoiceDisplay(transactionId: transId,));
       case customerDetailScreen:
         var contactId = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => CustomerDetailScreen(userId: contactId,));
+        return MaterialPageRoute(builder: (_) => NewCustomerView(customerId: contactId,));
       case editSaleLineItemScreen:
         var line = settings.arguments as SaleLine;
         return MaterialPageRoute(builder: (_) => ModifyLineItemScreen(saleLine: line,));

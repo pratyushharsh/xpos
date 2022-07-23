@@ -1,6 +1,8 @@
 import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
+import '../../model/address.dart';
+
 part 'trn_header_entity.g.dart';
 
 @Collection()
@@ -25,8 +27,12 @@ class TransactionHeaderEntity {
 
   @Index()
   final String? customerPhone;
-  final String? shippingAddress;
-  final String? billingAddress;
+
+  @AddressConverter()
+  final Address? shippingAddress;
+
+  @AddressConverter()
+  final Address? billingAddress;
   final String? customerName;
   final int syncState;
 

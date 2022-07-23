@@ -1,10 +1,10 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-import 'package:receipt_generator/src/module/create_new_customer/new_customer_view.dart';
 import 'package:receipt_generator/src/widgets/search_bar.dart';
 
 import '../all_customer/all_customer_view.dart';
+import '../create_edit_customer/create_edit_customer_view.dart';
 
 const List<String> sortOptions = [
   'Sort By Name',

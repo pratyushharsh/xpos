@@ -357,14 +357,14 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                   label: "Save",
                   borderRadius: BorderRadius.circular(5.0),
                   onPressed: () {
-                    Navigator.of(context).pop([
+                    Navigator.of(context).pop(
                       Address(
                           zipcode: _zipcodeController.text,
                           building: _buildingController.text,
                           street: _streetController.text,
                           city: _cityController.text,
                           state: _stateController.text)
-                    ]);
+                    );
                   },
                 ),
               )

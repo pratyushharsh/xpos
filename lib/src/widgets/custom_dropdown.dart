@@ -16,7 +16,11 @@ class CustomDropDown<T> extends StatelessWidget {
       : super(key: key);
 
   DropdownMenuItem<T> buildMenuItem(DropDownData item) =>
-      DropdownMenuItem(value: item.key, child: Text(item.value));
+      DropdownMenuItem(
+          value: item.key, child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(item.value),
+      ));
 
   @override
   Widget build(BuildContext context) {
