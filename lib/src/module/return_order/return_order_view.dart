@@ -186,6 +186,7 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                     });
                   },
                 ),
+                const SizedBox(width: 50, height: 50),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -225,6 +226,10 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                       },
                       label: 'State',
                     ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: CustomTextField(label: 'Comment',),
                   )
                 ],
               )
