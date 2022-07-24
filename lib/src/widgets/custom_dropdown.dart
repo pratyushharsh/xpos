@@ -18,7 +18,7 @@ class CustomDropDown<T> extends StatelessWidget {
   DropdownMenuItem<T> buildMenuItem(DropDownData item) =>
       DropdownMenuItem(
           value: item.key, child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(0.0),
         child: Text(item.value),
       ));
 

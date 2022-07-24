@@ -11,6 +11,7 @@ enum CustomerFormStatus {
 }
 
 class CustomerFormState {
+  final String? contactId;
   final String? firstName;
   final String? lastName;
   final String? email;
@@ -23,7 +24,8 @@ class CustomerFormState {
   final CustomerFormStatus status;
 
   CustomerFormState(
-      {this.firstName,
+      {this.contactId,
+      this.firstName,
       this.lastName,
       this.email,
       this.phoneNumber,
@@ -35,7 +37,8 @@ class CustomerFormState {
       this.gstin});
 
   CustomerFormState copyWith(
-      {String? firstName,
+      {String? contactId,
+      String? firstName,
       String? lastName,
       String? email,
       String? phoneNumber,
@@ -46,6 +49,7 @@ class CustomerFormState {
       CustomerFormStatus? status,
       bool? sameAddress}) {
     return CustomerFormState(
+        contactId: contactId ?? this.contactId,
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         email: email ?? this.email,

@@ -35,11 +35,18 @@ class CreateEditCustomerBloc
       OnCreateCustomer event, Emitter<CreateEditCustomerState> emit) async {
     try {
       emit(state.copyWith(status: CreateEditCustomerStatus.addingCustomer));
-      int customerId =
-          (await sequenceRepository.getNextSequence(SequenceType.customer))
-              .nextSeq;
+
+      var contactId = event.customer.contactId;
+      if (event.customer.contactId == 'Dummy') {
+        int cid =
+            (await sequenceRepository.getNextSequence(SequenceType.customer))
+                .nextSeq;
+        contactId = 'C$cid';
+      }
+
+
       ContactEntity ce = ContactEntity(
-        contactId: 'C$customerId',
+        contactId: contactId,
         firstName: event.customer.firstName,
         email: event.customer.email,
         phoneNumber: event.customer.phoneNumber,
@@ -51,7 +58,7 @@ class CreateEditCustomerBloc
         createTime: DateTime.now(),
         lastName: event.customer.lastName,
       );
-      await db.writeTxn((isar) => isar.contactEntitys.put(ce));
+      await db.writeTxn((isar) => isar.contactEntitys.put(ce, replaceOnConflict: true));
       emit(state.copyWith(status: CreateEditCustomerStatus.addingSuccess));
     } catch (e) {
       log.severe(e);

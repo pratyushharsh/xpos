@@ -68,10 +68,8 @@ class NewCustomerView extends StatelessWidget {
               }
             }
 
-
             if (state.mode == CustomerDisplayMode.create) {
-              BlocProvider.of<CustomerFormBloc>(context)
-                  .add(NewCustomer());
+              BlocProvider.of<CustomerFormBloc>(context).add(NewCustomer());
             }
           },
           child: const CreateNewCustomerForm()),
@@ -134,7 +132,9 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
                       top: 20,
                       left: 16,
                       child: AppBarLeading(
-                        heading: state.mode == CustomerDisplayMode.create ?  "New Party" : "Customer # ${state.customer?.contactId} | ${state.customer?.firstName} ${state.customer?.lastName}",
+                        heading: state.mode == CustomerDisplayMode.create
+                            ? "New Party"
+                            : "Customer # ${state.customer?.contactId} | ${state.customer?.firstName} ${state.customer?.lastName}",
                         icon: Icons.arrow_back,
                         onTap: () {
                           Navigator.of(context).pop();
@@ -173,7 +173,7 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
                                     gstin: state.gstin,
                                     panCard: state.panCard,
                                     phoneNumber: state.phoneNumber,
-                                    contactId: 'Dummy',
+                                    contactId: state.contactId ?? 'Dummy',
                                     storeId: '-1',
                                   );
                                   BlocProvider.of<CreateEditCustomerBloc>(
@@ -202,29 +202,41 @@ class CustomerTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Column(
-        children: const [
-          TabBar(
-            indicatorColor: AppColor.primary,
-            unselectedLabelColor: AppColor.subtitleColorPrimary,
-            labelColor: AppColor.primary,
-            tabs: [
-              Tab(icon: FaIcon(FontAwesomeIcons.circleUser)),
-              Tab(icon: FaIcon(FontAwesomeIcons.list)),
+    return BlocBuilder<CreateEditCustomerBloc, CreateEditCustomerState>(
+      builder: (context, state) {
+        return DefaultTabController(
+          length: state.mode == CustomerDisplayMode.create ? 1 : 2,
+          child: Column(
+            children: [
+              TabBar(
+                indicatorColor: AppColor.primary,
+                unselectedLabelColor: AppColor.subtitleColorPrimary,
+                labelColor: AppColor.primary,
+                tabs: [
+                  if (state.mode != CustomerDisplayMode.create)
+                    const Tab(
+                        icon: FaIcon(
+                          FontAwesomeIcons.list,
+                        ),
+                        text: "Purchase History"),
+                  const Tab(
+                      icon: FaIcon(FontAwesomeIcons.circleUser),
+                      text: "Customer Detail"),
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    if (state.mode != CustomerDisplayMode.create)
+                      const CustomerPurchaseListDisplay(),
+                    const CreateCustomerForm(),
+                  ],
+                ),
+              )
             ],
           ),
-          Expanded(
-            child: TabBarView(
-              children: [
-                CreateCustomerForm(),
-                CustomerPurchaseListDisplay(),
-              ],
-            ),
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -258,7 +270,8 @@ class CreateCustomerForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CustomerFormBloc, CustomerFormState>(
       builder: (context, state) {
-        if (state.status == CustomerFormStatus.loadedExistingCustomer || state.status == CustomerFormStatus.initial) {
+        if (state.status == CustomerFormStatus.loadedExistingCustomer ||
+            state.status == CustomerFormStatus.initial) {
           return const Center(
             child: MyLoader(),
           );

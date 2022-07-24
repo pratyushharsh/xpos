@@ -33,6 +33,7 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
   void _onLoadCustomer(LoadCustomer event, Emitter<CustomerFormState> emit) {
     emit(state.copyWith(status: CustomerFormStatus.loadedExistingCustomer));
     emit(state.copyWith(
+      contactId: event.contactEntity.contactId,
       firstName: event.contactEntity.firstName,
       lastName: event.contactEntity.lastName,
       email: event.contactEntity.email,
