@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
@@ -5,6 +6,7 @@ import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
 
+import '../../../locale_keys.dart';
 import '../../widgets/custom_button.dart';
 
 const String dummyImage =
@@ -28,8 +30,8 @@ class SettingsScreen extends StatelessWidget {
           ),
           AccountWidget(
             data: Detail(
-              title: "Accounts",
-              subtitle: "Edit and manage your account.",
+              title: LocaleKeys.settingsAccount.tr(),
+              subtitle: LocaleKeys.settingsAccountDescription.tr(),
               icon: Icons.sync_alt_outlined,
               children: [
                 SettingsItem(
@@ -37,7 +39,9 @@ class SettingsScreen extends StatelessWidget {
                     subtext: "pratyushharsh2015@gmail.com",
                     onTap: () {}),
                 SettingsItem(
-                    text: "Phone", subtext: "+91 9430123120", onTap: () {}),
+                    text: "Phone", subtext: "+91 9430123120", onTap: () {
+
+                }),
               ],
             ),
           ),
@@ -46,11 +50,20 @@ class SettingsScreen extends StatelessWidget {
           ),
           SectionWidget(
             data: Detail(
-              title: "Store Setting",
-              subtitle: "Setup Your Store And Give Permission",
+              title: LocaleKeys.settingsStore.tr(),
+              subtitle: LocaleKeys.settingsStoreDescription.tr(),
               icon: Icons.home_repair_service,
               children: [
                 SettingsItem(text: "Feature Settings", onTap: () {}),
+                SettingsItem(text: "Change Locale", onTap: () {
+                  Navigator.of(context).pushNamed(RouteConfig.localeScreen).then((value) {
+                    print('Locale changed : $value');
+                    if (value != null && value is Locale) {
+                      print('Setting Locale changed : $value');
+                      EasyLocalization.of(context)?.setLocale(value);
+                    }
+                  });
+                }),
                 SettingsItem(text: "Tax Configuration", onTap: () {}),
                 SettingsItem(text: "Receipt Config", onTap: () {
                 }),
@@ -62,8 +75,8 @@ class SettingsScreen extends StatelessWidget {
           ),
           SectionWidget(
             data: Detail(
-              title: "Settings",
-              subtitle: "Modify your forms as required",
+              title: LocaleKeys.settingsSettings.tr(),
+              subtitle: LocaleKeys.settingsSettingsDescription.tr(),
               icon: Icons.settings,
               children: [
                 SettingsItem(text: "Sync Data", onTap: () async {
@@ -81,8 +94,8 @@ class SettingsScreen extends StatelessWidget {
           ),
           SectionWidget(
             data: Detail(
-              title: "Help and Feedback",
-              subtitle: "Reach us with your feedback and question",
+              title: LocaleKeys.settingsHelp.tr(),
+              subtitle: LocaleKeys.settingsHelpDescription.tr(),
               icon: Icons.mail_rounded,
               children: [
                 SettingsItem(text: "Load Sample Data", onTap: () {
@@ -158,7 +171,7 @@ class SectionWidget extends StatelessWidget {
     return InkWell(
       onTap: item.onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -219,13 +232,13 @@ class SectionWidget extends StatelessWidget {
         const SizedBox(
           height: 25,
         ),
-        Card(
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
-          elevation: 0,
-          margin: const EdgeInsets.all(0),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(17),
+          child: Card(
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+            elevation: 0,
+            margin: const EdgeInsets.all(0),
             child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -237,7 +250,7 @@ class SectionWidget extends StatelessWidget {
                   return Column(
                     children: [
                       _buildButton(data.children[idx]),
-                      const Divider()
+                      const Divider(height: 0)
                     ],
                   );
                 }),
@@ -332,78 +345,81 @@ class AccountWidget extends StatelessWidget {
         const SizedBox(
           height: 25,
         ),
-        Card(
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
-          elevation: 0,
-          margin: const EdgeInsets.all(0),
-          child: InkWell(
-            onTap: () {},
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: FadeInImage(
-                            height: 40,
-                            width: 40,
-                            placeholder: const AssetImage("assets/image/logo-dummy.png"),
-                            image: const NetworkImage(dummyImage),
-                            imageErrorBuilder: (ctx, err, trace) {
-                              return const CircleAvatar(
-                                backgroundColor: Colors.red,
-                                child: Icon(Icons.person, color: Colors.white,),
-                              );
-                            },
+        ClipRRect(
+          borderRadius: BorderRadius.circular(17),
+          child: Card(
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+            elevation: 0,
+            margin: const EdgeInsets.all(0),
+            child: InkWell(
+              onTap: () {},
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: FadeInImage(
+                              height: 40,
+                              width: 40,
+                              placeholder: const AssetImage("assets/image/logo-dummy.png"),
+                              image: const NetworkImage(dummyImage),
+                              imageErrorBuilder: (ctx, err, trace) {
+                                return const CircleAvatar(
+                                  backgroundColor: Colors.red,
+                                  child: Icon(Icons.person, color: Colors.white,),
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                "Pratyush Harsh",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              Text(
-                                "Owner",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                    color: AppColor.subtitleColorPrimary),
-                              )
-                            ],
+                          const SizedBox(
+                            width: 10,
                           ),
-                        ),
-                        const Icon(Icons.chevron_right)
-                      ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: const [
+                                Text(
+                                  "Pratyush Harsh",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                                Text(
+                                  "Owner",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                      color: AppColor.subtitleColorPrimary),
+                                )
+                              ],
+                            ),
+                          ),
+                          const Icon(Icons.chevron_right)
+                        ],
+                      ),
                     ),
-                  ),
-                  ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: data.children.length,
-                      itemBuilder: (ctx, idx) {
-                        if (idx == data.children.length - 1) {
-                          return _buildButton(data.children[idx]);
-                        }
-                        return Column(
-                          children: [
-                            _buildButton(data.children[idx]),
-                            const Divider()
-                          ],
-                        );
-                      }),
-                ],
+                    ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: data.children.length,
+                        itemBuilder: (ctx, idx) {
+                          if (idx == data.children.length - 1) {
+                            return _buildButton(data.children[idx]);
+                          }
+                          return Column(
+                            children: [
+                              _buildButton(data.children[idx]),
+                              const Divider()
+                            ],
+                          );
+                        }),
+                  ],
+                ),
               ),
             ),
           ),

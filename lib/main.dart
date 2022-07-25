@@ -1,4 +1,5 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
+import 'package:easy_localization/easy_localization.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,13 +23,14 @@ Future<void> main() {
   return BlocOverrides.runZoned(() async {
     WidgetsFlutterBinding.ensureInitialized();
     initRootLogger();
+    await EasyLocalization.ensureInitialized();
 
     // Database Configuration
     final dir = await getApplicationSupportDirectory();
     final appDoc = await getApplicationDocumentsDirectory();
     await Constants.getImageBasePath();
-    print(appDoc);
-    print(dir);
+    log.info('App Documents Directory:  $appDoc');
+    log.info('App Support Directory:  $dir');
     final isar = await Isar.open(
       inspector: true,
       schemas: [
@@ -50,7 +52,7 @@ Future<void> main() {
 
     await _initAmplifyFlutter();
 
-    var customStorage =  CustomStorage();
+    var customStorage = CustomStorage();
     await customStorage.init();
 
     final userPool = CognitoUserPool(
@@ -61,10 +63,23 @@ Future<void> main() {
 
     final restClient = RestApiClient(
         userPool: userPool,
-        baseUrl:
-        "https://3lw9rlveu5.execute-api.ap-south-1.amazonaws.com/dev");
+        baseUrl: "https://3lw9rlveu5.execute-api.ap-south-1.amazonaws.com/dev");
 
-    runApp(MyApp(database: isar, userPool: userPool, restClient: restClient,));
+    runApp(
+      EasyLocalization(
+        path: 'assets/translations',
+        supportedLocales: const [
+          Locale('en', 'US'),
+          Locale('hi', 'IN'),
+        ],
+        fallbackLocale: const Locale('en', 'US'),
+        child: MyApp(
+          database: isar,
+          userPool: userPool,
+          restClient: restClient,
+        ),
+      ),
+    );
   }, blocObserver: InvoicingBlocObserver());
 }
 

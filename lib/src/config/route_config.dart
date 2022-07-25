@@ -11,6 +11,7 @@ import 'package:receipt_generator/src/module/invoice/invoice_view.dart';
 import 'package:receipt_generator/src/module/list_all_item/list_all_item_view.dart';
 import 'package:receipt_generator/src/module/list_all_receipt/list_all_receipt_view.dart';
 import 'package:receipt_generator/src/module/load_item_bulk/load_item_bulk_view.dart';
+import 'package:receipt_generator/src/module/locale/locale_view_mobile.dart';
 import 'package:receipt_generator/src/module/order_summary/order_summary_view.dart';
 import 'package:receipt_generator/src/module/receipt_display/invoice_display_view.dart';
 import 'package:receipt_generator/src/module/receipt_display/receipt_display_view.dart';
@@ -39,6 +40,7 @@ class RouteConfig {
   static const String receiptSettingViewScreen = "/receipt-setting";
   static const String customerDetailScreen = "/customer-detail";
   static const String orderSummaryScreen = "/order-summary";
+  static const String localeScreen = "/locale-screen";
 
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -91,6 +93,8 @@ class RouteConfig {
       case orderSummaryScreen:
         var transId = settings.arguments as int;
         return MaterialPageRoute(builder: (_) => OrderSummaryView(orderId: transId,));
+      case localeScreen:
+        return MaterialPageRoute(builder: (_) => const LocaleView());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
