@@ -3,7 +3,6 @@ import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
-import 'package:receipt_generator/src/model/model.dart';
 
 part 'list_all_item_event.dart';
 part 'list_all_item_state.dart';

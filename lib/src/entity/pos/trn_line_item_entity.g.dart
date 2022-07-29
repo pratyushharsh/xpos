@@ -16,7 +16,7 @@ extension GetTransactionLineItemEntityCollection on Isar {
 const TransactionLineItemEntitySchema = CollectionSchema(
   name: 'TransactionLineItemEntity',
   schema:
-      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"discountAmount","type":"Double"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"uom","type":"String"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[{"name":"lineModifiers","target":"TransactionLineItemModifierEntity"}]}',
+      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"discountAmount","type":"Double"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"uom","type":"String"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[{"name":"lineModifiers","target":"TransactionLineItemModifierEntity"},{"name":"taxModifiers","target":"TransactionLineItemTaxModifier"}]}',
   idName: 'id',
   propertyIds: {
     'businessDate': 0,
@@ -71,7 +71,7 @@ const TransactionLineItemEntitySchema = CollectionSchema(
       IndexValueType.long,
     ]
   },
-  linkIds: {'lineModifiers': 0, 'header': 1},
+  linkIds: {'lineModifiers': 0, 'taxModifiers': 1, 'header': 2},
   backlinkLinkNames: {'header': 'lineItems'},
   getId: _transactionLineItemEntityGetId,
   getLinks: _transactionLineItemEntityGetLinks,
@@ -95,7 +95,7 @@ int? _transactionLineItemEntityGetId(TransactionLineItemEntity object) {
 
 List<IsarLinkBase> _transactionLineItemEntityGetLinks(
     TransactionLineItemEntity object) {
-  return [object.lineModifiers, object.header];
+  return [object.lineModifiers, object.taxModifiers, object.header];
 }
 
 void _transactionLineItemEntitySerializeNative(
@@ -637,6 +637,8 @@ void _transactionLineItemEntityAttachLinks(
     IsarCollection col, int id, TransactionLineItemEntity object) {
   object.lineModifiers.attach(
       col, col.isar.transactionLineItemModifierEntitys, 'lineModifiers', id);
+  object.taxModifiers.attach(
+      col, col.isar.transactionLineItemTaxModifiers, 'taxModifiers', id);
   object.header.attach(col, col.isar.transactionHeaderEntitys, 'header', id);
 }
 
@@ -3463,6 +3465,16 @@ extension TransactionLineItemEntityQueryLinks on QueryBuilder<
       isar.transactionLineItemModifierEntitys,
       q,
       'lineModifiers',
+    );
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      taxModifiers(FilterQuery<TransactionLineItemTaxModifier> q) {
+    return linkInternal(
+      isar.transactionLineItemTaxModifiers,
+      q,
+      'taxModifiers',
     );
   }
 

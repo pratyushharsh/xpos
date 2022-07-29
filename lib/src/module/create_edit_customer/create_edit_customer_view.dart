@@ -383,9 +383,9 @@ class CreateCustomerForm extends StatelessWidget {
                             }
                         });
                   },
-                  child: AddressWidget(
+                  child: TextFieldPlaceholderWidget(
                     label: "Billing Address",
-                    address: state.billingAddress.toString(),
+                    value: state.billingAddress.toString(),
                   ),
                 ),
                 if (!state.sameAddress)
@@ -411,9 +411,9 @@ class CreateCustomerForm extends StatelessWidget {
                               }
                           });
                     },
-                    child: AddressWidget(
+                    child: TextFieldPlaceholderWidget(
                       label: "Shipping Address",
-                      address: state.shippingAddress.toString(),
+                      value: state.shippingAddress.toString(),
                     ),
                   ),
                 const SizedBox(

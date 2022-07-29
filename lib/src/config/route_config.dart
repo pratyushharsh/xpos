@@ -17,6 +17,7 @@ import 'package:receipt_generator/src/module/receipt_display/invoice_display_vie
 import 'package:receipt_generator/src/module/receipt_display/receipt_display_view.dart';
 import 'package:receipt_generator/src/module/receipt_setting/receipt_setting_view.dart';
 import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.dart';
+import 'package:receipt_generator/src/module/tax/create_edit_tax.dart';
 
 import '../module/create_edit_customer/create_edit_customer_view.dart';
 import '../module/create_new_item/modify_line_item_screen.dart';
@@ -41,6 +42,7 @@ class RouteConfig {
   static const String customerDetailScreen = "/customer-detail";
   static const String orderSummaryScreen = "/order-summary";
   static const String localeScreen = "/locale-screen";
+  static const String taxConfigurationScreen = "/tax-config";
 
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -95,6 +97,8 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => OrderSummaryView(orderId: transId,));
       case localeScreen:
         return MaterialPageRoute(builder: (_) => const LocaleView());
+      case taxConfigurationScreen:
+        return MaterialPageRoute(builder: (_) => const CreateEditTaxView());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

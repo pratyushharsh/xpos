@@ -21,6 +21,7 @@ import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/setting_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_config_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_repository.dart';
+import 'package:receipt_generator/src/repositories/tax_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
@@ -80,6 +81,10 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(
             create: (context) =>
                 ReasonCodeRepository(db: database, restClient: restClient),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                TaxRepository(db: database, restClient: restClient),
           ),
         ],
         child: MultiBlocProvider(providers: [

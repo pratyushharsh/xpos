@@ -1,4 +1,3 @@
-import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/model.dart';
 
 class SaleLine {

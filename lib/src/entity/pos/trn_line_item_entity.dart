@@ -1,6 +1,8 @@
 import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
+import 'trn_line_item_tax.dart';
+
 part 'trn_line_item_entity.g.dart';
 
 @Collection()
@@ -63,6 +65,8 @@ class TransactionLineItemEntity {
   final header = IsarLink<TransactionHeaderEntity>();
 
   final lineModifiers = IsarLinks<TransactionLineItemModifierEntity>();
+
+  final taxModifiers = IsarLinks<TransactionLineItemTaxModifier>();
 
   TransactionLineItemEntity(
       {this.id,

@@ -64,7 +64,9 @@ class SettingsScreen extends StatelessWidget {
                     }
                   });
                 }),
-                SettingsItem(text: "Tax Configuration", onTap: () {}),
+                SettingsItem(text: "Tax Configuration", onTap: () {
+                  Navigator.of(context).pushNamed(RouteConfig.taxConfigurationScreen);
+                }),
                 SettingsItem(text: "Receipt Config", onTap: () {
                 }),
               ],

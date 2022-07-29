@@ -9,4 +9,5 @@ abstract class  LocaleKeys {
   static const settingsHelpDescription = 'settings.helpDescription';
   static const settings = 'settings';
   static const locale = 'locale';
+  static const taxConfiguration = 'taxConfiguration';
 }

@@ -230,9 +230,9 @@ class _BusinessDetailState extends State<BusinessDetail> {
                           }
                       });
                 },
-                child: AddressWidget(
+                child: TextFieldPlaceholderWidget(
                   label: "Business Address",
-                  address: state.businessAddress?.toString() ?? "",
+                  value: state.businessAddress?.toString() ?? "",
                 )),
             CustomTextField(
               controller: _businessGstController,
