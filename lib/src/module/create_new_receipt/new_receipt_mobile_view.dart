@@ -29,7 +29,9 @@ class NewReceiptMobileView extends StatelessWidget {
                     ),
                     // CustomerDetailWidget(),
                     CustomerWidget(),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     // const Divider(
                     //   thickness: 8,
                     // ),
@@ -73,7 +75,8 @@ class NewReceiptMobileView extends StatelessWidget {
 
 class AcceptTenderDisplayMobile extends StatelessWidget {
   final Function onTender;
-  const AcceptTenderDisplayMobile({Key? key, required this.onTender}) : super(key: key);
+  const AcceptTenderDisplayMobile({Key? key, required this.onTender})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +84,9 @@ class AcceptTenderDisplayMobile extends StatelessWidget {
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
-            body: TenderDisplayDesktop(onTender: onTender,)),
+            body: TenderDisplayDesktop(
+          onTender: onTender,
+        )),
       ),
     );
   }
@@ -98,7 +103,9 @@ class _CashTenderState extends State<CashTender> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
           const Icon(Icons.money),
           TextFormField(
             decoration: const InputDecoration(
@@ -111,6 +118,8 @@ class _CashTenderState extends State<CashTender> {
                 fontSize: 40, fontWeight: FontWeight.bold, letterSpacing: 1.5),
             inputFormatters: [],
           ),
-        ]));
+        ],
+      ),
+    );
   }
 }

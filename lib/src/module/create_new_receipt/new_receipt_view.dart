@@ -32,11 +32,13 @@ class NewReceiptView extends StatelessWidget {
         BlocProvider(
           lazy: false,
           create: (ctx) => CreateNewReceiptBloc(
-              db: RepositoryProvider.of(ctx),
-              authenticationBloc: BlocProvider.of(ctx),
-              sequenceRepository: RepositoryProvider.of(ctx),
-              transactionRepository: RepositoryProvider.of(ctx))
-            ..add(OnInitiateNewTransaction()),
+            db: RepositoryProvider.of(ctx),
+            authenticationBloc: BlocProvider.of(ctx),
+            sequenceRepository: RepositoryProvider.of(ctx),
+            transactionRepository: RepositoryProvider.of(ctx),
+            taxHelper: RepositoryProvider.of(ctx),
+            taxModifierCalculator: RepositoryProvider.of(ctx),
+          )..add(OnInitiateNewTransaction()),
         ),
         BlocProvider(
           create: (ctx) => CustomerSearchBloc(
@@ -121,19 +123,20 @@ class CustomerSuggestionWidget extends StatelessWidget {
 class BuildLineItem extends StatelessWidget {
   const BuildLineItem({Key? key}) : super(key: key);
 
-  void onTap(BuildContext context, TransactionLineItemEntity saleLine, ProductEntity? product) {
+  void onTap(BuildContext context, TransactionLineItemEntity saleLine,
+      ProductEntity? product) {
     if (Platform.isIOS || Platform.isAndroid) {
       Navigator.of(context)
           .push(MaterialPageRoute(
-        builder: (_) => MobileDialogView(
-          child: LineItemModificationView(
-              lineItem: saleLine, productModel: product),
-        ),
-      ))
+            builder: (_) => MobileDialogView(
+              child: LineItemModificationView(
+                  lineItem: saleLine, productModel: product),
+            ),
+          ))
           .then((value) => {
-        if (value != null && value is CreateNewReceiptEvent)
-          {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
-      });
+                if (value != null && value is CreateNewReceiptEvent)
+                  {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
+              });
     } else {
       showDialog(
           context: context,
@@ -143,19 +146,17 @@ class BuildLineItem extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.8,
                 width: MediaQuery.of(context).size.width * 0.5,
                 child: LineItemModificationView(
-                    lineItem: saleLine,
-                    productModel: product),
+                    lineItem: saleLine, productModel: product),
               ),
             );
           }).then(
-            (value) => {
+        (value) => {
           if (value != null && value is CreateNewReceiptEvent)
             {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
         },
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +168,8 @@ class BuildLineItem extends StatelessWidget {
             if (idx < state.lineItem.length) {
               return InkWell(
                 onTap: () {
-                  onTap(context, state.lineItem[idx], state.productMap[state.lineItem[idx].itemId]);
+                  onTap(context, state.lineItem[idx],
+                      state.productMap[state.lineItem[idx].itemId]);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -380,31 +382,31 @@ class NewLineItem extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(border: Border.all(width: 1)),
-                child: (productModel != null &&
-                        productModel!.imageUrl.isNotEmpty)
-                    ? Image.file(
-                        File(Constants.baseImagePath +
-                            productModel!.imageUrl[0]),
-                        fit: BoxFit.cover,
-                        height: 70,
-                        width: 70, errorBuilder: (context, obj, trace) {
-                        return const SizedBox(
-                          height: 70,
-                          width: 70,
-                        );
-                      })
-                    : Image.network(
-                        "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
-                        fit: BoxFit.cover,
-                        height: 70,
-                        width: 70,
-                        errorBuilder: (context, obj, trace) {
-                          return const SizedBox(
+                child:
+                    (productModel != null && productModel!.imageUrl.isNotEmpty)
+                        ? Image.file(
+                            File(Constants.baseImagePath +
+                                productModel!.imageUrl[0]),
+                            fit: BoxFit.cover,
+                            height: 70,
+                            width: 70, errorBuilder: (context, obj, trace) {
+                            return const SizedBox(
+                              height: 70,
+                              width: 70,
+                            );
+                          })
+                        : Image.network(
+                            "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+                            fit: BoxFit.cover,
                             height: 70,
                             width: 70,
-                          );
-                        },
-                      ),
+                            errorBuilder: (context, obj, trace) {
+                              return const SizedBox(
+                                height: 70,
+                                width: 70,
+                              );
+                            },
+                          ),
               ),
               const SizedBox(
                 width: 8,

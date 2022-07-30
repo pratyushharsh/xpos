@@ -49,25 +49,26 @@ class ReceiptDisplayView extends StatelessWidget {
 
   void _printReceipt() {
     Printing.layoutPdf(
-        format: PdfPageFormat.roll80,
-        onLayout: (PdfPageFormat format) async {
-          final doc = pw.Document();
+      format: PdfPageFormat.roll80,
+      onLayout: (PdfPageFormat format) async {
+        final doc = pw.Document();
 
-          final image = await WidgetWraper.fromKey(
-            key: _printKey,
-            pixelRatio: 3.0,
-          );
+        final image = await WidgetWraper.fromKey(
+          key: _printKey,
+          pixelRatio: 3.0,
+        );
 
-          doc.addPage(pw.Page(
-              pageFormat: format,
-              build: (pw.Context context) {
-                return pw.Center(
-                  child: pw.Image(image),
-                );
-              }));
+        doc.addPage(pw.Page(
+            pageFormat: format,
+            build: (pw.Context context) {
+              return pw.Center(
+                child: pw.Image(image),
+              );
+            }));
 
-          return doc.save();
-        });
+        return doc.save();
+      },
+    );
   }
 
   @override
@@ -521,7 +522,8 @@ class ReceiptSummary extends StatelessWidget {
                   "Subtotal",
                   style: style,
                 ),
-                Text("${Currency.inr}${state.header!.subtotal.toStringAsFixed(2)}")
+                Text(
+                    "${Currency.inr}${state.header!.subtotal.toStringAsFixed(2)}")
               ],
             ),
             Row(
@@ -538,7 +540,8 @@ class ReceiptSummary extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Tax", style: style),
-                Text("${Currency.inr}${state.header!.taxTotal.toStringAsFixed(2)}")
+                Text(
+                    "${Currency.inr}${state.header!.taxTotal.toStringAsFixed(2)}")
               ],
             ),
             Row(

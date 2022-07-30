@@ -23,7 +23,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   final BusinessRepository businessRepository;
   final BackgroundSyncBloc sync;
 
-  AuthenticationBloc({required this.userPool, required this.db, required this.businessRepository, required this.sync}) : super(AuthenticationState.unauthenticated()) {
+  AuthenticationBloc({required this.userPool, required this.db, required this.businessRepository, required this.sync}) : super(AuthenticationState.unknown()) {
     // signInIfSessionAvailable();
     on<AuthenticationUserChanged>(_onUserChanged);
     on<InitialAuthEvent>(_onInitialAuth);
@@ -50,7 +50,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   void _onInitialAuth(InitialAuthEvent event, Emitter<AuthenticationState> emit) async {
     try {
-
       var user = await userPool.getCurrentUser();
       if (user != null) {
         // Three Scenario when user logged in

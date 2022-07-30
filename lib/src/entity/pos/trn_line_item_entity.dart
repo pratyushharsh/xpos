@@ -19,29 +19,28 @@ class TransactionLineItemEntity {
   final String? category;
   final String itemId;
   final String itemDescription;
-  final double quantity;
-  final double grossQuantity;
-  final double netQuantity;
-  final double unitPrice;
-  final double extendedAmount;
+  double quantity;
+  double unitPrice;
+  double extendedAmount;
   final bool returnFlag;
   final String itemIdEntryMethod;
   final String priceEntryMethod;
-  final double netAmount;
-  final double grossAmount;
+  double netAmount;
+  double grossAmount;
   final String? serialNumber;
-  final String taxGroupId;
-  final double taxAmount;
-  final double discountAmount;
+  double taxAmount;
+  double discountAmount;
   final String uom;
 
   /// Price Override Reason
-  final bool priceOverride;
-  final double? priceOverrideAmount;
-  final String? priceOverrideReason;
+  bool priceOverride;
+  double? priceOverrideAmount;
+  String? priceOverrideReason;
 
   /// Return Parameters
-  final double? returnedQuantity;
+  double? returnedQuantity;
+
+  bool isVoid;
 
   @Index()
   final int? originalPosId;
@@ -82,8 +81,6 @@ class TransactionLineItemEntity {
       required this.itemId,
       required this.itemDescription,
       required this.quantity,
-      required this.grossQuantity,
-      required this.netQuantity,
       required this.unitPrice,
       required this.extendedAmount,
       this.discountAmount = 0.00,
@@ -93,7 +90,6 @@ class TransactionLineItemEntity {
       required this.netAmount,
       required this.grossAmount,
       this.serialNumber,
-      required this.taxGroupId,
       required this.taxAmount,
       required this.uom,
       this.returnedQuantity,
@@ -104,6 +100,7 @@ class TransactionLineItemEntity {
       this.returnReasonCode,
       this.returnComment,
       this.returnTypeCode,
+      this.isVoid = false,
       this.nonReturnableFlag = false,
       this.nonExchangeableFlag = false,
       this.vendorId,

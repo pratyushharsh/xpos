@@ -77,4 +77,8 @@ class TaxRepository {
       }
     return taxGroups;
   }
+
+  Future<List<TaxRuleEntity>> getTaxRulesByGroupId(String groupId) {
+    return db.taxRuleEntitys.where().groupIdEqualTo(groupId).findAll();
+  }
 }

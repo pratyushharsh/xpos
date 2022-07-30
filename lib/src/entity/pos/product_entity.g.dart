@@ -15,7 +15,7 @@ extension GetProductEntityCollection on Isar {
 const ProductEntitySchema = CollectionSchema(
   name: 'ProductEntity',
   schema:
-      '{"name":"ProductEntity","idName":"id","properties":[{"name":"brand","type":"String"},{"name":"createTime","type":"Long"},{"name":"description","type":"String"},{"name":"descriptionWords","type":"StringList"},{"name":"displayName","type":"String"},{"name":"enable","type":"Bool"},{"name":"hsn","type":"String"},{"name":"imageUrl","type":"StringList"},{"name":"lastSyncAt","type":"Long"},{"name":"listPrice","type":"Double"},{"name":"productId","type":"String"},{"name":"purchasePrice","type":"Double"},{"name":"salePrice","type":"Double"},{"name":"skuCode","type":"String"},{"name":"storeId","type":"Long"},{"name":"syncState","type":"Long"},{"name":"tax","type":"Double"},{"name":"uom","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"descriptionWords","unique":false,"properties":[{"name":"descriptionWords","type":"Value","caseSensitive":false}]},{"name":"productId","unique":true,"properties":[{"name":"productId","type":"Value","caseSensitive":true}]}],"links":[]}',
+      '{"name":"ProductEntity","idName":"id","properties":[{"name":"brand","type":"String"},{"name":"createTime","type":"Long"},{"name":"description","type":"String"},{"name":"descriptionWords","type":"StringList"},{"name":"displayName","type":"String"},{"name":"enable","type":"Bool"},{"name":"hsn","type":"String"},{"name":"imageUrl","type":"StringList"},{"name":"lastSyncAt","type":"Long"},{"name":"listPrice","type":"Double"},{"name":"productId","type":"String"},{"name":"purchasePrice","type":"Double"},{"name":"salePrice","type":"Double"},{"name":"skuCode","type":"String"},{"name":"storeId","type":"Long"},{"name":"syncState","type":"Long"},{"name":"tax","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"uom","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"descriptionWords","unique":false,"properties":[{"name":"descriptionWords","type":"Value","caseSensitive":false}]},{"name":"productId","unique":true,"properties":[{"name":"productId","type":"Value","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'brand': 0,
@@ -35,9 +35,10 @@ const ProductEntitySchema = CollectionSchema(
     'storeId': 14,
     'syncState': 15,
     'tax': 16,
-    'uom': 17,
-    'updateTime': 18,
-    'version': 19
+    'taxGroupId': 17,
+    'uom': 18,
+    'updateTime': 19,
+    'version': 20
   },
   listProperties: {'descriptionWords', 'imageUrl'},
   indexIds: {'descriptionWords': 0, 'productId': 1},
@@ -157,13 +158,19 @@ void _productEntitySerializeNative(
   final _syncState = value15;
   final value16 = object.tax;
   final _tax = value16;
-  final value17 = object.uom;
-  final _uom = IsarBinaryWriter.utf8Encoder.convert(value17);
+  final value17 = object.taxGroupId;
+  IsarUint8List? _taxGroupId;
+  if (value17 != null) {
+    _taxGroupId = IsarBinaryWriter.utf8Encoder.convert(value17);
+  }
+  dynamicSize += (_taxGroupId?.length ?? 0) as int;
+  final value18 = object.uom;
+  final _uom = IsarBinaryWriter.utf8Encoder.convert(value18);
   dynamicSize += (_uom.length) as int;
-  final value18 = object.updateTime;
-  final _updateTime = value18;
-  final value19 = object.version;
-  final _version = value19;
+  final value19 = object.updateTime;
+  final _updateTime = value19;
+  final value20 = object.version;
+  final _version = value20;
   final size = staticSize + dynamicSize;
 
   rawObj.buffer = alloc(size);
@@ -187,9 +194,10 @@ void _productEntitySerializeNative(
   writer.writeLong(offsets[14], _storeId);
   writer.writeLong(offsets[15], _syncState);
   writer.writeDouble(offsets[16], _tax);
-  writer.writeBytes(offsets[17], _uom);
-  writer.writeDateTime(offsets[18], _updateTime);
-  writer.writeLong(offsets[19], _version);
+  writer.writeBytes(offsets[17], _taxGroupId);
+  writer.writeBytes(offsets[18], _uom);
+  writer.writeDateTime(offsets[19], _updateTime);
+  writer.writeLong(offsets[20], _version);
 }
 
 ProductEntity _productEntityDeserializeNative(
@@ -215,9 +223,10 @@ ProductEntity _productEntityDeserializeNative(
     storeId: reader.readLong(offsets[14]),
     syncState: reader.readLong(offsets[15]),
     tax: reader.readDoubleOrNull(offsets[16]),
-    uom: reader.readString(offsets[17]),
-    updateTime: reader.readDateTimeOrNull(offsets[18]),
-    version: reader.readLong(offsets[19]),
+    taxGroupId: reader.readStringOrNull(offsets[17]),
+    uom: reader.readString(offsets[18]),
+    updateTime: reader.readDateTimeOrNull(offsets[19]),
+    version: reader.readLong(offsets[20]),
   );
   return object;
 }
@@ -262,10 +271,12 @@ P _productEntityDeserializePropNative<P>(
     case 16:
       return (reader.readDoubleOrNull(offset)) as P;
     case 17:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 18:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 19:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 20:
       return (reader.readLong(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
@@ -295,6 +306,7 @@ dynamic _productEntitySerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'storeId', object.storeId);
   IsarNative.jsObjectSet(jsObj, 'syncState', object.syncState);
   IsarNative.jsObjectSet(jsObj, 'tax', object.tax);
+  IsarNative.jsObjectSet(jsObj, 'taxGroupId', object.taxGroupId);
   IsarNative.jsObjectSet(jsObj, 'uom', object.uom);
   IsarNative.jsObjectSet(
       jsObj, 'updateTime', object.updateTime?.toUtc().millisecondsSinceEpoch);
@@ -338,6 +350,7 @@ ProductEntity _productEntityDeserializeWeb(
     syncState:
         IsarNative.jsObjectGet(jsObj, 'syncState') ?? double.negativeInfinity,
     tax: IsarNative.jsObjectGet(jsObj, 'tax'),
+    taxGroupId: IsarNative.jsObjectGet(jsObj, 'taxGroupId'),
     uom: IsarNative.jsObjectGet(jsObj, 'uom') ?? '',
     updateTime: IsarNative.jsObjectGet(jsObj, 'updateTime') != null
         ? DateTime.fromMillisecondsSinceEpoch(
@@ -409,6 +422,8 @@ P _productEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
           double.negativeInfinity) as P;
     case 'tax':
       return (IsarNative.jsObjectGet(jsObj, 'tax')) as P;
+    case 'taxGroupId':
+      return (IsarNative.jsObjectGet(jsObj, 'taxGroupId')) as P;
     case 'uom':
       return (IsarNative.jsObjectGet(jsObj, 'uom') ?? '') as P;
     case 'updateTime':
@@ -2071,6 +2086,122 @@ extension ProductEntityQueryFilter
     ));
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      taxGroupIdIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'taxGroupId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      taxGroupIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'taxGroupId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      taxGroupIdGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'taxGroupId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      taxGroupIdLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'taxGroupId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      taxGroupIdBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'taxGroupId',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      taxGroupIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'taxGroupId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      taxGroupIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'taxGroupId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      taxGroupIdContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'taxGroupId',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      taxGroupIdMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'taxGroupId',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition> uomEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -2431,6 +2562,15 @@ extension ProductEntityQueryWhereSortBy
     return addSortByInternal('tax', Sort.desc);
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByTaxGroupId() {
+    return addSortByInternal('taxGroupId', Sort.asc);
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
+      sortByTaxGroupIdDesc() {
+    return addSortByInternal('taxGroupId', Sort.desc);
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByUom() {
     return addSortByInternal('uom', Sort.asc);
   }
@@ -2597,6 +2737,15 @@ extension ProductEntityQueryWhereSortThenBy
     return addSortByInternal('tax', Sort.desc);
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByTaxGroupId() {
+    return addSortByInternal('taxGroupId', Sort.asc);
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
+      thenByTaxGroupIdDesc() {
+    return addSortByInternal('taxGroupId', Sort.desc);
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByUom() {
     return addSortByInternal('uom', Sort.asc);
   }
@@ -2696,6 +2845,11 @@ extension ProductEntityQueryWhereDistinct
     return addDistinctByInternal('tax');
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByTaxGroupId(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('taxGroupId', caseSensitive: caseSensitive);
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByUom(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('uom', caseSensitive: caseSensitive);
@@ -2786,6 +2940,10 @@ extension ProductEntityQueryProperty
 
   QueryBuilder<ProductEntity, double?, QQueryOperations> taxProperty() {
     return addPropertyNameInternal('tax');
+  }
+
+  QueryBuilder<ProductEntity, String?, QQueryOperations> taxGroupIdProperty() {
+    return addPropertyNameInternal('taxGroupId');
   }
 
   QueryBuilder<ProductEntity, String, QQueryOperations> uomProperty() {

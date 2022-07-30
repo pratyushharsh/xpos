@@ -27,6 +27,7 @@ class ProductEntity {
   final String? skuCode;
   final String? hsn;
   final double? tax;
+  final String? taxGroupId;
   final List<String> imageUrl;
   final int syncState;
   late DateTime createTime;
@@ -42,7 +43,7 @@ class ProductEntity {
       this.productId,
       required this.storeId,
       required this.displayName,
-        this.description,
+      this.description,
       required this.listPrice,
       required this.salePrice,
       this.purchasePrice,
@@ -52,6 +53,7 @@ class ProductEntity {
       this.skuCode,
       this.hsn,
       this.tax,
+      this.taxGroupId,
       this.imageUrl = const [],
       required this.createTime,
       this.version = 1,

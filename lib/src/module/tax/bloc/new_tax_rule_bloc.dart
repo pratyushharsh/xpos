@@ -12,10 +12,10 @@ part 'new_tax_rule_event.dart';
 part 'new_tax_rule_state.dart';
 
 class NewTaxRuleBloc extends Bloc<NewTaxRuleEvent, NewTaxRuleState> {
-
   final TaxGroupEntity taxGroup;
   final TaxRepository taxRepository;
-  NewTaxRuleBloc({required this.taxRepository, required this.taxGroup}) : super(const NewTaxRuleState()) {
+  NewTaxRuleBloc({required this.taxRepository, required this.taxGroup})
+      : super(const NewTaxRuleState()) {
     on<OnRuleNameChangeEvent>(_onRuleNameChangeEvent);
     on<OnAmountChangeEvent>(_onAmountChangeEvent);
     on<OnPercentChangeEvent>(_onPercentChangeEvent);
@@ -26,7 +26,8 @@ class NewTaxRuleBloc extends Bloc<NewTaxRuleEvent, NewTaxRuleState> {
     on<CreateNewTaxRule>(_onCreateNewTaxRule);
   }
 
-  void _onCreateNewTaxRule(CreateNewTaxRule event, Emitter<NewTaxRuleState> emit) async {
+  void _onCreateNewTaxRule(
+      CreateNewTaxRule event, Emitter<NewTaxRuleState> emit) async {
     emit(state.copyWith(status: NewTaxRuleStatus.loading));
     try {
       TaxRuleEntity taxRule = TaxRuleEntity(
@@ -36,7 +37,13 @@ class NewTaxRuleBloc extends Bloc<NewTaxRuleEvent, NewTaxRuleState> {
         effectiveDateTimeStamp: state.effectiveDateTimeStamp,
         expirationDateTimeStamp: state.expirationDateTimeStamp,
         minimumTaxableAmount: state.minimumTaxableAmount,
-        maximumTaxableAmount: state.maximumTaxableAmount, ruleSequence: taxGroup.taxRules.length + 1, groupId: taxGroup.groupId, locationId: '',
+        maximumTaxableAmount: state.maximumTaxableAmount,
+        ruleSequence: taxGroup.taxRules.length + 1,
+        groupId: taxGroup.groupId,
+        locationId: '',
+        authorityName: '',
+        authorityType: '',
+        authorityId: '',
       );
       await taxRepository.createNewTaxRule(taxGroup, taxRule);
       emit(state.copyWith(status: NewTaxRuleStatus.created));
@@ -45,31 +52,41 @@ class NewTaxRuleBloc extends Bloc<NewTaxRuleEvent, NewTaxRuleState> {
     }
   }
 
-  void _onRuleNameChangeEvent(OnRuleNameChangeEvent event, Emitter<NewTaxRuleState> emit) async {
+  void _onRuleNameChangeEvent(
+      OnRuleNameChangeEvent event, Emitter<NewTaxRuleState> emit) async {
     emit(state.copyWith(ruleName: event.ruleName));
   }
 
-  void _onAmountChangeEvent(OnAmountChangeEvent event, Emitter<NewTaxRuleState> emit) async {
+  void _onAmountChangeEvent(
+      OnAmountChangeEvent event, Emitter<NewTaxRuleState> emit) async {
     emit(state.copyWith(amount: event.amount));
   }
 
-  void _onPercentChangeEvent(OnPercentChangeEvent event, Emitter<NewTaxRuleState> emit) async {
+  void _onPercentChangeEvent(
+      OnPercentChangeEvent event, Emitter<NewTaxRuleState> emit) async {
     emit(state.copyWith(percent: event.percent));
   }
 
-  void _onEffectiveDateChangeEvent(OnEffectiveDateChangeEvent event, Emitter<NewTaxRuleState> emit) async {
+  void _onEffectiveDateChangeEvent(
+      OnEffectiveDateChangeEvent event, Emitter<NewTaxRuleState> emit) async {
     emit(state.copyWith(effectiveDateTimeStamp: event.effectiveDateTimeStamp));
   }
 
-  void _onExpirationDateChangeEvent(OnExpirationDateChangeEvent event, Emitter<NewTaxRuleState> emit) async {
-    emit(state.copyWith(expirationDateTimeStamp: event.expirationDateTimeStamp));
+  void _onExpirationDateChangeEvent(
+      OnExpirationDateChangeEvent event, Emitter<NewTaxRuleState> emit) async {
+    emit(
+        state.copyWith(expirationDateTimeStamp: event.expirationDateTimeStamp));
   }
 
-  void _onMinimumTaxableAmountChangeEvent(OnMinimumTaxableAmountChangeEvent event, Emitter<NewTaxRuleState> emit) async {
+  void _onMinimumTaxableAmountChangeEvent(
+      OnMinimumTaxableAmountChangeEvent event,
+      Emitter<NewTaxRuleState> emit) async {
     emit(state.copyWith(minimumTaxableAmount: event.minimumTaxableAmount));
   }
 
-  void _onMaximumTaxableAmountChangeEvent(OnMaximumTaxableAmountChangeEvent event, Emitter<NewTaxRuleState> emit) async {
+  void _onMaximumTaxableAmountChangeEvent(
+      OnMaximumTaxableAmountChangeEvent event,
+      Emitter<NewTaxRuleState> emit) async {
     emit(state.copyWith(maximumTaxableAmount: event.maximumTaxableAmount));
   }
 }

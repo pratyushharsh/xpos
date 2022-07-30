@@ -14,6 +14,8 @@ import 'package:receipt_generator/src/module/login/login_view.dart';
 import 'package:receipt_generator/src/module/login/verify_user_device_view.dart';
 import 'package:receipt_generator/src/module/login/verify_user_view.dart';
 import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
+import 'package:receipt_generator/src/pos/calculator/tax_calculator.dart';
+import 'package:receipt_generator/src/pos/helper/tax_helper.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 import 'package:receipt_generator/src/repositories/config_repository.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
@@ -38,6 +40,19 @@ class MyApp extends StatelessWidget {
       required this.restClient})
       : super(key: key);
 
+  List<RepositoryProvider> _buildHelperList({required Isar db, required RestApiClient restClient}) {
+    return [
+
+    ];
+  }
+
+
+  List<RepositoryProvider> _buildCalculatorList({required Isar db, required RestApiClient restClient}) {
+    return [
+
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
@@ -58,9 +73,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           RepositoryProvider(
-            create: (context) => SyncConfigRepository(
-              db: database
-            ),
+            create: (context) => SyncConfigRepository(db: database),
           ),
           RepositoryProvider(
             create: (context) =>
@@ -75,8 +88,7 @@ class MyApp extends StatelessWidget {
                 TransactionRepository(db: database, restClient: restClient),
           ),
           RepositoryProvider(
-            create: (context) =>
-                ConfigRepository(db: database),
+            create: (context) => ConfigRepository(db: database),
           ),
           RepositoryProvider(
             create: (context) =>
@@ -86,6 +98,16 @@ class MyApp extends StatelessWidget {
             create: (context) =>
                 TaxRepository(db: database, restClient: restClient),
           ),
+          RepositoryProvider(
+            lazy: false,
+            create: (context) => TaxHelper(taxRepository: RepositoryProvider.of(context)),
+          ),
+          RepositoryProvider(
+            lazy: false,
+            create: (context) => TaxModifierCalculator(),
+          )
+          // ..._buildHelperList(db: database, restClient: restClient),
+          // ..._buildCalculatorList(db: database, restClient: restClient),
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(
@@ -95,7 +117,6 @@ class MyApp extends StatelessWidget {
                 syncConfigRepository: RepositoryProvider.of(context)),
           ),
           BlocProvider(
-            lazy: false,
             create: (context) => AuthenticationBloc(
                 userPool: RepositoryProvider.of(context),
                 db: RepositoryProvider.of(context),
@@ -116,12 +137,12 @@ class MyApp extends StatelessWidget {
                 auth: BlocProvider.of(context),
                 sequenceRepository: RepositoryProvider.of(context)),
           ),
-        ], child: const MyAppView()));
+        ], child: MyAppView()));
   }
 }
 
 class MyAppView extends StatefulWidget {
-  const MyAppView({Key? key}) : super(key: key);
+  MyAppView({Key? key}) : super(key: key);
 
   @override
   State<MyAppView> createState() => _MyAppViewState();
@@ -142,21 +163,26 @@ class _MyAppViewState extends State<MyAppView> {
       ),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
-      locale: context.locale,
+      // locale: context.locale,
       builder: (context, child) {
+        print('build $child');
         return BlocListener<AuthenticationBloc, AuthenticationState>(
+          listenWhen: (previous, current) {
+            return true;
+          },
           listener: (context, state) {
+            print('AuthenticationState: $state');
             switch (state.status) {
               case AuthenticationStatus.authenticated:
                 _navigator.pushAndRemoveUntil<void>(
                   HomeScreen.route(),
-                  (route) => false,
+                      (route) => false,
                 );
                 break;
               case AuthenticationStatus.unauthenticated:
                 _navigator.pushAndRemoveUntil<void>(
                   LoginView.route(),
-                  (route) => false,
+                      (route) => false,
                 );
                 break;
               case AuthenticationStatus.verifyUser:
@@ -182,6 +208,15 @@ class _MyAppViewState extends State<MyAppView> {
   }
 }
 
-// textTheme: GoogleFonts.robotoMonoTextTheme(
-// Theme.of(context).textTheme
-// ),
+class AppAuthenticationFlow extends StatelessWidget {
+  final Widget? child;
+  final GlobalKey<NavigatorState> navigator;
+  const AppAuthenticationFlow({Key? key, this.child, required this.navigator}) : super(key: key);
+
+  NavigatorState get _navigator => navigator.currentState!;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}

@@ -1,5 +1,7 @@
 import 'package:isar/isar.dart';
 
+import 'tax_group_entity.dart';
+
 part 'tax_rule_entity.g.dart';
 
 @Collection()
@@ -22,6 +24,13 @@ class TaxRuleEntity {
   final double? amount;
   final double? percent;
 
+  final String authorityId;
+  final String authorityName;
+  final String authorityType;
+
+  @Backlink(to: 'taxRules')
+  final taxGroup = IsarLink<TaxGroupEntity>();
+
   TaxRuleEntity(
       {this.id,
       required this.groupId,
@@ -33,5 +42,9 @@ class TaxRuleEntity {
       this.effectiveDateTimeStamp,
       this.expirationDateTimeStamp,
       this.amount,
-      this.percent}) : assert(amount != null || percent != null);
+      this.percent,
+      required this.authorityId,
+      required this.authorityName,
+      required this.authorityType})
+      : assert(amount != null || percent != null);
 }

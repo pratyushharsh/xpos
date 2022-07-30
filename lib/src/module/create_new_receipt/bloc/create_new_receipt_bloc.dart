@@ -8,13 +8,15 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
+import 'package:receipt_generator/src/entity/pos/tax_group_entity.dart';
+import 'package:receipt_generator/src/entity/pos/tax_rule_entity.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 
+import '../../../pos/calculator/tax_calculator.dart';
 import '../../../pos/config/config.dart';
-import '../../../pos/helper/discount_helper.dart';
-import '../../../pos/helper/transaction_helper.dart';
+import '../../../pos/helper/pos_helper.dart';
 import '../../return_order/bloc/return_order_bloc.dart';
 
 part 'create_new_receipt_event.dart';
@@ -27,12 +29,16 @@ class CreateNewReceiptBloc
   final AuthenticationBloc authenticationBloc;
   final SequenceRepository sequenceRepository;
   final TransactionRepository transactionRepository;
+  final TaxHelper taxHelper;
+  final TaxModifierCalculator taxModifierCalculator;
 
   CreateNewReceiptBloc(
       {required this.db,
         required this.transactionRepository,
         required this.authenticationBloc,
-        required this.sequenceRepository})
+        required this.taxHelper,
+        required this.sequenceRepository,
+        required this.taxModifierCalculator})
       : super(const CreateNewReceiptState(
       status: CreateNewReceiptStatus.initial)) {
     on<AddItemToReceipt>(_onAddNewLineItem);
@@ -65,13 +71,14 @@ class CreateNewReceiptBloc
     assert(event.product.productId != null);
     int seq = state.lineItem.length + state.tenderLine.length;
 
-    // SaleLine newLine = SaleLine(
-    //     seq: seq + 1,
-    //     product: event.product,
-    //     price: event.product.listPrice ?? 0.00);
     // @TODO Change the business date from DateTime.now() to actual business date.
     // @TODO Change the pos id also
     // @TODO Change the entry method also
+    // @TODO Fetch the price from pricing module for the item and add.
+
+    // Fetch the tax group for the item to add.
+    List<TaxRuleEntity> taxRules = event.product.taxGroupId != null ? await taxHelper.getTaxRuleByGroupId(event.product.taxGroupId!) : [];
+
     TransactionLineItemEntity newLine = TransactionLineItemEntity(
         storeId: authenticationBloc.state.store!.rtlLocId,
         businessDate: DateTime.now(),
@@ -81,8 +88,6 @@ class CreateNewReceiptBloc
         itemId: event.product.productId!,
         itemDescription: event.product.displayName,
         quantity: 1,
-        grossQuantity: 1,
-        netQuantity: 1,
         uom: event.product.uom,
         unitPrice: min(event.product.salePrice ?? 999999.00,
             event.product.listPrice ?? 999999.00),
@@ -94,17 +99,20 @@ class CreateNewReceiptBloc
             event.product.listPrice ?? 999999.00),
         grossAmount: min(event.product.salePrice ?? 999999.00,
             event.product.listPrice ?? 999999.00),
-        taxGroupId: "TAX_GROUP",
         taxAmount: 0.00);
+
+    List<TransactionLineItemTaxModifier> taxModifiers = taxHelper.createSaleTaxModifiers(newLine, taxRules);
+    newLine.taxModifiers.addAll(taxModifiers);
+    taxModifierCalculator.handleLineItemEvent([newLine]);
+
+    // Use tax modifier calculator to calculate the tax.
 
     // List<SaleTaxModifier> taxModifiers = TaxHelper.calculateTax(newLine);
     // newLine = newLine.copyWith(taxModifier: taxModifiers);
 
     Map<String, ProductEntity> pm = Map.from(state.productMap);
     pm.putIfAbsent(event.product.productId!, () => event.product);
-
     List<TransactionLineItemEntity> newList = [...state.lineItem, newLine];
-
     emit(state.copyWith(
         lineItem: newList, step: SaleStep.item, productMap: pm));
     add(_VerifyOrderAndEmitState());
@@ -367,8 +375,6 @@ class CreateNewReceiptBloc
         posId: line.posId,
         extendedAmount: -line.extendedAmount,
         grossAmount: -line.grossAmount,
-        grossQuantity: line.grossQuantity,
-        netQuantity: line.netQuantity,
         itemDescription: line.itemDescription,
         itemId: line.itemId,
         itemIdEntryMethod: line.itemIdEntryMethod,
@@ -390,7 +396,6 @@ class CreateNewReceiptBloc
         returnedQuantity: line.quantity,
         serialNumber: line.serialNumber,
         taxAmount: line.taxAmount,
-        taxGroupId: line.taxGroupId,
         unitPrice: -line.unitPrice,
         vendorId: line.vendorId,
         uom: line.uom,

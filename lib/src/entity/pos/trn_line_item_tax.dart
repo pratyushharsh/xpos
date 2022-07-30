@@ -16,17 +16,20 @@ class TransactionLineItemTaxModifier {
   final String taxGroupId;
   final String? taxLocationId;
 
-  final double taxableAmount;
-  final double taxAmount;
-  final double taxRate;
+  double taxableAmount;
+  double taxAmount;
+  double taxPercent;
+  double originalTaxableAmount;
+  double rawTaxPercentage;
+  double rawTaxAmount;
 
   // Tax Exempt Parameter
 
   // Tax Override Parameter
-  final bool? taxOverride;
-  final double? taxOverrideAmount;
-  final double? taxOverridePercent;
-  final String? taxOverrideReasonCode;
+  bool taxOverride;
+  double? taxOverrideAmount;
+  double? taxOverridePercent;
+  String? taxOverrideReasonCode;
 
   TransactionLineItemTaxModifier(
       {this.id,
@@ -39,8 +42,11 @@ class TransactionLineItemTaxModifier {
       this.taxLocationId,
       required this.taxableAmount,
       required this.taxAmount,
-      required this.taxRate,
-      this.taxOverride,
+      required this.taxPercent,
+      required this.originalTaxableAmount,
+      required this.rawTaxPercentage,
+      required this.rawTaxAmount,
+      this.taxOverride = false,
       this.taxOverrideAmount,
       this.taxOverridePercent,
       this.taxOverrideReasonCode});
