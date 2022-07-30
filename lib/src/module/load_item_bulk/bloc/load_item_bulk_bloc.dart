@@ -57,9 +57,7 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
             brand: e[6].toString(),
             skuCode: e[7].toString(),
             hsn: e[8].toString(),
-            tax: e[9].toString().isNotEmpty
-                ? double.parse(e[9].toString()) / 100
-                : 0,
+            taxGroupId: e[9].toString(),
             imageUrl: e[10].toString().isNotEmpty ? e[10].toString().split(";").where((element) => element.isNotEmpty).toList() : [],
             enable: true,
             productId: productId.toString(),

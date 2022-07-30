@@ -1,17 +1,32 @@
+import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/pos/tax/strategy/sale_tax_strategy.dart';
 
 import '../../entity/pos/entity.dart';
+import '../../entity/pos/tax_rule_entity.dart';
+import '../../repositories/tax_repository.dart';
 import '../tax/strategy/abstract_tax_strategy.dart';
 import '../tax/tax_calculation_info.dart';
 import 'abstract_calculator.dart';
 
 class TaxModifierCalculator implements AbstractCalculator {
+  final log = Logger('TaxModifierCalculator');
+  final TaxRepository taxRepository;
 
-  TransactionLineItemEntity calculateTaxForLineItem(TransactionLineItemEntity lineItem) {
+  TaxModifierCalculator({required this.taxRepository});
+
+  Future<TransactionLineItemEntity> calculateTaxForLineItem(TransactionLineItemEntity lineItem) async {
     for(TransactionLineItemTaxModifier mod in lineItem.taxModifiers) {
       // Check for tax override
+      TaxRuleEntity? taxRule = await taxRepository.getTaxRulesByGroupIdAndRuleName(mod.taxGroupId, mod.taxRuleName);
+
+      if (taxRule == null) {
+        log.severe("Tax rule not found for group id: ${mod.taxGroupId} and rule name: ${mod.taxRuleName}");
+        continue;
+      }
+
       TaxCalculationInfo taxInfo = TaxCalculationInfo(
           modifier: mod,
+          taxRule: taxRule,
           taxableAmount: mod.taxableAmount,
           itemQuantity: lineItem.quantity,
           rawTaxableAmount: mod.taxableAmount);
@@ -54,13 +69,13 @@ class TaxModifierCalculator implements AbstractCalculator {
     ti.modifier.taxAmount = rawTaxAmount;
     ti.modifier.taxPercent = taxStrategy.reverseCalculatePercentage(ti.taxableAmount, rawTaxAmount);
 
-    return 0.0;
+    return rawTaxAmount;
   }
 
   @override
-  List<TransactionLineItemEntity> handleLineItemEvent(List<TransactionLineItemEntity> lineItems) {
+  Future<List<TransactionLineItemEntity>> handleLineItemEvent(List<TransactionLineItemEntity> lineItems) async {
     for (TransactionLineItemEntity lineItem in lineItems) {
-      calculateTaxForLineItem(lineItem);
+      await calculateTaxForLineItem(lineItem);
     }
     return lineItems;
   }

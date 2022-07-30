@@ -19,22 +19,24 @@ class TransactionLineItemEntity {
   final String? category;
   final String itemId;
   final String itemDescription;
-  double quantity;
-  double unitPrice;
-  double extendedAmount;
+  double quantity; // Quantity of the item
+  double
+      unitPrice; // Unit price of the item for the transaction it will be overridden in case of price override
+  double baseUnitPrice; // Unit price before any discount
+  double extendedAmount; // Unit Price * Quantity
   final bool returnFlag;
   final String itemIdEntryMethod;
   final String priceEntryMethod;
-  double netAmount;
-  double grossAmount;
+  double netAmount; // Item on which tax is calculated
+  double grossAmount; // Item paid for this line item.
   final String? serialNumber;
-  double taxAmount;
-  double discountAmount;
+  double taxAmount; // Tax amount of the item
+  double discountAmount; // Discount amount on the item
   final String uom;
 
   /// Price Override Reason
   bool priceOverride;
-  double? priceOverrideAmount;
+  double? priceOverrideAmount; // Deprecate
   String? priceOverrideReason;
 
   /// Return Parameters
@@ -78,6 +80,7 @@ class TransactionLineItemEntity {
       this.priceOverrideAmount,
       this.priceOverrideReason,
       this.category,
+      required this.baseUnitPrice,
       required this.itemId,
       required this.itemDescription,
       required this.quantity,

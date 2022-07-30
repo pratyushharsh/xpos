@@ -7,7 +7,7 @@ class ConfigRepository {
 
   ConfigRepository({ required this.db });
 
-  List<CodeValueEntity> getCodeByCategory(String catergory) {
-    return db.codeValueEntitys.where().categoryEqualTo(catergory).findAllSync();
+  Future<List<CodeValueEntity>> getCodeByCategory(String category) {
+    return db.codeValueEntitys.where().categoryEqualTo(category).findAll();
   }
 }

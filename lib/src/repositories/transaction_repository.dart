@@ -17,7 +17,10 @@ class TransactionRepository {
       await isar.transactionHeaderEntitys.put(header, replaceOnConflict: true);
       await header.lineItems.save();
       await header.paymentLineItems.save();
-      for (var element in header.lineItems) {await element.lineModifiers.save();}
+      for (var element in header.lineItems) {
+        await element.lineModifiers.save();
+        await element.taxModifiers.save();
+      }
     });
   }
 

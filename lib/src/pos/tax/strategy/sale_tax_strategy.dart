@@ -1,4 +1,5 @@
 import 'package:receipt_generator/src/entity/pos/trn_line_item_tax.dart';
+import 'package:receipt_generator/src/repositories/tax_repository.dart';
 
 import '../../../entity/pos/tax_rule_entity.dart';
 import 'abstract_tax_strategy.dart';
@@ -6,8 +7,15 @@ import 'abstract_tax_strategy.dart';
 class SaleTaxStrategy extends AbstractTaxStrategy {
   @override
   double calculate(TaxRuleEntity taxRule, double taxableAmount) {
-    // TODO: implement calculate
-    throw UnimplementedError();
+    if (taxRule.percent != null) {
+      return (taxRule.percent! / 100) * taxableAmount;
+    }
+
+    if (taxRule.amount != null) {
+      return taxRule.amount!;
+    }
+    log.severe("TAX RULE IS INCORRECT CONFIGURED");
+    return 0.0;
   }
 
   @override
@@ -28,6 +36,6 @@ class SaleTaxStrategy extends AbstractTaxStrategy {
   @override
   double reverseCalculatePercentage(double taxableAmount, double taxAmount) {
     if (taxAmount == 0 || taxableAmount == 0) return 0.0;
-    return taxableAmount / taxAmount;
+    return  taxAmount / taxableAmount * 100;
   }
 }

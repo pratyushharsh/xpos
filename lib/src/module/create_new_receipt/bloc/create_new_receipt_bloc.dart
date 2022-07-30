@@ -8,7 +8,6 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
-import 'package:receipt_generator/src/entity/pos/tax_group_entity.dart';
 import 'package:receipt_generator/src/entity/pos/tax_rule_entity.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
@@ -17,6 +16,7 @@ import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 import '../../../pos/calculator/tax_calculator.dart';
 import '../../../pos/config/config.dart';
 import '../../../pos/helper/pos_helper.dart';
+import '../../../pos/helper/price_helper.dart';
 import '../../return_order/bloc/return_order_bloc.dart';
 
 part 'create_new_receipt_event.dart';
@@ -30,6 +30,8 @@ class CreateNewReceiptBloc
   final SequenceRepository sequenceRepository;
   final TransactionRepository transactionRepository;
   final TaxHelper taxHelper;
+  final PriceHelper priceHelper;
+  final DiscountHelper discountHelper;
   final TaxModifierCalculator taxModifierCalculator;
 
   CreateNewReceiptBloc(
@@ -37,6 +39,8 @@ class CreateNewReceiptBloc
         required this.transactionRepository,
         required this.authenticationBloc,
         required this.taxHelper,
+        required this.priceHelper,
+        required this.discountHelper,
         required this.sequenceRepository,
         required this.taxModifierCalculator})
       : super(const CreateNewReceiptState(
@@ -78,6 +82,7 @@ class CreateNewReceiptBloc
 
     // Fetch the tax group for the item to add.
     List<TaxRuleEntity> taxRules = event.product.taxGroupId != null ? await taxHelper.getTaxRuleByGroupId(event.product.taxGroupId!) : [];
+    double itemPrice = priceHelper.findPriceForItem(event.product);
 
     TransactionLineItemEntity newLine = TransactionLineItemEntity(
         storeId: authenticationBloc.state.store!.rtlLocId,
@@ -89,26 +94,22 @@ class CreateNewReceiptBloc
         itemDescription: event.product.displayName,
         quantity: 1,
         uom: event.product.uom,
-        unitPrice: min(event.product.salePrice ?? 999999.00,
-            event.product.listPrice ?? 999999.00),
-        extendedAmount: min(event.product.salePrice ?? 999999.00,
-            event.product.listPrice ?? 999999.00),
+        discountAmount: 0.0,
+        unitPrice: itemPrice,
+        baseUnitPrice: itemPrice,
         itemIdEntryMethod: EntryMethod.keyboard,
         priceEntryMethod: EntryMethod.keyboard,
-        netAmount: min(event.product.salePrice ?? 999999.00,
-            event.product.listPrice ?? 999999.00),
-        grossAmount: min(event.product.salePrice ?? 999999.00,
-            event.product.listPrice ?? 999999.00),
-        taxAmount: 0.00);
+        netAmount: itemPrice * 1,
+        grossAmount: itemPrice,
+        taxAmount: 0.00,
+        extendedAmount: itemPrice * 1);
 
     List<TransactionLineItemTaxModifier> taxModifiers = taxHelper.createSaleTaxModifiers(newLine, taxRules);
     newLine.taxModifiers.addAll(taxModifiers);
-    taxModifierCalculator.handleLineItemEvent([newLine]);
-
-    // Use tax modifier calculator to calculate the tax.
-
-    // List<SaleTaxModifier> taxModifiers = TaxHelper.calculateTax(newLine);
-    // newLine = newLine.copyWith(taxModifier: taxModifiers);
+    await taxModifierCalculator.handleLineItemEvent([newLine]);
+    double taxAmount = taxHelper.calculateTaxAmount(newLine);
+    newLine.taxAmount = taxAmount;
+    newLine.grossAmount = newLine.netAmount + taxAmount;
 
     Map<String, ProductEntity> pm = Map.from(state.productMap);
     pm.putIfAbsent(event.product.productId!, () => event.product);
@@ -129,7 +130,7 @@ class CreateNewReceiptBloc
         businessDate: DateTime.now(),
         beginDatetime: DateTime.now(),
         transactionType: TransactionType.cashSale,
-        total: state.subTotal,
+        total: state.total,
         taxTotal: state.tax,
         subtotal: state.subTotal,
         roundTotal: 0.00,
@@ -187,34 +188,54 @@ class CreateNewReceiptBloc
 
   void _onQuantityUpdate(
       OnQuantityUpdate event, Emitter<CreateNewReceiptState> emit) async {
+    emit(state.copyWith(status: CreateNewReceiptStatus.quantityUpdate));
     List<TransactionLineItemEntity> newList = [];
     for (var line in state.lineItem) {
       if (line == event.saleLine) {
-        TransactionLineItemEntity newLine =
-        TransactionHelper.changeLineItemQuantity(
-            line, event.quantity, event.reason);
+        TransactionLineItemEntity newLine = line;
+        newLine.quantity = event.quantity;
+        newLine.extendedAmount = event.quantity * newLine.unitPrice;
+        newLine.netAmount = newLine.extendedAmount;
+        await taxModifierCalculator.handleLineItemEvent([newLine]);
+        double taxAmount = taxHelper.calculateTaxAmount(newLine);
+        newLine.taxAmount = taxAmount;
+        newLine.grossAmount = newLine.netAmount + taxAmount;
         newList.add(newLine);
       } else {
         newList.add(line);
       }
     }
-    emit(state.copyWith(lineItem: newList));
+    emit(state.copyWith(lineItem: newList, status: CreateNewReceiptStatus.inProgress));
   }
 
   void _onPriceUpdate(
       OnUnitPriceUpdate event, Emitter<CreateNewReceiptState> emit) async {
+    emit(state.copyWith(status: CreateNewReceiptStatus.quantityUpdate));
     List<TransactionLineItemEntity> newList = [];
     for (var line in state.lineItem) {
       if (line == event.saleLine) {
-        TransactionLineItemEntity newLineEntity =
-        TransactionHelper.updateSaleReturnLineItemPrice(
-            line, event.unitPrice, event.reason);
-        newList.add(newLineEntity);
+        TransactionLineItemEntity newLine = line;
+        newLine.priceOverride = true;
+        newLine.unitPrice = event.unitPrice;
+        newLine.priceOverrideReason = event.reason;
+        newLine.extendedAmount = event.unitPrice * newLine.quantity;
+        newLine.netAmount = newLine.extendedAmount;
+
+        for (var line in newLine.taxModifiers) {
+          line.taxableAmount = newLine.netAmount;
+        }
+
+        // Recalculating the tax ans net amount
+        await taxModifierCalculator.handleLineItemEvent([newLine]);
+        double taxAmount = taxHelper.calculateTaxAmount(newLine);
+        newLine.taxAmount = taxAmount;
+        newLine.grossAmount = newLine.netAmount + taxAmount;
+        newList.add(newLine);
       } else {
         newList.add(line);
       }
     }
-    emit(state.copyWith(lineItem: newList));
+    emit(state.copyWith(lineItem: newList, status: CreateNewReceiptStatus.inProgress));
   }
 
   void _onLineItemDiscountAmount(OnApplyLineItemDiscountAmount event,
@@ -228,10 +249,7 @@ class CreateNewReceiptBloc
             discountType: DiscountCalculationMethod.amount.name,
             description: '\$ ${event.discountAmount} OFF',
             discountCode: 'MANUAL_DISCOUNT_CODE');
-
-        TransactionLineItemModifierEntity? discountLine =
-        DiscountHelper.createNewDiscountLineModifier(
-            line, discount, event.reason);
+        TransactionLineItemModifierEntity? discountLine = discountHelper.createNewDiscountOverrideLineModifier(line, discount, event.reason);
         if (discountLine != null) {
           TransactionLineItemEntity newLineEntity =
           TransactionHelper.addNewLineItemModifier(line, discountLine);
@@ -259,7 +277,7 @@ class CreateNewReceiptBloc
             discountCode: 'MANUAL_DISCOUNT_CODE');
 
         TransactionLineItemModifierEntity? discountLine =
-        DiscountHelper.createNewDiscountLineModifier(
+        discountHelper.createNewDiscountOverrideLineModifier(
             line, discount, event.reason);
         if (discountLine != null) {
           TransactionLineItemEntity newLineEntity =
@@ -373,13 +391,14 @@ class CreateNewReceiptBloc
         storeId: line.storeId,
         businessDate: DateTime.now(),
         posId: line.posId,
-        extendedAmount: -line.extendedAmount,
         grossAmount: -line.grossAmount,
+        baseUnitPrice: line.baseUnitPrice,
         itemDescription: line.itemDescription,
         itemId: line.itemId,
         itemIdEntryMethod: line.itemIdEntryMethod,
         lineItemSeq: ++seq,
         netAmount: -line.netAmount,
+        extendedAmount: -line.extendedAmount,
         nonExchangeableFlag: line.nonExchangeableFlag,
         nonReturnableFlag: line.nonReturnableFlag,
         originalBusinessDate: line.businessDate,

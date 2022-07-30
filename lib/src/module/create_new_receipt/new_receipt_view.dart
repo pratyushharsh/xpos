@@ -38,6 +38,8 @@ class NewReceiptView extends StatelessWidget {
             transactionRepository: RepositoryProvider.of(ctx),
             taxHelper: RepositoryProvider.of(ctx),
             taxModifierCalculator: RepositoryProvider.of(ctx),
+            priceHelper: RepositoryProvider.of(ctx),
+            discountHelper: RepositoryProvider.of(ctx),
           )..add(OnInitiateNewTransaction()),
         ),
         BlocProvider(

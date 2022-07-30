@@ -23,11 +23,13 @@ class TaxHelper {
       authorityName: taxRule.authorityName,
       authorityType: taxRule.authorityType,
       taxGroupId: taxRule.groupId,
-      taxableAmount: 0.0,
+      taxableAmount: lineItem.netAmount,
+      taxRuleId: taxRule.ruleName,
+      taxRuleName: taxRule.ruleName,
       taxAmount: 0.0,
       taxPercent: 0.0,
       rawTaxAmount: 0.0,
-      originalTaxableAmount: 0.0,
+      originalTaxableAmount: lineItem.netAmount,
       rawTaxPercentage: 0.0,
     );
   }
@@ -46,5 +48,9 @@ class TaxHelper {
   bool validateTaxRule(
       TaxRuleEntity taxRule, TransactionLineItemEntity lineItem) {
     return true;
+  }
+
+  double calculateTaxAmount(TransactionLineItemEntity lineItem) {
+    return lineItem.taxModifiers.fold(0.00, (acc, taxModifier) => acc + taxModifier.taxAmount);
   }
 }

@@ -15,7 +15,7 @@ extension GetTaxRuleEntityCollection on Isar {
 const TaxRuleEntitySchema = CollectionSchema(
   name: 'TaxRuleEntity',
   schema:
-      '{"name":"TaxRuleEntity","idName":"id","properties":[{"name":"amount","type":"Double"},{"name":"authorityId","type":"String"},{"name":"authorityName","type":"String"},{"name":"authorityType","type":"String"},{"name":"effectiveDateTimeStamp","type":"Long"},{"name":"expirationDateTimeStamp","type":"Long"},{"name":"groupId","type":"String"},{"name":"locationId","type":"String"},{"name":"maximumTaxableAmount","type":"Double"},{"name":"minimumTaxableAmount","type":"Double"},{"name":"percent","type":"Double"},{"name":"ruleName","type":"String"},{"name":"ruleSequence","type":"Long"}],"indexes":[{"name":"groupId_ruleName","unique":true,"properties":[{"name":"groupId","type":"Hash","caseSensitive":true},{"name":"ruleName","type":"Hash","caseSensitive":true}]}],"links":[]}',
+      '{"name":"TaxRuleEntity","idName":"id","properties":[{"name":"amount","type":"Double"},{"name":"authorityId","type":"String"},{"name":"authorityName","type":"String"},{"name":"authorityType","type":"String"},{"name":"effectiveDateTimeStamp","type":"Long"},{"name":"expirationDateTimeStamp","type":"Long"},{"name":"groupId","type":"String"},{"name":"locationId","type":"String"},{"name":"maximumTaxableAmount","type":"Double"},{"name":"minimumTaxableAmount","type":"Double"},{"name":"percent","type":"Double"},{"name":"ruleName","type":"String"},{"name":"ruleSequence","type":"Long"}],"indexes":[{"name":"groupId","unique":false,"properties":[{"name":"groupId","type":"Hash","caseSensitive":true}]},{"name":"groupId_ruleName","unique":true,"properties":[{"name":"groupId","type":"Hash","caseSensitive":true},{"name":"ruleName","type":"Hash","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'amount': 0,
@@ -33,8 +33,11 @@ const TaxRuleEntitySchema = CollectionSchema(
     'ruleSequence': 12
   },
   listProperties: {},
-  indexIds: {'groupId_ruleName': 0},
+  indexIds: {'groupId': 0, 'groupId_ruleName': 1},
   indexValueTypes: {
+    'groupId': [
+      IndexValueType.stringHash,
+    ],
     'groupId_ruleName': [
       IndexValueType.stringHash,
       IndexValueType.stringHash,
@@ -375,6 +378,11 @@ extension TaxRuleEntityQueryWhereSort
     return addWhereClauseInternal(const IdWhereClause.any());
   }
 
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterWhere> anyGroupId() {
+    return addWhereClauseInternal(
+        const IndexWhereClause.any(indexName: 'groupId'));
+  }
+
   QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterWhere> anyGroupIdRuleName() {
     return addWhereClauseInternal(
         const IndexWhereClause.any(indexName: 'groupId_ruleName'));
@@ -443,7 +451,7 @@ extension TaxRuleEntityQueryWhere
   QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterWhereClause> groupIdEqualTo(
       String groupId) {
     return addWhereClauseInternal(IndexWhereClause.equalTo(
-      indexName: 'groupId_ruleName',
+      indexName: 'groupId',
       value: [groupId],
     ));
   }
@@ -452,21 +460,21 @@ extension TaxRuleEntityQueryWhere
       groupIdNotEqualTo(String groupId) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'groupId_ruleName',
+        indexName: 'groupId',
         upper: [groupId],
         includeUpper: false,
       )).addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'groupId_ruleName',
+        indexName: 'groupId',
         lower: [groupId],
         includeLower: false,
       ));
     } else {
       return addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'groupId_ruleName',
+        indexName: 'groupId',
         lower: [groupId],
         includeLower: false,
       )).addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'groupId_ruleName',
+        indexName: 'groupId',
         upper: [groupId],
         includeUpper: false,
       ));

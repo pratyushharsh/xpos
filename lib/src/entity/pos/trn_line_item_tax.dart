@@ -14,6 +14,8 @@ class TransactionLineItemTaxModifier {
   final String authorityName;
   final String authorityType;
   final String taxGroupId;
+  final String taxRuleId;
+  final String taxRuleName;
   final String? taxLocationId;
 
   double taxableAmount;
@@ -39,6 +41,8 @@ class TransactionLineItemTaxModifier {
       required this.authorityName,
       required this.authorityType,
       required this.taxGroupId,
+      required this.taxRuleId,
+      required this.taxRuleName,
       this.taxLocationId,
       required this.taxableAmount,
       required this.taxAmount,

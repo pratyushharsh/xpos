@@ -316,7 +316,7 @@ class OrderItemDetailDisplay extends StatelessWidget {
           ),
           Expanded(
             child: Column(
-              children: [Text("GST 15%")],
+              children: entity.taxModifiers.map((e) => Text(e.taxRuleName)).toList(),
             ),
           ),
           Expanded(

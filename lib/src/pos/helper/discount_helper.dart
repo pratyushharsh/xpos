@@ -4,9 +4,17 @@ import '../config/config.dart';
 import '../reason_code/reason_code.dart';
 
 class DiscountHelper {
-  static TransactionLineItemModifierEntity? createNewDiscountLineModifier(TransactionLineItemEntity lineItem, DiscountEntity discount, String reason) {
+  TransactionLineItemModifierEntity? createNewDiscountOverrideLineModifier(TransactionLineItemEntity lineItem, DiscountEntity discount, String reason) {
+
+    double itemQuantity = lineItem.quantity;
+    double rawUnitPrice = lineItem.unitPrice;
+
     if (DiscountCalculationMethod.percentage.name == discount.discountType) {
       var unitDiscount = lineItem.unitPrice * discount.percent! / 100;
+
+      double unitPrice = lineItem.unitPrice - unitDiscount;
+      lineItem.unitPrice = unitPrice;
+
       return TransactionLineItemModifierEntity(
         storeId: lineItem.storeId,
         businessDate: lineItem.businessDate,
@@ -24,7 +32,11 @@ class DiscountHelper {
       );
     } else if (DiscountCalculationMethod.amount.name == discount.discountType) {
 
-      var unitDiscount = math.min(discount.amount!, lineItem.unitPrice);
+      var rawUnitDiscount = discount.amount! / itemQuantity;
+      var unitDiscount = math.min(rawUnitDiscount, lineItem.unitPrice);
+
+      double unitPrice = lineItem.unitPrice - unitDiscount;
+      lineItem.unitPrice = unitPrice;
 
       return TransactionLineItemModifierEntity(
         storeId: lineItem.storeId,

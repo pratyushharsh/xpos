@@ -1,12 +1,13 @@
 import 'package:logging/logging.dart';
+import 'package:receipt_generator/src/repositories/tax_repository.dart';
 
 import '../../../entity/pos/tax_rule_entity.dart';
 import '../../../entity/pos/trn_line_item_tax.dart';
 import '../tax_calculation_info.dart';
 
 abstract class AbstractTaxStrategy {
-
   final log = Logger('AbstractTaxStrategy');
+
 
   // double calculateOverridePercent(TransactionLineItemTaxModifier modifier, double taxableAmount, double quantity) {
   //
@@ -20,14 +21,14 @@ abstract class AbstractTaxStrategy {
   }
 
   double calculateRawAmount(double argTaxableAmount, double argItemQuantity, double argSubTotal, TaxCalculationInfo ti) {
-    // @TODO find the rules to be applied
 
-    // List<TaxRuleEntity> taxRules = ti.taxGroup.taxRules.toList();
-
-    double totalUnitTaxAmount = 0.0;
+    double totalUnitTaxAmount = argTaxableAmount;
     double totalRawTaxAmount = 0.0;
     double totalRawTaxPercentage = 0.0;
     double taxableUnitAmount = argTaxableAmount / argItemQuantity;
+
+    // Calculate Based on the rule.
+    TaxRuleEntity taxRule = ti.taxRule;
 
     // for (var rule in taxRules) {
     //   if (isTaxRuleApplicable(rule, ti)) {
@@ -36,7 +37,7 @@ abstract class AbstractTaxStrategy {
     //   }
     // }
 
-    double totalTaxAmount = totalUnitTaxAmount * argItemQuantity;
+    double totalTaxAmount = calculate(taxRule, totalUnitTaxAmount) * argItemQuantity;
     return totalTaxAmount;
   }
 

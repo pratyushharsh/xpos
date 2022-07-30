@@ -9,6 +9,7 @@ import 'package:receipt_generator/src/widgets/custom_dropdown.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
+import '../../entity/config/code_value_entity.dart';
 import '../../widgets/appbar_leading.dart';
 import 'bloc/business_bloc.dart';
 
@@ -275,6 +276,10 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
   late String? _country;
   late String? _state;
 
+  List<CodeValueEntity> countryCode = [];
+  List<CodeValueEntity> stateCode = [];
+
+
   @override
   void initState() {
     super.initState();
@@ -285,6 +290,7 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
     _stateController = TextEditingController();
     _country = null;
     _state = null;
+    _fetchData();
   }
 
   @override
@@ -295,6 +301,16 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
     _cityController.dispose();
     _stateController.dispose();
     super.dispose();
+  }
+
+  void _fetchData() async {
+    var repo = RepositoryProvider.of<ConfigRepository>(context);
+    var countryCode = await repo.getCodeByCategory("COUNTRY_CODE");
+    var stateCode = await repo.getCodeByCategory("IN_STATE");
+    setState(() {
+      this.countryCode = countryCode;
+      this.stateCode = stateCode;
+    });
   }
 
   void _onCountryChange(String? value) {
@@ -311,9 +327,6 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var repo = RepositoryProvider.of<ConfigRepository>(context);
-    var countryCode = repo.getCodeByCategory("COUNTRY_CODE");
-    var stateCode = repo.getCodeByCategory("IN_STATE");
     return SingleChildScrollView(
       child: Padding(
         padding: MediaQuery.of(context).viewInsets,

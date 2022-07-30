@@ -15,6 +15,8 @@ import 'package:receipt_generator/src/module/login/verify_user_device_view.dart'
 import 'package:receipt_generator/src/module/login/verify_user_view.dart';
 import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
 import 'package:receipt_generator/src/pos/calculator/tax_calculator.dart';
+import 'package:receipt_generator/src/pos/helper/discount_helper.dart';
+import 'package:receipt_generator/src/pos/helper/price_helper.dart';
 import 'package:receipt_generator/src/pos/helper/tax_helper.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 import 'package:receipt_generator/src/repositories/config_repository.dart';
@@ -39,19 +41,6 @@ class MyApp extends StatelessWidget {
       required this.userPool,
       required this.restClient})
       : super(key: key);
-
-  List<RepositoryProvider> _buildHelperList({required Isar db, required RestApiClient restClient}) {
-    return [
-
-    ];
-  }
-
-
-  List<RepositoryProvider> _buildCalculatorList({required Isar db, required RestApiClient restClient}) {
-    return [
-
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +93,15 @@ class MyApp extends StatelessWidget {
           ),
           RepositoryProvider(
             lazy: false,
-            create: (context) => TaxModifierCalculator(),
+            create: (context) => PriceHelper(),
+          ),
+          RepositoryProvider(
+            lazy: false,
+            create: (context) => DiscountHelper(),
+          ),
+          RepositoryProvider(
+            lazy: false,
+            create: (context) => TaxModifierCalculator(taxRepository: RepositoryProvider.of(context)),
           )
           // ..._buildHelperList(db: database, restClient: restClient),
           // ..._buildCalculatorList(db: database, restClient: restClient),
@@ -163,15 +160,13 @@ class _MyAppViewState extends State<MyAppView> {
       ),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
-      // locale: context.locale,
+      locale: context.locale,
       builder: (context, child) {
-        print('build $child');
         return BlocListener<AuthenticationBloc, AuthenticationState>(
           listenWhen: (previous, current) {
             return true;
           },
           listener: (context, state) {
-            print('AuthenticationState: $state');
             switch (state.status) {
               case AuthenticationStatus.authenticated:
                 _navigator.pushAndRemoveUntil<void>(
@@ -205,18 +200,5 @@ class _MyAppViewState extends State<MyAppView> {
       },
       onGenerateRoute: RouteConfig.onGenerateRoute,
     );
-  }
-}
-
-class AppAuthenticationFlow extends StatelessWidget {
-  final Widget? child;
-  final GlobalKey<NavigatorState> navigator;
-  const AppAuthenticationFlow({Key? key, this.child, required this.navigator}) : super(key: key);
-
-  NavigatorState get _navigator => navigator.currentState!;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

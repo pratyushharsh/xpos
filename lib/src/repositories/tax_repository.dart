@@ -70,15 +70,21 @@ class TaxRepository {
     // });
   }
 
-  Future<List<TaxGroupEntity>> getAllTaxGroups() async {
+  Future<List<TaxGroupEntity>> getAllTaxGroups({bool loadRules = false}) async {
       var taxGroups = await db.taxGroupEntitys.where().findAll();
-      for (var taxGroup in taxGroups) {
-        await taxGroup.taxRules.load();
+      if (loadRules) {
+        for (var taxGroup in taxGroups) {
+          await taxGroup.taxRules.load();
+        }
       }
     return taxGroups;
   }
 
   Future<List<TaxRuleEntity>> getTaxRulesByGroupId(String groupId) {
     return db.taxRuleEntitys.where().groupIdEqualTo(groupId).findAll();
+  }
+
+  Future<TaxRuleEntity?> getTaxRulesByGroupIdAndRuleName(String groupId, String ruleName) {
+    return db.taxRuleEntitys.where().groupIdRuleNameEqualTo(groupId, ruleName).findFirst();
   }
 }

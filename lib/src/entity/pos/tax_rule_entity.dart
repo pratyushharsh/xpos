@@ -9,6 +9,7 @@ class TaxRuleEntity {
   @Id()
   final int? id;
 
+  @Index()
   @Index(composite: [CompositeIndex("ruleName")], unique: true)
   final String groupId;
   final String ruleName;

@@ -21,7 +21,8 @@ class SyncConfigRepository {
   SyncConfigRepository({required this.db});
 
   Future<void> getDataFromServer() async {
-    String url = "https://xpos-user-dev.s3.ap-south-1.amazonaws.com/config/config.zip";
+    String url =
+        "https://xpos-user-dev.s3.ap-south-1.amazonaws.com/config/config.zip";
     final response = await http.get(Uri.parse(url));
 
     // Decode the Zip file
@@ -171,9 +172,7 @@ class SyncConfigRepository {
               brand: e[6].toString(),
               skuCode: e[7].toString(),
               hsn: e[8].toString(),
-              tax: e[9].toString().isNotEmpty
-                  ? double.parse(e[9].toString())
-                  : 0,
+              taxGroupId: e[9].toString(),
               imageUrl: e[10].toString().isNotEmpty
                   ? e[10]
                       .toString()

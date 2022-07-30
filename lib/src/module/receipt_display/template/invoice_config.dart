@@ -19,7 +19,7 @@ class InvoiceConfig {
       case 'rate':
         return NumberFormat.simpleCurrency(locale: 'en_US').format(entity.unitPrice);
       case 'mrp':
-        return entity.extendedAmount.toString();
+        return entity.grossAmount.toString();
       case 'desc':
         return '${entity.itemDescription}\nSKU: ${entity.itemId}';
       case 'discountAmount':
@@ -33,7 +33,7 @@ class InvoiceConfig {
       case 'tax':
         return entity.taxAmount.toString();
       case 'amount':
-        return NumberFormat.simpleCurrency(locale: 'en_US').format(entity.extendedAmount);
+        return NumberFormat.simpleCurrency(locale: 'en_US').format(entity.grossAmount);
       default:
         return '';
     }

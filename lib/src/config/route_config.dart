@@ -5,7 +5,6 @@ import 'package:receipt_generator/src/module/business/bloc/business_bloc.dart';
 import 'package:receipt_generator/src/module/business/business_view.dart';
 import 'package:receipt_generator/src/module/create_new_item/add_new_item_view.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_view.dart';
-import 'package:receipt_generator/src/module/customer_detail/customer_detail_screen.dart';
 import 'package:receipt_generator/src/module/home/home_view.dart';
 import 'package:receipt_generator/src/module/invoice/invoice_view.dart';
 import 'package:receipt_generator/src/module/list_all_item/list_all_item_view.dart';
@@ -13,7 +12,6 @@ import 'package:receipt_generator/src/module/list_all_receipt/list_all_receipt_v
 import 'package:receipt_generator/src/module/load_item_bulk/load_item_bulk_view.dart';
 import 'package:receipt_generator/src/module/locale/locale_view_mobile.dart';
 import 'package:receipt_generator/src/module/order_summary/order_summary_view.dart';
-import 'package:receipt_generator/src/module/receipt_display/invoice_display_view.dart';
 import 'package:receipt_generator/src/module/receipt_display/receipt_display_view.dart';
 import 'package:receipt_generator/src/module/receipt_setting/receipt_setting_view.dart';
 import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.dart';

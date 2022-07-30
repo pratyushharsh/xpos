@@ -24,7 +24,7 @@ class CreateEditTaxBloc extends Bloc<CreateEditTaxEvent, CreateEditTaxState> {
   void _fetchAllTaxGroupEvent(FetchAllTaxGroup event, Emitter<CreateEditTaxState> emit) async {
     emit(state.copyWith(status: CreateEditTaxStatus.loadingNewTaxGroup));
     try {
-      List<TaxGroupEntity> taxGroups = await taxRepository.getAllTaxGroups();
+      List<TaxGroupEntity> taxGroups = await taxRepository.getAllTaxGroups(loadRules: true);
       // Update Selected Group
       var selectedTaxGroup = state.selectedTaxGroup;
       if (selectedTaxGroup != null) {

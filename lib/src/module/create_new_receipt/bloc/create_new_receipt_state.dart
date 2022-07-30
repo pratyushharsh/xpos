@@ -3,9 +3,16 @@ part of 'create_new_receipt_bloc.dart';
 enum CreateNewReceiptStatus {
   initial,
   created,
+
+  inProgress,
+
   saleError,
   saleComplete,
   paymentAwaiting,
+
+  quantityUpdate,
+  priceUpdate,
+
   loading,
   success,
   error
@@ -38,10 +45,15 @@ class CreateNewReceiptState extends Equatable {
     return customer != null;
   }
 
+  double get total {
+    return lineItem.fold(0.0,
+                (previousValue, element) => previousValue + element.grossAmount);
+  }
+
   double get subTotal {
     return -tax +
         lineItem.fold(0.0,
-            (previousValue, element) => previousValue + element.extendedAmount);
+            (previousValue, element) => previousValue + element.grossAmount);
   }
 
   double get discount {
