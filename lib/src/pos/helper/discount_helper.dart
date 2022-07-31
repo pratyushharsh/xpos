@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:math';
 import '../../entity/pos/entity.dart';
 import '../config/config.dart';
 import '../reason_code/reason_code.dart';
@@ -11,7 +12,7 @@ class DiscountHelper {
     double itemBasePrice = lineItem.unitPrice;
 
     if (DiscountCalculationMethod.percentage.name == discount.discountType) {
-      var unitDiscount = itemBasePrice * discount.percent! / 100;
+      var unitDiscount = itemBasePrice * min(discount.percent!, 100) / 100;
 
       return TransactionLineItemModifierEntity(
         storeId: lineItem.storeId,

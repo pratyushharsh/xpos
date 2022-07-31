@@ -57,4 +57,25 @@ class TaxHelper {
   double calculateTransactionTaxAmount(TransactionHeaderEntity transaction) {
     return transaction.lineItems.fold(0.00, (acc, lineItem) => acc + calculateTaxAmount(lineItem));
   }
+
+  TransactionLineItemTaxModifier creteManualTaxModifier(
+      TransactionLineItemEntity lineItem, TaxRuleEntity taxRule) {
+    return TransactionLineItemTaxModifier(
+      transSeq: lineItem.transSeq,
+      transLineItemSeq: lineItem.lineItemSeq,
+      authorityId: taxRule.authorityId,
+      authorityName: taxRule.authorityName,
+      authorityType: taxRule.authorityType,
+      taxGroupId: taxRule.groupId,
+      taxableAmount: lineItem.netAmount,
+      taxRuleId: taxRule.ruleName,
+      taxRuleName: taxRule.ruleName,
+      taxAmount: 0.0,
+      taxPercent: 0.0,
+      rawTaxAmount: 0.0,
+      originalTaxableAmount: lineItem.netAmount,
+      rawTaxPercentage: 0.0,
+      taxOverride: true
+    );
+  }
 }

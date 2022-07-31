@@ -46,7 +46,7 @@ class _LineItemTaxModifyViewState extends State<LineItemTaxModifyView> {
           Row(children: [
             Expanded(
               child: ListTile(
-                title: const Text('Amount Off'),
+                title: const Text('Amount'),
                 leading: Radio<TaxCalculationMethod>(
                   fillColor: MaterialStateColor.resolveWith(
                           (states) => AppColor.primary),
@@ -66,7 +66,7 @@ class _LineItemTaxModifyViewState extends State<LineItemTaxModifyView> {
             ),
             Expanded(
               child: ListTile(
-                title: const Text('Percentage Off'),
+                title: const Text('Percentage'),
                 leading: Radio<TaxCalculationMethod>(
                   fillColor: MaterialStateColor.resolveWith(
                           (states) => AppColor.primary),

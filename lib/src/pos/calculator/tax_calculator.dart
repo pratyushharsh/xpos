@@ -48,7 +48,6 @@ class TaxModifierCalculator implements AbstractCalculator {
     rawTaxAmount = taxStrategy.calculateRawAmount(ti.rawTaxableAmount, ti.itemQuantity, 0.0, ti);
 
     // @TODO Round the tax amount based upon the govt rounding factor and scale.
-
     if (_reverseCalculation(ti) && ti.modifier.taxOverride) {
       if (ti.modifier.taxOverridePercent == null && ti.modifier.taxOverrideAmount == null) {
         ti.modifier.taxOverrideAmount = rawTaxAmount;
