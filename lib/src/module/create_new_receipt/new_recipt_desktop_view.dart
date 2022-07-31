@@ -16,6 +16,7 @@ import '../../util/text_input_formatter/currency_text_input_formatter.dart';
 import '../../util/text_input_formatter/money_editing_controller.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/keypad_overlay/keypad_overlay.dart';
+import '../../widgets/timer.dart';
 import '../calculator/calculator.dart';
 import '../item_search/bloc/item_search_bloc.dart';
 import '../return_order/return_order_view.dart';
@@ -43,15 +44,15 @@ class NewReceiptDesktopView extends StatelessWidget {
                   children: [
                     Column(
                       children: [
-                        Container(
-                          color: Colors.purple,
-                          height: 35,
-                          child: Row(
-                            children: const [
-                              Text("Header"),
-                            ],
-                          ),
-                        ),
+                        // Container(
+                        //   color: Colors.purple,
+                        //   height: 35,
+                        //   child: Row(
+                        //     children: const [
+                        //       Text("Header"),
+                        //     ],
+                        //   ),
+                        // ),
                         Expanded(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,11 +69,13 @@ class NewReceiptDesktopView extends StatelessWidget {
                           ),
                         ),
                         Container(
-                          color: Colors.red,
-                          height: 35,
+                          color: Colors.black,
+                          height: 40,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
                               Text("Footer"),
+                              TimerWidget()
                             ],
                           ),
                         )

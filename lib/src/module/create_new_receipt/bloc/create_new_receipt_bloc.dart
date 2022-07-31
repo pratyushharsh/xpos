@@ -36,15 +36,15 @@ class CreateNewReceiptBloc
 
   CreateNewReceiptBloc(
       {required this.db,
-        required this.transactionRepository,
-        required this.authenticationBloc,
-        required this.taxHelper,
-        required this.priceHelper,
-        required this.discountHelper,
-        required this.sequenceRepository,
-        required this.taxModifierCalculator})
+      required this.transactionRepository,
+      required this.authenticationBloc,
+      required this.taxHelper,
+      required this.priceHelper,
+      required this.discountHelper,
+      required this.sequenceRepository,
+      required this.taxModifierCalculator})
       : super(const CreateNewReceiptState(
-      status: CreateNewReceiptStatus.initial)) {
+            status: CreateNewReceiptStatus.initial)) {
     on<AddItemToReceipt>(_onAddNewLineItem);
     on<OnQuantityUpdate>(_onQuantityUpdate);
     on<OnUnitPriceUpdate>(_onPriceUpdate);
@@ -81,7 +81,9 @@ class CreateNewReceiptBloc
     // @TODO Fetch the price from pricing module for the item and add.
 
     // Fetch the tax group for the item to add.
-    List<TaxRuleEntity> taxRules = event.product.taxGroupId != null ? await taxHelper.getTaxRuleByGroupId(event.product.taxGroupId!) : [];
+    List<TaxRuleEntity> taxRules = event.product.taxGroupId != null
+        ? await taxHelper.getTaxRuleByGroupId(event.product.taxGroupId!)
+        : [];
     double itemPrice = priceHelper.findPriceForItem(event.product);
 
     TransactionLineItemEntity newLine = TransactionLineItemEntity(
@@ -104,7 +106,8 @@ class CreateNewReceiptBloc
         taxAmount: 0.00,
         extendedAmount: itemPrice * 1);
 
-    List<TransactionLineItemTaxModifier> taxModifiers = taxHelper.createSaleTaxModifiers(newLine, taxRules);
+    List<TransactionLineItemTaxModifier> taxModifiers =
+        taxHelper.createSaleTaxModifiers(newLine, taxRules);
     newLine.taxModifiers.addAll(taxModifiers);
     await taxModifierCalculator.handleLineItemEvent([newLine]);
     double taxAmount = taxHelper.calculateTaxAmount(newLine);
@@ -114,8 +117,8 @@ class CreateNewReceiptBloc
     Map<String, ProductEntity> pm = Map.from(state.productMap);
     pm.putIfAbsent(event.product.productId!, () => event.product);
     List<TransactionLineItemEntity> newList = [...state.lineItem, newLine];
-    emit(state.copyWith(
-        lineItem: newList, step: SaleStep.item, productMap: pm));
+    emit(
+        state.copyWith(lineItem: newList, step: SaleStep.item, productMap: pm));
     add(_VerifyOrderAndEmitState());
   }
 
@@ -137,7 +140,8 @@ class CreateNewReceiptBloc
         discountTotal: 0.00,
         status: SaleStatus.completed,
         customerId: state.customer?.contactId,
-        customerName: '${state.customer?.firstName} ${state.customer?.lastName}',
+        customerName:
+            '${state.customer?.firstName} ${state.customer?.lastName}',
         customerPhone: state.customer?.phoneNumber,
         shippingAddress: state.customer?.shippingAddress,
         storeId: storeId,
@@ -180,10 +184,7 @@ class CreateNewReceiptBloc
 
   void _onCustomerRemoveEvent(
       OnCustomerRemove event, Emitter<CreateNewReceiptState> emit) async {
-    emit(state.copyWith(
-      customer: null,
-      customerAction: CustomerAction.remove
-    ));
+    emit(state.copyWith(customer: null, customerAction: CustomerAction.remove));
   }
 
   void _onQuantityUpdate(
@@ -193,6 +194,9 @@ class CreateNewReceiptBloc
     for (var line in state.lineItem) {
       if (line == event.saleLine) {
         TransactionLineItemEntity newLine = line;
+
+        // Find if any existing modifier is there.
+
         newLine.quantity = event.quantity;
         newLine.extendedAmount = event.quantity * newLine.unitPrice;
         newLine.netAmount = newLine.extendedAmount;
@@ -205,7 +209,8 @@ class CreateNewReceiptBloc
         newList.add(line);
       }
     }
-    emit(state.copyWith(lineItem: newList, status: CreateNewReceiptStatus.inProgress));
+    emit(state.copyWith(
+        lineItem: newList, status: CreateNewReceiptStatus.inProgress));
   }
 
   void _onPriceUpdate(
@@ -225,6 +230,10 @@ class CreateNewReceiptBloc
           line.taxableAmount = newLine.netAmount;
         }
 
+        List<TransactionLineItemModifierEntity> modifier = newLine.lineModifiers.toList();
+        newLine.lineModifiers.removeAll(modifier);
+        newLine.discountAmount = 0.0;
+
         // Recalculating the tax ans net amount
         await taxModifierCalculator.handleLineItemEvent([newLine]);
         double taxAmount = taxHelper.calculateTaxAmount(newLine);
@@ -235,25 +244,40 @@ class CreateNewReceiptBloc
         newList.add(line);
       }
     }
-    emit(state.copyWith(lineItem: newList, status: CreateNewReceiptStatus.inProgress));
+    emit(state.copyWith(
+        lineItem: newList, status: CreateNewReceiptStatus.inProgress));
   }
 
   void _onLineItemDiscountAmount(OnApplyLineItemDiscountAmount event,
       Emitter<CreateNewReceiptState> emit) async {
+    emit(state.copyWith(status: CreateNewReceiptStatus.discountUpdate));
     List<TransactionLineItemEntity> newList = [];
     for (var line in state.lineItem) {
       if (line == event.saleLine) {
+        TransactionLineItemEntity newLine = line;
         DiscountEntity discount = DiscountEntity(
             discountId: 'DUMMY_DISCOUNT_ID',
             amount: event.discountAmount,
             discountType: DiscountCalculationMethod.amount.name,
             description: '\$ ${event.discountAmount} OFF',
             discountCode: 'MANUAL_DISCOUNT_CODE');
-        TransactionLineItemModifierEntity? discountLine = discountHelper.createNewDiscountOverrideLineModifier(line, discount, event.reason);
+        TransactionLineItemModifierEntity? discountLine =
+            discountHelper.createNewDiscountOverrideLineModifier(
+                line, discount, event.reason);
         if (discountLine != null) {
-          TransactionLineItemEntity newLineEntity =
-          TransactionHelper.addNewLineItemModifier(line, discountLine);
-          newList.add(newLineEntity);
+          newLine.lineModifiers.add(discountLine);
+          double discountAmount = discountHelper.calculateDiscountAmount(line);
+          newLine.discountAmount = discountAmount;
+
+          for (var line in newLine.taxModifiers) {
+            line.taxableAmount = newLine.netAmount;
+          }
+          await taxModifierCalculator.handleLineItemEvent([newLine]);
+          double taxAmount = taxHelper.calculateTaxAmount(newLine);
+          newLine.taxAmount = taxAmount;
+          newLine.grossAmount = newLine.netAmount + taxAmount;
+
+          newList.add(newLine);
         } else {
           newList.add(line);
         }
@@ -261,14 +285,16 @@ class CreateNewReceiptBloc
         newList.add(line);
       }
     }
-    emit(state.copyWith(lineItem: newList));
+    emit(state.copyWith(lineItem: newList, status: CreateNewReceiptStatus.inProgress));
   }
 
   void _onLineItemDiscountPercent(OnApplyLineItemDiscountPercent event,
       Emitter<CreateNewReceiptState> emit) async {
+    emit(state.copyWith(status: CreateNewReceiptStatus.quantityUpdate));
     List<TransactionLineItemEntity> newList = [];
     for (var line in state.lineItem) {
       if (line == event.saleLine) {
+        TransactionLineItemEntity newLine = line;
         DiscountEntity discount = DiscountEntity(
             discountId: 'DUMMY_DISCOUNT_ID',
             percent: event.discountPercent,
@@ -277,12 +303,24 @@ class CreateNewReceiptBloc
             discountCode: 'MANUAL_DISCOUNT_CODE');
 
         TransactionLineItemModifierEntity? discountLine =
-        discountHelper.createNewDiscountOverrideLineModifier(
-            line, discount, event.reason);
+            discountHelper.createNewDiscountOverrideLineModifier(
+                line, discount, event.reason);
         if (discountLine != null) {
-          TransactionLineItemEntity newLineEntity =
-          TransactionHelper.addNewLineItemModifier(line, discountLine);
-          newList.add(newLineEntity);
+          newLine.lineModifiers.add(discountLine);
+
+          double discountAmount = discountHelper.calculateDiscountAmount(line);
+          newLine.discountAmount = discountAmount;
+
+          for (var line in newLine.taxModifiers) {
+            line.taxableAmount = newLine.netAmount;
+          }
+
+          await taxModifierCalculator.handleLineItemEvent([newLine]);
+          double taxAmount = taxHelper.calculateTaxAmount(newLine);
+          newLine.taxAmount = taxAmount;
+          newLine.grossAmount = newLine.netAmount + taxAmount;
+
+          newList.add(newLine);
         } else {
           newList.add(line);
         }
@@ -290,7 +328,7 @@ class CreateNewReceiptBloc
         newList.add(line);
       }
     }
-    emit(state.copyWith(lineItem: newList));
+    emit(state.copyWith(lineItem: newList, status: CreateNewReceiptStatus.inProgress));
   }
 
   void _onChangeLineItemTaxAmount(OnChangeLineItemTaxAmount event,
@@ -299,11 +337,10 @@ class CreateNewReceiptBloc
     for (var line in state.lineItem) {
       if (line == event.saleLine) {
         TransactionLineItemEntity newLineEntity =
-        TransactionHelper.changeLineItemTax(
-            line, event.taxAmount, event.reason,
-            taxApplicationMethod: TaxApplicationMethod.all,
-            taxCalculationMethod: TaxCalculationMethod.amount
-        );
+            TransactionHelper.changeLineItemTax(
+                line, event.taxAmount, event.reason,
+                taxApplicationMethod: TaxApplicationMethod.all,
+                taxCalculationMethod: TaxCalculationMethod.amount);
         newList.add(newLineEntity);
       } else {
         newList.add(line);
@@ -318,11 +355,10 @@ class CreateNewReceiptBloc
     for (var line in state.lineItem) {
       if (line == event.saleLine) {
         TransactionLineItemEntity newLineEntity =
-        TransactionHelper.changeLineItemTax(
-            line, event.taxPercent, event.reason,
-            taxApplicationMethod: TaxApplicationMethod.all,
-            taxCalculationMethod: TaxCalculationMethod.percentage
-        );
+            TransactionHelper.changeLineItemTax(
+                line, event.taxPercent, event.reason,
+                taxApplicationMethod: TaxApplicationMethod.all,
+                taxCalculationMethod: TaxCalculationMethod.percentage);
         newList.add(newLineEntity);
       } else {
         newList.add(line);
@@ -431,8 +467,8 @@ class CreateNewReceiptBloc
       }
     }
 
-    emit(state.copyWith(
-        lineItem: newList, step: SaleStep.item, productMap: pm));
+    emit(
+        state.copyWith(lineItem: newList, step: SaleStep.item, productMap: pm));
     // add(_VerifyOrderAndEmitState());
   }
 }

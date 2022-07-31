@@ -12,6 +12,7 @@ enum CreateNewReceiptStatus {
 
   quantityUpdate,
   priceUpdate,
+  discountUpdate,
 
   loading,
   success,
@@ -51,9 +52,8 @@ class CreateNewReceiptState extends Equatable {
   }
 
   double get subTotal {
-    return -tax +
-        lineItem.fold(0.0,
-            (previousValue, element) => previousValue + element.grossAmount);
+    return lineItem.fold(0.0,
+            (previousValue, element) => previousValue + element.netAmount);
   }
 
   double get discount {
@@ -77,7 +77,7 @@ class CreateNewReceiptState extends Equatable {
   }
 
   double get amountDue {
-    return subTotal + tax - paidAmount - discount;
+    return total - paidAmount;
   }
 
   @override

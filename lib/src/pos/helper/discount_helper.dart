@@ -8,12 +8,19 @@ class DiscountHelper {
 
     double itemQuantity = lineItem.quantity;
     double rawUnitPrice = lineItem.unitPrice;
+    double itemBasePrice = lineItem.baseUnitPrice;
+
+    if (lineItem.priceOverride) {
+      itemBasePrice = lineItem.unitPrice;
+    }
 
     if (DiscountCalculationMethod.percentage.name == discount.discountType) {
-      var unitDiscount = lineItem.unitPrice * discount.percent! / 100;
+      var unitDiscount = itemBasePrice * discount.percent! / 100;
 
       double unitPrice = lineItem.unitPrice - unitDiscount;
       lineItem.unitPrice = unitPrice;
+      lineItem.extendedAmount = itemBasePrice * lineItem.quantity;
+      lineItem.netAmount = unitPrice * lineItem.quantity;
 
       return TransactionLineItemModifierEntity(
         storeId: lineItem.storeId,
@@ -37,6 +44,8 @@ class DiscountHelper {
 
       double unitPrice = lineItem.unitPrice - unitDiscount;
       lineItem.unitPrice = unitPrice;
+      lineItem.extendedAmount = itemBasePrice * lineItem.quantity;
+      lineItem.netAmount = unitPrice * lineItem.quantity;
 
       return TransactionLineItemModifierEntity(
         storeId: lineItem.storeId,
@@ -56,5 +65,17 @@ class DiscountHelper {
 
     }
     return null;
+  }
+
+  double calculateDiscountAmount(TransactionLineItemEntity lineItem) {
+    double discountAmount = 0.0;
+    for (var lineModifier in lineItem.lineModifiers) {
+      if (lineModifier.priceModifierReasonCode == PriceModifierReasonCode.discountPercent.code) {
+        discountAmount += lineModifier.amount;
+      } else if (lineModifier.priceModifierReasonCode == PriceModifierReasonCode.discountAmount.code) {
+        discountAmount += lineModifier.amount;
+      }
+    }
+    return discountAmount;
   }
 }

@@ -440,7 +440,7 @@ class NewLineItem extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: Text(
                     NumberFormat.currency(locale: 'en_IN', symbol: '₹ ')
-                        .format(saleLine.unitPrice),
+                        .format(saleLine.priceOverride ? saleLine.unitPrice : saleLine.baseUnitPrice),
                     style: NewLineItem.textStyle,
                   ),
                 ),
