@@ -53,4 +53,8 @@ class TaxHelper {
   double calculateTaxAmount(TransactionLineItemEntity lineItem) {
     return lineItem.taxModifiers.fold(0.00, (acc, taxModifier) => acc + taxModifier.taxAmount);
   }
+
+  double calculateTransactionTaxAmount(TransactionHeaderEntity transaction) {
+    return transaction.lineItems.fold(0.00, (acc, lineItem) => acc + calculateTaxAmount(lineItem));
+  }
 }

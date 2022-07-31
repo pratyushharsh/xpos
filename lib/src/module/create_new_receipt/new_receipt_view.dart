@@ -13,7 +13,6 @@ import 'package:receipt_generator/src/module/create_new_receipt/new_recipt_deskt
 import 'package:receipt_generator/src/module/customer_search/bloc/customer_search_bloc.dart';
 import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
-import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import '../../entity/pos/entity.dart';
 import '../customer_search/customer_search_widget.dart';
@@ -439,8 +438,10 @@ class NewLineItem extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    NumberFormat.currency(locale: 'en_IN', symbol: '₹ ')
-                        .format(saleLine.priceOverride ? saleLine.unitPrice : saleLine.baseUnitPrice),
+                    NumberFormat.currency(locale: 'en_IN', symbol: '₹ ').format(
+                        saleLine.priceOverride
+                            ? saleLine.unitPrice
+                            : saleLine.baseUnitPrice),
                     style: NewLineItem.textStyle,
                   ),
                 ),
@@ -566,17 +567,23 @@ class NewInvoiceButtonBar extends StatelessWidget {
                           content: const Text(
                               "Would you like to cancel the sale transaction?"),
                           actions: [
-                            ElevatedButton(
-                              child: const Text("Back"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                            SizedBox(
+                              width: 100,
+                              child: RejectButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                label: 'Cancel',
+                              ),
                             ),
-                            ElevatedButton(
-                              child: const Text("Ok"),
-                              onPressed: () {
-                                Navigator.of(context).pop(true);
-                              },
+                            SizedBox(
+                              width: 100,
+                              child: AcceptButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                label: 'OK',
+                              ),
                             ),
                           ],
                         );
@@ -837,12 +844,29 @@ class CustomerWidget extends StatelessWidget {
                           color: AppColor.primary,
                         ),
                         const SizedBox(width: 10),
-                        Text(
-                          state.isCustomerPresent
-                              ? state.customer!.firstName
-                              : "Add Customer",
-                          style: const TextStyle(
-                              fontSize: 18, color: AppColor.primary),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              state.isCustomerPresent
+                                  ? state.customer!.firstName
+                                  : "Add Customer",
+                              style: const TextStyle(
+                                  fontSize: 18, color: AppColor.primary),
+                            ),
+                            if (state.isCustomerPresent && state.customer != null && state.customer!.phoneNumber != null)
+                              Text(
+                                'Phone: ${state.customer!.phoneNumber!}',
+                                style: const TextStyle(
+                                    fontSize: 16, color: AppColor.primary),
+                              ),
+                            if (state.isCustomerPresent && state.customer != null && state.customer!.email != null)
+                              Text(
+                                'Email: ${state.customer!.email!}',
+                                style: const TextStyle(
+                                    fontSize: 16, color: AppColor.primary),
+                              ),
+                          ],
                         )
                       ],
                     ),

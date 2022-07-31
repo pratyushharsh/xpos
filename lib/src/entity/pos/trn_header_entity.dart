@@ -15,10 +15,10 @@ class TransactionHeaderEntity {
   final DateTime businessDate;
   final DateTime beginDatetime;
   final DateTime? endDateTime;
-  final double total;
-  final double taxTotal;
-  final double subtotal;
-  final double discountTotal;
+  double total;
+  double taxTotal;
+  double subtotal;
+  double discountTotal;
   final double roundTotal;
   final String status;
 

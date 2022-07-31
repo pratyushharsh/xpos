@@ -27,17 +27,9 @@ abstract class AbstractTaxStrategy {
     double totalRawTaxPercentage = 0.0;
     double taxableUnitAmount = argTaxableAmount / argItemQuantity;
 
-    // Calculate Based on the rule.
     TaxRuleEntity taxRule = ti.taxRule;
 
-    // for (var rule in taxRules) {
-    //   if (isTaxRuleApplicable(rule, ti)) {
-    //     totalUnitTaxAmount += calculate(rule, taxableUnitAmount);
-    //     totalRawTaxPercentage += rule.percent ?? 0.0;
-    //   }
-    // }
-
-    double totalTaxAmount = calculate(taxRule, totalUnitTaxAmount) * argItemQuantity;
+    double totalTaxAmount = calculate(taxRule, taxableUnitAmount) * argItemQuantity;
     return totalTaxAmount;
   }
 

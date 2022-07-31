@@ -436,7 +436,7 @@ class OrderDetailSummary extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Discount Total"),
-                      Text("\$ Disc amount"),
+                      Text("\$ ${order.discountTotal}"),
                     ]),
               ),
               Divider(),

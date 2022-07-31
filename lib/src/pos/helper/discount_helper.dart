@@ -4,23 +4,14 @@ import '../config/config.dart';
 import '../reason_code/reason_code.dart';
 
 class DiscountHelper {
-  TransactionLineItemModifierEntity? createNewDiscountOverrideLineModifier(TransactionLineItemEntity lineItem, DiscountEntity discount, String reason) {
-
-    double itemQuantity = lineItem.quantity;
-    double rawUnitPrice = lineItem.unitPrice;
-    double itemBasePrice = lineItem.baseUnitPrice;
-
-    if (lineItem.priceOverride) {
-      itemBasePrice = lineItem.unitPrice;
-    }
+  TransactionLineItemModifierEntity? createNewDiscountOverrideLineModifier(
+      TransactionLineItemEntity lineItem,
+      DiscountEntity discount,
+      String reason) {
+    double itemBasePrice = lineItem.unitPrice;
 
     if (DiscountCalculationMethod.percentage.name == discount.discountType) {
       var unitDiscount = itemBasePrice * discount.percent! / 100;
-
-      double unitPrice = lineItem.unitPrice - unitDiscount;
-      lineItem.unitPrice = unitPrice;
-      lineItem.extendedAmount = itemBasePrice * lineItem.quantity;
-      lineItem.netAmount = unitPrice * lineItem.quantity;
 
       return TransactionLineItemModifierEntity(
         storeId: lineItem.storeId,
@@ -38,14 +29,8 @@ class DiscountHelper {
         discountReasonCode: reason,
       );
     } else if (DiscountCalculationMethod.amount.name == discount.discountType) {
-
-      var rawUnitDiscount = discount.amount! / itemQuantity;
+      var rawUnitDiscount = discount.amount! / lineItem.quantity;
       var unitDiscount = math.min(rawUnitDiscount, lineItem.unitPrice);
-
-      double unitPrice = lineItem.unitPrice - unitDiscount;
-      lineItem.unitPrice = unitPrice;
-      lineItem.extendedAmount = itemBasePrice * lineItem.quantity;
-      lineItem.netAmount = unitPrice * lineItem.quantity;
 
       return TransactionLineItemModifierEntity(
         storeId: lineItem.storeId,
@@ -55,27 +40,57 @@ class DiscountHelper {
         lineItemSeq: lineItem.lineItemSeq,
         lineItemModSeq: lineItem.lineModifiers.length + 1,
         extendedAmount: unitDiscount * lineItem.quantity,
-        amount: unitDiscount * lineItem.quantity,
+        amount: discount.amount!,
         priceModifierReasonCode: PriceModifierReasonCode.discountAmount.code,
         description: discount.description,
         discountCode: discount.discountCode,
         discountReasonCode: reason,
       );
-    } else if (DiscountCalculationMethod.group.name == discount.discountType) {
-
-    }
+    } else if (DiscountCalculationMethod.group.name == discount.discountType) {}
     return null;
   }
 
   double calculateDiscountAmount(TransactionLineItemEntity lineItem) {
     double discountAmount = 0.0;
     for (var lineModifier in lineItem.lineModifiers) {
-      if (lineModifier.priceModifierReasonCode == PriceModifierReasonCode.discountPercent.code) {
-        discountAmount += lineModifier.amount;
-      } else if (lineModifier.priceModifierReasonCode == PriceModifierReasonCode.discountAmount.code) {
-        discountAmount += lineModifier.amount;
+      if (lineModifier.priceModifierReasonCode ==
+          PriceModifierReasonCode.discountPercent.code) {
+        discountAmount += lineModifier.extendedAmount;
+      } else if (lineModifier.priceModifierReasonCode ==
+          PriceModifierReasonCode.discountAmount.code) {
+        discountAmount += lineModifier.extendedAmount;
       }
     }
     return discountAmount;
+  }
+
+  void updateUnitPriceOnDiscountQuantityChange(
+      TransactionLineItemEntity lineItem, double quantity) {
+    for (var lineModifier in lineItem.lineModifiers) {
+      // If the line item modifier is percentage discount then calculate discount based on that.
+      if (lineModifier.priceModifierReasonCode ==
+          PriceModifierReasonCode.discountPercent.code) {
+        double discountPercent = lineModifier.percent!;
+        var unitDiscount = lineItem.unitPrice * discountPercent / 100;
+
+        lineModifier.extendedAmount = unitDiscount * quantity;
+        lineModifier.amount = unitDiscount * quantity;
+      } else if (lineModifier.priceModifierReasonCode ==
+          PriceModifierReasonCode.discountAmount.code) {
+        var maximumDiscount = lineModifier.amount;
+        var unitDiscount =
+            math.min(maximumDiscount / quantity, lineItem.unitPrice);
+
+        lineModifier.extendedAmount = unitDiscount * quantity;
+      }
+    }
+  }
+
+  double calculateTransactionDiscountTotal(TransactionHeaderEntity transaction) {
+    double discountTotal = 0.0;
+    for (var lineItem in transaction.lineItems) {
+      discountTotal += calculateDiscountAmount(lineItem);
+    }
+    return discountTotal;
   }
 }
