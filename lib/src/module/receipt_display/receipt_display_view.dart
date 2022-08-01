@@ -77,7 +77,6 @@ class ReceiptDisplayView extends StatelessWidget {
       lazy: false,
       create: (context) => ReceiptDisplayBloc(
           transId: transactionId,
-          db: RepositoryProvider.of(context),
           authBloc: RepositoryProvider.of(context),
           transactionRepo: RepositoryProvider.of(context),
           settingsRepo: RepositoryProvider.of(context))

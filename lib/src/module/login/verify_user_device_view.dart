@@ -118,8 +118,16 @@ class _VerifyUserDeviceFormState extends State<VerifyUserDeviceForm> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: BlocBuilder<LoginBloc, LoginState>(
+      child: BlocConsumer<LoginBloc, LoginState>(
+        listener: (context, state) {
+          print('Listener : $state');
+          // if (state.deviceList.isEmpty) {
+          //   BlocProvider.of<LoginBloc>(context)
+          //       .add(RemoveDevice(_selectedDeviceIds.toList()));
+          // }
+        },
         builder: (context, state) {
+          print('Builder $state');
           return Container(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -158,8 +166,8 @@ class _VerifyUserDeviceFormState extends State<VerifyUserDeviceForm> {
                     if (state.status != LoginStatus.verifyDeviceLoading)
                       Expanded(
                         child: AcceptButton(
-                          label: "Remove Selected Device",
-                          onPressed: _selectedDeviceIds.isNotEmpty
+                          label: "Continue",
+                          onPressed: _selectedDeviceIds.isNotEmpty || state.deviceList.isEmpty
                               ? () {
                             BlocProvider.of<LoginBloc>(context)
                                 .add(RemoveDevice(_selectedDeviceIds.toList()));

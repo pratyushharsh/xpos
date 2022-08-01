@@ -18,7 +18,6 @@ class AppInvoiceDisplay extends StatelessWidget {
       create: (context) =>
       ReceiptDisplayBloc(
           transId: transactionId,
-          db: RepositoryProvider.of(context),
           transactionRepo: RepositoryProvider.of(context),
           authBloc: RepositoryProvider.of(context),
           settingsRepo: RepositoryProvider.of(context))

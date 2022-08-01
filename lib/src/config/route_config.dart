@@ -5,6 +5,7 @@ import 'package:receipt_generator/src/module/business/bloc/business_bloc.dart';
 import 'package:receipt_generator/src/module/business/business_view.dart';
 import 'package:receipt_generator/src/module/create_new_item/add_new_item_view.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_view.dart';
+import 'package:receipt_generator/src/module/employee_detail/employee_detail_view.dart';
 import 'package:receipt_generator/src/module/home/home_view.dart';
 import 'package:receipt_generator/src/module/invoice/invoice_view.dart';
 import 'package:receipt_generator/src/module/list_all_item/list_all_item_view.dart';
@@ -41,6 +42,7 @@ class RouteConfig {
   static const String orderSummaryScreen = "/order-summary";
   static const String localeScreen = "/locale-screen";
   static const String taxConfigurationScreen = "/tax-config";
+  static const String employeeDetailScreen = "/employee-detail";
 
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -97,6 +99,8 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => const LocaleView());
       case taxConfigurationScreen:
         return MaterialPageRoute(builder: (_) => const CreateEditTaxView());
+      case employeeDetailScreen:
+        return MaterialPageRoute(builder: (_) => const EmployeeDetailView());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

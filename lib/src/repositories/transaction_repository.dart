@@ -27,9 +27,12 @@ class TransactionRepository {
   Future<TransactionHeaderEntity?> getTransaction(int id) async {
     TransactionHeaderEntity? order = await db.transactionHeaderEntitys.get(id);
     if (order != null) {
-      order.lineItems.loadSync();
-      for (var element in order.lineItems) {element.lineModifiers.loadSync();}
-      order.paymentLineItems.loadSync();
+      await order.lineItems.load();
+      for (var element in order.lineItems) {
+        await element.lineModifiers.load();
+        await element.taxModifiers.load();
+      }
+      await order.paymentLineItems.load();
       return order;
     }
     return null;

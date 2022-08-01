@@ -20,20 +20,19 @@ class ReceiptDisplayBloc
     extends Bloc<ReceiptDisplayEvent, ReceiptDisplayState> {
   final log = Logger('ReceiptDisplayBloc');
   final int transId;
-  final Isar db;
   final SettingsRepository settingsRepo;
   final AuthenticationBloc authBloc;
   final TransactionRepository transactionRepo;
 
   ReceiptDisplayBloc(
       {required this.transId,
-      required this.db,
       required this.settingsRepo,
       required this.authBloc, required this.transactionRepo})
       : super(ReceiptDisplayState(taxSummary: List.empty())) {
     on<FetchReceiptDataEvent>(_onFetchReceiptData);
     on<UpdateReceiptStatusEvent>(_onUpdateReceiptStatusEvent);
     on<UpdateGlobalKey>(_onUpdateGlobalKeys);
+    on<MockUpdateReceiptSettingData>(_onMockUpdateReceiptSettingData);
   }
 
   void _onFetchReceiptData(
@@ -107,5 +106,10 @@ class ReceiptDisplayBloc
   void _onUpdateGlobalKeys(
       UpdateGlobalKey event, Emitter<ReceiptDisplayState> emit) async {
     emit(state.copyWith(globalKeys: event.globalKey));
+  }
+
+  void _onMockUpdateReceiptSettingData(
+      MockUpdateReceiptSettingData event, Emitter<ReceiptDisplayState> emit) async {
+    emit(state.copyWith(receiptSettings: event.receiptSettingData));
   }
 }

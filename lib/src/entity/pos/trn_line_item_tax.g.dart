@@ -126,7 +126,7 @@ void _transactionLineItemTaxModifierSerializeNative(
   dynamicSize += (_taxRuleName.length) as int;
   final value16 = object.taxableAmount;
   final _taxableAmount = value16;
-  final value17 = object.transLineItemSeq;
+  final value17 = object.lineItemSeq;
   final _transLineItemSeq = value17;
   final value18 = object.transSeq;
   final _transSeq = value18;
@@ -181,7 +181,7 @@ TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeNative(
     taxRuleId: reader.readString(offsets[14]),
     taxRuleName: reader.readString(offsets[15]),
     taxableAmount: reader.readDouble(offsets[16]),
-    transLineItemSeq: reader.readLong(offsets[17]),
+    lineItemSeq: reader.readLong(offsets[17]),
     transSeq: reader.readLong(offsets[18]),
   );
   return object;
@@ -260,7 +260,7 @@ dynamic _transactionLineItemTaxModifierSerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'taxRuleId', object.taxRuleId);
   IsarNative.jsObjectSet(jsObj, 'taxRuleName', object.taxRuleName);
   IsarNative.jsObjectSet(jsObj, 'taxableAmount', object.taxableAmount);
-  IsarNative.jsObjectSet(jsObj, 'transLineItemSeq', object.transLineItemSeq);
+  IsarNative.jsObjectSet(jsObj, 'transLineItemSeq', object.lineItemSeq);
   IsarNative.jsObjectSet(jsObj, 'transSeq', object.transSeq);
   return jsObj;
 }
@@ -294,7 +294,7 @@ TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeWeb(
     taxRuleName: IsarNative.jsObjectGet(jsObj, 'taxRuleName') ?? '',
     taxableAmount: IsarNative.jsObjectGet(jsObj, 'taxableAmount') ??
         double.negativeInfinity,
-    transLineItemSeq: IsarNative.jsObjectGet(jsObj, 'transLineItemSeq') ??
+    lineItemSeq: IsarNative.jsObjectGet(jsObj, 'transLineItemSeq') ??
         double.negativeInfinity,
     transSeq:
         IsarNative.jsObjectGet(jsObj, 'transSeq') ?? double.negativeInfinity,

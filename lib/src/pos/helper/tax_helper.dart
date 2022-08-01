@@ -18,7 +18,7 @@ class TaxHelper {
       TransactionLineItemEntity lineItem, TaxRuleEntity taxRule) {
     return TransactionLineItemTaxModifier(
       transSeq: lineItem.transSeq,
-      transLineItemSeq: lineItem.lineItemSeq,
+      lineItemSeq: lineItem.lineItemSeq,
       authorityId: taxRule.authorityId,
       authorityName: taxRule.authorityName,
       authorityType: taxRule.authorityType,
@@ -62,7 +62,7 @@ class TaxHelper {
       TransactionLineItemEntity lineItem, TaxRuleEntity taxRule) {
     return TransactionLineItemTaxModifier(
       transSeq: lineItem.transSeq,
-      transLineItemSeq: lineItem.lineItemSeq,
+      lineItemSeq: lineItem.lineItemSeq,
       authorityId: taxRule.authorityId,
       authorityName: taxRule.authorityName,
       authorityType: taxRule.authorityType,

@@ -38,6 +38,7 @@ Future<void> main() {
       schemas: [
         RetailLocationEntitySchema,
         ContactEntitySchema,
+        EmployeeEntitySchema,
         ProductEntitySchema,
         SequenceEntitySchema,
         SettingEntitySchema,

@@ -40,4 +40,9 @@ class LoginState {
         retryCount: retryCount ?? this.retryCount,
         error: error ?? this.error);
   }
+
+  @override
+  String toString() {
+    return 'LoginState{status: $status, user: $user, retryCount: $retryCount, error: $error, deviceList: $deviceList}';
+  }
 }

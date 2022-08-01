@@ -53,7 +53,7 @@ class BusinessView extends StatelessWidget {
                             tag: "business-logo",
                             child: CircleAvatar(
                               backgroundImage: NetworkImage(
-                                  'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1656547200&v=beta&t=73Ztd907MxvHLxmQV6Pb-TShp6qj4mGOKN4ckWWjvuQ'),
+                                  'https://images.unsplash.com/photo-1541569863345-f97c6484a917?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80'),
                               maxRadius: 60,
                               child: Text(
                                 "",
@@ -223,11 +223,10 @@ class _BusinessDetailState extends State<BusinessDetail> {
                     builder: (context) => const AddressFormDialog(),
                   ).then((value) => {
                         if (value != null &&
-                            value.length > 0 &&
-                            value[0] is Address)
+                            value is Address)
                           {
                             BlocProvider.of<BusinessBloc>(context)
-                                .add(OnBusinessAddressChange(value[0]))
+                                .add(OnBusinessAddressChange(value))
                           }
                       });
                 },

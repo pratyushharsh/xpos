@@ -8,7 +8,7 @@ class TransactionLineItemTaxModifier {
   final int? id;
 
   final int transSeq;
-  final int transLineItemSeq;
+  final int lineItemSeq;
 
   final String authorityId;
   final String authorityName;
@@ -36,7 +36,7 @@ class TransactionLineItemTaxModifier {
   TransactionLineItemTaxModifier(
       {this.id,
       required this.transSeq,
-      required this.transLineItemSeq,
+      required this.lineItemSeq,
       required this.authorityId,
       required this.authorityName,
       required this.authorityType,

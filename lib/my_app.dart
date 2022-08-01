@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
     return MultiRepositoryProvider(
         providers: [
           RepositoryProvider(lazy: false, create: (context) => database),
+          RepositoryProvider(lazy: false, create: (context) => restClient),
           RepositoryProvider(create: (context) => ContactRepository()),
           RepositoryProvider(create: (context) => userPool),
           RepositoryProvider(

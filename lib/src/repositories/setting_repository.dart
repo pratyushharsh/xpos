@@ -17,45 +17,47 @@ class SettingsRepository {
   Future<ReceiptSettingsModel> updateReceiptSetting(
       ReceiptSettingsModel req) async {
     try {
-      if (req.storeNumber != null) {
-        await db.settingEntitys.put(SettingEntity(
-          category: SettingsCategory.receipt,
-          subCategory: SettingsSubCategory.receiptPhoneNumber,
-          value: req.storeNumber!,
-        ));
-      }
+      db.writeTxn((isar) async {
+        if (req.storeNumber != null) {
+          await isar.settingEntitys.put(SettingEntity(
+            category: SettingsCategory.receipt,
+            subCategory: SettingsSubCategory.receiptPhoneNumber,
+            value: req.storeNumber!,
+          ));
+        }
 
-      if (req.tagLine != null) {
-        await db.settingEntitys.put(SettingEntity(
-          category: SettingsCategory.receipt,
-          subCategory: SettingsSubCategory.receiptTagLine,
-          value: req.tagLine!,
-        ));
-      }
+        if (req.tagLine != null) {
+          await isar.settingEntitys.put(SettingEntity(
+            category: SettingsCategory.receipt,
+            subCategory: SettingsSubCategory.receiptTagLine,
+            value: req.tagLine!,
+          ));
+        }
 
-      if (req.storeAddress != null) {
-        await db.settingEntitys.put(SettingEntity(
-          category: SettingsCategory.receipt,
-          subCategory: SettingsSubCategory.receiptStoreAddress,
-          value: req.storeAddress!,
-        ));
-      }
+        if (req.storeAddress != null) {
+          await isar.settingEntitys.put(SettingEntity(
+            category: SettingsCategory.receipt,
+            subCategory: SettingsSubCategory.receiptStoreAddress,
+            value: req.storeAddress!,
+          ));
+        }
 
-      if (req.footerTitle != null) {
-        await db.settingEntitys.put(SettingEntity(
-          category: SettingsCategory.receipt,
-          subCategory: SettingsSubCategory.receiptFooterTitle,
-          value: req.footerTitle!,
-        ));
-      }
+        if (req.footerTitle != null) {
+          await isar.settingEntitys.put(SettingEntity(
+            category: SettingsCategory.receipt,
+            subCategory: SettingsSubCategory.receiptFooterTitle,
+            value: req.footerTitle!,
+          ));
+        }
 
-      if (req.footerSubtitle != null) {
-        await db.settingEntitys.put(SettingEntity(
-          category: SettingsCategory.receipt,
-          subCategory: SettingsSubCategory.receiptFooterSubTitle,
-          value: req.footerSubtitle!,
-        ));
-      }
+        if (req.footerSubtitle != null) {
+          await isar.settingEntitys.put(SettingEntity(
+            category: SettingsCategory.receipt,
+            subCategory: SettingsSubCategory.receiptFooterSubTitle,
+            value: req.footerSubtitle!,
+          ));
+        }
+      });
     } catch (e) {
       log.severe(e);
     }
@@ -63,7 +65,10 @@ class SettingsRepository {
   }
 
   Future<ReceiptSettingsModel> getReceiptSettings() async {
-    List<SettingEntity> res = await db.settingEntitys.filter().categoryEqualTo(SettingsCategory.receipt).findAll();
+    List<SettingEntity> res = await db.settingEntitys
+        .filter()
+        .categoryEqualTo(SettingsCategory.receipt)
+        .findAll();
 
     return ReceiptSettingsModel(
       storeNumber: res

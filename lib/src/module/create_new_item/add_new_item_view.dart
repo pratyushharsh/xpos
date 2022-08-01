@@ -19,7 +19,6 @@ import '../../config/constants.dart';
 import '../../entity/config/code_value_entity.dart';
 import '../../entity/pos/tax_group_entity.dart';
 import '../../repositories/tax_repository.dart';
-import '../../widgets/my_loader.dart';
 
 enum NewItemScreenState { editItem, createItem }
 
