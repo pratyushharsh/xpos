@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
@@ -494,6 +495,8 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildMobile();
+    return (Platform.isIOS || Platform.isAndroid)
+        ? _buildMobile()
+        : _buildDesktop();
   }
 }
