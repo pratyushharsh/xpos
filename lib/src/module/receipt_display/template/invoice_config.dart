@@ -17,7 +17,7 @@ class InvoiceConfig {
       case 'quantity':
         return entity.quantity.toString();
       case 'rate':
-        return NumberFormat.simpleCurrency(locale: 'en_US').format(entity.unitPrice);
+        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.unitPrice);
       case 'mrp':
         return entity.grossAmount.toString();
       case 'desc':
@@ -33,7 +33,7 @@ class InvoiceConfig {
       case 'tax':
         return entity.taxAmount.toString();
       case 'amount':
-        return NumberFormat.simpleCurrency(locale: 'en_US').format(entity.grossAmount);
+        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.grossAmount);
       default:
         return '';
     }
@@ -44,9 +44,9 @@ class InvoiceConfig {
       case 'qtyuom':
         return entity.lineItems.fold<double>(0.00, (previousValue, element) => previousValue + element.quantity).toString();
       case 'tax':
-        return NumberFormat.simpleCurrency(locale: 'en_US').format(entity.taxTotal);
+        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.taxTotal);
       case 'amount':
-        return NumberFormat.simpleCurrency(locale: 'en_US').format(entity.total);
+        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.total);
       default:
         return '';
     }

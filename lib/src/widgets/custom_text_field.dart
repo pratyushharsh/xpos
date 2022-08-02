@@ -22,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final GestureTapCallback? onTap;
   final bool? enabled;
+  final CrossAxisAlignment crossAxisAlignment;
   final ValueChanged<String>? onFieldSubmitted;
   final List<TextInputFormatter>? inputFormatters;
 
@@ -49,6 +50,7 @@ class CustomTextField extends StatelessWidget {
       this.style = const TextStyle(
         fontWeight: FontWeight.w600,
       ),
+        this.crossAxisAlignment = CrossAxisAlignment.start,
       this.textAlign = TextAlign.start,
       this.prefixIconConstraint =
           const BoxConstraints(minWidth: 40, minHeight: 40)})
@@ -57,7 +59,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: crossAxisAlignment,
       children: [
         Text(
           label,
@@ -78,6 +80,7 @@ class CustomTextField extends StatelessWidget {
               //color: AppColor.background,
               borderRadius: BorderRadius.circular(5)),
           child: TextFormField(
+            autovalidateMode: AutovalidateMode.always,
             validator: validator,
             focusNode: focusNode,
             controller: controller,

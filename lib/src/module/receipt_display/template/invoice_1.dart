@@ -39,15 +39,14 @@ class Invoice {
     // Add page to the PDF
     doc.addPage(
       MultiPage(
-        // pageTheme: _buildTheme(
-        //   pageFormat,
-        //   await PdfGoogleFonts.robotoRegular(),
-        //   await PdfGoogleFonts.robotoBold(),
-        //   await PdfGoogleFonts.robotoItalic(),
-        // ),
+        pageTheme: _buildTheme(
+          pageFormat,
+          await PdfGoogleFonts.robotoRegular(),
+          await PdfGoogleFonts.robotoBold(),
+          await PdfGoogleFonts.robotoItalic(),
+        ),
         header: _buildHeader,
         footer: _buildFooter,
-        margin: const EdgeInsets.all(15),
         build: (context) => [
           _contentTable(context),
           SizedBox(height: 20),
@@ -58,6 +57,19 @@ class Invoice {
 
     // Return the PDF file content
     return doc.save();
+  }
+
+  PageTheme _buildTheme(
+      PdfPageFormat pageFormat, Font base, Font bold, Font italic) {
+    return PageTheme(
+      pageFormat: pageFormat,
+      theme: ThemeData.withFont(
+        base: base,
+        bold: bold,
+        italic: italic,
+      ),
+      margin: const EdgeInsets.all(15),
+    );
   }
 
   Widget _buildLineItemSummary(Context context) {

@@ -15,7 +15,6 @@ class ReasonCodeRepository {
   List<ReasonCodeEntity> getReasonCodeByTypeCode(String reasonTypeCode) {
     try {
       var data = db.reasonCodeEntitys.where().findAllSync();
-      log.info("ReasonCodeEntitys: $data");
       return data;
     }catch (e) {
       log.severe(e);

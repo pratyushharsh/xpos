@@ -27,30 +27,48 @@ class ReturnOrderBloc extends Bloc<ReturnOrderEvent, ReturnOrderState> {
     emit(state.copyWith(status: ReturnOrderExistStatus.loading));
     try {
       final order = await transactionRepository.getTransaction(event.orderId);
+      if (order == null) {
+        emit(state.copyWith(
+            status: ReturnOrderExistStatus.notFound,
+            errorMessage: 'Order # ${event.orderId} not found.'));
+        return;
+      }
       final alreadyReturnedOrder = await transactionRepository
           .getLineItemWithOriginalTransactionNo(event.orderId);
 
       // Find the Already returned order.
       Map<String, double> alreadyReturnedOrderMap = {};
       for (var element in alreadyReturnedOrder) {
-
         var key = "${element.originalLineItemSeq}#${element.itemId}";
 
         if (alreadyReturnedOrderMap.containsKey(key)) {
-          alreadyReturnedOrderMap[key] = alreadyReturnedOrderMap[key]! + element.quantity;
+          alreadyReturnedOrderMap[key] =
+              alreadyReturnedOrderMap[key]! + element.quantity;
         } else {
           alreadyReturnedOrderMap[key] = element.quantity;
         }
       }
-      if (order != null) {
-        emit(state.copyWith(
-            status: ReturnOrderExistStatus.success,
-            order: order,
-            alreadyReturnedOrderMap: alreadyReturnedOrderMap,
-            returnedLineItem: alreadyReturnedOrder));
-      } else {
-        emit(state.copyWith(status: ReturnOrderExistStatus.notFound));
+
+      List<TransactionLineItemEntity> availableLineItemToReturn = [];
+      for (var lineItem in order.lineItems) {
+        if (alreadyReturnedOrderMap
+            .containsKey("${lineItem.lineItemSeq}#${lineItem.itemId}")) {
+          if (alreadyReturnedOrderMap[
+                  "${lineItem.lineItemSeq}#${lineItem.itemId}"]! <
+              lineItem.quantity) {
+            availableLineItemToReturn.add(lineItem);
+          }
+        } else {
+          availableLineItemToReturn.add(lineItem);
+        }
       }
+
+      emit(state.copyWith(
+          status: ReturnOrderExistStatus.success,
+          order: order,
+          alreadyReturnedOrderMap: alreadyReturnedOrderMap,
+          availableLineItemToReturn: availableLineItemToReturn,
+          returnedLineItem: alreadyReturnedOrder));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: ReturnOrderExistStatus.error));

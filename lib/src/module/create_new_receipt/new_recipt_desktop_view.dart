@@ -73,10 +73,7 @@ class NewReceiptDesktopView extends StatelessWidget {
                           height: 40,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text("Footer"),
-                              TimerWidget()
-                            ],
+                            children: const [Text("Footer"), TimerWidget()],
                           ),
                         )
                       ],
@@ -643,6 +640,7 @@ class ActionButtonBar extends StatelessWidget {
         border: Border(right: BorderSide(color: Colors.black26)),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Tooltip(
             message: "Return Item",

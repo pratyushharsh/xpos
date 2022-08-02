@@ -73,7 +73,7 @@ class CreateNewReceiptBloc
   void _onAddNewLineItem(
       AddItemToReceipt event, Emitter<CreateNewReceiptState> emit) async {
     assert(event.product.productId != null);
-    int seq = state.lineItem.length + state.tenderLine.length;
+    int seq = state.lineItem.length;
 
     // @TODO Change the business date from DateTime.now() to actual business date.
     // @TODO Change the pos id also
@@ -435,48 +435,75 @@ class CreateNewReceiptBloc
   void _onReturnLineItem(
       OnReturnLineItemEvent event, Emitter<CreateNewReceiptState> emit) async {
     // Create a new Return Line Item
-    int seq = state.lineItem.length + state.tenderLine.length;
+    int seq = state.lineItem.length;
 
     List<TransactionLineItemEntity> newList = [...state.lineItem];
     Map<String, ProductEntity> pm = Map.from(state.productMap);
 
     for (var line in event.returnMap.keys) {
       var returnData = event.returnMap[line];
+
       var returnLine = TransactionLineItemEntity(
-        storeId: line.storeId,
+        storeId: authenticationBloc.state.store!.rtlLocId, // Current store ID
+        transSeq: state.transSeq,
         businessDate: DateTime.now(),
-        posId: line.posId,
-        grossAmount: -line.grossAmount,
-        baseUnitPrice: line.baseUnitPrice,
+        posId: line.posId, // Current Pos ID
         itemDescription: line.itemDescription,
         itemId: line.itemId,
-        itemIdEntryMethod: line.itemIdEntryMethod,
+        itemIdEntryMethod: EntryMethod.keyboard,
+        priceEntryMethod: EntryMethod.keyboard,
         lineItemSeq: ++seq,
-        netAmount: -line.netAmount,
-        extendedAmount: -line.extendedAmount,
-        unitCost: line.unitCost,
         nonExchangeableFlag: line.nonExchangeableFlag,
         nonReturnableFlag: line.nonReturnableFlag,
         originalBusinessDate: line.businessDate,
         originalLineItemSeq: line.lineItemSeq,
         originalPosId: line.posId,
         originalTransSeq: line.transSeq,
-        priceEntryMethod: line.priceEntryMethod,
-        quantity: line.quantity,
-        // @TODO Add Returned Comment
-        returnComment: "RETURN COMMENT",
-        returnFlag: true,
-        returnReasonCode: returnData!.reasonCode.toString(),
-        returnTypeCode: line.returnTypeCode,
-        returnedQuantity: line.quantity,
         serialNumber: line.serialNumber,
-        taxAmount: line.taxAmount,
-        unitPrice: -line.unitPrice,
         vendorId: line.vendorId,
         uom: line.uom,
-        shippingWeight: line.shippingWeight, transSeq: state.transSeq,
+        shippingWeight: line.shippingWeight,
+        category: line.category,
+        // @TODO Add Returned Comment
+        returnFlag: true,
+        returnReasonCode: returnData!.reasonCode,
+        returnTypeCode: line.returnTypeCode,
+        returnedQuantity: line.quantity,
+        returnComment: returnData.comment,
+
+        // Price Override data
+        priceOverrideReason: line.priceOverrideReason,
+        priceOverride: line.priceOverride,
+
+        // Quantitative Data
+        quantity: returnData.quantity,
+        unitPrice: - line.unitPrice,
+        extendedAmount: returnData.quantity * (- line.unitPrice),
+        baseUnitPrice: - line.baseUnitPrice,
+        netAmount: 0.0,
+
+        taxAmount: 0.0,
+        unitCost: 0.0,
+        grossAmount: 0.0,
       );
+      // Calculate Line Modifier
+      List<TransactionLineItemModifierEntity> newLineModifier = discountHelper.createLineItemModifierFromOriginalTransaction(line, returnLine);
+      returnLine.lineModifiers.addAll(newLineModifier);
+
+      returnLine.discountAmount = discountHelper.calculateDiscountAmount(returnLine);
+      returnLine.netAmount = returnLine.extendedAmount - returnLine.discountAmount;
+
+      // Calculate Tax Amount
+      List<TransactionLineItemTaxModifier> newTaxLine = taxHelper.createTaxModifierFromOriginalTransaction(line, returnLine);
+      returnLine.taxModifiers.addAll(newTaxLine);
+
+      double taxAmount = taxHelper.calculateTaxAmount(returnLine);
+      returnLine.taxAmount = taxAmount;
+      returnLine.grossAmount = returnLine.netAmount + taxAmount;
+      returnLine.unitCost = returnLine.grossAmount / returnLine.quantity;
+
       newList.add(returnLine);
+
 
       ProductEntity? pe = db.productEntitys
           .where()

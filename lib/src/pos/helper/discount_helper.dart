@@ -87,11 +87,42 @@ class DiscountHelper {
     }
   }
 
-  double calculateTransactionDiscountTotal(TransactionHeaderEntity transaction) {
+  double calculateTransactionDiscountTotal(
+      TransactionHeaderEntity transaction) {
     double discountTotal = 0.0;
     for (var lineItem in transaction.lineItems) {
       discountTotal += calculateDiscountAmount(lineItem);
     }
     return discountTotal;
+  }
+
+  List<TransactionLineItemModifierEntity>
+      createLineItemModifierFromOriginalTransaction(
+          TransactionLineItemEntity originalLine,
+          TransactionLineItemEntity newLine) {
+
+    List<TransactionLineItemModifierEntity> newLineModifiers = [];
+    List<TransactionLineItemModifierEntity> originalLineModifiers = originalLine.lineModifiers.toList();
+
+    for (var lineModifier in originalLineModifiers) {
+      var unitDiscount = lineModifier.amount / originalLine.quantity;
+      var newModifier = TransactionLineItemModifierEntity(
+        storeId: newLine.storeId,
+        businessDate: newLine.businessDate,
+        posId: newLine.posId,
+        transSeq: newLine.transSeq,
+        lineItemSeq: newLine.lineItemSeq,
+        lineItemModSeq: newLineModifiers.length + 1,
+        extendedAmount: - unitDiscount * newLine.quantity,
+        amount: - unitDiscount * newLine.quantity,
+        priceModifierReasonCode: lineModifier.priceModifierReasonCode,
+        description: lineModifier.description,
+        discountCode: lineModifier.discountCode,
+        discountReasonCode: lineModifier.discountReasonCode,
+      );
+      newLineModifiers.add(newModifier);
+    }
+
+    return newLineModifiers;
   }
 }
