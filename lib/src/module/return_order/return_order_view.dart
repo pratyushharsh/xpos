@@ -16,13 +16,14 @@ import 'return_form_validation.dart';
 
 class ReturnOrderView extends StatelessWidget {
   final List<TransactionLineItemEntity> currentOrderLineItem;
-  const ReturnOrderView({Key? key, required this.currentOrderLineItem}) : super(key: key);
+  const ReturnOrderView({Key? key, required this.currentOrderLineItem})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ReturnOrderBloc(
-        currentOrderLineItem: currentOrderLineItem,
+          currentOrderLineItem: currentOrderLineItem,
           transactionRepository: RepositoryProvider.of(context)),
       child: Column(
         children: [
@@ -209,8 +210,7 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
     return null;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildDesktop() {
     return Card(
       margin: const EdgeInsets.all(0),
       elevation: 0,
@@ -222,9 +222,8 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
               _reasonCode = null;
               returnedQuantity = null;
               comment = null;
-              BlocProvider.of<ReturnOrderBloc>(context).add(
-                  RemoveLineItemFromReturn(
-                      lineItem: widget.lineItem));
+              BlocProvider.of<ReturnOrderBloc>(context)
+                  .add(RemoveLineItemFromReturn(lineItem: widget.lineItem));
             } else {
               _checked = true;
             }
@@ -241,7 +240,6 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                     ReturnLineItemParameters? data = _isValid();
                     if (value != null && data != null) {
                       if (value) {
-
                       } else {
                         BlocProvider.of<ReturnOrderBloc>(context).add(
                             RemoveLineItemFromReturn(
@@ -357,5 +355,145 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
         ),
       ),
     );
+  }
+
+  Widget _buildMobile() {
+    return Card(
+      margin: const EdgeInsets.all(0),
+      elevation: 0,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            if (_checked) {
+              _checked = false;
+              _reasonCode = null;
+              returnedQuantity = null;
+              comment = null;
+              BlocProvider.of<ReturnOrderBloc>(context)
+                  .add(RemoveLineItemFromReturn(lineItem: widget.lineItem));
+            } else {
+              _checked = true;
+            }
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Checkbox(
+                    value: isValid,
+                    onChanged: (value) {
+                      ReturnLineItemParameters? data = _isValid();
+                      if (value != null && data != null) {
+                        if (value) {
+                        } else {
+                          BlocProvider.of<ReturnOrderBloc>(context).add(
+                              RemoveLineItemFromReturn(
+                                  lineItem: widget.lineItem));
+                        }
+                      }
+                      setState(() {
+                        isValid = _isValid() != null;
+                      });
+                    },
+                  ),
+                  const SizedBox(width: 10, height: 50),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.lineItem.itemId,
+                        ),
+                        Text(
+                          widget.lineItem.itemDescription,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (_checked)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                          enabled: false,
+                          initialValue: (widget.lineItem.quantity -
+                                  widget.returnedQuantity)
+                              .toString(),
+                          label: "Qty"),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: CustomTextField(
+                        enabled: _checked,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        textAlign: TextAlign.end,
+                        textInputType: TextInputType.number,
+                        inputFormatters: [
+                          CustomInputTextFormatter.positiveNumber,
+                          MinMaxDecimalFormatter(
+                            min: 1.0,
+                            max: widget.lineItem.quantity -
+                                widget.returnedQuantity,
+                          ),
+                        ],
+                        label: "Return",
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Required";
+                          }
+                          return null;
+                        },
+                        onValueChange: (value) {
+                          setState(() {
+                            returnedQuantity = double.parse(value);
+                            isValid = _isValid() != null;
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              if (_checked)
+                CustomDropDown<ReasonCodeEntity>(
+                  value: _reasonCode,
+                  data: RepositoryProvider.of<ReasonCodeRepository>(context)
+                      .getReasonCodeByTypeCode("RETURN")
+                      .map((e) => DropDownData<ReasonCodeEntity>(
+                          key: e, value: e.description))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _reasonCode = val;
+                      isValid = _isValid() != null;
+                    });
+                  },
+                  label: 'Reason',
+                  validator: ReturnFormValidator.validateReasonCode,
+                ),
+              if (_checked)
+                CustomTextField(
+                  label: 'Comment',
+                  onValueChange: (value) {
+                    setState(() {
+                      comment = value;
+                    });
+                  },
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildMobile();
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../config/theme_settings.dart';
 import '../../util/text_input_formatter/currency_text_input_formatter.dart';
 import '../../widgets/appbar_leading.dart';
+import '../return_order/return_order_view_mobile.dart';
 import 'bloc/create_new_receipt_bloc.dart';
 import 'new_receipt_view.dart';
 import 'new_recipt_desktop_view.dart';
@@ -61,6 +62,45 @@ class NewReceiptMobileView extends StatelessWidget {
                   );
                 },
               ),
+              BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+                builder: (context, state) {
+                  return Positioned(
+                      top: 20,
+                      right: 16,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) =>
+                                  ReturnOrderViewMobile(
+                                      currentOrderLineItem:
+                                      BlocProvider
+                                          .of<CreateNewReceiptBloc>(context)
+                                          .state
+                                          .lineItem),
+                            ),
+                          ).then((value) => {
+                            if (value != null) {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnReturnLineItemEvent(value))
+                            }
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColor.primary,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          height: 40,
+                          width: 40,
+                          child: const Icon(
+                            Icons.assignment_return_outlined,
+                            color: AppColor.iconColor,
+                          ),
+                        ),
+                      ));
+                },
+              )
             ],
           ),
           bottomNavigationBar: const Padding(
@@ -75,6 +115,7 @@ class NewReceiptMobileView extends StatelessWidget {
 
 class AcceptTenderDisplayMobile extends StatelessWidget {
   final Function onTender;
+
   const AcceptTenderDisplayMobile({Key? key, required this.onTender})
       : super(key: key);
 
@@ -85,8 +126,8 @@ class AcceptTenderDisplayMobile extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
             body: TenderDisplayDesktop(
-          onTender: onTender,
-        )),
+              onTender: onTender,
+            )),
       ),
     );
   }
@@ -116,7 +157,6 @@ class _CashTenderState extends State<CashTender> {
             keyboardType: TextInputType.number,
             style: const TextStyle(
                 fontSize: 40, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-            inputFormatters: [],
           ),
         ],
       ),
