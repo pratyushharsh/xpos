@@ -65,7 +65,7 @@ class ReceiptHeaderCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    receipt.customerName ?? 'Sale Receipt',
+                    receipt.customerId ?? 'Sale Receipt',
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   Text(

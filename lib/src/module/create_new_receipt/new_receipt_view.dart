@@ -168,10 +168,10 @@ class BuildLineItem extends StatelessWidget {
           itemBuilder: (itemBuilder, idx) {
             if (idx < state.lineItem.length) {
               return InkWell(
-                onTap: () {
+                onTap: !state.lineItem[idx].returnFlag ? () {
                   onTap(context, state.lineItem[idx],
                       state.productMap[state.lineItem[idx].itemId]);
-                },
+                } : () {},
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(

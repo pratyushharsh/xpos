@@ -14,8 +14,9 @@ class ReturnOrderBloc extends Bloc<ReturnOrderEvent, ReturnOrderState> {
   final log = Logger('ReturnOrderBloc');
 
   TransactionRepository transactionRepository;
+  List<TransactionLineItemEntity> currentOrderLineItem;
 
-  ReturnOrderBloc({required this.transactionRepository})
+  ReturnOrderBloc({required this.transactionRepository, required this.currentOrderLineItem})
       : super(ReturnOrderState()) {
     on<SearchOrderToReturn>(_onSearchReturnOrderEvent);
     on<RemoveLineItemFromReturn>(_onRemoveLineItemToReturn);
@@ -38,6 +39,21 @@ class ReturnOrderBloc extends Bloc<ReturnOrderEvent, ReturnOrderState> {
 
       // Find the Already returned order.
       Map<String, double> alreadyReturnedOrderMap = {};
+
+      for (var lineItem in currentOrderLineItem) {
+        if (lineItem.returnFlag) {
+          if (lineItem.originalTransSeq == event.orderId) {
+            var key = "${lineItem.originalLineItemSeq}#${lineItem.itemId}";
+            if (alreadyReturnedOrderMap.containsKey(key)) {
+              alreadyReturnedOrderMap[key] =
+                  alreadyReturnedOrderMap[key]! + lineItem.quantity;
+            } else {
+              alreadyReturnedOrderMap[key] = lineItem.quantity;
+            }
+          }
+        }
+      }
+
       for (var element in alreadyReturnedOrder) {
         var key = "${element.originalLineItemSeq}#${element.itemId}";
 

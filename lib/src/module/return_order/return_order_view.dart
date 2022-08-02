@@ -15,12 +15,14 @@ import 'return_form_validation.dart';
 // Step To Return A Order
 
 class ReturnOrderView extends StatelessWidget {
-  const ReturnOrderView({Key? key}) : super(key: key);
+  final List<TransactionLineItemEntity> currentOrderLineItem;
+  const ReturnOrderView({Key? key, required this.currentOrderLineItem}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ReturnOrderBloc(
+        currentOrderLineItem: currentOrderLineItem,
           transactionRepository: RepositoryProvider.of(context)),
       child: Column(
         children: [
