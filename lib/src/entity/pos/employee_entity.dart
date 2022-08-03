@@ -19,6 +19,8 @@ class EmployeeEntity {
   String? gender;
   String? picture;
   DateTime? birthDate;
+  String? allocatedStore;
+  String? currentStore;
 
   EmployeeEntity({
       this.employeeId,
@@ -30,5 +32,7 @@ class EmployeeEntity {
       required this.phone,
       this.gender,
       this.picture,
-      this.birthDate});
+      this.birthDate,
+      this.allocatedStore,
+      this.currentStore});
 }

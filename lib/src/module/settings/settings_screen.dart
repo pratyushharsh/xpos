@@ -39,9 +39,7 @@ class SettingsScreen extends StatelessWidget {
                     subtext: "pratyushharsh2015@gmail.com",
                     onTap: () {}),
                 SettingsItem(
-                    text: "Phone", subtext: "+91 9430123120", onTap: () {
-
-                }),
+                    text: "Phone", subtext: "+91 9430123120", onTap: () {}),
               ],
             ),
           ),
@@ -54,21 +52,28 @@ class SettingsScreen extends StatelessWidget {
               subtitle: LocaleKeys.settingsStoreDescription.tr(),
               icon: Icons.home_repair_service,
               children: [
+                SettingsItem(text: "Employee Maintenance", onTap: () {}),
                 SettingsItem(text: "Feature Settings", onTap: () {}),
-                SettingsItem(text: "Change Locale", onTap: () {
-                  Navigator.of(context).pushNamed(RouteConfig.localeScreen).then((value) {
-                    print('Locale changed : $value');
-                    if (value != null && value is Locale) {
-                      print('Setting Locale changed : $value');
-                      EasyLocalization.of(context)?.setLocale(value);
-                    }
-                  });
-                }),
-                SettingsItem(text: "Tax Configuration", onTap: () {
-                  Navigator.of(context).pushNamed(RouteConfig.taxConfigurationScreen);
-                }),
-                SettingsItem(text: "Receipt Config", onTap: () {
-                }),
+                SettingsItem(
+                    text: "Change Locale",
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(RouteConfig.localeScreen)
+                          .then((value) {
+                        print('Locale changed : $value');
+                        if (value != null && value is Locale) {
+                          print('Setting Locale changed : $value');
+                          EasyLocalization.of(context)?.setLocale(value);
+                        }
+                      });
+                    }),
+                SettingsItem(
+                    text: "Tax Configuration",
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(RouteConfig.taxConfigurationScreen);
+                    }),
+                SettingsItem(text: "Receipt Config", onTap: () {}),
               ],
             ),
           ),
@@ -81,13 +86,24 @@ class SettingsScreen extends StatelessWidget {
               subtitle: LocaleKeys.settingsSettingsDescription.tr(),
               icon: Icons.settings,
               children: [
-                SettingsItem(text: "Sync Data", onTap: () async {
-                  BlocProvider.of<BackgroundSyncBloc>(context).add(SyncAllConfigDataEvent());
-                }),
-                SettingsItem(text: "Invoice Setting", onTap: () {}),
-                SettingsItem(text: "Receipt Setting", onTap: () {
-                  Navigator.of(context).pushNamed(RouteConfig.receiptSettingViewScreen);
-                }),
+                SettingsItem(
+                    text: "Sync Data",
+                    onTap: () async {
+                      BlocProvider.of<BackgroundSyncBloc>(context)
+                          .add(SyncAllConfigDataEvent());
+                    }),
+                SettingsItem(
+                    text: "Invoice Setting",
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(RouteConfig.invoiceSettingViewScreen);
+                    }),
+                SettingsItem(
+                    text: "Receipt Setting",
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(RouteConfig.receiptSettingViewScreen);
+                    }),
               ],
             ),
           ),
@@ -100,12 +116,14 @@ class SettingsScreen extends StatelessWidget {
               subtitle: LocaleKeys.settingsHelpDescription.tr(),
               icon: Icons.mail_rounded,
               children: [
-                SettingsItem(text: "Load Sample Data", onTap: () {
-                  BlocProvider.of<BackgroundSyncBloc>(context).add(LoadSampleData());
-                }),
+                SettingsItem(
+                    text: "Load Sample Data",
+                    onTap: () {
+                      BlocProvider.of<BackgroundSyncBloc>(context)
+                          .add(LoadSampleData());
+                    }),
                 SettingsItem(text: "FAQ and Videos", onTap: () {}),
-                SettingsItem(text: "Contact us", onTap: () {
-                }),
+                SettingsItem(text: "Contact us", onTap: () {}),
               ],
             ),
           ),
@@ -113,9 +131,11 @@ class SettingsScreen extends StatelessWidget {
             height: 50,
           ),
           RejectButton(
-              label: "Log Out", onPressed: () {
-            BlocProvider.of<AuthenticationBloc>(context).add(LogOutUserEvent());
-          }),
+              label: "Log Out",
+              onPressed: () {
+                BlocProvider.of<AuthenticationBloc>(context)
+                    .add(LogOutUserEvent());
+              }),
           const SizedBox(
             height: 300,
           ),
@@ -136,7 +156,8 @@ class ProfileCard extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                Navigator.of(context).pushNamed(RouteConfig.businessViewScreen, arguments: state.store?.rtlLocId);
+                Navigator.of(context).pushNamed(RouteConfig.businessViewScreen,
+                    arguments: state.store?.rtlLocId);
               },
               child: const Hero(
                 tag: "business-logo",
@@ -238,7 +259,7 @@ class SectionWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(17),
           child: Card(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
             elevation: 0,
             margin: const EdgeInsets.all(0),
             child: ListView.builder(
@@ -351,15 +372,20 @@ class AccountWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(17),
           child: Card(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
             elevation: 0,
             margin: const EdgeInsets.all(0),
             child: InkWell(
               onTap: () {
-                Navigator.of(context).pushNamed(RouteConfig.employeeDetailScreen);
+                Navigator.of(context).pushNamed(
+                    RouteConfig.employeeDetailScreen,
+                    arguments: BlocProvider.of<AuthenticationBloc>(context)
+                        .state
+                        .employee);
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 child: Column(
                   children: [
                     Container(
@@ -371,12 +397,16 @@ class AccountWidget extends StatelessWidget {
                             child: FadeInImage(
                               height: 40,
                               width: 40,
-                              placeholder: const AssetImage("assets/image/logo-dummy.png"),
+                              placeholder: const AssetImage(
+                                  "assets/image/logo-dummy.png"),
                               image: const NetworkImage(dummyImage),
                               imageErrorBuilder: (ctx, err, trace) {
                                 return const CircleAvatar(
                                   backgroundColor: Colors.red,
-                                  child: Icon(Icons.person, color: Colors.white,),
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                  ),
                                 );
                               },
                             ),
@@ -391,7 +421,8 @@ class AccountWidget extends StatelessWidget {
                                 Text(
                                   "Pratyush Harsh",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold, fontSize: 18),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
                                 ),
                                 Text(
                                   "Owner",
@@ -439,10 +470,11 @@ class Detail {
   final String subtitle;
   final List<SettingsItem> children;
 
-  Detail({required this.icon,
-    required this.title,
-    required this.subtitle,
-    this.children = const []});
+  Detail(
+      {required this.icon,
+      required this.title,
+      required this.subtitle,
+      this.children = const []});
 }
 
 class SettingsItem {

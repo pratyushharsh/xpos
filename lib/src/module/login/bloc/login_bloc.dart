@@ -93,7 +93,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           break;
         }
       }
-      authenticationBloc.add(AuthenticationUserChanged(tmp, stores));
+      authenticationBloc.add(AuthenticationUserChanged(tmp, stores, userAttribute));
     }
   }
 

@@ -18,9 +18,11 @@ import 'package:receipt_generator/src/module/receipt_setting/receipt_setting_vie
 import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.dart';
 import 'package:receipt_generator/src/module/tax/create_edit_tax.dart';
 
+import '../entity/pos/employee_entity.dart';
 import '../module/create_edit_customer/create_edit_customer_view.dart';
 import '../module/create_new_item/modify_line_item_screen.dart';
 import '../module/receipt_display/invoice_display.dart';
+import '../module/receipt_setting/invoice_setting_view.dart';
 
 class RouteConfig {
 
@@ -38,6 +40,7 @@ class RouteConfig {
   static const String invoiceViewScreen = "/invoice-view";
   static const String businessViewScreen = "/business-view";
   static const String receiptSettingViewScreen = "/receipt-setting";
+  static const String invoiceSettingViewScreen = "/invoice-setting";
   static const String customerDetailScreen = "/customer-detail";
   static const String orderSummaryScreen = "/order-summary";
   static const String localeScreen = "/locale-screen";
@@ -100,7 +103,10 @@ class RouteConfig {
       case taxConfigurationScreen:
         return MaterialPageRoute(builder: (_) => const CreateEditTaxView());
       case employeeDetailScreen:
-        return MaterialPageRoute(builder: (_) => const EmployeeDetailView());
+        EmployeeEntity? emp = settings.arguments as EmployeeEntity?;
+        return MaterialPageRoute(builder: (_) => EmployeeDetailView(employee: emp,));
+      case invoiceSettingViewScreen:
+        return MaterialPageRoute(builder: (_) => const InvoiceSettingView());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

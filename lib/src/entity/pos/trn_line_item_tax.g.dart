@@ -16,27 +16,27 @@ extension GetTransactionLineItemTaxModifierCollection on Isar {
 const TransactionLineItemTaxModifierSchema = CollectionSchema(
   name: 'TransactionLineItemTaxModifier',
   schema:
-      '{"name":"TransactionLineItemTaxModifier","idName":"id","properties":[{"name":"authorityId","type":"String"},{"name":"authorityName","type":"String"},{"name":"authorityType","type":"String"},{"name":"originalTaxableAmount","type":"Double"},{"name":"rawTaxAmount","type":"Double"},{"name":"rawTaxPercentage","type":"Double"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"taxLocationId","type":"String"},{"name":"taxOverride","type":"Bool"},{"name":"taxOverrideAmount","type":"Double"},{"name":"taxOverridePercent","type":"Double"},{"name":"taxOverrideReasonCode","type":"String"},{"name":"taxPercent","type":"Double"},{"name":"taxRuleId","type":"String"},{"name":"taxRuleName","type":"String"},{"name":"taxableAmount","type":"Double"},{"name":"transLineItemSeq","type":"Long"},{"name":"transSeq","type":"Long"}],"indexes":[],"links":[]}',
+      '{"name":"TransactionLineItemTaxModifier","idName":"id","properties":[{"name":"authorityId","type":"String"},{"name":"authorityName","type":"String"},{"name":"authorityType","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"originalTaxableAmount","type":"Double"},{"name":"rawTaxAmount","type":"Double"},{"name":"rawTaxPercentage","type":"Double"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"taxLocationId","type":"String"},{"name":"taxOverride","type":"Bool"},{"name":"taxOverrideAmount","type":"Double"},{"name":"taxOverridePercent","type":"Double"},{"name":"taxOverrideReasonCode","type":"String"},{"name":"taxPercent","type":"Double"},{"name":"taxRuleId","type":"String"},{"name":"taxRuleName","type":"String"},{"name":"taxableAmount","type":"Double"},{"name":"transSeq","type":"Long"}],"indexes":[],"links":[]}',
   idName: 'id',
   propertyIds: {
     'authorityId': 0,
     'authorityName': 1,
     'authorityType': 2,
-    'originalTaxableAmount': 3,
-    'rawTaxAmount': 4,
-    'rawTaxPercentage': 5,
-    'taxAmount': 6,
-    'taxGroupId': 7,
-    'taxLocationId': 8,
-    'taxOverride': 9,
-    'taxOverrideAmount': 10,
-    'taxOverridePercent': 11,
-    'taxOverrideReasonCode': 12,
-    'taxPercent': 13,
-    'taxRuleId': 14,
-    'taxRuleName': 15,
-    'taxableAmount': 16,
-    'transLineItemSeq': 17,
+    'lineItemSeq': 3,
+    'originalTaxableAmount': 4,
+    'rawTaxAmount': 5,
+    'rawTaxPercentage': 6,
+    'taxAmount': 7,
+    'taxGroupId': 8,
+    'taxLocationId': 9,
+    'taxOverride': 10,
+    'taxOverrideAmount': 11,
+    'taxOverridePercent': 12,
+    'taxOverrideReasonCode': 13,
+    'taxPercent': 14,
+    'taxRuleId': 15,
+    'taxRuleName': 16,
+    'taxableAmount': 17,
     'transSeq': 18
   },
   listProperties: {},
@@ -87,47 +87,47 @@ void _transactionLineItemTaxModifierSerializeNative(
   final value2 = object.authorityType;
   final _authorityType = IsarBinaryWriter.utf8Encoder.convert(value2);
   dynamicSize += (_authorityType.length) as int;
-  final value3 = object.originalTaxableAmount;
-  final _originalTaxableAmount = value3;
-  final value4 = object.rawTaxAmount;
-  final _rawTaxAmount = value4;
-  final value5 = object.rawTaxPercentage;
-  final _rawTaxPercentage = value5;
-  final value6 = object.taxAmount;
-  final _taxAmount = value6;
-  final value7 = object.taxGroupId;
-  final _taxGroupId = IsarBinaryWriter.utf8Encoder.convert(value7);
+  final value3 = object.lineItemSeq;
+  final _lineItemSeq = value3;
+  final value4 = object.originalTaxableAmount;
+  final _originalTaxableAmount = value4;
+  final value5 = object.rawTaxAmount;
+  final _rawTaxAmount = value5;
+  final value6 = object.rawTaxPercentage;
+  final _rawTaxPercentage = value6;
+  final value7 = object.taxAmount;
+  final _taxAmount = value7;
+  final value8 = object.taxGroupId;
+  final _taxGroupId = IsarBinaryWriter.utf8Encoder.convert(value8);
   dynamicSize += (_taxGroupId.length) as int;
-  final value8 = object.taxLocationId;
+  final value9 = object.taxLocationId;
   IsarUint8List? _taxLocationId;
-  if (value8 != null) {
-    _taxLocationId = IsarBinaryWriter.utf8Encoder.convert(value8);
+  if (value9 != null) {
+    _taxLocationId = IsarBinaryWriter.utf8Encoder.convert(value9);
   }
   dynamicSize += (_taxLocationId?.length ?? 0) as int;
-  final value9 = object.taxOverride;
-  final _taxOverride = value9;
-  final value10 = object.taxOverrideAmount;
-  final _taxOverrideAmount = value10;
-  final value11 = object.taxOverridePercent;
-  final _taxOverridePercent = value11;
-  final value12 = object.taxOverrideReasonCode;
+  final value10 = object.taxOverride;
+  final _taxOverride = value10;
+  final value11 = object.taxOverrideAmount;
+  final _taxOverrideAmount = value11;
+  final value12 = object.taxOverridePercent;
+  final _taxOverridePercent = value12;
+  final value13 = object.taxOverrideReasonCode;
   IsarUint8List? _taxOverrideReasonCode;
-  if (value12 != null) {
-    _taxOverrideReasonCode = IsarBinaryWriter.utf8Encoder.convert(value12);
+  if (value13 != null) {
+    _taxOverrideReasonCode = IsarBinaryWriter.utf8Encoder.convert(value13);
   }
   dynamicSize += (_taxOverrideReasonCode?.length ?? 0) as int;
-  final value13 = object.taxPercent;
-  final _taxPercent = value13;
-  final value14 = object.taxRuleId;
-  final _taxRuleId = IsarBinaryWriter.utf8Encoder.convert(value14);
+  final value14 = object.taxPercent;
+  final _taxPercent = value14;
+  final value15 = object.taxRuleId;
+  final _taxRuleId = IsarBinaryWriter.utf8Encoder.convert(value15);
   dynamicSize += (_taxRuleId.length) as int;
-  final value15 = object.taxRuleName;
-  final _taxRuleName = IsarBinaryWriter.utf8Encoder.convert(value15);
+  final value16 = object.taxRuleName;
+  final _taxRuleName = IsarBinaryWriter.utf8Encoder.convert(value16);
   dynamicSize += (_taxRuleName.length) as int;
-  final value16 = object.taxableAmount;
-  final _taxableAmount = value16;
-  final value17 = object.lineItemSeq;
-  final _transLineItemSeq = value17;
+  final value17 = object.taxableAmount;
+  final _taxableAmount = value17;
   final value18 = object.transSeq;
   final _transSeq = value18;
   final size = staticSize + dynamicSize;
@@ -139,21 +139,21 @@ void _transactionLineItemTaxModifierSerializeNative(
   writer.writeBytes(offsets[0], _authorityId);
   writer.writeBytes(offsets[1], _authorityName);
   writer.writeBytes(offsets[2], _authorityType);
-  writer.writeDouble(offsets[3], _originalTaxableAmount);
-  writer.writeDouble(offsets[4], _rawTaxAmount);
-  writer.writeDouble(offsets[5], _rawTaxPercentage);
-  writer.writeDouble(offsets[6], _taxAmount);
-  writer.writeBytes(offsets[7], _taxGroupId);
-  writer.writeBytes(offsets[8], _taxLocationId);
-  writer.writeBool(offsets[9], _taxOverride);
-  writer.writeDouble(offsets[10], _taxOverrideAmount);
-  writer.writeDouble(offsets[11], _taxOverridePercent);
-  writer.writeBytes(offsets[12], _taxOverrideReasonCode);
-  writer.writeDouble(offsets[13], _taxPercent);
-  writer.writeBytes(offsets[14], _taxRuleId);
-  writer.writeBytes(offsets[15], _taxRuleName);
-  writer.writeDouble(offsets[16], _taxableAmount);
-  writer.writeLong(offsets[17], _transLineItemSeq);
+  writer.writeLong(offsets[3], _lineItemSeq);
+  writer.writeDouble(offsets[4], _originalTaxableAmount);
+  writer.writeDouble(offsets[5], _rawTaxAmount);
+  writer.writeDouble(offsets[6], _rawTaxPercentage);
+  writer.writeDouble(offsets[7], _taxAmount);
+  writer.writeBytes(offsets[8], _taxGroupId);
+  writer.writeBytes(offsets[9], _taxLocationId);
+  writer.writeBool(offsets[10], _taxOverride);
+  writer.writeDouble(offsets[11], _taxOverrideAmount);
+  writer.writeDouble(offsets[12], _taxOverridePercent);
+  writer.writeBytes(offsets[13], _taxOverrideReasonCode);
+  writer.writeDouble(offsets[14], _taxPercent);
+  writer.writeBytes(offsets[15], _taxRuleId);
+  writer.writeBytes(offsets[16], _taxRuleName);
+  writer.writeDouble(offsets[17], _taxableAmount);
   writer.writeLong(offsets[18], _transSeq);
 }
 
@@ -167,21 +167,21 @@ TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeNative(
     authorityName: reader.readString(offsets[1]),
     authorityType: reader.readString(offsets[2]),
     id: id,
-    originalTaxableAmount: reader.readDouble(offsets[3]),
-    rawTaxAmount: reader.readDouble(offsets[4]),
-    rawTaxPercentage: reader.readDouble(offsets[5]),
-    taxAmount: reader.readDouble(offsets[6]),
-    taxGroupId: reader.readString(offsets[7]),
-    taxLocationId: reader.readStringOrNull(offsets[8]),
-    taxOverride: reader.readBool(offsets[9]),
-    taxOverrideAmount: reader.readDoubleOrNull(offsets[10]),
-    taxOverridePercent: reader.readDoubleOrNull(offsets[11]),
-    taxOverrideReasonCode: reader.readStringOrNull(offsets[12]),
-    taxPercent: reader.readDouble(offsets[13]),
-    taxRuleId: reader.readString(offsets[14]),
-    taxRuleName: reader.readString(offsets[15]),
-    taxableAmount: reader.readDouble(offsets[16]),
-    lineItemSeq: reader.readLong(offsets[17]),
+    lineItemSeq: reader.readLong(offsets[3]),
+    originalTaxableAmount: reader.readDouble(offsets[4]),
+    rawTaxAmount: reader.readDouble(offsets[5]),
+    rawTaxPercentage: reader.readDouble(offsets[6]),
+    taxAmount: reader.readDouble(offsets[7]),
+    taxGroupId: reader.readString(offsets[8]),
+    taxLocationId: reader.readStringOrNull(offsets[9]),
+    taxOverride: reader.readBool(offsets[10]),
+    taxOverrideAmount: reader.readDoubleOrNull(offsets[11]),
+    taxOverridePercent: reader.readDoubleOrNull(offsets[12]),
+    taxOverrideReasonCode: reader.readStringOrNull(offsets[13]),
+    taxPercent: reader.readDouble(offsets[14]),
+    taxRuleId: reader.readString(offsets[15]),
+    taxRuleName: reader.readString(offsets[16]),
+    taxableAmount: reader.readDouble(offsets[17]),
     transSeq: reader.readLong(offsets[18]),
   );
   return object;
@@ -199,7 +199,7 @@ P _transactionLineItemTaxModifierDeserializePropNative<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
       return (reader.readDouble(offset)) as P;
     case 5:
@@ -207,27 +207,27 @@ P _transactionLineItemTaxModifierDeserializePropNative<P>(
     case 6:
       return (reader.readDouble(offset)) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 9:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 11:
       return (reader.readDoubleOrNull(offset)) as P;
     case 12:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 13:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 14:
-      return (reader.readString(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 15:
       return (reader.readString(offset)) as P;
     case 16:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 17:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 18:
       return (reader.readLong(offset)) as P;
     default:
@@ -243,6 +243,7 @@ dynamic _transactionLineItemTaxModifierSerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'authorityName', object.authorityName);
   IsarNative.jsObjectSet(jsObj, 'authorityType', object.authorityType);
   IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'lineItemSeq', object.lineItemSeq);
   IsarNative.jsObjectSet(
       jsObj, 'originalTaxableAmount', object.originalTaxableAmount);
   IsarNative.jsObjectSet(jsObj, 'rawTaxAmount', object.rawTaxAmount);
@@ -260,7 +261,6 @@ dynamic _transactionLineItemTaxModifierSerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'taxRuleId', object.taxRuleId);
   IsarNative.jsObjectSet(jsObj, 'taxRuleName', object.taxRuleName);
   IsarNative.jsObjectSet(jsObj, 'taxableAmount', object.taxableAmount);
-  IsarNative.jsObjectSet(jsObj, 'transLineItemSeq', object.lineItemSeq);
   IsarNative.jsObjectSet(jsObj, 'transSeq', object.transSeq);
   return jsObj;
 }
@@ -272,6 +272,8 @@ TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeWeb(
     authorityName: IsarNative.jsObjectGet(jsObj, 'authorityName') ?? '',
     authorityType: IsarNative.jsObjectGet(jsObj, 'authorityType') ?? '',
     id: IsarNative.jsObjectGet(jsObj, 'id'),
+    lineItemSeq:
+        IsarNative.jsObjectGet(jsObj, 'lineItemSeq') ?? double.negativeInfinity,
     originalTaxableAmount:
         IsarNative.jsObjectGet(jsObj, 'originalTaxableAmount') ??
             double.negativeInfinity,
@@ -294,8 +296,6 @@ TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeWeb(
     taxRuleName: IsarNative.jsObjectGet(jsObj, 'taxRuleName') ?? '',
     taxableAmount: IsarNative.jsObjectGet(jsObj, 'taxableAmount') ??
         double.negativeInfinity,
-    lineItemSeq: IsarNative.jsObjectGet(jsObj, 'transLineItemSeq') ??
-        double.negativeInfinity,
     transSeq:
         IsarNative.jsObjectGet(jsObj, 'transSeq') ?? double.negativeInfinity,
   );
@@ -313,6 +313,9 @@ P _transactionLineItemTaxModifierDeserializePropWeb<P>(
       return (IsarNative.jsObjectGet(jsObj, 'authorityType') ?? '') as P;
     case 'id':
       return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'lineItemSeq':
+      return (IsarNative.jsObjectGet(jsObj, 'lineItemSeq') ??
+          double.negativeInfinity) as P;
     case 'originalTaxableAmount':
       return (IsarNative.jsObjectGet(jsObj, 'originalTaxableAmount') ??
           double.negativeInfinity) as P;
@@ -346,9 +349,6 @@ P _transactionLineItemTaxModifierDeserializePropWeb<P>(
       return (IsarNative.jsObjectGet(jsObj, 'taxRuleName') ?? '') as P;
     case 'taxableAmount':
       return (IsarNative.jsObjectGet(jsObj, 'taxableAmount') ??
-          double.negativeInfinity) as P;
-    case 'transLineItemSeq':
-      return (IsarNative.jsObjectGet(jsObj, 'transLineItemSeq') ??
           double.negativeInfinity) as P;
     case 'transSeq':
       return (IsarNative.jsObjectGet(jsObj, 'transSeq') ??
@@ -814,6 +814,57 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
   }) {
     return addFilterConditionInternal(FilterCondition.between(
       property: 'id',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> lineItemSeqEqualTo(int value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'lineItemSeq',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> lineItemSeqGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'lineItemSeq',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> lineItemSeqLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'lineItemSeq',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> lineItemSeqBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'lineItemSeq',
       lower: lower,
       includeLower: includeLower,
       upper: upper,
@@ -1665,57 +1716,6 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> transLineItemSeqEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'transLineItemSeq',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> transLineItemSeqGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'transLineItemSeq',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> transLineItemSeqLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'transLineItemSeq',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> transLineItemSeqBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'transLineItemSeq',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> transSeqEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
@@ -1812,6 +1812,16 @@ extension TransactionLineItemTaxModifierQueryWhereSortBy on QueryBuilder<
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterSortBy> sortByIdDesc() {
     return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterSortBy> sortByLineItemSeq() {
+    return addSortByInternal('lineItemSeq', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterSortBy> sortByLineItemSeqDesc() {
+    return addSortByInternal('lineItemSeq', Sort.desc);
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1955,16 +1965,6 @@ extension TransactionLineItemTaxModifierQueryWhereSortBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTransLineItemSeq() {
-    return addSortByInternal('transLineItemSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTransLineItemSeqDesc() {
-    return addSortByInternal('transLineItemSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterSortBy> sortByTransSeq() {
     return addSortByInternal('transSeq', Sort.asc);
   }
@@ -2017,6 +2017,16 @@ extension TransactionLineItemTaxModifierQueryWhereSortThenBy on QueryBuilder<
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterSortBy> thenByIdDesc() {
     return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterSortBy> thenByLineItemSeq() {
+    return addSortByInternal('lineItemSeq', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterSortBy> thenByLineItemSeqDesc() {
+    return addSortByInternal('lineItemSeq', Sort.desc);
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -2160,16 +2170,6 @@ extension TransactionLineItemTaxModifierQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTransLineItemSeq() {
-    return addSortByInternal('transLineItemSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTransLineItemSeqDesc() {
-    return addSortByInternal('transLineItemSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterSortBy> thenByTransSeq() {
     return addSortByInternal('transSeq', Sort.asc);
   }
@@ -2200,6 +2200,11 @@ extension TransactionLineItemTaxModifierQueryWhereDistinct on QueryBuilder<
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QDistinct> distinctById() {
     return addDistinctByInternal('id');
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QDistinct> distinctByLineItemSeq() {
+    return addDistinctByInternal('lineItemSeq');
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -2274,11 +2279,6 @@ extension TransactionLineItemTaxModifierQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTransLineItemSeq() {
-    return addDistinctByInternal('transLineItemSeq');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QDistinct> distinctByTransSeq() {
     return addDistinctByInternal('transSeq');
   }
@@ -2306,6 +2306,11 @@ extension TransactionLineItemTaxModifierQueryProperty on QueryBuilder<
   QueryBuilder<TransactionLineItemTaxModifier, int?, QQueryOperations>
       idProperty() {
     return addPropertyNameInternal('id');
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, int, QQueryOperations>
+      lineItemSeqProperty() {
+    return addPropertyNameInternal('lineItemSeq');
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, double, QQueryOperations>
@@ -2376,11 +2381,6 @@ extension TransactionLineItemTaxModifierQueryProperty on QueryBuilder<
   QueryBuilder<TransactionLineItemTaxModifier, double, QQueryOperations>
       taxableAmountProperty() {
     return addPropertyNameInternal('taxableAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, int, QQueryOperations>
-      transLineItemSeqProperty() {
-    return addPropertyNameInternal('transLineItemSeq');
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, int, QQueryOperations>

@@ -15,19 +15,21 @@ extension GetEmployeeEntityCollection on Isar {
 const EmployeeEntitySchema = CollectionSchema(
   name: 'EmployeeEntity',
   schema:
-      '{"name":"EmployeeEntity","idName":"id","properties":[{"name":"birthDate","type":"Long"},{"name":"email","type":"String"},{"name":"employeeId","type":"String"},{"name":"firstName","type":"String"},{"name":"gender","type":"String"},{"name":"lastName","type":"String"},{"name":"locale","type":"String"},{"name":"middleName","type":"String"},{"name":"phone","type":"String"},{"name":"picture","type":"String"}],"indexes":[{"name":"employeeId","unique":true,"properties":[{"name":"employeeId","type":"Value","caseSensitive":true}]}],"links":[]}',
+      '{"name":"EmployeeEntity","idName":"id","properties":[{"name":"allocatedStore","type":"String"},{"name":"birthDate","type":"Long"},{"name":"currentStore","type":"String"},{"name":"email","type":"String"},{"name":"employeeId","type":"String"},{"name":"firstName","type":"String"},{"name":"gender","type":"String"},{"name":"lastName","type":"String"},{"name":"locale","type":"String"},{"name":"middleName","type":"String"},{"name":"phone","type":"String"},{"name":"picture","type":"String"}],"indexes":[{"name":"employeeId","unique":true,"properties":[{"name":"employeeId","type":"Value","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
-    'birthDate': 0,
-    'email': 1,
-    'employeeId': 2,
-    'firstName': 3,
-    'gender': 4,
-    'lastName': 5,
-    'locale': 6,
-    'middleName': 7,
-    'phone': 8,
-    'picture': 9
+    'allocatedStore': 0,
+    'birthDate': 1,
+    'currentStore': 2,
+    'email': 3,
+    'employeeId': 4,
+    'firstName': 5,
+    'gender': 6,
+    'lastName': 7,
+    'locale': 8,
+    'middleName': 9,
+    'phone': 10,
+    'picture': 11
   },
   listProperties: {},
   indexIds: {'employeeId': 0},
@@ -75,57 +77,69 @@ void _employeeEntitySerializeNative(
     List<int> offsets,
     AdapterAlloc alloc) {
   var dynamicSize = 0;
-  final value0 = object.birthDate;
-  final _birthDate = value0;
-  final value1 = object.email;
+  final value0 = object.allocatedStore;
+  IsarUint8List? _allocatedStore;
+  if (value0 != null) {
+    _allocatedStore = IsarBinaryWriter.utf8Encoder.convert(value0);
+  }
+  dynamicSize += (_allocatedStore?.length ?? 0) as int;
+  final value1 = object.birthDate;
+  final _birthDate = value1;
+  final value2 = object.currentStore;
+  IsarUint8List? _currentStore;
+  if (value2 != null) {
+    _currentStore = IsarBinaryWriter.utf8Encoder.convert(value2);
+  }
+  dynamicSize += (_currentStore?.length ?? 0) as int;
+  final value3 = object.email;
   IsarUint8List? _email;
-  if (value1 != null) {
-    _email = IsarBinaryWriter.utf8Encoder.convert(value1);
+  if (value3 != null) {
+    _email = IsarBinaryWriter.utf8Encoder.convert(value3);
   }
   dynamicSize += (_email?.length ?? 0) as int;
-  final value2 = object.employeeId;
+  final value4 = object.employeeId;
   IsarUint8List? _employeeId;
-  if (value2 != null) {
-    _employeeId = IsarBinaryWriter.utf8Encoder.convert(value2);
+  if (value4 != null) {
+    _employeeId = IsarBinaryWriter.utf8Encoder.convert(value4);
   }
   dynamicSize += (_employeeId?.length ?? 0) as int;
-  final value3 = object.firstName;
+  final value5 = object.firstName;
   IsarUint8List? _firstName;
-  if (value3 != null) {
-    _firstName = IsarBinaryWriter.utf8Encoder.convert(value3);
+  if (value5 != null) {
+    _firstName = IsarBinaryWriter.utf8Encoder.convert(value5);
   }
   dynamicSize += (_firstName?.length ?? 0) as int;
-  final value4 = object.gender;
+  final value6 = object.gender;
   IsarUint8List? _gender;
-  if (value4 != null) {
-    _gender = IsarBinaryWriter.utf8Encoder.convert(value4);
+  if (value6 != null) {
+    _gender = IsarBinaryWriter.utf8Encoder.convert(value6);
   }
   dynamicSize += (_gender?.length ?? 0) as int;
-  final value5 = object.lastName;
+  final value7 = object.lastName;
   IsarUint8List? _lastName;
-  if (value5 != null) {
-    _lastName = IsarBinaryWriter.utf8Encoder.convert(value5);
+  if (value7 != null) {
+    _lastName = IsarBinaryWriter.utf8Encoder.convert(value7);
   }
   dynamicSize += (_lastName?.length ?? 0) as int;
-  final value6 = object.locale;
+  final value8 = object.locale;
   IsarUint8List? _locale;
-  if (value6 != null) {
-    _locale = IsarBinaryWriter.utf8Encoder.convert(value6);
+  if (value8 != null) {
+    _locale = IsarBinaryWriter.utf8Encoder.convert(value8);
   }
   dynamicSize += (_locale?.length ?? 0) as int;
-  final value7 = object.middleName;
+  final value9 = object.middleName;
   IsarUint8List? _middleName;
-  if (value7 != null) {
-    _middleName = IsarBinaryWriter.utf8Encoder.convert(value7);
+  if (value9 != null) {
+    _middleName = IsarBinaryWriter.utf8Encoder.convert(value9);
   }
   dynamicSize += (_middleName?.length ?? 0) as int;
-  final value8 = object.phone;
-  final _phone = IsarBinaryWriter.utf8Encoder.convert(value8);
+  final value10 = object.phone;
+  final _phone = IsarBinaryWriter.utf8Encoder.convert(value10);
   dynamicSize += (_phone.length) as int;
-  final value9 = object.picture;
+  final value11 = object.picture;
   IsarUint8List? _picture;
-  if (value9 != null) {
-    _picture = IsarBinaryWriter.utf8Encoder.convert(value9);
+  if (value11 != null) {
+    _picture = IsarBinaryWriter.utf8Encoder.convert(value11);
   }
   dynamicSize += (_picture?.length ?? 0) as int;
   final size = staticSize + dynamicSize;
@@ -134,16 +148,18 @@ void _employeeEntitySerializeNative(
   rawObj.buffer_length = size;
   final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
   final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeDateTime(offsets[0], _birthDate);
-  writer.writeBytes(offsets[1], _email);
-  writer.writeBytes(offsets[2], _employeeId);
-  writer.writeBytes(offsets[3], _firstName);
-  writer.writeBytes(offsets[4], _gender);
-  writer.writeBytes(offsets[5], _lastName);
-  writer.writeBytes(offsets[6], _locale);
-  writer.writeBytes(offsets[7], _middleName);
-  writer.writeBytes(offsets[8], _phone);
-  writer.writeBytes(offsets[9], _picture);
+  writer.writeBytes(offsets[0], _allocatedStore);
+  writer.writeDateTime(offsets[1], _birthDate);
+  writer.writeBytes(offsets[2], _currentStore);
+  writer.writeBytes(offsets[3], _email);
+  writer.writeBytes(offsets[4], _employeeId);
+  writer.writeBytes(offsets[5], _firstName);
+  writer.writeBytes(offsets[6], _gender);
+  writer.writeBytes(offsets[7], _lastName);
+  writer.writeBytes(offsets[8], _locale);
+  writer.writeBytes(offsets[9], _middleName);
+  writer.writeBytes(offsets[10], _phone);
+  writer.writeBytes(offsets[11], _picture);
 }
 
 EmployeeEntity _employeeEntityDeserializeNative(
@@ -152,16 +168,18 @@ EmployeeEntity _employeeEntityDeserializeNative(
     IsarBinaryReader reader,
     List<int> offsets) {
   final object = EmployeeEntity(
-    birthDate: reader.readDateTimeOrNull(offsets[0]),
-    email: reader.readStringOrNull(offsets[1]),
-    employeeId: reader.readStringOrNull(offsets[2]),
-    firstName: reader.readStringOrNull(offsets[3]),
-    gender: reader.readStringOrNull(offsets[4]),
-    lastName: reader.readStringOrNull(offsets[5]),
-    locale: reader.readStringOrNull(offsets[6]),
-    middleName: reader.readStringOrNull(offsets[7]),
-    phone: reader.readString(offsets[8]),
-    picture: reader.readStringOrNull(offsets[9]),
+    allocatedStore: reader.readStringOrNull(offsets[0]),
+    birthDate: reader.readDateTimeOrNull(offsets[1]),
+    currentStore: reader.readStringOrNull(offsets[2]),
+    email: reader.readStringOrNull(offsets[3]),
+    employeeId: reader.readStringOrNull(offsets[4]),
+    firstName: reader.readStringOrNull(offsets[5]),
+    gender: reader.readStringOrNull(offsets[6]),
+    lastName: reader.readStringOrNull(offsets[7]),
+    locale: reader.readStringOrNull(offsets[8]),
+    middleName: reader.readStringOrNull(offsets[9]),
+    phone: reader.readString(offsets[10]),
+    picture: reader.readStringOrNull(offsets[11]),
   );
   object.id = id;
   return object;
@@ -173,9 +191,9 @@ P _employeeEntityDeserializePropNative<P>(
     case -1:
       return id as P;
     case 0:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 1:
       return (reader.readStringOrNull(offset)) as P;
+    case 1:
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
@@ -189,8 +207,12 @@ P _employeeEntityDeserializePropNative<P>(
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
+      return (reader.readStringOrNull(offset)) as P;
+    case 10:
+      return (reader.readString(offset)) as P;
+    case 11:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
@@ -200,8 +222,10 @@ P _employeeEntityDeserializePropNative<P>(
 dynamic _employeeEntitySerializeWeb(
     IsarCollection<EmployeeEntity> collection, EmployeeEntity object) {
   final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'allocatedStore', object.allocatedStore);
   IsarNative.jsObjectSet(
       jsObj, 'birthDate', object.birthDate?.toUtc().millisecondsSinceEpoch);
+  IsarNative.jsObjectSet(jsObj, 'currentStore', object.currentStore);
   IsarNative.jsObjectSet(jsObj, 'email', object.email);
   IsarNative.jsObjectSet(jsObj, 'employeeId', object.employeeId);
   IsarNative.jsObjectSet(jsObj, 'firstName', object.firstName);
@@ -218,12 +242,14 @@ dynamic _employeeEntitySerializeWeb(
 EmployeeEntity _employeeEntityDeserializeWeb(
     IsarCollection<EmployeeEntity> collection, dynamic jsObj) {
   final object = EmployeeEntity(
+    allocatedStore: IsarNative.jsObjectGet(jsObj, 'allocatedStore'),
     birthDate: IsarNative.jsObjectGet(jsObj, 'birthDate') != null
         ? DateTime.fromMillisecondsSinceEpoch(
                 IsarNative.jsObjectGet(jsObj, 'birthDate'),
                 isUtc: true)
             .toLocal()
         : null,
+    currentStore: IsarNative.jsObjectGet(jsObj, 'currentStore'),
     email: IsarNative.jsObjectGet(jsObj, 'email'),
     employeeId: IsarNative.jsObjectGet(jsObj, 'employeeId'),
     firstName: IsarNative.jsObjectGet(jsObj, 'firstName'),
@@ -240,6 +266,8 @@ EmployeeEntity _employeeEntityDeserializeWeb(
 
 P _employeeEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
   switch (propertyName) {
+    case 'allocatedStore':
+      return (IsarNative.jsObjectGet(jsObj, 'allocatedStore')) as P;
     case 'birthDate':
       return (IsarNative.jsObjectGet(jsObj, 'birthDate') != null
           ? DateTime.fromMillisecondsSinceEpoch(
@@ -247,6 +275,8 @@ P _employeeEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
                   isUtc: true)
               .toLocal()
           : null) as P;
+    case 'currentStore':
+      return (IsarNative.jsObjectGet(jsObj, 'currentStore')) as P;
     case 'email':
       return (IsarNative.jsObjectGet(jsObj, 'email')) as P;
     case 'employeeId':
@@ -490,6 +520,122 @@ extension EmployeeEntityQueryWhere
 extension EmployeeEntityQueryFilter
     on QueryBuilder<EmployeeEntity, EmployeeEntity, QFilterCondition> {
   QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      allocatedStoreIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'allocatedStore',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      allocatedStoreEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'allocatedStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      allocatedStoreGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'allocatedStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      allocatedStoreLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'allocatedStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      allocatedStoreBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'allocatedStore',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      allocatedStoreStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'allocatedStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      allocatedStoreEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'allocatedStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      allocatedStoreContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'allocatedStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      allocatedStoreMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'allocatedStore',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
       birthDateIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
@@ -546,6 +692,122 @@ extension EmployeeEntityQueryFilter
       includeLower: includeLower,
       upper: upper,
       includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      currentStoreIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'currentStore',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      currentStoreEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'currentStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      currentStoreGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'currentStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      currentStoreLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'currentStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      currentStoreBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'currentStore',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      currentStoreStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'currentStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      currentStoreEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'currentStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      currentStoreContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'currentStore',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterFilterCondition>
+      currentStoreMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'currentStore',
+      value: pattern,
+      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1649,6 +1911,16 @@ extension EmployeeEntityQueryLinks
 
 extension EmployeeEntityQueryWhereSortBy
     on QueryBuilder<EmployeeEntity, EmployeeEntity, QSortBy> {
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
+      sortByAllocatedStore() {
+    return addSortByInternal('allocatedStore', Sort.asc);
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
+      sortByAllocatedStoreDesc() {
+    return addSortByInternal('allocatedStore', Sort.desc);
+  }
+
   QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy> sortByBirthDate() {
     return addSortByInternal('birthDate', Sort.asc);
   }
@@ -1656,6 +1928,16 @@ extension EmployeeEntityQueryWhereSortBy
   QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
       sortByBirthDateDesc() {
     return addSortByInternal('birthDate', Sort.desc);
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
+      sortByCurrentStore() {
+    return addSortByInternal('currentStore', Sort.asc);
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
+      sortByCurrentStoreDesc() {
+    return addSortByInternal('currentStore', Sort.desc);
   }
 
   QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy> sortByEmail() {
@@ -1750,6 +2032,16 @@ extension EmployeeEntityQueryWhereSortBy
 
 extension EmployeeEntityQueryWhereSortThenBy
     on QueryBuilder<EmployeeEntity, EmployeeEntity, QSortThenBy> {
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
+      thenByAllocatedStore() {
+    return addSortByInternal('allocatedStore', Sort.asc);
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
+      thenByAllocatedStoreDesc() {
+    return addSortByInternal('allocatedStore', Sort.desc);
+  }
+
   QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy> thenByBirthDate() {
     return addSortByInternal('birthDate', Sort.asc);
   }
@@ -1757,6 +2049,16 @@ extension EmployeeEntityQueryWhereSortThenBy
   QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
       thenByBirthDateDesc() {
     return addSortByInternal('birthDate', Sort.desc);
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
+      thenByCurrentStore() {
+    return addSortByInternal('currentStore', Sort.asc);
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy>
+      thenByCurrentStoreDesc() {
+    return addSortByInternal('currentStore', Sort.desc);
   }
 
   QueryBuilder<EmployeeEntity, EmployeeEntity, QAfterSortBy> thenByEmail() {
@@ -1852,8 +2154,19 @@ extension EmployeeEntityQueryWhereSortThenBy
 extension EmployeeEntityQueryWhereDistinct
     on QueryBuilder<EmployeeEntity, EmployeeEntity, QDistinct> {
   QueryBuilder<EmployeeEntity, EmployeeEntity, QDistinct>
+      distinctByAllocatedStore({bool caseSensitive = true}) {
+    return addDistinctByInternal('allocatedStore',
+        caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QDistinct>
       distinctByBirthDate() {
     return addDistinctByInternal('birthDate');
+  }
+
+  QueryBuilder<EmployeeEntity, EmployeeEntity, QDistinct>
+      distinctByCurrentStore({bool caseSensitive = true}) {
+    return addDistinctByInternal('currentStore', caseSensitive: caseSensitive);
   }
 
   QueryBuilder<EmployeeEntity, EmployeeEntity, QDistinct> distinctByEmail(
@@ -1908,9 +2221,19 @@ extension EmployeeEntityQueryWhereDistinct
 
 extension EmployeeEntityQueryProperty
     on QueryBuilder<EmployeeEntity, EmployeeEntity, QQueryProperty> {
+  QueryBuilder<EmployeeEntity, String?, QQueryOperations>
+      allocatedStoreProperty() {
+    return addPropertyNameInternal('allocatedStore');
+  }
+
   QueryBuilder<EmployeeEntity, DateTime?, QQueryOperations>
       birthDateProperty() {
     return addPropertyNameInternal('birthDate');
+  }
+
+  QueryBuilder<EmployeeEntity, String?, QQueryOperations>
+      currentStoreProperty() {
+    return addPropertyNameInternal('currentStore');
   }
 
   QueryBuilder<EmployeeEntity, String?, QQueryOperations> emailProperty() {

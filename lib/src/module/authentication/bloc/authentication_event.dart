@@ -8,8 +8,9 @@ class InitialAuthEvent extends AuthenticationEvent {}
 class AuthenticationUserChanged extends AuthenticationEvent {
   final CognitoUser user;
   final CognitoUserAttribute? stores;
+  final List<CognitoUserAttribute> attributes;
 
-  AuthenticationUserChanged(this.user, this.stores);
+  AuthenticationUserChanged(this.user, this.stores, this.attributes);
 }
 
 class VerifyUserOtpStep extends AuthenticationEvent{
