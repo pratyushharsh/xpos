@@ -28,20 +28,26 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(
             height: 50,
           ),
-          AccountWidget(
-            data: Detail(
-              title: LocaleKeys.settingsAccount.tr(),
-              subtitle: LocaleKeys.settingsAccountDescription.tr(),
-              icon: Icons.sync_alt_outlined,
-              children: [
-                SettingsItem(
-                    text: "Email",
-                    subtext: "pratyushharsh2015@gmail.com",
-                    onTap: () {}),
-                SettingsItem(
-                    text: "Phone", subtext: "+91 9430123120", onTap: () {}),
-              ],
-            ),
+          BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              return AccountWidget(
+                name: "${state.employee?.firstName ?? ""} ${state.employee?.middleName ?? ""} ${state.employee?.lastName ?? ""}",
+                role: "Kachre Wala",
+                data: Detail(
+                  title: LocaleKeys.settingsAccount.tr(),
+                  subtitle: LocaleKeys.settingsAccountDescription.tr(),
+                  icon: Icons.sync_alt_outlined,
+                  children: [
+                    SettingsItem(
+                        text: "Email",
+                        subtext: state.employee?.email,
+                        onTap: () {}),
+                    SettingsItem(
+                        text: "Phone", subtext: state.employee?.phone, onTap: () {}),
+                  ],
+                ),
+              );
+            },
           ),
           const SizedBox(
             height: 40,
@@ -259,7 +265,7 @@ class SectionWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(17),
           child: Card(
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
             elevation: 0,
             margin: const EdgeInsets.all(0),
             child: ListView.builder(
@@ -286,8 +292,10 @@ class SectionWidget extends StatelessWidget {
 
 class AccountWidget extends StatelessWidget {
   final Detail data;
+  final String name;
+  final String role;
 
-  const AccountWidget({Key? key, required this.data}) : super(key: key);
+  const AccountWidget({Key? key, required this.data, required this.name, required this.role}) : super(key: key);
 
   Widget _buildButton(SettingsItem item) {
     return Container(
@@ -372,20 +380,21 @@ class AccountWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(17),
           child: Card(
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
             elevation: 0,
             margin: const EdgeInsets.all(0),
             child: InkWell(
               onTap: () {
                 Navigator.of(context).pushNamed(
                     RouteConfig.employeeDetailScreen,
-                    arguments: BlocProvider.of<AuthenticationBloc>(context)
+                    arguments: BlocProvider
+                        .of<AuthenticationBloc>(context)
                         .state
                         .employee);
               },
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 child: Column(
                   children: [
                     Container(
@@ -417,16 +426,16 @@ class AccountWidget extends StatelessWidget {
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
-                                  "Pratyush Harsh",
-                                  style: TextStyle(
+                                  name,
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
                                 ),
                                 Text(
-                                  "Owner",
-                                  style: TextStyle(
+                                  role,
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
                                       color: AppColor.subtitleColorPrimary),
@@ -470,11 +479,10 @@ class Detail {
   final String subtitle;
   final List<SettingsItem> children;
 
-  Detail(
-      {required this.icon,
-      required this.title,
-      required this.subtitle,
-      this.children = const []});
+  Detail({required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.children = const []});
 }
 
 class SettingsItem {

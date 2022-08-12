@@ -17,6 +17,7 @@ import '../../util/text_input_formatter/money_editing_controller.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/keypad_overlay/keypad_overlay.dart';
 import '../../widgets/timer.dart';
+import '../authentication/bloc/authentication_bloc.dart';
 import '../calculator/calculator.dart';
 import '../item_search/bloc/item_search_bloc.dart';
 import '../return_order/return_order_view.dart';
@@ -71,9 +72,19 @@ class NewReceiptDesktopView extends StatelessWidget {
                         Container(
                           color: Colors.black,
                           height: 40,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [Text("Footer"), TimerWidget()],
+                          child: BlocBuilder<AuthenticationBloc,
+                              AuthenticationState>(
+                            builder: (context, state) {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("${state.employee?.firstName} ${state.employee?.lastName}", style: const TextStyle(color: Colors.white),),
+                                  Text("${state.store?.storeName}", style: const TextStyle(color: Colors.white),),
+                                  const TimerWidget()
+                                ],
+                              );
+                            },
                           ),
                         )
                       ],

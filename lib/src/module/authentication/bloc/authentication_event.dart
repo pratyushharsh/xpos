@@ -26,3 +26,8 @@ class VerifyUserDeviceStep extends AuthenticationEvent {
 }
 
 class LogOutUserEvent extends AuthenticationEvent{}
+
+class ChooseBusinessEvent extends AuthenticationEvent {
+  final UserBusiness business;
+  ChooseBusinessEvent(this.business);
+}

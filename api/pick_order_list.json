@@ -1,0 +1,18 @@
+{
+   "pickId": "",
+   "pickUser": "",
+   "fulfillmentId": "",
+   "customerOrderId": "",
+   "storeId": "",
+   "customerId": "",
+   "orderType": "",
+   "deliveryType": "",
+   "deliveryDate": "",
+   "deliveryWindow": "",
+   "orderStatus": "",
+   "comment": "",
+   "orderDate": "",
+   "shipmentCarrierId": "",
+   "allowPartialDelivery": "",
+   "department": ""
+}

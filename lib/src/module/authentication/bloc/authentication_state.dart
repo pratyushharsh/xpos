@@ -5,6 +5,9 @@ enum AuthenticationStatus {
   unauthenticated,
   verifyUser,
   verifyUserDevice,
+  chooseBusiness,
+  chooseBusinessLoading,
+  chooseBusinessSuccess,
   unknown,
   newUser
 }
@@ -13,11 +16,11 @@ class AuthenticationState extends Equatable {
   final AuthenticationStatus status;
   final CognitoUser? user;
   final EmployeeEntity? employee;
-  final String? userStores;
   final RetailLocationEntity? store;
+  final List<UserBusiness> userBusinesses;
 
   const AuthenticationState._(
-      {required this.status, this.user, this.employee, this.userStores, this.store})
+      {required this.status, this.user, this.employee, this.store, this.userBusinesses = const []})
       : assert(status == AuthenticationStatus.authenticated
             ? store != null
             : true);
@@ -36,10 +39,9 @@ class AuthenticationState extends Equatable {
       : this._(status: AuthenticationStatus.newUser, user: user, employee: employee);
 
   const AuthenticationState.authenticated(
-      CognitoUser user, String userStores, RetailLocationEntity store, EmployeeEntity employee)
+      CognitoUser user, RetailLocationEntity store, EmployeeEntity employee)
       : this._(
             status: AuthenticationStatus.authenticated,
-            userStores: userStores,
             store: store,
             employee: employee,
             user: user);
@@ -49,11 +51,31 @@ class AuthenticationState extends Equatable {
           status: AuthenticationStatus.verifyUser,
         );
 
+  const AuthenticationState.chooseBusiness(List<UserBusiness> business)
+      : this._(
+    status: AuthenticationStatus.chooseBusiness,
+    userBusinesses: business,
+  );
+
   const AuthenticationState.verifyUserDevice()
       : this._(
     status: AuthenticationStatus.verifyUserDevice,
   );
 
+  AuthenticationState copyWith(
+      {AuthenticationStatus? status,
+      CognitoUser? user,
+      EmployeeEntity? employee,
+      RetailLocationEntity? store,
+      List<UserBusiness>? userBusinesses}) {
+    return AuthenticationState._(
+        status: status ?? this.status,
+        user: user ?? this.user,
+        employee: employee ?? this.employee,
+        store: store ?? this.store,
+        userBusinesses: userBusinesses ?? this.userBusinesses);
+  }
+
   @override
-  List<Object?> get props => [status, user, userStores, store];
+  List<Object?> get props => [status, user, store, userBusinesses];
 }

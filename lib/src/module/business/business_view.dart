@@ -29,7 +29,9 @@ class BusinessView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => BusinessBloc(
-          repo: RepositoryProvider.of(context), operation: operation)
+          userPool: RepositoryProvider.of(context),
+          repo: RepositoryProvider.of(context),
+          operation: operation)
         ..add(LoadBusinessDetail(businessId)),
       child: Container(
         color: Colors.white,
@@ -72,7 +74,7 @@ class BusinessView extends StatelessWidget {
                   left: 16,
                   child: AppBarLeading(
                     heading: operation == BusinessOperation.update
-                        ? "Modify Business"
+                        ? "Modify Business# $businessId"
                         : "Create Business",
                     icon: operation == BusinessOperation.update
                         ? Icons.arrow_back
@@ -222,8 +224,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                     )),
                     builder: (context) => const AddressFormDialog(),
                   ).then((value) => {
-                        if (value != null &&
-                            value is Address)
+                        if (value != null && value is Address)
                           {
                             BlocProvider.of<BusinessBloc>(context)
                                 .add(OnBusinessAddressChange(value))
@@ -277,7 +278,6 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
 
   List<CodeValueEntity> countryCode = [];
   List<CodeValueEntity> stateCode = [];
-
 
   @override
   void initState() {
@@ -336,7 +336,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
             children: [
               CustomDropDown<String>(
                 value: _country,
-                data: countryCode.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
+                data: countryCode
+                    .map((e) => DropDownData(key: e.code, value: e.value))
+                    .toList(),
                 onChanged: _onCountryChange,
                 label: 'Country',
               ),
@@ -359,7 +361,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
               ),
               CustomDropDown<String>(
                 value: _state,
-                data: stateCode.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
+                data: stateCode
+                    .map((e) => DropDownData(key: e.code, value: e.value))
+                    .toList(),
                 onChanged: _onStateChange,
                 label: 'State',
               ),
@@ -369,14 +373,12 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                   label: "Save",
                   borderRadius: BorderRadius.circular(5.0),
                   onPressed: () {
-                    Navigator.of(context).pop(
-                      Address(
-                          zipcode: _zipcodeController.text,
-                          building: _buildingController.text,
-                          street: _streetController.text,
-                          city: _cityController.text,
-                          state: _stateController.text)
-                    );
+                    Navigator.of(context).pop(Address(
+                        zipcode: _zipcodeController.text,
+                        building: _buildingController.text,
+                        street: _streetController.text,
+                        city: _cityController.text,
+                        state: _stateController.text));
                   },
                 ),
               )

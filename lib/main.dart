@@ -17,6 +17,7 @@ import 'package:receipt_generator/src/util/helper/rest_api.dart';
 import 'bloc_observer.dart';
 import 'log.dart';
 import 'my_app.dart';
+import 'src/entity/pos/employee_role_entity.dart';
 import 'src/entity/pos/reason_code_entity.dart';
 
 final log = Logger('Main');
@@ -39,6 +40,7 @@ Future<void> main() {
         RetailLocationEntitySchema,
         ContactEntitySchema,
         EmployeeEntitySchema,
+        EmployeeRoleEntitySchema,
         ProductEntitySchema,
         SequenceEntitySchema,
         SettingEntitySchema,

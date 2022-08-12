@@ -29,6 +29,8 @@ import 'package:receipt_generator/src/repositories/tax_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
+import 'src/module/login/choose_create_business_view.dart';
+import 'src/repositories/employee_repository.dart';
 import 'src/repositories/reason_code_repository.dart';
 
 class MyApp extends StatelessWidget {
@@ -89,6 +91,10 @@ class MyApp extends StatelessWidget {
                 TaxRepository(db: database, restClient: restClient),
           ),
           RepositoryProvider(
+            create: (context) =>
+                EmployeeRepository(db: database, restClient: restClient),
+          ),
+          RepositoryProvider(
             lazy: false,
             create: (context) => TaxHelper(taxRepository: RepositoryProvider.of(context)),
           ),
@@ -117,7 +123,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => AuthenticationBloc(
                 userPool: RepositoryProvider.of(context),
-                db: RepositoryProvider.of(context),
+                employeeRepository: RepositoryProvider.of(context),
                 businessRepository: RepositoryProvider.of(context),
                 sync: BlocProvider.of(context))
               ..add(
@@ -176,6 +182,7 @@ class _MyAppViewState extends State<MyAppView> {
                 );
                 break;
               case AuthenticationStatus.unauthenticated:
+              case AuthenticationStatus.unknown:
                 _navigator.pushAndRemoveUntil<void>(
                   LoginView.route(),
                       (route) => false,
@@ -191,6 +198,9 @@ class _MyAppViewState extends State<MyAppView> {
                 break;
               case AuthenticationStatus.verifyUserDevice:
                 _navigator.push(VerifyUserDeviceView.route());
+                break;
+              case AuthenticationStatus.chooseBusiness:
+                _navigator.push(ChooseCreateBusinessView.route());
                 break;
               default:
                 break;

@@ -9,6 +9,8 @@ enum LoginStatus {
   verifyOtpFailure,
   verifyDevice,
   verifyDeviceLoading,
+  chooseBusiness,
+  chooseBusinessLoading,
   success,
   failure
 }
@@ -19,6 +21,7 @@ class LoginState {
   final int retryCount;
   final String error;
   final List<dynamic> deviceList;
+  // final List<dynamic> businessList;
 
   LoginState(
       {this.status = LoginStatus.initial,
