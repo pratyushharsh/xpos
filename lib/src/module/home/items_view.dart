@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/module/list_all_item/list_all_item_view.dart';
 import 'package:receipt_generator/src/widgets/search_bar.dart';
 
+import '../../config/theme_settings.dart';
 import '../list_all_item/bloc/list_all_item_bloc.dart';
 
 class ItemsView extends StatelessWidget {
@@ -27,17 +28,32 @@ class ItemViewWidgets extends StatelessWidget {
     return Stack(
       children: [
         Positioned(
-          top: 5,
-          left: 14,
-          right: 14,
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            color: AppColor.primary,
+            height: 30,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            child: Row(
+              children: const [
+                Text("Products", style: TextStyle(color: Colors.white)),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: 35,
+          left: 10,
+          right: 10,
           child: SearchBar(label: "items", onChanged: (value) {
-            if (value.length > 3) {
-              BlocProvider.of<ListAllItemBloc>(context).add(SearchProductByNameFilter(value));
-            }
-          },),
+            BlocProvider.of<ListAllItemBloc>(context).add(SearchProductByNameFilter(value));
+          },
+            hintText: "Search by Product Id, Name",
+          ),
         ),
         const Positioned(
-          top: 50,
+          top: 80,
           bottom: 0,
           left: 10,
           right: 10,

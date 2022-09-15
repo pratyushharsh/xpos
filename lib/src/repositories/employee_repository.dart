@@ -72,4 +72,20 @@ class EmployeeRepository {
     return null;
   }
 
+  Future<List<StoreEmployee>> getEmployeeByStoreId(String storeId) async {
+    List<StoreEmployee> storeEmployees = [];
+    try {
+      var option = RestOptions(path: '/business/$storeId/user');
+      var rawResp = await restClient.get(restOptions: option);
+      if (rawResp.statusCode == 200) {
+        var decode = json.decode(rawResp.body) as List;
+        for(var item in decode) {
+          storeEmployees.add(StoreEmployee.fromJson(item));
+        }
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return storeEmployees;
+  }
 }

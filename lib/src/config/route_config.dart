@@ -21,6 +21,7 @@ import 'package:receipt_generator/src/module/tax/create_edit_tax.dart';
 import '../entity/pos/employee_entity.dart';
 import '../module/create_edit_customer/create_edit_customer_view.dart';
 import '../module/create_new_item/modify_line_item_screen.dart';
+import '../module/employee/employee_list_view.dart';
 import '../module/receipt_display/invoice_display.dart';
 import '../module/receipt_setting/invoice_setting_view.dart';
 
@@ -46,6 +47,7 @@ class RouteConfig {
   static const String localeScreen = "/locale-screen";
   static const String taxConfigurationScreen = "/tax-config";
   static const String employeeDetailScreen = "/employee-detail";
+  static const String employeeScreen = "/employee";
 
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -107,6 +109,8 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => EmployeeDetailView(employee: emp,));
       case invoiceSettingViewScreen:
         return MaterialPageRoute(builder: (_) => const InvoiceSettingView());
+      case employeeScreen:
+        return MaterialPageRoute(builder: (_) => const EmployeeView());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

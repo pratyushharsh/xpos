@@ -41,31 +41,31 @@ class CreateEditEmployeeBloc extends Bloc<CreateEditEmployeeEvent, CreateEditEmp
   }
 
   void _onEmployeeFirstNameChanged(OnEmployeeFirstNameChanged event, Emitter<CreateEditEmployeeState> emit) {
-    emit(state.copyWith(firstName: event.firstName));
+    emit(state.copyWith(firstName: event.firstName, status: CreateEditEmployeeStatus.modifying));
   }
 
   void _onEmployeeMiddleNameChanged(OnEmployeeMiddleNameChanged event, Emitter<CreateEditEmployeeState> emit) {
-    emit(state.copyWith(middleName: event.middleName));
+    emit(state.copyWith(middleName: event.middleName, status: CreateEditEmployeeStatus.modifying));
   }
 
   void _onEmployeeLastNameChanged(OnEmployeeLastNameChanged event, Emitter<CreateEditEmployeeState> emit) {
-    emit(state.copyWith(lastName: event.lastName));
+    emit(state.copyWith(lastName: event.lastName, status: CreateEditEmployeeStatus.modifying));
   }
 
   void _onEmployeePhoneChanged(OnEmployeePhoneChanged event, Emitter<CreateEditEmployeeState> emit) {
-    emit(state.copyWith(phone: event.phone));
+    emit(state.copyWith(phone: event.phone, status: CreateEditEmployeeStatus.modifying));
   }
 
   void _onEmployeeEmailChanged(OnEmployeeEmailChanged event, Emitter<CreateEditEmployeeState> emit) {
-    emit(state.copyWith(email: event.email));
+    emit(state.copyWith(email: event.email, status: CreateEditEmployeeStatus.modifying));
   }
 
   void _onEmployeeLocaleChanged(OnEmployeeLocaleChanged event, Emitter<CreateEditEmployeeState> emit) {
-    emit(state.copyWith(locale: event.locale));
+    emit(state.copyWith(locale: event.locale, status: CreateEditEmployeeStatus.modifying));
   }
 
   void _onEmployeeProfileChanged(OnEmployeeProfileChanged event, Emitter<CreateEditEmployeeState> emit) {
-    emit(state.copyWith(profile: event.profile));
+    emit(state.copyWith(profile: event.profile, status: CreateEditEmployeeStatus.modifying));
   }
 
   void _onEmployeeSave(OnEmployeeSave event, Emitter<CreateEditEmployeeState> emit) {

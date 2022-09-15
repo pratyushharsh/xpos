@@ -2,14 +2,14 @@ import 'dart:ffi';
 
 class GetUserResponse {
   Employee employee;
-  StoreData storeData;
+  StoreEmployee storeData;
 
   GetUserResponse({required this.employee, required this.storeData});
 
   factory GetUserResponse.fromJson(Map<String, dynamic> json) {
     return GetUserResponse(
       employee: Employee.fromJson(json['employee']),
-      storeData: StoreData.fromJson(json['store_data']),
+      storeData: StoreEmployee.fromJson(json['store_data']),
     );
   }
 }
@@ -93,39 +93,39 @@ class Employee {
   }
 }
 
-class StoreData {
-  String? employeeId;
-  String? storeId;
-  String? roles;
+class StoreEmployee {
+  String employeeId;
+  String storeId;
+  String roles;
   String? locale;
   String? storeName;
   String? employeeName;
-  String? joinedAt;
+  DateTime joinedAt;
   String? createdBy;
-  String? createdAt;
+  DateTime? createdAt;
 
-  StoreData(
-      {this.employeeId,
-      this.storeId,
-      this.roles,
+  StoreEmployee(
+      {required this.employeeId,
+      required this.storeId,
+      required this.roles,
       this.locale,
       this.storeName,
       this.employeeName,
-      this.joinedAt,
+      required this.joinedAt,
       this.createdBy,
       this.createdAt});
 
-  StoreData.fromJson(Map<String, dynamic> json) {
-    employeeId = json['employee_id'];
-    storeId = json['store_id'];
-    roles = json['roles'];
-    locale = json['locale'];
-    storeName = json['store_name'];
-    employeeName = json['employee_name'];
-    joinedAt = json['joined_at'];
-    createdBy = json['created_by'];
-    createdAt = json['created_at'];
-  }
+  factory StoreEmployee.fromJson(Map<String, dynamic> json) => StoreEmployee(
+    employeeId: json["employee_id"],
+    storeId: json["store_id"],
+    roles: json["roles"] ?? "",
+    locale: json["locale"],
+    storeName: json["store_name"],
+    employeeName: json["employee_name"],
+    joinedAt: DateTime.parse(json["joined_at"]),
+    createdBy: json["created_by"],
+    createdAt: DateTime.parse(json["created_at"]),
+  );
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -135,9 +135,9 @@ class StoreData {
     data['locale'] = locale;
     data['store_name'] = storeName;
     data['employee_name'] = employeeName;
-    data['joined_at'] = joinedAt;
+    data['joined_at'] = joinedAt.toIso8601String();
     data['created_by'] = createdBy;
-    data['created_at'] = createdAt;
+    data['created_at'] = createdAt?.toIso8601String();
     return data;
   }
 }

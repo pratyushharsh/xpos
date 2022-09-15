@@ -6,8 +6,9 @@ import '../module/home/clients_view.dart';
 
 class SearchBar extends StatefulWidget {
   final String label;
+  final String? hintText;
   final ValueChanged<String>? onChanged;
-  const SearchBar({Key? key, required this.label, this.onChanged})
+  const SearchBar({Key? key, required this.label, this.onChanged, this.hintText})
       : super(key: key);
 
   @override
@@ -55,9 +56,9 @@ class _SearchBarState extends State<SearchBar> {
                               children: [
                                 Text(
                                   e,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                Divider(
+                                const Divider(
                                   height: 0,
                                 )
                               ],
@@ -95,20 +96,21 @@ class _SearchBarState extends State<SearchBar> {
         Expanded(
           child: TextField(
             cursorColor: AppColor.primary,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               isDense: true,
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(
+              border: const OutlineInputBorder(),
+              prefixIcon: const Icon(
                 Icons.search,
                 color: AppColor.primary,
               ),
               prefixIconConstraints:
-                  BoxConstraints(minHeight: 40, minWidth: 40),
-              contentPadding: EdgeInsets.all(4),
-              focusedBorder: OutlineInputBorder(
+                  const BoxConstraints(minHeight: 40, minWidth: 40),
+              contentPadding: const EdgeInsets.all(4),
+              focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: AppColor.primary, width: 2)),
               focusColor: AppColor.primary,
               hoverColor: AppColor.primary,
+              hintText: widget.hintText,
             ),
             onChanged: widget.onChanged,
           ),

@@ -3,9 +3,10 @@ part of 'create_edit_employee_bloc.dart';
 enum CreateEditEmployeeStatus {
   initial,
   loading,
+  modifying,
   existingUser,
   newUser,
-  success
+  success,
 }
 
 class CreateEditEmployeeState {

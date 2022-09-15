@@ -58,7 +58,10 @@ class SettingsScreen extends StatelessWidget {
               subtitle: LocaleKeys.settingsStoreDescription.tr(),
               icon: Icons.home_repair_service,
               children: [
-                SettingsItem(text: "Employee Maintenance", onTap: () {}),
+                SettingsItem(text: "Employee Maintenance", onTap: () {
+                  Navigator.of(context)
+                      .pushNamed(RouteConfig.employeeScreen);
+                }),
                 SettingsItem(text: "Feature Settings", onTap: () {}),
                 SettingsItem(
                     text: "Change Locale",
