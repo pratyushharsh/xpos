@@ -25,7 +25,7 @@ class PosActionBar extends StatelessWidget {
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height * 0.8,
                           width: MediaQuery.of(context).size.width * 0.5,
-                          child: const ReturnOrderView(),
+                          child: ReturnOrderView(currentOrderLineItem: BlocProvider.of<CreateNewReceiptBloc>(context).state.lineItem),
                         ),
                       );
                     }).then((value) => {

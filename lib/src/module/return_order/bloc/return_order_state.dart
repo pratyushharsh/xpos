@@ -13,6 +13,7 @@ class ReturnOrderState {
   final TransactionHeaderEntity? order;
   final String? errorMessage;
   final List<TransactionLineItemEntity> returnedLineItem;
+  final List<TransactionLineItemEntity> availableLineItemToReturn;
   final Map<String, double> alreadyReturnedOrderMap;
   final Map<TransactionLineItemEntity, ReturnLineItemParameters> returnMap;
 
@@ -21,6 +22,7 @@ class ReturnOrderState {
       this.order,
       this.errorMessage,
       this.returnedLineItem = const [],
+      this.availableLineItemToReturn = const [],
       this.alreadyReturnedOrderMap = const {},
       this.returnMap = const {}})
       : assert(status == ReturnOrderExistStatus.success ? order != null : true);
@@ -30,6 +32,7 @@ class ReturnOrderState {
       TransactionHeaderEntity? order,
       String? errorMessage,
       List<TransactionLineItemEntity>? returnedLineItem,
+      List<TransactionLineItemEntity>? availableLineItemToReturn,
       Map<String, double>? alreadyReturnedOrderMap,
       Map<TransactionLineItemEntity, ReturnLineItemParameters>? returnMap}) {
     return ReturnOrderState(
@@ -37,6 +40,8 @@ class ReturnOrderState {
         order: order ?? this.order,
         errorMessage: errorMessage ?? this.errorMessage,
         returnedLineItem: returnedLineItem ?? this.returnedLineItem,
+        availableLineItemToReturn:
+            availableLineItemToReturn ?? this.availableLineItemToReturn,
         alreadyReturnedOrderMap:
             alreadyReturnedOrderMap ?? this.alreadyReturnedOrderMap,
         returnMap: returnMap ?? this.returnMap);
@@ -49,8 +54,9 @@ class ReturnOrderState {
 }
 
 class ReturnLineItemParameters {
-  final List<String> reasonCode;
+  final String reasonCode;
   final double quantity;
+  final String? comment;
 
-  ReturnLineItemParameters({required this.reasonCode, required this.quantity});
+  ReturnLineItemParameters({required this.reasonCode, required this.quantity, this.comment});
 }

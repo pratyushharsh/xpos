@@ -15,24 +15,27 @@ extension GetContactEntityCollection on Isar {
 const ContactEntitySchema = CollectionSchema(
   name: 'ContactEntity',
   schema:
-      '{"name":"ContactEntity","idName":"id","properties":[{"name":"billingAddress","type":"String"},{"name":"contactId","type":"String"},{"name":"createTime","type":"Long"},{"name":"email","type":"String"},{"name":"lastSyncAt","type":"Long"},{"name":"name","type":"String"},{"name":"phoneNumber","type":"String"},{"name":"shippingAddress","type":"String"},{"name":"storeId","type":"String"},{"name":"syncState","type":"Long"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"contactId","unique":true,"properties":[{"name":"contactId","type":"Hash","caseSensitive":true}]},{"name":"email","unique":false,"properties":[{"name":"email","type":"Hash","caseSensitive":true}]},{"name":"name","unique":false,"properties":[{"name":"name","type":"Hash","caseSensitive":true}]},{"name":"phoneNumber","unique":false,"properties":[{"name":"phoneNumber","type":"Hash","caseSensitive":true}]}],"links":[]}',
+      '{"name":"ContactEntity","idName":"id","properties":[{"name":"billingAddress","type":"String"},{"name":"contactId","type":"String"},{"name":"createTime","type":"Long"},{"name":"email","type":"String"},{"name":"firstName","type":"String"},{"name":"gstin","type":"String"},{"name":"lastName","type":"String"},{"name":"lastSyncAt","type":"Long"},{"name":"panCard","type":"String"},{"name":"phoneNumber","type":"String"},{"name":"shippingAddress","type":"String"},{"name":"storeId","type":"String"},{"name":"syncState","type":"Long"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"contactId","unique":true,"properties":[{"name":"contactId","type":"Hash","caseSensitive":true}]},{"name":"email","unique":false,"properties":[{"name":"email","type":"Hash","caseSensitive":true}]},{"name":"firstName","unique":false,"properties":[{"name":"firstName","type":"Hash","caseSensitive":true}]},{"name":"phoneNumber","unique":false,"properties":[{"name":"phoneNumber","type":"Hash","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'billingAddress': 0,
     'contactId': 1,
     'createTime': 2,
     'email': 3,
-    'lastSyncAt': 4,
-    'name': 5,
-    'phoneNumber': 6,
-    'shippingAddress': 7,
-    'storeId': 8,
-    'syncState': 9,
-    'updateTime': 10,
-    'version': 11
+    'firstName': 4,
+    'gstin': 5,
+    'lastName': 6,
+    'lastSyncAt': 7,
+    'panCard': 8,
+    'phoneNumber': 9,
+    'shippingAddress': 10,
+    'storeId': 11,
+    'syncState': 12,
+    'updateTime': 13,
+    'version': 14
   },
   listProperties: {},
-  indexIds: {'contactId': 0, 'email': 1, 'name': 2, 'phoneNumber': 3},
+  indexIds: {'contactId': 0, 'email': 1, 'firstName': 2, 'phoneNumber': 3},
   indexValueTypes: {
     'contactId': [
       IndexValueType.stringHash,
@@ -40,7 +43,7 @@ const ContactEntitySchema = CollectionSchema(
     'email': [
       IndexValueType.stringHash,
     ],
-    'name': [
+    'firstName': [
       IndexValueType.stringHash,
     ],
     'phoneNumber': [
@@ -73,6 +76,8 @@ List<IsarLinkBase> _contactEntityGetLinks(ContactEntity object) {
   return [];
 }
 
+const _contactEntityAddressConverter = AddressConverter();
+
 void _contactEntitySerializeNative(
     IsarCollection<ContactEntity> collection,
     IsarRawObject rawObj,
@@ -81,7 +86,7 @@ void _contactEntitySerializeNative(
     List<int> offsets,
     AdapterAlloc alloc) {
   var dynamicSize = 0;
-  final value0 = object.billingAddress;
+  final value0 = _contactEntityAddressConverter.toIsar(object.billingAddress);
   IsarUint8List? _billingAddress;
   if (value0 != null) {
     _billingAddress = IsarBinaryWriter.utf8Encoder.convert(value0);
@@ -98,32 +103,47 @@ void _contactEntitySerializeNative(
     _email = IsarBinaryWriter.utf8Encoder.convert(value3);
   }
   dynamicSize += (_email?.length ?? 0) as int;
-  final value4 = object.lastSyncAt;
-  final _lastSyncAt = value4;
-  final value5 = object.name;
-  final _name = IsarBinaryWriter.utf8Encoder.convert(value5);
-  dynamicSize += (_name.length) as int;
-  final value6 = object.phoneNumber;
+  final value4 = object.firstName;
+  final _firstName = IsarBinaryWriter.utf8Encoder.convert(value4);
+  dynamicSize += (_firstName.length) as int;
+  final value5 = object.gstin;
+  IsarUint8List? _gstin;
+  if (value5 != null) {
+    _gstin = IsarBinaryWriter.utf8Encoder.convert(value5);
+  }
+  dynamicSize += (_gstin?.length ?? 0) as int;
+  final value6 = object.lastName;
+  final _lastName = IsarBinaryWriter.utf8Encoder.convert(value6);
+  dynamicSize += (_lastName.length) as int;
+  final value7 = object.lastSyncAt;
+  final _lastSyncAt = value7;
+  final value8 = object.panCard;
+  IsarUint8List? _panCard;
+  if (value8 != null) {
+    _panCard = IsarBinaryWriter.utf8Encoder.convert(value8);
+  }
+  dynamicSize += (_panCard?.length ?? 0) as int;
+  final value9 = object.phoneNumber;
   IsarUint8List? _phoneNumber;
-  if (value6 != null) {
-    _phoneNumber = IsarBinaryWriter.utf8Encoder.convert(value6);
+  if (value9 != null) {
+    _phoneNumber = IsarBinaryWriter.utf8Encoder.convert(value9);
   }
   dynamicSize += (_phoneNumber?.length ?? 0) as int;
-  final value7 = object.shippingAddress;
+  final value10 = _contactEntityAddressConverter.toIsar(object.shippingAddress);
   IsarUint8List? _shippingAddress;
-  if (value7 != null) {
-    _shippingAddress = IsarBinaryWriter.utf8Encoder.convert(value7);
+  if (value10 != null) {
+    _shippingAddress = IsarBinaryWriter.utf8Encoder.convert(value10);
   }
   dynamicSize += (_shippingAddress?.length ?? 0) as int;
-  final value8 = object.storeId;
-  final _storeId = IsarBinaryWriter.utf8Encoder.convert(value8);
+  final value11 = object.storeId;
+  final _storeId = IsarBinaryWriter.utf8Encoder.convert(value11);
   dynamicSize += (_storeId.length) as int;
-  final value9 = object.syncState;
-  final _syncState = value9;
-  final value10 = object.updateTime;
-  final _updateTime = value10;
-  final value11 = object.version;
-  final _version = value11;
+  final value12 = object.syncState;
+  final _syncState = value12;
+  final value13 = object.updateTime;
+  final _updateTime = value13;
+  final value14 = object.version;
+  final _version = value14;
   final size = staticSize + dynamicSize;
 
   rawObj.buffer = alloc(size);
@@ -134,14 +154,17 @@ void _contactEntitySerializeNative(
   writer.writeBytes(offsets[1], _contactId);
   writer.writeDateTime(offsets[2], _createTime);
   writer.writeBytes(offsets[3], _email);
-  writer.writeDateTime(offsets[4], _lastSyncAt);
-  writer.writeBytes(offsets[5], _name);
-  writer.writeBytes(offsets[6], _phoneNumber);
-  writer.writeBytes(offsets[7], _shippingAddress);
-  writer.writeBytes(offsets[8], _storeId);
-  writer.writeLong(offsets[9], _syncState);
-  writer.writeDateTime(offsets[10], _updateTime);
-  writer.writeLong(offsets[11], _version);
+  writer.writeBytes(offsets[4], _firstName);
+  writer.writeBytes(offsets[5], _gstin);
+  writer.writeBytes(offsets[6], _lastName);
+  writer.writeDateTime(offsets[7], _lastSyncAt);
+  writer.writeBytes(offsets[8], _panCard);
+  writer.writeBytes(offsets[9], _phoneNumber);
+  writer.writeBytes(offsets[10], _shippingAddress);
+  writer.writeBytes(offsets[11], _storeId);
+  writer.writeLong(offsets[12], _syncState);
+  writer.writeDateTime(offsets[13], _updateTime);
+  writer.writeLong(offsets[14], _version);
 }
 
 ContactEntity _contactEntityDeserializeNative(
@@ -150,19 +173,24 @@ ContactEntity _contactEntityDeserializeNative(
     IsarBinaryReader reader,
     List<int> offsets) {
   final object = ContactEntity(
-    billingAddress: reader.readStringOrNull(offsets[0]),
+    billingAddress: _contactEntityAddressConverter
+        .fromIsar(reader.readStringOrNull(offsets[0])),
     contactId: reader.readString(offsets[1]),
     createTime: reader.readDateTime(offsets[2]),
     email: reader.readStringOrNull(offsets[3]),
+    firstName: reader.readString(offsets[4]),
+    gstin: reader.readStringOrNull(offsets[5]),
     id: id,
-    lastSyncAt: reader.readDateTimeOrNull(offsets[4]),
-    name: reader.readString(offsets[5]),
-    phoneNumber: reader.readStringOrNull(offsets[6]),
-    shippingAddress: reader.readStringOrNull(offsets[7]),
-    storeId: reader.readString(offsets[8]),
-    syncState: reader.readLong(offsets[9]),
-    updateTime: reader.readDateTimeOrNull(offsets[10]),
-    version: reader.readLong(offsets[11]),
+    lastName: reader.readString(offsets[6]),
+    lastSyncAt: reader.readDateTimeOrNull(offsets[7]),
+    panCard: reader.readStringOrNull(offsets[8]),
+    phoneNumber: reader.readStringOrNull(offsets[9]),
+    shippingAddress: _contactEntityAddressConverter
+        .fromIsar(reader.readStringOrNull(offsets[10])),
+    storeId: reader.readString(offsets[11]),
+    syncState: reader.readLong(offsets[12]),
+    updateTime: reader.readDateTimeOrNull(offsets[13]),
+    version: reader.readLong(offsets[14]),
   );
   return object;
 }
@@ -173,7 +201,8 @@ P _contactEntityDeserializePropNative<P>(
     case -1:
       return id as P;
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (_contactEntityAddressConverter
+          .fromIsar(reader.readStringOrNull(offset))) as P;
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
@@ -181,20 +210,27 @@ P _contactEntityDeserializePropNative<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
-    case 7:
-      return (reader.readStringOrNull(offset)) as P;
-    case 8:
       return (reader.readString(offset)) as P;
-    case 9:
-      return (reader.readLong(offset)) as P;
-    case 10:
+    case 7:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
+      return (reader.readStringOrNull(offset)) as P;
+    case 10:
+      return (_contactEntityAddressConverter
+          .fromIsar(reader.readStringOrNull(offset))) as P;
     case 11:
+      return (reader.readString(offset)) as P;
+    case 12:
+      return (reader.readLong(offset)) as P;
+    case 13:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 14:
       return (reader.readLong(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
@@ -204,17 +240,22 @@ P _contactEntityDeserializePropNative<P>(
 dynamic _contactEntitySerializeWeb(
     IsarCollection<ContactEntity> collection, ContactEntity object) {
   final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(jsObj, 'billingAddress', object.billingAddress);
+  IsarNative.jsObjectSet(jsObj, 'billingAddress',
+      _contactEntityAddressConverter.toIsar(object.billingAddress));
   IsarNative.jsObjectSet(jsObj, 'contactId', object.contactId);
   IsarNative.jsObjectSet(
       jsObj, 'createTime', object.createTime.toUtc().millisecondsSinceEpoch);
   IsarNative.jsObjectSet(jsObj, 'email', object.email);
+  IsarNative.jsObjectSet(jsObj, 'firstName', object.firstName);
+  IsarNative.jsObjectSet(jsObj, 'gstin', object.gstin);
   IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'lastName', object.lastName);
   IsarNative.jsObjectSet(
       jsObj, 'lastSyncAt', object.lastSyncAt?.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, 'name', object.name);
+  IsarNative.jsObjectSet(jsObj, 'panCard', object.panCard);
   IsarNative.jsObjectSet(jsObj, 'phoneNumber', object.phoneNumber);
-  IsarNative.jsObjectSet(jsObj, 'shippingAddress', object.shippingAddress);
+  IsarNative.jsObjectSet(jsObj, 'shippingAddress',
+      _contactEntityAddressConverter.toIsar(object.shippingAddress));
   IsarNative.jsObjectSet(jsObj, 'storeId', object.storeId);
   IsarNative.jsObjectSet(jsObj, 'syncState', object.syncState);
   IsarNative.jsObjectSet(
@@ -226,7 +267,8 @@ dynamic _contactEntitySerializeWeb(
 ContactEntity _contactEntityDeserializeWeb(
     IsarCollection<ContactEntity> collection, dynamic jsObj) {
   final object = ContactEntity(
-    billingAddress: IsarNative.jsObjectGet(jsObj, 'billingAddress'),
+    billingAddress: _contactEntityAddressConverter
+        .fromIsar(IsarNative.jsObjectGet(jsObj, 'billingAddress')),
     contactId: IsarNative.jsObjectGet(jsObj, 'contactId') ?? '',
     createTime: IsarNative.jsObjectGet(jsObj, 'createTime') != null
         ? DateTime.fromMillisecondsSinceEpoch(
@@ -235,16 +277,20 @@ ContactEntity _contactEntityDeserializeWeb(
             .toLocal()
         : DateTime.fromMillisecondsSinceEpoch(0),
     email: IsarNative.jsObjectGet(jsObj, 'email'),
+    firstName: IsarNative.jsObjectGet(jsObj, 'firstName') ?? '',
+    gstin: IsarNative.jsObjectGet(jsObj, 'gstin'),
     id: IsarNative.jsObjectGet(jsObj, 'id'),
+    lastName: IsarNative.jsObjectGet(jsObj, 'lastName') ?? '',
     lastSyncAt: IsarNative.jsObjectGet(jsObj, 'lastSyncAt') != null
         ? DateTime.fromMillisecondsSinceEpoch(
                 IsarNative.jsObjectGet(jsObj, 'lastSyncAt'),
                 isUtc: true)
             .toLocal()
         : null,
-    name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
+    panCard: IsarNative.jsObjectGet(jsObj, 'panCard'),
     phoneNumber: IsarNative.jsObjectGet(jsObj, 'phoneNumber'),
-    shippingAddress: IsarNative.jsObjectGet(jsObj, 'shippingAddress'),
+    shippingAddress: _contactEntityAddressConverter
+        .fromIsar(IsarNative.jsObjectGet(jsObj, 'shippingAddress')),
     storeId: IsarNative.jsObjectGet(jsObj, 'storeId') ?? '',
     syncState:
         IsarNative.jsObjectGet(jsObj, 'syncState') ?? double.negativeInfinity,
@@ -263,7 +309,8 @@ ContactEntity _contactEntityDeserializeWeb(
 P _contactEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
   switch (propertyName) {
     case 'billingAddress':
-      return (IsarNative.jsObjectGet(jsObj, 'billingAddress')) as P;
+      return (_contactEntityAddressConverter
+          .fromIsar(IsarNative.jsObjectGet(jsObj, 'billingAddress'))) as P;
     case 'contactId':
       return (IsarNative.jsObjectGet(jsObj, 'contactId') ?? '') as P;
     case 'createTime':
@@ -275,8 +322,14 @@ P _contactEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
           : DateTime.fromMillisecondsSinceEpoch(0)) as P;
     case 'email':
       return (IsarNative.jsObjectGet(jsObj, 'email')) as P;
+    case 'firstName':
+      return (IsarNative.jsObjectGet(jsObj, 'firstName') ?? '') as P;
+    case 'gstin':
+      return (IsarNative.jsObjectGet(jsObj, 'gstin')) as P;
     case 'id':
       return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'lastName':
+      return (IsarNative.jsObjectGet(jsObj, 'lastName') ?? '') as P;
     case 'lastSyncAt':
       return (IsarNative.jsObjectGet(jsObj, 'lastSyncAt') != null
           ? DateTime.fromMillisecondsSinceEpoch(
@@ -284,12 +337,13 @@ P _contactEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
                   isUtc: true)
               .toLocal()
           : null) as P;
-    case 'name':
-      return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
+    case 'panCard':
+      return (IsarNative.jsObjectGet(jsObj, 'panCard')) as P;
     case 'phoneNumber':
       return (IsarNative.jsObjectGet(jsObj, 'phoneNumber')) as P;
     case 'shippingAddress':
-      return (IsarNative.jsObjectGet(jsObj, 'shippingAddress')) as P;
+      return (_contactEntityAddressConverter
+          .fromIsar(IsarNative.jsObjectGet(jsObj, 'shippingAddress'))) as P;
     case 'storeId':
       return (IsarNative.jsObjectGet(jsObj, 'storeId') ?? '') as P;
     case 'syncState':
@@ -367,9 +421,9 @@ extension ContactEntityQueryWhereSort
         const IndexWhereClause.any(indexName: 'email'));
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterWhere> anyName() {
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhere> anyFirstName() {
     return addWhereClauseInternal(
-        const IndexWhereClause.any(indexName: 'name'));
+        const IndexWhereClause.any(indexName: 'firstName'));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterWhere> anyPhoneNumber() {
@@ -519,34 +573,34 @@ extension ContactEntityQueryWhere
     ));
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause> nameEqualTo(
-      String name) {
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      firstNameEqualTo(String firstName) {
     return addWhereClauseInternal(IndexWhereClause.equalTo(
-      indexName: 'name',
-      value: [name],
+      indexName: 'firstName',
+      value: [firstName],
     ));
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause> nameNotEqualTo(
-      String name) {
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      firstNameNotEqualTo(String firstName) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'name',
-        upper: [name],
+        indexName: 'firstName',
+        upper: [firstName],
         includeUpper: false,
       )).addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'name',
-        lower: [name],
+        indexName: 'firstName',
+        lower: [firstName],
         includeLower: false,
       ));
     } else {
       return addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'name',
-        lower: [name],
+        indexName: 'firstName',
+        lower: [firstName],
         includeLower: false,
       )).addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'name',
-        upper: [name],
+        indexName: 'firstName',
+        upper: [firstName],
         includeUpper: false,
       ));
     }
@@ -616,20 +670,20 @@ extension ContactEntityQueryFilter
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       billingAddressEqualTo(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'billingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       billingAddressGreaterThan(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -637,14 +691,14 @@ extension ContactEntityQueryFilter
       type: ConditionType.gt,
       include: include,
       property: 'billingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       billingAddressLessThan(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -652,24 +706,24 @@ extension ContactEntityQueryFilter
       type: ConditionType.lt,
       include: include,
       property: 'billingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       billingAddressBetween(
-    String? lower,
-    String? upper, {
+    Address? lower,
+    Address? upper, {
     bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return addFilterConditionInternal(FilterCondition.between(
       property: 'billingAddress',
-      lower: lower,
+      lower: _contactEntityAddressConverter.toIsar(lower),
       includeLower: includeLower,
-      upper: upper,
+      upper: _contactEntityAddressConverter.toIsar(upper),
       includeUpper: includeUpper,
       caseSensitive: caseSensitive,
     ));
@@ -677,36 +731,36 @@ extension ContactEntityQueryFilter
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       billingAddressStartsWith(
-    String value, {
+    Address value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'billingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       billingAddressEndsWith(
-    String value, {
+    Address value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'billingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      billingAddressContains(String value, {bool caseSensitive = true}) {
+      billingAddressContains(Address value, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'billingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -995,6 +1049,229 @@ extension ContactEntityQueryFilter
     ));
   }
 
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      firstNameEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'firstName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      firstNameGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'firstName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      firstNameLessThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'firstName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      firstNameBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'firstName',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      firstNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'firstName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      firstNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'firstName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      firstNameContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'firstName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      firstNameMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'firstName',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      gstinIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'gstin',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      gstinEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'gstin',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      gstinGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'gstin',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      gstinLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'gstin',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      gstinBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'gstin',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      gstinStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'gstin',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      gstinEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'gstin',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      gstinContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'gstin',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      gstinMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'gstin',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition> idIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
@@ -1049,6 +1326,113 @@ extension ContactEntityQueryFilter
       includeLower: includeLower,
       upper: upper,
       includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastNameEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'lastName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastNameGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'lastName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastNameLessThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'lastName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastNameBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'lastName',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'lastName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'lastName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastNameContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'lastName',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastNameMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'lastName',
+      value: pattern,
+      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1112,57 +1496,68 @@ extension ContactEntityQueryFilter
     ));
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition> nameEqualTo(
-    String value, {
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      panCardIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'panCard',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      panCardEqualTo(
+    String? value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
-      property: 'name',
+      property: 'panCard',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      nameGreaterThan(
-    String value, {
+      panCardGreaterThan(
+    String? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
-      property: 'name',
+      property: 'panCard',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      nameLessThan(
-    String value, {
+      panCardLessThan(
+    String? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
-      property: 'name',
+      property: 'panCard',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition> nameBetween(
-    String lower,
-    String upper, {
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      panCardBetween(
+    String? lower,
+    String? upper, {
     bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return addFilterConditionInternal(FilterCondition.between(
-      property: 'name',
+      property: 'panCard',
       lower: lower,
       includeLower: includeLower,
       upper: upper,
@@ -1172,47 +1567,46 @@ extension ContactEntityQueryFilter
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      nameStartsWith(
+      panCardStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
-      property: 'name',
+      property: 'panCard',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      nameEndsWith(
+      panCardEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
-      property: 'name',
+      property: 'panCard',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      nameContains(String value, {bool caseSensitive = true}) {
+      panCardContains(String value, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
-      property: 'name',
+      property: 'panCard',
       value: value,
       caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition> nameMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      panCardMatches(String pattern, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.matches,
-      property: 'name',
+      property: 'panCard',
       value: pattern,
       caseSensitive: caseSensitive,
     ));
@@ -1345,20 +1739,20 @@ extension ContactEntityQueryFilter
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       shippingAddressEqualTo(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'shippingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       shippingAddressGreaterThan(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -1366,14 +1760,14 @@ extension ContactEntityQueryFilter
       type: ConditionType.gt,
       include: include,
       property: 'shippingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       shippingAddressLessThan(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -1381,24 +1775,24 @@ extension ContactEntityQueryFilter
       type: ConditionType.lt,
       include: include,
       property: 'shippingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       shippingAddressBetween(
-    String? lower,
-    String? upper, {
+    Address? lower,
+    Address? upper, {
     bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return addFilterConditionInternal(FilterCondition.between(
       property: 'shippingAddress',
-      lower: lower,
+      lower: _contactEntityAddressConverter.toIsar(lower),
       includeLower: includeLower,
-      upper: upper,
+      upper: _contactEntityAddressConverter.toIsar(upper),
       includeUpper: includeUpper,
       caseSensitive: caseSensitive,
     ));
@@ -1406,36 +1800,36 @@ extension ContactEntityQueryFilter
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       shippingAddressStartsWith(
-    String value, {
+    Address value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'shippingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       shippingAddressEndsWith(
-    String value, {
+    Address value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'shippingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      shippingAddressContains(String value, {bool caseSensitive = true}) {
+      shippingAddressContains(Address value, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'shippingAddress',
-      value: value,
+      value: _contactEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -1761,12 +2155,38 @@ extension ContactEntityQueryWhereSortBy
     return addSortByInternal('email', Sort.desc);
   }
 
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByFirstName() {
+    return addSortByInternal('firstName', Sort.asc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
+      sortByFirstNameDesc() {
+    return addSortByInternal('firstName', Sort.desc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByGstin() {
+    return addSortByInternal('gstin', Sort.asc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByGstinDesc() {
+    return addSortByInternal('gstin', Sort.desc);
+  }
+
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortById() {
     return addSortByInternal('id', Sort.asc);
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByIdDesc() {
     return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByLastName() {
+    return addSortByInternal('lastName', Sort.asc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
+      sortByLastNameDesc() {
+    return addSortByInternal('lastName', Sort.desc);
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByLastSyncAt() {
@@ -1778,12 +2198,12 @@ extension ContactEntityQueryWhereSortBy
     return addSortByInternal('lastSyncAt', Sort.desc);
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByName() {
-    return addSortByInternal('name', Sort.asc);
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByPanCard() {
+    return addSortByInternal('panCard', Sort.asc);
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByNameDesc() {
-    return addSortByInternal('name', Sort.desc);
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByPanCardDesc() {
+    return addSortByInternal('panCard', Sort.desc);
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByPhoneNumber() {
@@ -1878,12 +2298,38 @@ extension ContactEntityQueryWhereSortThenBy
     return addSortByInternal('email', Sort.desc);
   }
 
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByFirstName() {
+    return addSortByInternal('firstName', Sort.asc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
+      thenByFirstNameDesc() {
+    return addSortByInternal('firstName', Sort.desc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByGstin() {
+    return addSortByInternal('gstin', Sort.asc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByGstinDesc() {
+    return addSortByInternal('gstin', Sort.desc);
+  }
+
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenById() {
     return addSortByInternal('id', Sort.asc);
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByIdDesc() {
     return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByLastName() {
+    return addSortByInternal('lastName', Sort.asc);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
+      thenByLastNameDesc() {
+    return addSortByInternal('lastName', Sort.desc);
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByLastSyncAt() {
@@ -1895,12 +2341,12 @@ extension ContactEntityQueryWhereSortThenBy
     return addSortByInternal('lastSyncAt', Sort.desc);
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByName() {
-    return addSortByInternal('name', Sort.asc);
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByPanCard() {
+    return addSortByInternal('panCard', Sort.asc);
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByNameDesc() {
-    return addSortByInternal('name', Sort.desc);
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByPanCardDesc() {
+    return addSortByInternal('panCard', Sort.desc);
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByPhoneNumber() {
@@ -1979,17 +2425,32 @@ extension ContactEntityQueryWhereDistinct
     return addDistinctByInternal('email', caseSensitive: caseSensitive);
   }
 
+  QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctByFirstName(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('firstName', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctByGstin(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('gstin', caseSensitive: caseSensitive);
+  }
+
   QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctById() {
     return addDistinctByInternal('id');
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctByLastName(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('lastName', caseSensitive: caseSensitive);
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctByLastSyncAt() {
     return addDistinctByInternal('lastSyncAt');
   }
 
-  QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctByName(
+  QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctByPanCard(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('name', caseSensitive: caseSensitive);
+    return addDistinctByInternal('panCard', caseSensitive: caseSensitive);
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctByPhoneNumber(
@@ -2023,7 +2484,7 @@ extension ContactEntityQueryWhereDistinct
 
 extension ContactEntityQueryProperty
     on QueryBuilder<ContactEntity, ContactEntity, QQueryProperty> {
-  QueryBuilder<ContactEntity, String?, QQueryOperations>
+  QueryBuilder<ContactEntity, Address?, QQueryOperations>
       billingAddressProperty() {
     return addPropertyNameInternal('billingAddress');
   }
@@ -2040,8 +2501,20 @@ extension ContactEntityQueryProperty
     return addPropertyNameInternal('email');
   }
 
+  QueryBuilder<ContactEntity, String, QQueryOperations> firstNameProperty() {
+    return addPropertyNameInternal('firstName');
+  }
+
+  QueryBuilder<ContactEntity, String?, QQueryOperations> gstinProperty() {
+    return addPropertyNameInternal('gstin');
+  }
+
   QueryBuilder<ContactEntity, int?, QQueryOperations> idProperty() {
     return addPropertyNameInternal('id');
+  }
+
+  QueryBuilder<ContactEntity, String, QQueryOperations> lastNameProperty() {
+    return addPropertyNameInternal('lastName');
   }
 
   QueryBuilder<ContactEntity, DateTime?, QQueryOperations>
@@ -2049,15 +2522,15 @@ extension ContactEntityQueryProperty
     return addPropertyNameInternal('lastSyncAt');
   }
 
-  QueryBuilder<ContactEntity, String, QQueryOperations> nameProperty() {
-    return addPropertyNameInternal('name');
+  QueryBuilder<ContactEntity, String?, QQueryOperations> panCardProperty() {
+    return addPropertyNameInternal('panCard');
   }
 
   QueryBuilder<ContactEntity, String?, QQueryOperations> phoneNumberProperty() {
     return addPropertyNameInternal('phoneNumber');
   }
 
-  QueryBuilder<ContactEntity, String?, QQueryOperations>
+  QueryBuilder<ContactEntity, Address?, QQueryOperations>
       shippingAddressProperty() {
     return addPropertyNameInternal('shippingAddress');
   }

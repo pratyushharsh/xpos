@@ -7,7 +7,6 @@ class ContactRepository {
   Future<List<ContactEntity>> getContact() async {
     if (_contacts == null) {
       var data = await _getContactFromPhonebook();
-      print(data);
       if (data == null) {
         _contacts = List.empty();
       } else {
@@ -30,7 +29,8 @@ class ContactRepository {
 
               return ContactEntity(
                 contactId: 'P${e.id}',
-                name: '${e.name.first} ${e.name.last}',
+                firstName: e.name.first,
+                lastName: e.name.last,
                 phoneNumber: ph?.number,
                 email: em?.address, storeId: '', createTime: DateTime.now()
               );

@@ -14,15 +14,25 @@ class TransactionRepository {
 
   Future<void> createNewSale(TransactionHeaderEntity header) async {
     await db.writeTxn((isar) async {
-      await isar.transactionHeaderEntitys.put(header, saveLinks: true);
+      await isar.transactionHeaderEntitys.put(header, replaceOnConflict: true);
+      await header.lineItems.save();
+      await header.paymentLineItems.save();
+      for (var element in header.lineItems) {
+        await element.lineModifiers.save();
+        await element.taxModifiers.save();
+      }
     });
   }
 
   Future<TransactionHeaderEntity?> getTransaction(int id) async {
     TransactionHeaderEntity? order = await db.transactionHeaderEntitys.get(id);
     if (order != null) {
-      order.lineItems.loadSync();
-      order.paymentLineItems.loadSync();
+      await order.lineItems.load();
+      for (var element in order.lineItems) {
+        await element.lineModifiers.load();
+        await element.taxModifiers.load();
+      }
+      await order.paymentLineItems.load();
       return order;
     }
     return null;

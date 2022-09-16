@@ -32,7 +32,7 @@ class CustomerSearchBloc
       if (event.name != null && event.name!.isNotEmpty) {
         var customer = await db.contactEntitys
             .filter()
-            .nameContains('${event.name}', caseSensitive: false)
+            .firstNameContains('${event.name}', caseSensitive: false)
             .findAll();
 
         var contacts = <ContactEntity>[];
@@ -43,7 +43,7 @@ class CustomerSearchBloc
         var x = contacts
             .where((con) {
               if (event.name != null) {
-                if (con.name
+                if (con.firstName
                     .toLowerCase()
                     .contains(event.name!.toLowerCase())) {
                   return true;
@@ -53,7 +53,7 @@ class CustomerSearchBloc
                 return true;
               }
             })
-            .take(5)
+            .take(50)
             .toList();
         emit(state.copyWith(
             customerSuggestion: customer,

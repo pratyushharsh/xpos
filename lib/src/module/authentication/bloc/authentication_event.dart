@@ -8,10 +8,26 @@ class InitialAuthEvent extends AuthenticationEvent {}
 class AuthenticationUserChanged extends AuthenticationEvent {
   final CognitoUser user;
   final CognitoUserAttribute? stores;
+  final List<CognitoUserAttribute> attributes;
 
-  AuthenticationUserChanged(this.user, this.stores);
+  AuthenticationUserChanged(this.user, this.stores, this.attributes);
 }
 
-class VerifyUser extends AuthenticationEvent{}
+class VerifyUserOtpStep extends AuthenticationEvent{
+  final Map<String, dynamic> parameterMap;
+
+  VerifyUserOtpStep(this.parameterMap);
+}
+
+class VerifyUserDeviceStep extends AuthenticationEvent {
+  final Map<String, dynamic> parameterMap;
+
+  VerifyUserDeviceStep(this.parameterMap);
+}
 
 class LogOutUserEvent extends AuthenticationEvent{}
+
+class ChooseBusinessEvent extends AuthenticationEvent {
+  final UserBusiness business;
+  ChooseBusinessEvent(this.business);
+}

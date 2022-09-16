@@ -16,7 +16,7 @@ extension GetTransactionHeaderEntityCollection on Isar {
 const TransactionHeaderEntitySchema = CollectionSchema(
   name: 'TransactionHeaderEntity',
   schema:
-      '{"name":"TransactionHeaderEntity","idName":"transId","properties":[{"name":"beginDatetime","type":"Long"},{"name":"billingAddress","type":"String"},{"name":"businessDate","type":"Long"},{"name":"createTime","type":"Long"},{"name":"customerId","type":"String"},{"name":"customerName","type":"String"},{"name":"customerPhone","type":"String"},{"name":"endDateTime","type":"Long"},{"name":"lastChangedAt","type":"Long"},{"name":"roundTotal","type":"Double"},{"name":"shippingAddress","type":"String"},{"name":"status","type":"String"},{"name":"storeId","type":"Long"},{"name":"subtotal","type":"Double"},{"name":"syncState","type":"Long"},{"name":"taxTotal","type":"Double"},{"name":"total","type":"Double"},{"name":"transactionType","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"customerId","unique":false,"properties":[{"name":"customerId","type":"Hash","caseSensitive":true}]},{"name":"customerPhone","unique":false,"properties":[{"name":"customerPhone","type":"Hash","caseSensitive":true}]}],"links":[{"name":"lineItems","target":"TransactionLineItemEntity"},{"name":"paymentLineItems","target":"TransactionPaymentLineItemEntity"}]}',
+      '{"name":"TransactionHeaderEntity","idName":"transId","properties":[{"name":"beginDatetime","type":"Long"},{"name":"billingAddress","type":"String"},{"name":"businessDate","type":"Long"},{"name":"createTime","type":"Long"},{"name":"customerId","type":"String"},{"name":"customerName","type":"String"},{"name":"customerPhone","type":"String"},{"name":"discountTotal","type":"Double"},{"name":"endDateTime","type":"Long"},{"name":"lastChangedAt","type":"Long"},{"name":"roundTotal","type":"Double"},{"name":"shippingAddress","type":"String"},{"name":"status","type":"String"},{"name":"storeId","type":"Long"},{"name":"subtotal","type":"Double"},{"name":"syncState","type":"Long"},{"name":"taxTotal","type":"Double"},{"name":"total","type":"Double"},{"name":"transactionType","type":"String"},{"name":"updateTime","type":"Long"},{"name":"version","type":"Long"}],"indexes":[{"name":"customerId","unique":false,"properties":[{"name":"customerId","type":"Hash","caseSensitive":true}]},{"name":"customerPhone","unique":false,"properties":[{"name":"customerPhone","type":"Hash","caseSensitive":true}]}],"links":[{"name":"lineItems","target":"TransactionLineItemEntity"},{"name":"paymentLineItems","target":"TransactionPaymentLineItemEntity"}]}',
   idName: 'transId',
   propertyIds: {
     'beginDatetime': 0,
@@ -26,19 +26,20 @@ const TransactionHeaderEntitySchema = CollectionSchema(
     'customerId': 4,
     'customerName': 5,
     'customerPhone': 6,
-    'endDateTime': 7,
-    'lastChangedAt': 8,
-    'roundTotal': 9,
-    'shippingAddress': 10,
-    'status': 11,
-    'storeId': 12,
-    'subtotal': 13,
-    'syncState': 14,
-    'taxTotal': 15,
-    'total': 16,
-    'transactionType': 17,
-    'updateTime': 18,
-    'version': 19
+    'discountTotal': 7,
+    'endDateTime': 8,
+    'lastChangedAt': 9,
+    'roundTotal': 10,
+    'shippingAddress': 11,
+    'status': 12,
+    'storeId': 13,
+    'subtotal': 14,
+    'syncState': 15,
+    'taxTotal': 16,
+    'total': 17,
+    'transactionType': 18,
+    'updateTime': 19,
+    'version': 20
   },
   listProperties: {},
   indexIds: {'customerId': 0, 'customerPhone': 1},
@@ -77,6 +78,8 @@ List<IsarLinkBase> _transactionHeaderEntityGetLinks(
   return [object.lineItems, object.paymentLineItems];
 }
 
+const _transactionHeaderEntityAddressConverter = AddressConverter();
+
 void _transactionHeaderEntitySerializeNative(
     IsarCollection<TransactionHeaderEntity> collection,
     IsarRawObject rawObj,
@@ -87,7 +90,8 @@ void _transactionHeaderEntitySerializeNative(
   var dynamicSize = 0;
   final value0 = object.beginDatetime;
   final _beginDatetime = value0;
-  final value1 = object.billingAddress;
+  final value1 =
+      _transactionHeaderEntityAddressConverter.toIsar(object.billingAddress);
   IsarUint8List? _billingAddress;
   if (value1 != null) {
     _billingAddress = IsarBinaryWriter.utf8Encoder.convert(value1);
@@ -115,38 +119,41 @@ void _transactionHeaderEntitySerializeNative(
     _customerPhone = IsarBinaryWriter.utf8Encoder.convert(value6);
   }
   dynamicSize += (_customerPhone?.length ?? 0) as int;
-  final value7 = object.endDateTime;
-  final _endDateTime = value7;
-  final value8 = object.lastChangedAt;
-  final _lastChangedAt = value8;
-  final value9 = object.roundTotal;
-  final _roundTotal = value9;
-  final value10 = object.shippingAddress;
+  final value7 = object.discountTotal;
+  final _discountTotal = value7;
+  final value8 = object.endDateTime;
+  final _endDateTime = value8;
+  final value9 = object.lastChangedAt;
+  final _lastChangedAt = value9;
+  final value10 = object.roundTotal;
+  final _roundTotal = value10;
+  final value11 =
+      _transactionHeaderEntityAddressConverter.toIsar(object.shippingAddress);
   IsarUint8List? _shippingAddress;
-  if (value10 != null) {
-    _shippingAddress = IsarBinaryWriter.utf8Encoder.convert(value10);
+  if (value11 != null) {
+    _shippingAddress = IsarBinaryWriter.utf8Encoder.convert(value11);
   }
   dynamicSize += (_shippingAddress?.length ?? 0) as int;
-  final value11 = object.status;
-  final _status = IsarBinaryWriter.utf8Encoder.convert(value11);
+  final value12 = object.status;
+  final _status = IsarBinaryWriter.utf8Encoder.convert(value12);
   dynamicSize += (_status.length) as int;
-  final value12 = object.storeId;
-  final _storeId = value12;
-  final value13 = object.subtotal;
-  final _subtotal = value13;
-  final value14 = object.syncState;
-  final _syncState = value14;
-  final value15 = object.taxTotal;
-  final _taxTotal = value15;
-  final value16 = object.total;
-  final _total = value16;
-  final value17 = object.transactionType;
-  final _transactionType = IsarBinaryWriter.utf8Encoder.convert(value17);
+  final value13 = object.storeId;
+  final _storeId = value13;
+  final value14 = object.subtotal;
+  final _subtotal = value14;
+  final value15 = object.syncState;
+  final _syncState = value15;
+  final value16 = object.taxTotal;
+  final _taxTotal = value16;
+  final value17 = object.total;
+  final _total = value17;
+  final value18 = object.transactionType;
+  final _transactionType = IsarBinaryWriter.utf8Encoder.convert(value18);
   dynamicSize += (_transactionType.length) as int;
-  final value18 = object.updateTime;
-  final _updateTime = value18;
-  final value19 = object.version;
-  final _version = value19;
+  final value19 = object.updateTime;
+  final _updateTime = value19;
+  final value20 = object.version;
+  final _version = value20;
   final size = staticSize + dynamicSize;
 
   rawObj.buffer = alloc(size);
@@ -160,19 +167,20 @@ void _transactionHeaderEntitySerializeNative(
   writer.writeBytes(offsets[4], _customerId);
   writer.writeBytes(offsets[5], _customerName);
   writer.writeBytes(offsets[6], _customerPhone);
-  writer.writeDateTime(offsets[7], _endDateTime);
-  writer.writeDateTime(offsets[8], _lastChangedAt);
-  writer.writeDouble(offsets[9], _roundTotal);
-  writer.writeBytes(offsets[10], _shippingAddress);
-  writer.writeBytes(offsets[11], _status);
-  writer.writeLong(offsets[12], _storeId);
-  writer.writeDouble(offsets[13], _subtotal);
-  writer.writeLong(offsets[14], _syncState);
-  writer.writeDouble(offsets[15], _taxTotal);
-  writer.writeDouble(offsets[16], _total);
-  writer.writeBytes(offsets[17], _transactionType);
-  writer.writeDateTime(offsets[18], _updateTime);
-  writer.writeLong(offsets[19], _version);
+  writer.writeDouble(offsets[7], _discountTotal);
+  writer.writeDateTime(offsets[8], _endDateTime);
+  writer.writeDateTime(offsets[9], _lastChangedAt);
+  writer.writeDouble(offsets[10], _roundTotal);
+  writer.writeBytes(offsets[11], _shippingAddress);
+  writer.writeBytes(offsets[12], _status);
+  writer.writeLong(offsets[13], _storeId);
+  writer.writeDouble(offsets[14], _subtotal);
+  writer.writeLong(offsets[15], _syncState);
+  writer.writeDouble(offsets[16], _taxTotal);
+  writer.writeDouble(offsets[17], _total);
+  writer.writeBytes(offsets[18], _transactionType);
+  writer.writeDateTime(offsets[19], _updateTime);
+  writer.writeLong(offsets[20], _version);
 }
 
 TransactionHeaderEntity _transactionHeaderEntityDeserializeNative(
@@ -182,26 +190,29 @@ TransactionHeaderEntity _transactionHeaderEntityDeserializeNative(
     List<int> offsets) {
   final object = TransactionHeaderEntity(
     beginDatetime: reader.readDateTime(offsets[0]),
-    billingAddress: reader.readStringOrNull(offsets[1]),
+    billingAddress: _transactionHeaderEntityAddressConverter
+        .fromIsar(reader.readStringOrNull(offsets[1])),
     businessDate: reader.readDateTime(offsets[2]),
     createTime: reader.readDateTime(offsets[3]),
     customerId: reader.readStringOrNull(offsets[4]),
     customerName: reader.readStringOrNull(offsets[5]),
     customerPhone: reader.readStringOrNull(offsets[6]),
-    endDateTime: reader.readDateTimeOrNull(offsets[7]),
-    lastChangedAt: reader.readDateTimeOrNull(offsets[8]),
-    roundTotal: reader.readDouble(offsets[9]),
-    shippingAddress: reader.readStringOrNull(offsets[10]),
-    status: reader.readString(offsets[11]),
-    storeId: reader.readLong(offsets[12]),
-    subtotal: reader.readDouble(offsets[13]),
-    syncState: reader.readLong(offsets[14]),
-    taxTotal: reader.readDouble(offsets[15]),
-    total: reader.readDouble(offsets[16]),
+    discountTotal: reader.readDouble(offsets[7]),
+    endDateTime: reader.readDateTimeOrNull(offsets[8]),
+    lastChangedAt: reader.readDateTimeOrNull(offsets[9]),
+    roundTotal: reader.readDouble(offsets[10]),
+    shippingAddress: _transactionHeaderEntityAddressConverter
+        .fromIsar(reader.readStringOrNull(offsets[11])),
+    status: reader.readString(offsets[12]),
+    storeId: reader.readLong(offsets[13]),
+    subtotal: reader.readDouble(offsets[14]),
+    syncState: reader.readLong(offsets[15]),
+    taxTotal: reader.readDouble(offsets[16]),
+    total: reader.readDouble(offsets[17]),
     transId: id,
-    transactionType: reader.readString(offsets[17]),
-    updateTime: reader.readDateTimeOrNull(offsets[18]),
-    version: reader.readLong(offsets[19]),
+    transactionType: reader.readString(offsets[18]),
+    updateTime: reader.readDateTimeOrNull(offsets[19]),
+    version: reader.readLong(offsets[20]),
   );
   _transactionHeaderEntityAttachLinks(collection, id, object);
   return object;
@@ -215,7 +226,8 @@ P _transactionHeaderEntityDeserializePropNative<P>(
     case 0:
       return (reader.readDateTime(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (_transactionHeaderEntityAddressConverter
+          .fromIsar(reader.readStringOrNull(offset))) as P;
     case 2:
       return (reader.readDateTime(offset)) as P;
     case 3:
@@ -227,30 +239,33 @@ P _transactionHeaderEntityDeserializePropNative<P>(
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 8:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 9:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 10:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 11:
-      return (reader.readString(offset)) as P;
+      return (_transactionHeaderEntityAddressConverter
+          .fromIsar(reader.readStringOrNull(offset))) as P;
     case 12:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 13:
-      return (reader.readDouble(offset)) as P;
-    case 14:
       return (reader.readLong(offset)) as P;
-    case 15:
+    case 14:
       return (reader.readDouble(offset)) as P;
+    case 15:
+      return (reader.readLong(offset)) as P;
     case 16:
       return (reader.readDouble(offset)) as P;
     case 17:
-      return (reader.readString(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 18:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 19:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 20:
       return (reader.readLong(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
@@ -263,7 +278,8 @@ dynamic _transactionHeaderEntitySerializeWeb(
   final jsObj = IsarNative.newJsObject();
   IsarNative.jsObjectSet(jsObj, 'beginDatetime',
       object.beginDatetime.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, 'billingAddress', object.billingAddress);
+  IsarNative.jsObjectSet(jsObj, 'billingAddress',
+      _transactionHeaderEntityAddressConverter.toIsar(object.billingAddress));
   IsarNative.jsObjectSet(jsObj, 'businessDate',
       object.businessDate.toUtc().millisecondsSinceEpoch);
   IsarNative.jsObjectSet(
@@ -271,12 +287,14 @@ dynamic _transactionHeaderEntitySerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'customerId', object.customerId);
   IsarNative.jsObjectSet(jsObj, 'customerName', object.customerName);
   IsarNative.jsObjectSet(jsObj, 'customerPhone', object.customerPhone);
+  IsarNative.jsObjectSet(jsObj, 'discountTotal', object.discountTotal);
   IsarNative.jsObjectSet(
       jsObj, 'endDateTime', object.endDateTime?.toUtc().millisecondsSinceEpoch);
   IsarNative.jsObjectSet(jsObj, 'lastChangedAt',
       object.lastChangedAt?.toUtc().millisecondsSinceEpoch);
   IsarNative.jsObjectSet(jsObj, 'roundTotal', object.roundTotal);
-  IsarNative.jsObjectSet(jsObj, 'shippingAddress', object.shippingAddress);
+  IsarNative.jsObjectSet(jsObj, 'shippingAddress',
+      _transactionHeaderEntityAddressConverter.toIsar(object.shippingAddress));
   IsarNative.jsObjectSet(jsObj, 'status', object.status);
   IsarNative.jsObjectSet(jsObj, 'storeId', object.storeId);
   IsarNative.jsObjectSet(jsObj, 'subtotal', object.subtotal);
@@ -300,7 +318,8 @@ TransactionHeaderEntity _transactionHeaderEntityDeserializeWeb(
                 isUtc: true)
             .toLocal()
         : DateTime.fromMillisecondsSinceEpoch(0),
-    billingAddress: IsarNative.jsObjectGet(jsObj, 'billingAddress'),
+    billingAddress: _transactionHeaderEntityAddressConverter
+        .fromIsar(IsarNative.jsObjectGet(jsObj, 'billingAddress')),
     businessDate: IsarNative.jsObjectGet(jsObj, 'businessDate') != null
         ? DateTime.fromMillisecondsSinceEpoch(
                 IsarNative.jsObjectGet(jsObj, 'businessDate'),
@@ -316,6 +335,8 @@ TransactionHeaderEntity _transactionHeaderEntityDeserializeWeb(
     customerId: IsarNative.jsObjectGet(jsObj, 'customerId'),
     customerName: IsarNative.jsObjectGet(jsObj, 'customerName'),
     customerPhone: IsarNative.jsObjectGet(jsObj, 'customerPhone'),
+    discountTotal: IsarNative.jsObjectGet(jsObj, 'discountTotal') ??
+        double.negativeInfinity,
     endDateTime: IsarNative.jsObjectGet(jsObj, 'endDateTime') != null
         ? DateTime.fromMillisecondsSinceEpoch(
                 IsarNative.jsObjectGet(jsObj, 'endDateTime'),
@@ -330,7 +351,8 @@ TransactionHeaderEntity _transactionHeaderEntityDeserializeWeb(
         : null,
     roundTotal:
         IsarNative.jsObjectGet(jsObj, 'roundTotal') ?? double.negativeInfinity,
-    shippingAddress: IsarNative.jsObjectGet(jsObj, 'shippingAddress'),
+    shippingAddress: _transactionHeaderEntityAddressConverter
+        .fromIsar(IsarNative.jsObjectGet(jsObj, 'shippingAddress')),
     status: IsarNative.jsObjectGet(jsObj, 'status') ?? '',
     storeId:
         IsarNative.jsObjectGet(jsObj, 'storeId') ?? double.negativeInfinity,
@@ -371,7 +393,8 @@ P _transactionHeaderEntityDeserializePropWeb<P>(
               .toLocal()
           : DateTime.fromMillisecondsSinceEpoch(0)) as P;
     case 'billingAddress':
-      return (IsarNative.jsObjectGet(jsObj, 'billingAddress')) as P;
+      return (_transactionHeaderEntityAddressConverter
+          .fromIsar(IsarNative.jsObjectGet(jsObj, 'billingAddress'))) as P;
     case 'businessDate':
       return (IsarNative.jsObjectGet(jsObj, 'businessDate') != null
           ? DateTime.fromMillisecondsSinceEpoch(
@@ -392,6 +415,9 @@ P _transactionHeaderEntityDeserializePropWeb<P>(
       return (IsarNative.jsObjectGet(jsObj, 'customerName')) as P;
     case 'customerPhone':
       return (IsarNative.jsObjectGet(jsObj, 'customerPhone')) as P;
+    case 'discountTotal':
+      return (IsarNative.jsObjectGet(jsObj, 'discountTotal') ??
+          double.negativeInfinity) as P;
     case 'endDateTime':
       return (IsarNative.jsObjectGet(jsObj, 'endDateTime') != null
           ? DateTime.fromMillisecondsSinceEpoch(
@@ -410,7 +436,8 @@ P _transactionHeaderEntityDeserializePropWeb<P>(
       return (IsarNative.jsObjectGet(jsObj, 'roundTotal') ??
           double.negativeInfinity) as P;
     case 'shippingAddress':
-      return (IsarNative.jsObjectGet(jsObj, 'shippingAddress')) as P;
+      return (_transactionHeaderEntityAddressConverter
+          .fromIsar(IsarNative.jsObjectGet(jsObj, 'shippingAddress'))) as P;
     case 'status':
       return (IsarNative.jsObjectGet(jsObj, 'status') ?? '') as P;
     case 'storeId':
@@ -700,20 +727,20 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> billingAddressEqualTo(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'billingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> billingAddressGreaterThan(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -721,14 +748,14 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
       type: ConditionType.gt,
       include: include,
       property: 'billingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> billingAddressLessThan(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -736,24 +763,24 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
       type: ConditionType.lt,
       include: include,
       property: 'billingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> billingAddressBetween(
-    String? lower,
-    String? upper, {
+    Address? lower,
+    Address? upper, {
     bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return addFilterConditionInternal(FilterCondition.between(
       property: 'billingAddress',
-      lower: lower,
+      lower: _transactionHeaderEntityAddressConverter.toIsar(lower),
       includeLower: includeLower,
-      upper: upper,
+      upper: _transactionHeaderEntityAddressConverter.toIsar(upper),
       includeUpper: includeUpper,
       caseSensitive: caseSensitive,
     ));
@@ -761,37 +788,37 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> billingAddressStartsWith(
-    String value, {
+    Address value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'billingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> billingAddressEndsWith(
-    String value, {
+    Address value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'billingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
           QAfterFilterCondition>
-      billingAddressContains(String value, {bool caseSensitive = true}) {
+      billingAddressContains(Address value, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'billingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -1264,6 +1291,37 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> discountTotalGreaterThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: false,
+      property: 'discountTotal',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> discountTotalLessThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: false,
+      property: 'discountTotal',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> discountTotalBetween(double lower, double upper) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'discountTotal',
+      lower: lower,
+      includeLower: false,
+      upper: upper,
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> endDateTimeIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
@@ -1425,20 +1483,20 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> shippingAddressEqualTo(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'shippingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> shippingAddressGreaterThan(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -1446,14 +1504,14 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
       type: ConditionType.gt,
       include: include,
       property: 'shippingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> shippingAddressLessThan(
-    String? value, {
+    Address? value, {
     bool caseSensitive = true,
     bool include = false,
   }) {
@@ -1461,24 +1519,24 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
       type: ConditionType.lt,
       include: include,
       property: 'shippingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> shippingAddressBetween(
-    String? lower,
-    String? upper, {
+    Address? lower,
+    Address? upper, {
     bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return addFilterConditionInternal(FilterCondition.between(
       property: 'shippingAddress',
-      lower: lower,
+      lower: _transactionHeaderEntityAddressConverter.toIsar(lower),
       includeLower: includeLower,
-      upper: upper,
+      upper: _transactionHeaderEntityAddressConverter.toIsar(upper),
       includeUpper: includeUpper,
       caseSensitive: caseSensitive,
     ));
@@ -1486,37 +1544,37 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> shippingAddressStartsWith(
-    String value, {
+    Address value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.startsWith,
       property: 'shippingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> shippingAddressEndsWith(
-    String value, {
+    Address value, {
     bool caseSensitive = true,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.endsWith,
       property: 'shippingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
           QAfterFilterCondition>
-      shippingAddressContains(String value, {bool caseSensitive = true}) {
+      shippingAddressContains(Address value, {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.contains,
       property: 'shippingAddress',
-      value: value,
+      value: _transactionHeaderEntityAddressConverter.toIsar(value),
       caseSensitive: caseSensitive,
     ));
   }
@@ -2204,6 +2262,16 @@ extension TransactionHeaderEntityQueryWhereSortBy
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByDiscountTotal() {
+    return addSortByInternal('discountTotal', Sort.asc);
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByDiscountTotalDesc() {
+    return addSortByInternal('discountTotal', Sort.desc);
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       sortByEndDateTime() {
     return addSortByInternal('endDateTime', Sort.asc);
   }
@@ -2417,6 +2485,16 @@ extension TransactionHeaderEntityQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByDiscountTotal() {
+    return addSortByInternal('discountTotal', Sort.asc);
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByDiscountTotalDesc() {
+    return addSortByInternal('discountTotal', Sort.desc);
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       thenByEndDateTime() {
     return addSortByInternal('endDateTime', Sort.asc);
   }
@@ -2596,6 +2674,11 @@ extension TransactionHeaderEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
+      distinctByDiscountTotal() {
+    return addDistinctByInternal('discountTotal');
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
       distinctByEndDateTime() {
     return addDistinctByInternal('endDateTime');
   }
@@ -2675,7 +2758,7 @@ extension TransactionHeaderEntityQueryProperty on QueryBuilder<
     return addPropertyNameInternal('beginDatetime');
   }
 
-  QueryBuilder<TransactionHeaderEntity, String?, QQueryOperations>
+  QueryBuilder<TransactionHeaderEntity, Address?, QQueryOperations>
       billingAddressProperty() {
     return addPropertyNameInternal('billingAddress');
   }
@@ -2705,6 +2788,11 @@ extension TransactionHeaderEntityQueryProperty on QueryBuilder<
     return addPropertyNameInternal('customerPhone');
   }
 
+  QueryBuilder<TransactionHeaderEntity, double, QQueryOperations>
+      discountTotalProperty() {
+    return addPropertyNameInternal('discountTotal');
+  }
+
   QueryBuilder<TransactionHeaderEntity, DateTime?, QQueryOperations>
       endDateTimeProperty() {
     return addPropertyNameInternal('endDateTime');
@@ -2720,7 +2808,7 @@ extension TransactionHeaderEntityQueryProperty on QueryBuilder<
     return addPropertyNameInternal('roundTotal');
   }
 
-  QueryBuilder<TransactionHeaderEntity, String?, QQueryOperations>
+  QueryBuilder<TransactionHeaderEntity, Address?, QQueryOperations>
       shippingAddressProperty() {
     return addPropertyNameInternal('shippingAddress');
   }

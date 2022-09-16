@@ -1,10 +1,10 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-import 'package:receipt_generator/src/module/create_new_customer/new_customer_view.dart';
 import 'package:receipt_generator/src/widgets/search_bar.dart';
 
 import '../all_customer/all_customer_view.dart';
+import '../create_edit_customer/create_edit_customer_view.dart';
 
 const List<String> sortOptions = [
   'Sort By Name',
@@ -19,8 +19,29 @@ class ClientsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            color: AppColor.primary,
+            height: 30,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            child: Row(
+              children: const [
+                Text("Customer", style: TextStyle(color: Colors.white)),
+              ],
+            ),
+          ),
+        ),
         const Positioned(
-          top: 50,
+          top: 35,
+          left: 10,
+          right: 10,
+          child: SearchBar(label: "clients", hintText: "Search by Name, Phone Number",),
+        ),
+        const Positioned(
+          top: 80,
           bottom: 0,
           left: 10,
           right: 10,
@@ -57,12 +78,6 @@ class ClientsView extends StatelessWidget {
               );
             },
           ),
-        ),
-        const Positioned(
-          top: 5,
-          left: 14,
-          right: 14,
-          child: SearchBar(label: "clients"),
         ),
       ],
     );

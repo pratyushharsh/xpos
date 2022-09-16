@@ -11,16 +11,18 @@ import 'package:receipt_generator/src/entity/config/code_value_entity.dart';
 
 import '../config/constants.dart';
 import '../entity/pos/entity.dart';
+import '../entity/pos/reason_code_entity.dart';
 
 class SyncConfigRepository {
   final log = Logger('SyncConfigRepository');
 
   final Isar db;
 
-  SyncConfigRepository({ required this.db });
+  SyncConfigRepository({required this.db});
 
   Future<void> getDataFromServer() async {
-    String url = "https://xpos-user-dev.s3.ap-south-1.amazonaws.com/config/config.zip";
+    String url =
+        "https://xpos-user-dev.s3.ap-south-1.amazonaws.com/config/config.zip";
     final response = await http.get(Uri.parse(url));
 
     // Decode the Zip file
@@ -36,18 +38,51 @@ class SyncConfigRepository {
           .transform(const CsvToListConverter())
           .toList();
 
-      String category = filename.replaceAll(".csv", "");
-      var res = await db.writeTxn((isar) async {
-        for (int i = 0; i < fields.length; i++) {
-          var c = fields[i];
-          isar.codeValueEntitys.put(CodeValueEntity(category: category, code: c[0].toString(), value: c[1].toString(), description: c[1].toString()), replaceOnConflict: true);
-        }
-      });
+      // Route Based on the filename
+      if (filename.startsWith("CONFIG_")) {
+        String name = filename.replaceFirst("CONFIG_", "");
+        await _loadConfiguration(name, fields);
+      } else if (filename.startsWith("REASON_CODE")) {
+        await _loadReasonCode(fields);
+      }
     }
   }
 
-  Future<void> getSyncConfigDetails() async {
+  Future<void> _loadReasonCode(List<List<dynamic>> fields) async {
+    var res = await db.writeTxn((isar) async {
+      for (int i = 0; i < fields.length; i++) {
+        var c = fields[i];
+        isar.reasonCodeEntitys.put(
+            ReasonCodeEntity(
+              reasonTypeCode: c[0],
+              reasonCode: c[1],
+              description: c[2],
+              parentCode: c[3],
+              commentRequired: "Y" == c[4],
+            ),
+            replaceOnConflict: true);
+      }
+    });
+  }
 
+  Future<void> _loadConfiguration(
+      String filename, List<List<dynamic>> fields) async {
+    String category = filename.replaceAll(".csv", "");
+    var res = await db.writeTxn((isar) async {
+      for (int i = 0; i < fields.length; i++) {
+        var c = fields[i];
+        isar.codeValueEntitys.put(
+            CodeValueEntity(
+                category: category,
+                code: c[0].toString(),
+                value: c[1].toString(),
+                description: c[1].toString()),
+            replaceOnConflict: true);
+      }
+    });
+  }
+
+  Future<void> getSyncConfigDetails() async {
     log.info("Isolate will be spawned");
     await getDataFromServer();
     // ReceivePort receivePort = ReceivePort();
@@ -76,20 +111,21 @@ class SyncConfigRepository {
   }
 
   Future<void> loadSampleProductImageData() async {
-
     if (Constants.baseImagePath.isEmpty) {
       await Constants.getImageBasePath();
     }
 
     try {
       log.info("Loading sample product image data");
-      final response = await http.get(Uri.parse(UrlConstants.sampleProductsImagesUrl));
+      final response =
+          await http.get(Uri.parse(UrlConstants.sampleProductsImagesUrl));
       final archive = ZipDecoder().decodeBytes(response.bodyBytes);
       // Write the file to the disk
       for (var file in archive.files) {
         // If it's a file and not a directory
         if (file.isFile) {
-          final outputStream = OutputFileStream('${Constants.baseImagePath}/${file.name}');
+          final outputStream =
+              OutputFileStream('${Constants.baseImagePath}/${file.name}');
           file.writeContent(outputStream);
           outputStream.close();
         }
@@ -104,7 +140,8 @@ class SyncConfigRepository {
   Future<void> loadSampleProductData() async {
     try {
       log.info("Loading sample product data");
-      final response = await http.get(Uri.parse(UrlConstants.sampleProductDataUrl));
+      final response =
+          await http.get(Uri.parse(UrlConstants.sampleProductDataUrl));
       // Decode the Zip file
       final archive = ZipDecoder().decodeBytes(response.bodyBytes);
       for (final file in archive) {
@@ -125,18 +162,24 @@ class SyncConfigRepository {
             var entity = ProductEntity(
               displayName: e[1].toString(),
               description: e[2].toString(),
-              listPrice:
-              e[3].toString().isNotEmpty ? double.parse(e[3].toString()) : 9999999.00,
-              salePrice:
-              e[4].toString().isNotEmpty ? double.parse(e[3].toString()) : 9999999.00,
+              listPrice: e[3].toString().isNotEmpty
+                  ? double.parse(e[3].toString())
+                  : 9999999.00,
+              salePrice: e[4].toString().isNotEmpty
+                  ? double.parse(e[3].toString())
+                  : 9999999.00,
               uom: e[5].toString(),
               brand: e[6].toString(),
               skuCode: e[7].toString(),
               hsn: e[8].toString(),
-              tax: e[9].toString().isNotEmpty
-                  ? double.parse(e[9].toString())
-                  : 0,
-              imageUrl: e[10].toString().isNotEmpty ? e[10].toString().split(";").where((element) => element.isNotEmpty).toList() : [],
+              taxGroupId: e[9].toString(),
+              imageUrl: e[10].toString().isNotEmpty
+                  ? e[10]
+                      .toString()
+                      .split(";")
+                      .where((element) => element.isNotEmpty)
+                      .toList()
+                  : [],
               enable: true,
               productId: productId.toString(),
               storeId: -1,

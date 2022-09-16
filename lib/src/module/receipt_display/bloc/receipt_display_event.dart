@@ -15,3 +15,9 @@ class UpdateGlobalKey extends ReceiptDisplayEvent {
 
   UpdateGlobalKey(this.globalKey);
 }
+
+class MockUpdateReceiptSettingData extends ReceiptDisplayEvent {
+  final ReceiptSettingsModel receiptSettingData;
+
+  MockUpdateReceiptSettingData(this.receiptSettingData);
+}

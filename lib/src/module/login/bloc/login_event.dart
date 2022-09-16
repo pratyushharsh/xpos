@@ -15,6 +15,12 @@ class VerifyUserOtp extends LoginEvent {
   VerifyUserOtp(this.otp);
 }
 
+class RemoveDevice extends LoginEvent {
+  final List<String> devices;
+
+  RemoveDevice(this.devices);
+}
+
 class LogOutUserEvent extends LoginEvent {}
 
 

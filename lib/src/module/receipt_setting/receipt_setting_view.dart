@@ -5,6 +5,7 @@ import 'package:receipt_generator/src/widgets/appbar_leading.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import 'bloc/receipt_setting_bloc.dart';
+import 'mock_receipt_view.dart';
 
 class ReceiptSettingView extends StatelessWidget {
   const ReceiptSettingView({Key? key}) : super(key: key);
@@ -28,16 +29,25 @@ class ReceiptSettingForm extends StatelessWidget {
         body: Stack(
           fit: StackFit.expand,
           children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Column(
-                children: const [
-                  SizedBox(
-                    height: 80,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Column(
+                      children: const [
+                        SizedBox(
+                          height: 80,
+                        ),
+                        ReceiptSettingInput()
+                      ],
+                    ),
                   ),
-                  ReceiptSettingInput()
-                ],
-              ),
+                ),
+                const Expanded(flex: 2, child: MockReceiptView())
+              ],
             ),
             Positioned(
               top: 20,

@@ -16,7 +16,9 @@ import 'package:receipt_generator/src/widgets/loading.dart';
 import 'package:validators/sanitizers.dart';
 
 import '../../config/constants.dart';
-import '../../widgets/my_loader.dart';
+import '../../entity/config/code_value_entity.dart';
+import '../../entity/pos/tax_group_entity.dart';
+import '../../repositories/tax_repository.dart';
 
 enum NewItemScreenState { editItem, createItem }
 
@@ -52,6 +54,7 @@ class AddNewItemForm extends StatefulWidget {
 
 class _AddNewItemFormState extends State<AddNewItemForm> {
   String? _uom;
+  String? _taxGroup;
   bool _formValid = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -68,6 +71,8 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   late String? _productId;
   late bool _priceIncludeTax;
   late List<String> _imageUrls;
+  List<CodeValueEntity> uom = [];
+  List<TaxGroupEntity> taxGroups = [];
 
   @override
   void initState() {
@@ -85,6 +90,20 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     _productId = null;
     _priceIncludeTax = false;
     _imageUrls = [];
+
+    _fetchData();
+  }
+
+  void _fetchData() async {
+    var repo = RepositoryProvider.of<ConfigRepository>(context);
+    var _uom = await repo.getCodeByCategory("UOM");
+
+    var taxRepo = RepositoryProvider.of<TaxRepository>(context);
+    var _taxGroup = await taxRepo.getAllTaxGroups();
+    setState(() {
+      uom = _uom;
+      taxGroups = _taxGroup;
+    });
   }
 
   @override
@@ -141,10 +160,14 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     });
   }
 
+void _onTaxGroupChange(String? value) {
+    setState(() {
+      _taxGroup = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var repo = RepositoryProvider.of<ConfigRepository>(context);
-    var uom = repo.getCodeByCategory("UOM");
     return BlocConsumer<ItemBloc, ItemState>(
       listener: (context, state) {
         if (state.status == ItemStatus.addingProduct) {
@@ -168,6 +191,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           setState(() {
             _inEditMode = true;
             _uom = state.existingProduct!.uom;
+            _taxGroup = state.existingProduct!.taxGroupId;
             _productId = state.existingProduct!.skuCode ??
                 state.existingProduct!.productId;
             _productNameController.text = state.existingProduct!.displayName;
@@ -340,12 +364,16 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                                     width: 8,
                                   ),
                                   Expanded(
-                                    child: CustomTextField(
-                                      label: "Tax Rate",
-                                      textInputType: TextInputType.number,
-                                      validator: NewProductFieldValidator
-                                          .validateTaxRate,
-                                      controller: _taxRateController,
+                                    child: CustomDropDown<String>(
+                                      value: _taxGroup,
+                                      data: taxGroups
+                                          .map((e) => DropDownData(
+                                          key: e.groupId, value: e.description))
+                                          .toList(),
+                                      label: 'Tax Group',
+                                      onChanged: _onTaxGroupChange,
+                                      validator:
+                                      NewProductFieldValidator.validateUOM,
                                     ),
                                   ),
                                 ],

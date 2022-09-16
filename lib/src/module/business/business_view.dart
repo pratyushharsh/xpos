@@ -9,6 +9,7 @@ import 'package:receipt_generator/src/widgets/custom_dropdown.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
+import '../../entity/config/code_value_entity.dart';
 import '../../widgets/appbar_leading.dart';
 import 'bloc/business_bloc.dart';
 
@@ -28,7 +29,9 @@ class BusinessView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => BusinessBloc(
-          repo: RepositoryProvider.of(context), operation: operation)
+          userPool: RepositoryProvider.of(context),
+          repo: RepositoryProvider.of(context),
+          operation: operation)
         ..add(LoadBusinessDetail(businessId)),
       child: Container(
         color: Colors.white,
@@ -52,7 +55,7 @@ class BusinessView extends StatelessWidget {
                             tag: "business-logo",
                             child: CircleAvatar(
                               backgroundImage: NetworkImage(
-                                  'https://media-exp1.licdn.com/dms/image/C4E03AQG2CT__QR-ZEA/profile-displayphoto-shrink_800_800/0/1635953455093?e=1656547200&v=beta&t=73Ztd907MxvHLxmQV6Pb-TShp6qj4mGOKN4ckWWjvuQ'),
+                                  'https://images.unsplash.com/photo-1541569863345-f97c6484a917?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80'),
                               maxRadius: 60,
                               child: Text(
                                 "",
@@ -71,7 +74,7 @@ class BusinessView extends StatelessWidget {
                   left: 16,
                   child: AppBarLeading(
                     heading: operation == BusinessOperation.update
-                        ? "Modify Business"
+                        ? "Modify Business# $businessId"
                         : "Create Business",
                     icon: operation == BusinessOperation.update
                         ? Icons.arrow_back
@@ -221,18 +224,16 @@ class _BusinessDetailState extends State<BusinessDetail> {
                     )),
                     builder: (context) => const AddressFormDialog(),
                   ).then((value) => {
-                        if (value != null &&
-                            value.length > 0 &&
-                            value[0] is Address)
+                        if (value != null && value is Address)
                           {
                             BlocProvider.of<BusinessBloc>(context)
-                                .add(OnBusinessAddressChange(value[0]))
+                                .add(OnBusinessAddressChange(value))
                           }
                       });
                 },
-                child: AddressWidget(
+                child: TextFieldPlaceholderWidget(
                   label: "Business Address",
-                  address: state.businessAddress?.toString() ?? "",
+                  value: state.businessAddress?.toString() ?? "",
                 )),
             CustomTextField(
               controller: _businessGstController,
@@ -275,6 +276,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
   late String? _country;
   late String? _state;
 
+  List<CodeValueEntity> countryCode = [];
+  List<CodeValueEntity> stateCode = [];
+
   @override
   void initState() {
     super.initState();
@@ -285,6 +289,7 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
     _stateController = TextEditingController();
     _country = null;
     _state = null;
+    _fetchData();
   }
 
   @override
@@ -295,6 +300,16 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
     _cityController.dispose();
     _stateController.dispose();
     super.dispose();
+  }
+
+  void _fetchData() async {
+    var repo = RepositoryProvider.of<ConfigRepository>(context);
+    var countryCode = await repo.getCodeByCategory("COUNTRY_CODE");
+    var stateCode = await repo.getCodeByCategory("IN_STATE");
+    setState(() {
+      this.countryCode = countryCode;
+      this.stateCode = stateCode;
+    });
   }
 
   void _onCountryChange(String? value) {
@@ -311,9 +326,6 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var repo = RepositoryProvider.of<ConfigRepository>(context);
-    var countryCode = repo.getCodeByCategory("COUNTRY_CODE");
-    var stateCode = repo.getCodeByCategory("IN_STATE");
     return SingleChildScrollView(
       child: Padding(
         padding: MediaQuery.of(context).viewInsets,
@@ -324,7 +336,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
             children: [
               CustomDropDown<String>(
                 value: _country,
-                data: countryCode.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
+                data: countryCode
+                    .map((e) => DropDownData(key: e.code, value: e.value))
+                    .toList(),
                 onChanged: _onCountryChange,
                 label: 'Country',
               ),
@@ -347,7 +361,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
               ),
               CustomDropDown<String>(
                 value: _state,
-                data: stateCode.map((e) => DropDownData(key: e.code, value: e.value)).toList(),
+                data: stateCode
+                    .map((e) => DropDownData(key: e.code, value: e.value))
+                    .toList(),
                 onChanged: _onStateChange,
                 label: 'State',
               ),
@@ -357,14 +373,12 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                   label: "Save",
                   borderRadius: BorderRadius.circular(5.0),
                   onPressed: () {
-                    Navigator.of(context).pop([
-                      Address(
-                          zipcode: _zipcodeController.text,
-                          building: _buildingController.text,
-                          street: _streetController.text,
-                          city: _cityController.text,
-                          state: _stateController.text)
-                    ]);
+                    Navigator.of(context).pop(Address(
+                        zipcode: _zipcodeController.text,
+                        building: _buildingController.text,
+                        street: _streetController.text,
+                        city: _cityController.text,
+                        state: _stateController.text));
                   },
                 ),
               )

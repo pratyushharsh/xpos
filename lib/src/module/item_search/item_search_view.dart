@@ -16,9 +16,13 @@ class SearchItemView extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
+        child: Column(
           children: [
-            Text("${product.skuCode ?? product.productId} | ${product.description} | ${product.listPrice}"),
+            Row(
+              children: [
+                Expanded(child: Text("${product.skuCode ?? product.productId} | ${product.displayName}", overflow: TextOverflow.ellipsis,)),
+              ],
+            ),
           ],
         ),
       ),
@@ -58,7 +62,7 @@ class SearchSaleProductBar extends StatelessWidget {
     return  CustomTextField(
       label: "Search For Products",
       onValueChange: (val) {
-        if (val.length >= 3) {
+        if (val.isNotEmpty) {
           BlocProvider.of<ItemSearchBloc>(context).add(SearchItemByFilter(val));
         }
       },

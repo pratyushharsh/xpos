@@ -1,34 +1,42 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/business_entity.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 
+import '../../../entity/pos/employee_entity.dart';
+import '../../../model/api/api.dart';
+import '../../../repositories/employee_repository.dart';
 import '../../sync/bloc/background_sync_bloc.dart';
-
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   final log = Logger('AuthenticationBloc');
   final bool test = false;
 
   final CognitoUserPool userPool;
-  final Isar db;
   final BusinessRepository businessRepository;
+  final EmployeeRepository employeeRepository;
   final BackgroundSyncBloc sync;
 
-  AuthenticationBloc({required this.userPool, required this.db, required this.businessRepository, required this.sync}) : super(AuthenticationState.unauthenticated()) {
+  AuthenticationBloc(
+      {required this.userPool,
+      required this.businessRepository,
+      required this.employeeRepository,
+      required this.sync})
+      : super(AuthenticationState.unknown()) {
     // signInIfSessionAvailable();
     on<AuthenticationUserChanged>(_onUserChanged);
     on<InitialAuthEvent>(_onInitialAuth);
-    on<VerifyUser>(_onVerifyUser);
+    on<VerifyUserOtpStep>(_onVerifyUser);
+    on<VerifyUserDeviceStep>(_onVerifyUserDevice);
     on<LogOutUserEvent>(_logOutUser);
+    on<ChooseBusinessEvent>(_chooseBusinessEvent);
   }
   // signInIfSessionAvailable() async {
   //   log.info('Getting if user already present');
@@ -47,49 +55,30 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   //   // }
   // }
 
-  void _onInitialAuth(InitialAuthEvent event, Emitter<AuthenticationState> emit) async {
+  void _onInitialAuth(
+      InitialAuthEvent event, Emitter<AuthenticationState> emit) async {
     try {
-
-      // @TODO Remove after testing
-      if (test) {
-        emit(AuthenticationState.authenticated(CognitoUser("pratyush-test", CognitoUserPool(
-          "ap-south-1_gXgaeT7lu",
-          "366tbopn6vh1f3v88e4u2drn34"
-        )), "100026", RetailLocationEntity(
-          rtlLocId: 100026, createTime: DateTime.now(),
-        )));
-        return;
-      }
-
       var user = await userPool.getCurrentUser();
-      if (user != null) {
+      if (user != null && user.getUsername() != null) {
         // Three Scenario when user logged in
         // He is new user need to register for a business.
         // He owns multiple business need to choose which one to login. @TODO
         // Only one business directly login to system.
-        await user.getSession();
-        var attrib = await user.getUserAttributes();
+        var session = await user.getSession();
+        var curStore = await userPool.storage.getItem("CURRENT_STORE");
 
-        CognitoUserAttribute? stores;
-        if (attrib != null) {
-          for(var x = 0; x < attrib.length; x++) {
-            if (attrib[x].name == "custom:allocated_store") {
-              stores = attrib[x];
-              break;
-            }
-          }
-        }
-
-        if (stores != null && stores.value != null) {
-          String tmp = stores.value!;
-          List<String> userStores = tmp.split(";");
-
-          var rtlLoc = await businessRepository.getBusinessById(int.parse(userStores[0].split(":")[1]));
-          sync.add(StartSyncEvent(rtlLoc.rtlLocId));
-          emit(AuthenticationState.authenticated(user, tmp, rtlLoc));
+        //
+        // return;
+        if (curStore == null) {
+          var businessList = await employeeRepository.getBusinessAssociatedWithUser(user.getUsername()!);
+          emit(AuthenticationState.chooseBusiness(businessList));
         } else {
-          emit(AuthenticationState.newUser(user));
+          // Get business from cache
+          var business = await businessRepository.getBusinessById(int.parse(curStore));
+          var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(curStore, user.getUsername()!);
+          emit(AuthenticationState.authenticated(user, business, userDetail!));
         }
+
       } else {
         emit(AuthenticationState.unauthenticated());
       }
@@ -99,33 +88,43 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  void _onUserChanged(AuthenticationUserChanged event, Emitter<AuthenticationState> emit) async {
-    if (event.stores != null) {
-      String tmp = event.stores!.value!;
-      List<String> userStores = tmp.split(";");
-
-      var rtlLoc = await businessRepository.getBusinessById(int.parse(userStores[0].split(":")[1]));
-      sync.add(StartSyncEvent(rtlLoc.rtlLocId));
-      emit(AuthenticationState.authenticated(event.user, tmp, rtlLoc));
-    } else {
-      sync.add(StopSyncEvent());
-      emit(AuthenticationState.newUser(event.user));
-    }
-
+  void _onUserChanged(AuthenticationUserChanged event,
+      Emitter<AuthenticationState> emit) {
+    add(InitialAuthEvent());
   }
 
-  void _onVerifyUser(VerifyUser event, Emitter<AuthenticationState> emit) async {
+  void _onVerifyUser(
+      VerifyUserOtpStep event, Emitter<AuthenticationState> emit) async {
     emit(AuthenticationState.verifyUser());
   }
 
-  void _logOutUser(LogOutUserEvent event, Emitter<AuthenticationState> emit) async {
+  void _onVerifyUserDevice(
+      VerifyUserDeviceStep event, Emitter<AuthenticationState> emit) async {
+    emit(AuthenticationState.verifyUserDevice());
+  }
+
+  void _logOutUser(
+      LogOutUserEvent event, Emitter<AuthenticationState> emit) async {
     var tmp = await userPool.getCurrentUser();
-    sync.add(StopSyncEvent());
+    // sync.add(StopSyncEvent());
     if (tmp != null) {
       await tmp.signOut();
-      emit(AuthenticationState.unauthenticated());
+      await tmp.clearCachedTokens();
+      await tmp.storage.removeItem("CURRENT_STORE");
+      emit(AuthenticationState.unknown());
     } else {
-      emit(AuthenticationState.unauthenticated());
+      emit(AuthenticationState.unknown());
     }
+  }
+
+  void _chooseBusinessEvent(
+      ChooseBusinessEvent event, Emitter<AuthenticationState> emit) async {
+    emit(state.copyWith(status: AuthenticationStatus.chooseBusinessLoading));
+    var user = await userPool.getCurrentUser();
+    var session = await user!.getSession();
+    await user.storage.setItem("CURRENT_STORE", event.business.storeId);
+    var business = await businessRepository.getBusinessById(int.parse(event.business.storeId!));
+    var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(event.business.storeId!, user.getUsername()!);
+    emit(AuthenticationState.authenticated(user, business, userDetail!));
   }
 }

@@ -17,19 +17,19 @@ class TransactionLineItemModifierEntity {
   final int lineItemSeq;
   final int lineItemModSeq;
 
-  final double amount;
-  final double extendedAmount;
-  final String? notes;
+  double amount;
+  double extendedAmount;
+  String? notes;
 
-  final double? percent;
-  final String priceModifierReasonCode;
+  double? percent;
+  String priceModifierReasonCode;
 
-  final String? description;
-  final String? promotionId;
-  final String? dealId;
-  final String? discountCode;
-  final String? groupDiscountId;
-  final String? discountReasonCode;
+  String? description;
+  String? promotionId;
+  String? dealId;
+  String? discountCode;
+  String? groupDiscountId;
+  String? discountReasonCode;
 
   @Backlink(to: 'lineModifiers')
   final lineItem = IsarLink<TransactionLineItemEntity>();

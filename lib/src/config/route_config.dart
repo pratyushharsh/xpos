@@ -5,20 +5,25 @@ import 'package:receipt_generator/src/module/business/bloc/business_bloc.dart';
 import 'package:receipt_generator/src/module/business/business_view.dart';
 import 'package:receipt_generator/src/module/create_new_item/add_new_item_view.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_view.dart';
-import 'package:receipt_generator/src/module/customer_detail/customer_detail_screen.dart';
+import 'package:receipt_generator/src/module/employee_detail/employee_detail_view.dart';
 import 'package:receipt_generator/src/module/home/home_view.dart';
 import 'package:receipt_generator/src/module/invoice/invoice_view.dart';
 import 'package:receipt_generator/src/module/list_all_item/list_all_item_view.dart';
 import 'package:receipt_generator/src/module/list_all_receipt/list_all_receipt_view.dart';
 import 'package:receipt_generator/src/module/load_item_bulk/load_item_bulk_view.dart';
+import 'package:receipt_generator/src/module/locale/locale_view_mobile.dart';
 import 'package:receipt_generator/src/module/order_summary/order_summary_view.dart';
-import 'package:receipt_generator/src/module/receipt_display/invoice_display_view.dart';
 import 'package:receipt_generator/src/module/receipt_display/receipt_display_view.dart';
 import 'package:receipt_generator/src/module/receipt_setting/receipt_setting_view.dart';
 import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.dart';
+import 'package:receipt_generator/src/module/tax/create_edit_tax.dart';
 
+import '../entity/pos/employee_entity.dart';
+import '../module/create_edit_customer/create_edit_customer_view.dart';
 import '../module/create_new_item/modify_line_item_screen.dart';
+import '../module/employee/employee_list_view.dart';
 import '../module/receipt_display/invoice_display.dart';
+import '../module/receipt_setting/invoice_setting_view.dart';
 
 class RouteConfig {
 
@@ -36,8 +41,13 @@ class RouteConfig {
   static const String invoiceViewScreen = "/invoice-view";
   static const String businessViewScreen = "/business-view";
   static const String receiptSettingViewScreen = "/receipt-setting";
+  static const String invoiceSettingViewScreen = "/invoice-setting";
   static const String customerDetailScreen = "/customer-detail";
   static const String orderSummaryScreen = "/order-summary";
+  static const String localeScreen = "/locale-screen";
+  static const String taxConfigurationScreen = "/tax-config";
+  static const String employeeDetailScreen = "/employee-detail";
+  static const String employeeScreen = "/employee";
 
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -83,13 +93,24 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => AppInvoiceDisplay(transactionId: transId,));
       case customerDetailScreen:
         var contactId = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => CustomerDetailScreen(userId: contactId,));
+        return MaterialPageRoute(builder: (_) => NewCustomerView(customerId: contactId,));
       case editSaleLineItemScreen:
         var line = settings.arguments as SaleLine;
         return MaterialPageRoute(builder: (_) => ModifyLineItemScreen(saleLine: line,));
       case orderSummaryScreen:
         var transId = settings.arguments as int;
         return MaterialPageRoute(builder: (_) => OrderSummaryView(orderId: transId,));
+      case localeScreen:
+        return MaterialPageRoute(builder: (_) => const LocaleView());
+      case taxConfigurationScreen:
+        return MaterialPageRoute(builder: (_) => const CreateEditTaxView());
+      case employeeDetailScreen:
+        EmployeeEntity? emp = settings.arguments as EmployeeEntity?;
+        return MaterialPageRoute(builder: (_) => EmployeeDetailView(employee: emp,));
+      case invoiceSettingViewScreen:
+        return MaterialPageRoute(builder: (_) => const InvoiceSettingView());
+      case employeeScreen:
+        return MaterialPageRoute(builder: (_) => const EmployeeView());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

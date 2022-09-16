@@ -31,7 +31,7 @@ class BusinessRepository {
             version: 1,
             createTime: resp.createdAt,
             storeName: resp.name,
-            storeNumber: '$resp.businessId',
+            storeNumber: '${resp.businessId}',
             storeContact: resp.phone,
             address1: resp.address1,
             address2: resp.address2,

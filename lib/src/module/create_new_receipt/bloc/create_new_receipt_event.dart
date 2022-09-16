@@ -91,3 +91,5 @@ class OnChangeLineItemTaxPercent extends CreateNewReceiptEvent {
   final double taxPercent;
   OnChangeLineItemTaxPercent({required this.saleLine, required this.taxPercent, required this.reason,});
 }
+
+class OnCustomerRemove extends CreateNewReceiptEvent {}

@@ -3,7 +3,6 @@ import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
-import 'package:receipt_generator/src/model/model.dart';
 
 part 'list_all_item_event.dart';
 part 'list_all_item_state.dart';
@@ -28,10 +27,9 @@ class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
             .productIdEqualTo(state.filterCriteria.filter)
             .or()
             .descriptionWordsAnyStartsWith(state.filterCriteria.filter!)
-            .offset(state.products.length)
             .limit(state.filterCriteria.limit).findAll();
       } else {
-        prod = await db.productEntitys.where().offset(state.products.length).limit(state.filterCriteria.limit).findAll();
+        prod = await db.productEntitys.where().limit(state.filterCriteria.limit).findAll();
       }
       emit(
           state.copyWith(products: prod, status: ListAllItemStatus.success));

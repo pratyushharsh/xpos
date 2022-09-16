@@ -16,21 +16,21 @@ extension GetTransactionLineItemEntityCollection on Isar {
 const TransactionLineItemEntitySchema = CollectionSchema(
   name: 'TransactionLineItemEntity',
   schema:
-      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"discountAmount","type":"Double"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"grossQuantity","type":"Double"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"netQuantity","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"transSeq","type":"Long"},{"name":"unitPrice","type":"Double"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[{"name":"lineModifiers","target":"TransactionLineItemModifierEntity"}]}',
+      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"baseUnitPrice","type":"Double"},{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"discountAmount","type":"Double"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"isVoid","type":"Bool"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"transSeq","type":"Long"},{"name":"unitCost","type":"Double"},{"name":"unitPrice","type":"Double"},{"name":"uom","type":"String"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[{"name":"lineModifiers","target":"TransactionLineItemModifierEntity"},{"name":"taxModifiers","target":"TransactionLineItemTaxModifier"}]}',
   idName: 'id',
   propertyIds: {
-    'businessDate': 0,
-    'category': 1,
-    'discountAmount': 2,
-    'extendedAmount': 3,
-    'grossAmount': 4,
-    'grossQuantity': 5,
-    'itemDescription': 6,
-    'itemId': 7,
-    'itemIdEntryMethod': 8,
-    'lineItemSeq': 9,
-    'netAmount': 10,
-    'netQuantity': 11,
+    'baseUnitPrice': 0,
+    'businessDate': 1,
+    'category': 2,
+    'discountAmount': 3,
+    'extendedAmount': 4,
+    'grossAmount': 5,
+    'isVoid': 6,
+    'itemDescription': 7,
+    'itemId': 8,
+    'itemIdEntryMethod': 9,
+    'lineItemSeq': 10,
+    'netAmount': 11,
     'nonExchangeableFlag': 12,
     'nonReturnableFlag': 13,
     'originalBusinessDate': 14,
@@ -52,10 +52,11 @@ const TransactionLineItemEntitySchema = CollectionSchema(
     'shippingWeight': 30,
     'storeId': 31,
     'taxAmount': 32,
-    'taxGroupId': 33,
-    'transSeq': 34,
+    'transSeq': 33,
+    'unitCost': 34,
     'unitPrice': 35,
-    'vendorId': 36
+    'uom': 36,
+    'vendorId': 37
   },
   listProperties: {},
   indexIds: {'originalPosId': 0, 'originalTransSeq': 1, 'storeId': 2},
@@ -70,7 +71,7 @@ const TransactionLineItemEntitySchema = CollectionSchema(
       IndexValueType.long,
     ]
   },
-  linkIds: {'lineModifiers': 0, 'header': 1},
+  linkIds: {'lineModifiers': 0, 'taxModifiers': 1, 'header': 2},
   backlinkLinkNames: {'header': 'lineItems'},
   getId: _transactionLineItemEntityGetId,
   getLinks: _transactionLineItemEntityGetLinks,
@@ -94,7 +95,7 @@ int? _transactionLineItemEntityGetId(TransactionLineItemEntity object) {
 
 List<IsarLinkBase> _transactionLineItemEntityGetLinks(
     TransactionLineItemEntity object) {
-  return [object.lineModifiers, object.header];
+  return [object.lineModifiers, object.taxModifiers, object.header];
 }
 
 void _transactionLineItemEntitySerializeNative(
@@ -105,37 +106,37 @@ void _transactionLineItemEntitySerializeNative(
     List<int> offsets,
     AdapterAlloc alloc) {
   var dynamicSize = 0;
-  final value0 = object.businessDate;
-  final _businessDate = value0;
-  final value1 = object.category;
+  final value0 = object.baseUnitPrice;
+  final _baseUnitPrice = value0;
+  final value1 = object.businessDate;
+  final _businessDate = value1;
+  final value2 = object.category;
   IsarUint8List? _category;
-  if (value1 != null) {
-    _category = IsarBinaryWriter.utf8Encoder.convert(value1);
+  if (value2 != null) {
+    _category = IsarBinaryWriter.utf8Encoder.convert(value2);
   }
   dynamicSize += (_category?.length ?? 0) as int;
-  final value2 = object.discountAmount;
-  final _discountAmount = value2;
-  final value3 = object.extendedAmount;
-  final _extendedAmount = value3;
-  final value4 = object.grossAmount;
-  final _grossAmount = value4;
-  final value5 = object.grossQuantity;
-  final _grossQuantity = value5;
-  final value6 = object.itemDescription;
-  final _itemDescription = IsarBinaryWriter.utf8Encoder.convert(value6);
+  final value3 = object.discountAmount;
+  final _discountAmount = value3;
+  final value4 = object.extendedAmount;
+  final _extendedAmount = value4;
+  final value5 = object.grossAmount;
+  final _grossAmount = value5;
+  final value6 = object.isVoid;
+  final _isVoid = value6;
+  final value7 = object.itemDescription;
+  final _itemDescription = IsarBinaryWriter.utf8Encoder.convert(value7);
   dynamicSize += (_itemDescription.length) as int;
-  final value7 = object.itemId;
-  final _itemId = IsarBinaryWriter.utf8Encoder.convert(value7);
+  final value8 = object.itemId;
+  final _itemId = IsarBinaryWriter.utf8Encoder.convert(value8);
   dynamicSize += (_itemId.length) as int;
-  final value8 = object.itemIdEntryMethod;
-  final _itemIdEntryMethod = IsarBinaryWriter.utf8Encoder.convert(value8);
+  final value9 = object.itemIdEntryMethod;
+  final _itemIdEntryMethod = IsarBinaryWriter.utf8Encoder.convert(value9);
   dynamicSize += (_itemIdEntryMethod.length) as int;
-  final value9 = object.lineItemSeq;
-  final _lineItemSeq = value9;
-  final value10 = object.netAmount;
-  final _netAmount = value10;
-  final value11 = object.netQuantity;
-  final _netQuantity = value11;
+  final value10 = object.lineItemSeq;
+  final _lineItemSeq = value10;
+  final value11 = object.netAmount;
+  final _netAmount = value11;
   final value12 = object.nonExchangeableFlag;
   final _nonExchangeableFlag = value12;
   final value13 = object.nonReturnableFlag;
@@ -199,17 +200,19 @@ void _transactionLineItemEntitySerializeNative(
   final _storeId = value31;
   final value32 = object.taxAmount;
   final _taxAmount = value32;
-  final value33 = object.taxGroupId;
-  final _taxGroupId = IsarBinaryWriter.utf8Encoder.convert(value33);
-  dynamicSize += (_taxGroupId.length) as int;
-  final value34 = object.transSeq;
-  final _transSeq = value34;
+  final value33 = object.transSeq;
+  final _transSeq = value33;
+  final value34 = object.unitCost;
+  final _unitCost = value34;
   final value35 = object.unitPrice;
   final _unitPrice = value35;
-  final value36 = object.vendorId;
+  final value36 = object.uom;
+  final _uom = IsarBinaryWriter.utf8Encoder.convert(value36);
+  dynamicSize += (_uom.length) as int;
+  final value37 = object.vendorId;
   IsarUint8List? _vendorId;
-  if (value36 != null) {
-    _vendorId = IsarBinaryWriter.utf8Encoder.convert(value36);
+  if (value37 != null) {
+    _vendorId = IsarBinaryWriter.utf8Encoder.convert(value37);
   }
   dynamicSize += (_vendorId?.length ?? 0) as int;
   final size = staticSize + dynamicSize;
@@ -218,18 +221,18 @@ void _transactionLineItemEntitySerializeNative(
   rawObj.buffer_length = size;
   final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
   final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeDateTime(offsets[0], _businessDate);
-  writer.writeBytes(offsets[1], _category);
-  writer.writeDouble(offsets[2], _discountAmount);
-  writer.writeDouble(offsets[3], _extendedAmount);
-  writer.writeDouble(offsets[4], _grossAmount);
-  writer.writeDouble(offsets[5], _grossQuantity);
-  writer.writeBytes(offsets[6], _itemDescription);
-  writer.writeBytes(offsets[7], _itemId);
-  writer.writeBytes(offsets[8], _itemIdEntryMethod);
-  writer.writeLong(offsets[9], _lineItemSeq);
-  writer.writeDouble(offsets[10], _netAmount);
-  writer.writeDouble(offsets[11], _netQuantity);
+  writer.writeDouble(offsets[0], _baseUnitPrice);
+  writer.writeDateTime(offsets[1], _businessDate);
+  writer.writeBytes(offsets[2], _category);
+  writer.writeDouble(offsets[3], _discountAmount);
+  writer.writeDouble(offsets[4], _extendedAmount);
+  writer.writeDouble(offsets[5], _grossAmount);
+  writer.writeBool(offsets[6], _isVoid);
+  writer.writeBytes(offsets[7], _itemDescription);
+  writer.writeBytes(offsets[8], _itemId);
+  writer.writeBytes(offsets[9], _itemIdEntryMethod);
+  writer.writeLong(offsets[10], _lineItemSeq);
+  writer.writeDouble(offsets[11], _netAmount);
   writer.writeBool(offsets[12], _nonExchangeableFlag);
   writer.writeBool(offsets[13], _nonReturnableFlag);
   writer.writeDateTime(offsets[14], _originalBusinessDate);
@@ -251,10 +254,11 @@ void _transactionLineItemEntitySerializeNative(
   writer.writeDouble(offsets[30], _shippingWeight);
   writer.writeLong(offsets[31], _storeId);
   writer.writeDouble(offsets[32], _taxAmount);
-  writer.writeBytes(offsets[33], _taxGroupId);
-  writer.writeLong(offsets[34], _transSeq);
+  writer.writeLong(offsets[33], _transSeq);
+  writer.writeDouble(offsets[34], _unitCost);
   writer.writeDouble(offsets[35], _unitPrice);
-  writer.writeBytes(offsets[36], _vendorId);
+  writer.writeBytes(offsets[36], _uom);
+  writer.writeBytes(offsets[37], _vendorId);
 }
 
 TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
@@ -263,19 +267,19 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
     IsarBinaryReader reader,
     List<int> offsets) {
   final object = TransactionLineItemEntity(
-    businessDate: reader.readDateTime(offsets[0]),
-    category: reader.readStringOrNull(offsets[1]),
-    discountAmount: reader.readDouble(offsets[2]),
-    extendedAmount: reader.readDouble(offsets[3]),
-    grossAmount: reader.readDouble(offsets[4]),
-    grossQuantity: reader.readDouble(offsets[5]),
+    baseUnitPrice: reader.readDouble(offsets[0]),
+    businessDate: reader.readDateTime(offsets[1]),
+    category: reader.readStringOrNull(offsets[2]),
+    discountAmount: reader.readDouble(offsets[3]),
+    extendedAmount: reader.readDouble(offsets[4]),
+    grossAmount: reader.readDouble(offsets[5]),
     id: id,
-    itemDescription: reader.readString(offsets[6]),
-    itemId: reader.readString(offsets[7]),
-    itemIdEntryMethod: reader.readString(offsets[8]),
-    lineItemSeq: reader.readLong(offsets[9]),
-    netAmount: reader.readDouble(offsets[10]),
-    netQuantity: reader.readDouble(offsets[11]),
+    isVoid: reader.readBool(offsets[6]),
+    itemDescription: reader.readString(offsets[7]),
+    itemId: reader.readString(offsets[8]),
+    itemIdEntryMethod: reader.readString(offsets[9]),
+    lineItemSeq: reader.readLong(offsets[10]),
+    netAmount: reader.readDouble(offsets[11]),
     nonExchangeableFlag: reader.readBool(offsets[12]),
     nonReturnableFlag: reader.readBool(offsets[13]),
     originalBusinessDate: reader.readDateTimeOrNull(offsets[14]),
@@ -297,10 +301,11 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
     shippingWeight: reader.readDoubleOrNull(offsets[30]),
     storeId: reader.readLong(offsets[31]),
     taxAmount: reader.readDouble(offsets[32]),
-    taxGroupId: reader.readString(offsets[33]),
-    transSeq: reader.readLong(offsets[34]),
+    transSeq: reader.readLong(offsets[33]),
+    unitCost: reader.readDouble(offsets[34]),
     unitPrice: reader.readDouble(offsets[35]),
-    vendorId: reader.readStringOrNull(offsets[36]),
+    uom: reader.readString(offsets[36]),
+    vendorId: reader.readStringOrNull(offsets[37]),
   );
   _transactionLineItemEntityAttachLinks(collection, id, object);
   return object;
@@ -312,11 +317,11 @@ P _transactionLineItemEntityDeserializePropNative<P>(
     case -1:
       return id as P;
     case 0:
-      return (reader.readDateTime(offset)) as P;
-    case 1:
-      return (reader.readStringOrNull(offset)) as P;
-    case 2:
       return (reader.readDouble(offset)) as P;
+    case 1:
+      return (reader.readDateTime(offset)) as P;
+    case 2:
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readDouble(offset)) as P;
     case 4:
@@ -324,15 +329,15 @@ P _transactionLineItemEntityDeserializePropNative<P>(
     case 5:
       return (reader.readDouble(offset)) as P;
     case 6:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 7:
       return (reader.readString(offset)) as P;
     case 8:
       return (reader.readString(offset)) as P;
     case 9:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 10:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 11:
       return (reader.readDouble(offset)) as P;
     case 12:
@@ -378,12 +383,14 @@ P _transactionLineItemEntityDeserializePropNative<P>(
     case 32:
       return (reader.readDouble(offset)) as P;
     case 33:
-      return (reader.readString(offset)) as P;
-    case 34:
       return (reader.readLong(offset)) as P;
+    case 34:
+      return (reader.readDouble(offset)) as P;
     case 35:
       return (reader.readDouble(offset)) as P;
     case 36:
+      return (reader.readString(offset)) as P;
+    case 37:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
@@ -394,20 +401,20 @@ dynamic _transactionLineItemEntitySerializeWeb(
     IsarCollection<TransactionLineItemEntity> collection,
     TransactionLineItemEntity object) {
   final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'baseUnitPrice', object.baseUnitPrice);
   IsarNative.jsObjectSet(jsObj, 'businessDate',
       object.businessDate.toUtc().millisecondsSinceEpoch);
   IsarNative.jsObjectSet(jsObj, 'category', object.category);
   IsarNative.jsObjectSet(jsObj, 'discountAmount', object.discountAmount);
   IsarNative.jsObjectSet(jsObj, 'extendedAmount', object.extendedAmount);
   IsarNative.jsObjectSet(jsObj, 'grossAmount', object.grossAmount);
-  IsarNative.jsObjectSet(jsObj, 'grossQuantity', object.grossQuantity);
   IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'isVoid', object.isVoid);
   IsarNative.jsObjectSet(jsObj, 'itemDescription', object.itemDescription);
   IsarNative.jsObjectSet(jsObj, 'itemId', object.itemId);
   IsarNative.jsObjectSet(jsObj, 'itemIdEntryMethod', object.itemIdEntryMethod);
   IsarNative.jsObjectSet(jsObj, 'lineItemSeq', object.lineItemSeq);
   IsarNative.jsObjectSet(jsObj, 'netAmount', object.netAmount);
-  IsarNative.jsObjectSet(jsObj, 'netQuantity', object.netQuantity);
   IsarNative.jsObjectSet(
       jsObj, 'nonExchangeableFlag', object.nonExchangeableFlag);
   IsarNative.jsObjectSet(jsObj, 'nonReturnableFlag', object.nonReturnableFlag);
@@ -434,9 +441,10 @@ dynamic _transactionLineItemEntitySerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'shippingWeight', object.shippingWeight);
   IsarNative.jsObjectSet(jsObj, 'storeId', object.storeId);
   IsarNative.jsObjectSet(jsObj, 'taxAmount', object.taxAmount);
-  IsarNative.jsObjectSet(jsObj, 'taxGroupId', object.taxGroupId);
   IsarNative.jsObjectSet(jsObj, 'transSeq', object.transSeq);
+  IsarNative.jsObjectSet(jsObj, 'unitCost', object.unitCost);
   IsarNative.jsObjectSet(jsObj, 'unitPrice', object.unitPrice);
+  IsarNative.jsObjectSet(jsObj, 'uom', object.uom);
   IsarNative.jsObjectSet(jsObj, 'vendorId', object.vendorId);
   return jsObj;
 }
@@ -444,6 +452,8 @@ dynamic _transactionLineItemEntitySerializeWeb(
 TransactionLineItemEntity _transactionLineItemEntityDeserializeWeb(
     IsarCollection<TransactionLineItemEntity> collection, dynamic jsObj) {
   final object = TransactionLineItemEntity(
+    baseUnitPrice: IsarNative.jsObjectGet(jsObj, 'baseUnitPrice') ??
+        double.negativeInfinity,
     businessDate: IsarNative.jsObjectGet(jsObj, 'businessDate') != null
         ? DateTime.fromMillisecondsSinceEpoch(
                 IsarNative.jsObjectGet(jsObj, 'businessDate'),
@@ -457,9 +467,8 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeWeb(
         double.negativeInfinity,
     grossAmount:
         IsarNative.jsObjectGet(jsObj, 'grossAmount') ?? double.negativeInfinity,
-    grossQuantity: IsarNative.jsObjectGet(jsObj, 'grossQuantity') ??
-        double.negativeInfinity,
     id: IsarNative.jsObjectGet(jsObj, 'id'),
+    isVoid: IsarNative.jsObjectGet(jsObj, 'isVoid') ?? false,
     itemDescription: IsarNative.jsObjectGet(jsObj, 'itemDescription') ?? '',
     itemId: IsarNative.jsObjectGet(jsObj, 'itemId') ?? '',
     itemIdEntryMethod: IsarNative.jsObjectGet(jsObj, 'itemIdEntryMethod') ?? '',
@@ -467,8 +476,6 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeWeb(
         IsarNative.jsObjectGet(jsObj, 'lineItemSeq') ?? double.negativeInfinity,
     netAmount:
         IsarNative.jsObjectGet(jsObj, 'netAmount') ?? double.negativeInfinity,
-    netQuantity:
-        IsarNative.jsObjectGet(jsObj, 'netQuantity') ?? double.negativeInfinity,
     nonExchangeableFlag:
         IsarNative.jsObjectGet(jsObj, 'nonExchangeableFlag') ?? false,
     nonReturnableFlag:
@@ -501,11 +508,13 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeWeb(
         IsarNative.jsObjectGet(jsObj, 'storeId') ?? double.negativeInfinity,
     taxAmount:
         IsarNative.jsObjectGet(jsObj, 'taxAmount') ?? double.negativeInfinity,
-    taxGroupId: IsarNative.jsObjectGet(jsObj, 'taxGroupId') ?? '',
     transSeq:
         IsarNative.jsObjectGet(jsObj, 'transSeq') ?? double.negativeInfinity,
+    unitCost:
+        IsarNative.jsObjectGet(jsObj, 'unitCost') ?? double.negativeInfinity,
     unitPrice:
         IsarNative.jsObjectGet(jsObj, 'unitPrice') ?? double.negativeInfinity,
+    uom: IsarNative.jsObjectGet(jsObj, 'uom') ?? '',
     vendorId: IsarNative.jsObjectGet(jsObj, 'vendorId'),
   );
   _transactionLineItemEntityAttachLinks(
@@ -516,6 +525,9 @@ TransactionLineItemEntity _transactionLineItemEntityDeserializeWeb(
 P _transactionLineItemEntityDeserializePropWeb<P>(
     Object jsObj, String propertyName) {
   switch (propertyName) {
+    case 'baseUnitPrice':
+      return (IsarNative.jsObjectGet(jsObj, 'baseUnitPrice') ??
+          double.negativeInfinity) as P;
     case 'businessDate':
       return (IsarNative.jsObjectGet(jsObj, 'businessDate') != null
           ? DateTime.fromMillisecondsSinceEpoch(
@@ -534,11 +546,10 @@ P _transactionLineItemEntityDeserializePropWeb<P>(
     case 'grossAmount':
       return (IsarNative.jsObjectGet(jsObj, 'grossAmount') ??
           double.negativeInfinity) as P;
-    case 'grossQuantity':
-      return (IsarNative.jsObjectGet(jsObj, 'grossQuantity') ??
-          double.negativeInfinity) as P;
     case 'id':
       return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'isVoid':
+      return (IsarNative.jsObjectGet(jsObj, 'isVoid') ?? false) as P;
     case 'itemDescription':
       return (IsarNative.jsObjectGet(jsObj, 'itemDescription') ?? '') as P;
     case 'itemId':
@@ -550,9 +561,6 @@ P _transactionLineItemEntityDeserializePropWeb<P>(
           double.negativeInfinity) as P;
     case 'netAmount':
       return (IsarNative.jsObjectGet(jsObj, 'netAmount') ??
-          double.negativeInfinity) as P;
-    case 'netQuantity':
-      return (IsarNative.jsObjectGet(jsObj, 'netQuantity') ??
           double.negativeInfinity) as P;
     case 'nonExchangeableFlag':
       return (IsarNative.jsObjectGet(jsObj, 'nonExchangeableFlag') ?? false)
@@ -606,14 +614,17 @@ P _transactionLineItemEntityDeserializePropWeb<P>(
     case 'taxAmount':
       return (IsarNative.jsObjectGet(jsObj, 'taxAmount') ??
           double.negativeInfinity) as P;
-    case 'taxGroupId':
-      return (IsarNative.jsObjectGet(jsObj, 'taxGroupId') ?? '') as P;
     case 'transSeq':
       return (IsarNative.jsObjectGet(jsObj, 'transSeq') ??
+          double.negativeInfinity) as P;
+    case 'unitCost':
+      return (IsarNative.jsObjectGet(jsObj, 'unitCost') ??
           double.negativeInfinity) as P;
     case 'unitPrice':
       return (IsarNative.jsObjectGet(jsObj, 'unitPrice') ??
           double.negativeInfinity) as P;
+    case 'uom':
+      return (IsarNative.jsObjectGet(jsObj, 'uom') ?? '') as P;
     case 'vendorId':
       return (IsarNative.jsObjectGet(jsObj, 'vendorId')) as P;
     default:
@@ -625,6 +636,8 @@ void _transactionLineItemEntityAttachLinks(
     IsarCollection col, int id, TransactionLineItemEntity object) {
   object.lineModifiers.attach(
       col, col.isar.transactionLineItemModifierEntitys, 'lineModifiers', id);
+  object.taxModifiers.attach(
+      col, col.isar.transactionLineItemTaxModifiers, 'taxModifiers', id);
   object.header.attach(col, col.isar.transactionHeaderEntitys, 'header', id);
 }
 
@@ -969,6 +982,37 @@ extension TransactionLineItemEntityQueryWhere on QueryBuilder<
 extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     TransactionLineItemEntity, TransactionLineItemEntity, QFilterCondition> {
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> baseUnitPriceGreaterThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: false,
+      property: 'baseUnitPrice',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> baseUnitPriceLessThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: false,
+      property: 'baseUnitPrice',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> baseUnitPriceBetween(double lower, double upper) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'baseUnitPrice',
+      lower: lower,
+      includeLower: false,
+      upper: upper,
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> businessDateEqualTo(DateTime value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
@@ -1231,37 +1275,6 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> grossQuantityGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'grossQuantity',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> grossQuantityLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'grossQuantity',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> grossQuantityBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'grossQuantity',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> idIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
@@ -1318,6 +1331,15 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
       includeLower: includeLower,
       upper: upper,
       includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> isVoidEqualTo(bool value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'isVoid',
+      value: value,
     ));
   }
 
@@ -1723,37 +1745,6 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
       QAfterFilterCondition> netAmountBetween(double lower, double upper) {
     return addFilterConditionInternal(FilterCondition.between(
       property: 'netAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> netQuantityGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'netQuantity',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> netQuantityLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'netQuantity',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> netQuantityBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'netQuantity',
       lower: lower,
       includeLower: false,
       upper: upper,
@@ -3024,115 +3015,6 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> taxGroupIdEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> taxGroupIdGreaterThan(
-    String value, {
-    bool caseSensitive = true,
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> taxGroupIdLessThan(
-    String value, {
-    bool caseSensitive = true,
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> taxGroupIdBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxGroupId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> taxGroupIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> taxGroupIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-          QAfterFilterCondition>
-      taxGroupIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-          QAfterFilterCondition>
-      taxGroupIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'taxGroupId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> transSeqEqualTo(int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
@@ -3184,6 +3066,37 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> unitCostGreaterThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: false,
+      property: 'unitCost',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> unitCostLessThan(double value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: false,
+      property: 'unitCost',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> unitCostBetween(double lower, double upper) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'unitCost',
+      lower: lower,
+      includeLower: false,
+      upper: upper,
+      includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> unitPriceGreaterThan(double value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
@@ -3211,6 +3124,115 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
       includeLower: false,
       upper: upper,
       includeUpper: false,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomLessThan(
+    String value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'uom',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      uomContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'uom',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      uomMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'uom',
+      value: pattern,
+      caseSensitive: caseSensitive,
     ));
   }
 
@@ -3346,6 +3368,16 @@ extension TransactionLineItemEntityQueryLinks on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      taxModifiers(FilterQuery<TransactionLineItemTaxModifier> q) {
+    return linkInternal(
+      isar.transactionLineItemTaxModifiers,
+      q,
+      'taxModifiers',
+    );
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> header(FilterQuery<TransactionHeaderEntity> q) {
     return linkInternal(
       isar.transactionHeaderEntitys,
@@ -3357,6 +3389,16 @@ extension TransactionLineItemEntityQueryLinks on QueryBuilder<
 
 extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
     TransactionLineItemEntity, TransactionLineItemEntity, QSortBy> {
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByBaseUnitPrice() {
+    return addSortByInternal('baseUnitPrice', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByBaseUnitPriceDesc() {
+    return addSortByInternal('baseUnitPrice', Sort.desc);
+  }
+
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortByBusinessDate() {
     return addSortByInternal('businessDate', Sort.asc);
@@ -3408,16 +3450,6 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByGrossQuantity() {
-    return addSortByInternal('grossQuantity', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByGrossQuantityDesc() {
-    return addSortByInternal('grossQuantity', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortById() {
     return addSortByInternal('id', Sort.asc);
   }
@@ -3425,6 +3457,16 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortByIdDesc() {
     return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByIsVoid() {
+    return addSortByInternal('isVoid', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByIsVoidDesc() {
+    return addSortByInternal('isVoid', Sort.desc);
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3475,16 +3517,6 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortByNetAmountDesc() {
     return addSortByInternal('netAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByNetQuantity() {
-    return addSortByInternal('netQuantity', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByNetQuantityDesc() {
-    return addSortByInternal('netQuantity', Sort.desc);
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3698,16 +3730,6 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByTaxGroupId() {
-    return addSortByInternal('taxGroupId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByTaxGroupIdDesc() {
-    return addSortByInternal('taxGroupId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortByTransSeq() {
     return addSortByInternal('transSeq', Sort.asc);
   }
@@ -3718,6 +3740,16 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByUnitCost() {
+    return addSortByInternal('unitCost', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByUnitCostDesc() {
+    return addSortByInternal('unitCost', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortByUnitPrice() {
     return addSortByInternal('unitPrice', Sort.asc);
   }
@@ -3725,6 +3757,16 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> sortByUnitPriceDesc() {
     return addSortByInternal('unitPrice', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByUom() {
+    return addSortByInternal('uom', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> sortByUomDesc() {
+    return addSortByInternal('uom', Sort.desc);
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3740,6 +3782,16 @@ extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
 
 extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
     TransactionLineItemEntity, TransactionLineItemEntity, QSortThenBy> {
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByBaseUnitPrice() {
+    return addSortByInternal('baseUnitPrice', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByBaseUnitPriceDesc() {
+    return addSortByInternal('baseUnitPrice', Sort.desc);
+  }
+
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenByBusinessDate() {
     return addSortByInternal('businessDate', Sort.asc);
@@ -3791,16 +3843,6 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByGrossQuantity() {
-    return addSortByInternal('grossQuantity', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByGrossQuantityDesc() {
-    return addSortByInternal('grossQuantity', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenById() {
     return addSortByInternal('id', Sort.asc);
   }
@@ -3808,6 +3850,16 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenByIdDesc() {
     return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByIsVoid() {
+    return addSortByInternal('isVoid', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByIsVoidDesc() {
+    return addSortByInternal('isVoid', Sort.desc);
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3858,16 +3910,6 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenByNetAmountDesc() {
     return addSortByInternal('netAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByNetQuantity() {
-    return addSortByInternal('netQuantity', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByNetQuantityDesc() {
-    return addSortByInternal('netQuantity', Sort.desc);
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -4081,16 +4123,6 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByTaxGroupId() {
-    return addSortByInternal('taxGroupId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByTaxGroupIdDesc() {
-    return addSortByInternal('taxGroupId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenByTransSeq() {
     return addSortByInternal('transSeq', Sort.asc);
   }
@@ -4101,6 +4133,16 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByUnitCost() {
+    return addSortByInternal('unitCost', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByUnitCostDesc() {
+    return addSortByInternal('unitCost', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenByUnitPrice() {
     return addSortByInternal('unitPrice', Sort.asc);
   }
@@ -4108,6 +4150,16 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterSortBy> thenByUnitPriceDesc() {
     return addSortByInternal('unitPrice', Sort.desc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByUom() {
+    return addSortByInternal('uom', Sort.asc);
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterSortBy> thenByUomDesc() {
+    return addSortByInternal('uom', Sort.desc);
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -4123,6 +4175,11 @@ extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
 
 extension TransactionLineItemEntityQueryWhereDistinct on QueryBuilder<
     TransactionLineItemEntity, TransactionLineItemEntity, QDistinct> {
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
+      distinctByBaseUnitPrice() {
+    return addDistinctByInternal('baseUnitPrice');
+  }
+
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
       distinctByBusinessDate() {
     return addDistinctByInternal('businessDate');
@@ -4149,13 +4206,13 @@ extension TransactionLineItemEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByGrossQuantity() {
-    return addDistinctByInternal('grossQuantity');
+      distinctById() {
+    return addDistinctByInternal('id');
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctById() {
-    return addDistinctByInternal('id');
+      distinctByIsVoid() {
+    return addDistinctByInternal('isVoid');
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
@@ -4183,11 +4240,6 @@ extension TransactionLineItemEntityQueryWhereDistinct on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
       distinctByNetAmount() {
     return addDistinctByInternal('netAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByNetQuantity() {
-    return addDistinctByInternal('netQuantity');
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
@@ -4300,18 +4352,23 @@ extension TransactionLineItemEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByTaxGroupId({bool caseSensitive = true}) {
-    return addDistinctByInternal('taxGroupId', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
       distinctByTransSeq() {
     return addDistinctByInternal('transSeq');
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
+      distinctByUnitCost() {
+    return addDistinctByInternal('unitCost');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
       distinctByUnitPrice() {
     return addDistinctByInternal('unitPrice');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
+      distinctByUom({bool caseSensitive = true}) {
+    return addDistinctByInternal('uom', caseSensitive: caseSensitive);
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
@@ -4322,6 +4379,11 @@ extension TransactionLineItemEntityQueryWhereDistinct on QueryBuilder<
 
 extension TransactionLineItemEntityQueryProperty on QueryBuilder<
     TransactionLineItemEntity, TransactionLineItemEntity, QQueryProperty> {
+  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
+      baseUnitPriceProperty() {
+    return addPropertyNameInternal('baseUnitPrice');
+  }
+
   QueryBuilder<TransactionLineItemEntity, DateTime, QQueryOperations>
       businessDateProperty() {
     return addPropertyNameInternal('businessDate');
@@ -4347,13 +4409,13 @@ extension TransactionLineItemEntityQueryProperty on QueryBuilder<
     return addPropertyNameInternal('grossAmount');
   }
 
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      grossQuantityProperty() {
-    return addPropertyNameInternal('grossQuantity');
-  }
-
   QueryBuilder<TransactionLineItemEntity, int?, QQueryOperations> idProperty() {
     return addPropertyNameInternal('id');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, bool, QQueryOperations>
+      isVoidProperty() {
+    return addPropertyNameInternal('isVoid');
   }
 
   QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
@@ -4379,11 +4441,6 @@ extension TransactionLineItemEntityQueryProperty on QueryBuilder<
   QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
       netAmountProperty() {
     return addPropertyNameInternal('netAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      netQuantityProperty() {
-    return addPropertyNameInternal('netQuantity');
   }
 
   QueryBuilder<TransactionLineItemEntity, bool, QQueryOperations>
@@ -4491,19 +4548,24 @@ extension TransactionLineItemEntityQueryProperty on QueryBuilder<
     return addPropertyNameInternal('taxAmount');
   }
 
-  QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
-      taxGroupIdProperty() {
-    return addPropertyNameInternal('taxGroupId');
-  }
-
   QueryBuilder<TransactionLineItemEntity, int, QQueryOperations>
       transSeqProperty() {
     return addPropertyNameInternal('transSeq');
   }
 
   QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
+      unitCostProperty() {
+    return addPropertyNameInternal('unitCost');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
       unitPriceProperty() {
     return addPropertyNameInternal('unitPrice');
+  }
+
+  QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
+      uomProperty() {
+    return addPropertyNameInternal('uom');
   }
 
   QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>

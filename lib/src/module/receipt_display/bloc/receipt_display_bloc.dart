@@ -11,6 +11,8 @@ import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/setting_repository.dart';
 
+import '../../../repositories/transaction_repository.dart';
+
 part 'receipt_display_event.dart';
 part 'receipt_display_state.dart';
 
@@ -18,19 +20,19 @@ class ReceiptDisplayBloc
     extends Bloc<ReceiptDisplayEvent, ReceiptDisplayState> {
   final log = Logger('ReceiptDisplayBloc');
   final int transId;
-  final Isar db;
   final SettingsRepository settingsRepo;
   final AuthenticationBloc authBloc;
+  final TransactionRepository transactionRepo;
 
   ReceiptDisplayBloc(
       {required this.transId,
-      required this.db,
       required this.settingsRepo,
-      required this.authBloc})
+      required this.authBloc, required this.transactionRepo})
       : super(ReceiptDisplayState(taxSummary: List.empty())) {
     on<FetchReceiptDataEvent>(_onFetchReceiptData);
     on<UpdateReceiptStatusEvent>(_onUpdateReceiptStatusEvent);
     on<UpdateGlobalKey>(_onUpdateGlobalKeys);
+    on<MockUpdateReceiptSettingData>(_onMockUpdateReceiptSettingData);
   }
 
   void _onFetchReceiptData(
@@ -43,13 +45,7 @@ class ReceiptDisplayBloc
       );
 
       TransactionHeaderEntity? transaction =
-          await db.transactionHeaderEntitys.get(transId);
-      if (transaction == null) {
-        log.severe("Transaction $transId does not exists");
-        emit(state.copyWith(status: ReceiptDisplayStatus.failure));
-        return;
-      }
-      await transaction.lineItems.load();
+          await transactionRepo.getTransaction(transId);
 
       // build tax detail
       HashMap<String, List<TransactionLineItemEntity>> hsnCategory = HashMap();
@@ -84,7 +80,7 @@ class ReceiptDisplayBloc
 
       emit(state.copyWith(
           header: transaction,
-          lineItems: transaction.lineItems.toList(),
+          lineItems: transaction!.lineItems.toList(),
           status: ReceiptDisplayStatus.success,
           taxSummary: []));
     } catch (e) {
@@ -110,5 +106,10 @@ class ReceiptDisplayBloc
   void _onUpdateGlobalKeys(
       UpdateGlobalKey event, Emitter<ReceiptDisplayState> emit) async {
     emit(state.copyWith(globalKeys: event.globalKey));
+  }
+
+  void _onMockUpdateReceiptSettingData(
+      MockUpdateReceiptSettingData event, Emitter<ReceiptDisplayState> emit) async {
+    emit(state.copyWith(receiptSettings: event.receiptSettingData));
   }
 }

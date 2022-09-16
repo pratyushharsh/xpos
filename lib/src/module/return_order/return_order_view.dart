@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
@@ -6,19 +7,24 @@ import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import '../../entity/pos/reason_code_entity.dart';
 import '../../repositories/reason_code_repository.dart';
+import '../../util/text_input_formatter/custom_formatter.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_dropdown.dart';
 import 'bloc/return_order_bloc.dart';
+import 'return_form_validation.dart';
 
 // Step To Return A Order
 
 class ReturnOrderView extends StatelessWidget {
-  const ReturnOrderView({Key? key}) : super(key: key);
+  final List<TransactionLineItemEntity> currentOrderLineItem;
+  const ReturnOrderView({Key? key, required this.currentOrderLineItem})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ReturnOrderBloc(
+          currentOrderLineItem: currentOrderLineItem,
           transactionRepository: RepositoryProvider.of(context)),
       child: Column(
         children: [
@@ -37,10 +43,20 @@ class ReturnOrderView extends StatelessWidget {
               }
 
               if (state.status == ReturnOrderExistStatus.success) {
+                if (state.availableLineItemToReturn.isEmpty) {
+                  return Expanded(
+                    child: Center(
+                      child: Text(
+                          "No Line Item To Return Order # ${state.order!.transId}"),
+                    ),
+                  );
+                }
+
                 return Expanded(
                   child: ReturnOrderSuccessView(
                     order: state.order!,
                     alreadyReturnedOrderMap: state.alreadyReturnedOrderMap,
+                    canBeReturnedItems: state.availableLineItemToReturn,
                   ),
                 );
               }
@@ -74,6 +90,16 @@ class SearchReturnOrderForm extends StatelessWidget {
               }
             },
           ),
+          BlocBuilder<ReturnOrderBloc, ReturnOrderState>(
+              builder: (context, state) {
+            if (state.status == ReturnOrderExistStatus.notFound) {
+              return Center(
+                child: Text(state.errorMessage ?? "Order Not Found"),
+              );
+            }
+
+            return Container();
+          })
         ],
       ),
     );
@@ -83,51 +109,66 @@ class SearchReturnOrderForm extends StatelessWidget {
 class ReturnOrderSuccessView extends StatelessWidget {
   final TransactionHeaderEntity order;
   final Map<String, double> alreadyReturnedOrderMap;
+  final List<TransactionLineItemEntity> canBeReturnedItems;
   const ReturnOrderSuccessView(
-      {Key? key, required this.order, required this.alreadyReturnedOrderMap})
+      {Key? key,
+      required this.order,
+      required this.alreadyReturnedOrderMap,
+      required this.canBeReturnedItems})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Column(
-              children: order.lineItems
-                  .map((e) => ReturnOrderLineItem(
-                        lineItem: e,
-                        returnedQuantity: alreadyReturnedOrderMap[
-                                "${e.lineItemSeq}#${e.itemId}"] ??
-                            0.0,
-                      ))
-                  .toList()),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(children: [
-            Expanded(
-              child: RejectButton(
-                label: "Cancel",
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
+    return Form(
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                  children: canBeReturnedItems
+                      .map((e) => Column(
+                            children: [
+                              ReturnOrderLineItem(
+                                lineItem: e,
+                                returnedQuantity: alreadyReturnedOrderMap[
+                                        "${e.lineItemSeq}#${e.itemId}"] ??
+                                    0.0,
+                              ),
+                              const Divider(
+                                height: 0,
+                              )
+                            ],
+                          ))
+                      .toList()),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: AcceptButton(
-                label: "Proceed To Return",
-                onPressed: () {
-                  Navigator.of(context).pop(
-                      BlocProvider.of<ReturnOrderBloc>(context)
-                          .state
-                          .returnMap);
-                },
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(children: [
+              Expanded(
+                child: RejectButton(
+                  label: "Cancel",
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-            ),
-          ]),
-        )
-      ],
+              const SizedBox(width: 10),
+              Expanded(
+                child: AcceptButton(
+                  label: "Proceed To Return",
+                  onPressed: () {
+                    Navigator.of(context).pop(
+                        BlocProvider.of<ReturnOrderBloc>(context)
+                            .state
+                            .returnMap);
+                  },
+                ),
+              ),
+            ]),
+          )
+        ],
+      ),
     );
   }
 }
@@ -147,45 +188,71 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
   bool _checked = false;
   ReasonCodeEntity? _reasonCode;
 
-  @override
-  Widget build(BuildContext context) {
+  double? returnedQuantity;
+  String? comment;
+  bool isValid = false;
+
+  ReturnLineItemParameters? _isValid() {
+    if (returnedQuantity != null && _reasonCode != null) {
+      var data = ReturnLineItemParameters(
+        reasonCode: _reasonCode!.reasonCode,
+        comment: comment,
+        quantity: returnedQuantity!,
+      );
+
+      BlocProvider.of<ReturnOrderBloc>(context).add(
+        AddLineItemToReturn(
+          lineItem: widget.lineItem,
+          returnLineItemParameters: data,
+        ),
+      );
+      return data;
+    }
+    return null;
+  }
+
+  Widget _buildDesktop() {
     return Card(
       margin: const EdgeInsets.all(0),
-      elevation: _checked ? 10 : 0,
+      elevation: 0,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          setState(() {
+            if (_checked) {
+              _checked = false;
+              _reasonCode = null;
+              returnedQuantity = null;
+              comment = null;
+              BlocProvider.of<ReturnOrderBloc>(context)
+                  .add(RemoveLineItemFromReturn(lineItem: widget.lineItem));
+            } else {
+              _checked = true;
+            }
+          });
+        },
         child: Container(
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
               Row(children: [
                 Checkbox(
-                  value: _checked,
+                  value: isValid,
                   onChanged: (value) {
-                    setState(() {
-                      _checked = value ?? false;
-                      if (value != null) {
-                        if (value) {
-                          BlocProvider.of<ReturnOrderBloc>(context).add(
-                            AddLineItemToReturn(
-                              lineItem: widget.lineItem,
-                              returnLineItemParameters:
-                                  ReturnLineItemParameters(
-                                quantity: widget.lineItem.quantity -
-                                    widget.returnedQuantity,
-                                reasonCode: ["RETURNED"],
-                              ),
-                            ),
-                          );
-                        } else {
-                          BlocProvider.of<ReturnOrderBloc>(context).add(
-                              RemoveLineItemFromReturn(
-                                  lineItem: widget.lineItem));
-                        }
+                    ReturnLineItemParameters? data = _isValid();
+                    if (value != null && data != null) {
+                      if (value) {
+                      } else {
+                        BlocProvider.of<ReturnOrderBloc>(context).add(
+                            RemoveLineItemFromReturn(
+                                lineItem: widget.lineItem));
                       }
+                    }
+                    setState(() {
+                      isValid = _isValid() != null;
                     });
                   },
                 ),
+                const SizedBox(width: 50, height: 50),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -200,37 +267,236 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: Text(
-                      (widget.lineItem.quantity - widget.returnedQuantity)
-                          .toString(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 80,
+                          child: CustomTextField(
+                              enabled: false,
+                              initialValue: (widget.lineItem.quantity -
+                                      widget.returnedQuantity)
+                                  .toString(),
+                              label: "Qty"),
+                        ),
+                        const SizedBox(width: 10),
+                        SizedBox(
+                          width: 80,
+                          child: CustomTextField(
+                            enabled: _checked,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            textAlign: TextAlign.end,
+                            inputFormatters: [
+                              CustomInputTextFormatter.positiveNumber,
+                              MinMaxDecimalFormatter(
+                                min: 1.0,
+                                max: widget.lineItem.quantity -
+                                    widget.returnedQuantity,
+                              ),
+                            ],
+                            label: "Return",
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Required";
+                              }
+                              return null;
+                            },
+                            onValueChange: (value) {
+                              setState(() {
+                                returnedQuantity = double.parse(value);
+                                isValid = _isValid() != null;
+                              });
+                            },
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
               ]),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomDropDown<ReasonCodeEntity>(
-                      value: _reasonCode,
-                      data: RepositoryProvider.of<ReasonCodeRepository>(context)
-                          .getReasonCodeByTypeCode("RETURN")
-                          .map((e) => DropDownData<ReasonCodeEntity>(
-                              key: e, value: e.description))
-                          .toList(),
-                      onChanged: (val) {
-                        setState(() {
-                          _reasonCode = val;
-                        });
-                      },
-                      label: 'State',
+              if (_checked)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: CustomDropDown<ReasonCodeEntity>(
+                        value: _reasonCode,
+                        data:
+                            RepositoryProvider.of<ReasonCodeRepository>(context)
+                                .getReasonCodeByTypeCode("RETURN")
+                                .map((e) => DropDownData<ReasonCodeEntity>(
+                                    key: e, value: e.description))
+                                .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _reasonCode = val;
+                            isValid = _isValid() != null;
+                          });
+                        },
+                        label: 'Reason',
+                        validator: ReturnFormValidator.validateReasonCode,
+                      ),
                     ),
-                  )
-                ],
-              )
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: CustomTextField(
+                        label: 'Comment',
+                        onValueChange: (value) {
+                          setState(() {
+                            comment = value;
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                )
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildMobile() {
+    return Card(
+      margin: const EdgeInsets.all(0),
+      elevation: 0,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            if (_checked) {
+              _checked = false;
+              _reasonCode = null;
+              returnedQuantity = null;
+              comment = null;
+              BlocProvider.of<ReturnOrderBloc>(context)
+                  .add(RemoveLineItemFromReturn(lineItem: widget.lineItem));
+            } else {
+              _checked = true;
+            }
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Checkbox(
+                    value: isValid,
+                    onChanged: (value) {
+                      ReturnLineItemParameters? data = _isValid();
+                      if (value != null && data != null) {
+                        if (value) {
+                        } else {
+                          BlocProvider.of<ReturnOrderBloc>(context).add(
+                              RemoveLineItemFromReturn(
+                                  lineItem: widget.lineItem));
+                        }
+                      }
+                      setState(() {
+                        isValid = _isValid() != null;
+                      });
+                    },
+                  ),
+                  const SizedBox(width: 10, height: 50),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.lineItem.itemId,
+                        ),
+                        Text(
+                          widget.lineItem.itemDescription,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (_checked)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                          enabled: false,
+                          initialValue: (widget.lineItem.quantity -
+                                  widget.returnedQuantity)
+                              .toString(),
+                          label: "Qty"),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: CustomTextField(
+                        enabled: _checked,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        textAlign: TextAlign.end,
+                        textInputType: TextInputType.number,
+                        inputFormatters: [
+                          CustomInputTextFormatter.positiveNumber,
+                          MinMaxDecimalFormatter(
+                            min: 1.0,
+                            max: widget.lineItem.quantity -
+                                widget.returnedQuantity,
+                          ),
+                        ],
+                        label: "Return",
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Required";
+                          }
+                          return null;
+                        },
+                        onValueChange: (value) {
+                          setState(() {
+                            returnedQuantity = double.parse(value);
+                            isValid = _isValid() != null;
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              if (_checked)
+                CustomDropDown<ReasonCodeEntity>(
+                  value: _reasonCode,
+                  data: RepositoryProvider.of<ReasonCodeRepository>(context)
+                      .getReasonCodeByTypeCode("RETURN")
+                      .map((e) => DropDownData<ReasonCodeEntity>(
+                          key: e, value: e.description))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _reasonCode = val;
+                      isValid = _isValid() != null;
+                    });
+                  },
+                  label: 'Reason',
+                  validator: ReturnFormValidator.validateReasonCode,
+                ),
+              if (_checked)
+                CustomTextField(
+                  label: 'Comment',
+                  onValueChange: (value) {
+                    setState(() {
+                      comment = value;
+                    });
+                  },
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (Platform.isIOS || Platform.isAndroid)
+        ? _buildMobile()
+        : _buildDesktop();
   }
 }

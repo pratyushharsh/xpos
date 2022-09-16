@@ -15,14 +15,16 @@ extension GetReasonCodeEntityCollection on Isar {
 const ReasonCodeEntitySchema = CollectionSchema(
   name: 'ReasonCodeEntity',
   schema:
-      '{"name":"ReasonCodeEntity","idName":"id","properties":[{"name":"commentRequired","type":"Bool"},{"name":"description","type":"String"},{"name":"parentCode","type":"String"},{"name":"reasonCode","type":"String"},{"name":"reasonTypeCode","type":"String"}],"indexes":[{"name":"reasonTypeCode_reasonCode","unique":false,"properties":[{"name":"reasonTypeCode","type":"Hash","caseSensitive":true},{"name":"reasonCode","type":"Hash","caseSensitive":true}]}],"links":[]}',
+      '{"name":"ReasonCodeEntity","idName":"id","properties":[{"name":"commentRequired","type":"Bool"},{"name":"description","type":"String"},{"name":"hashCode","type":"Long"},{"name":"parentCode","type":"String"},{"name":"reasonCode","type":"String"},{"name":"reasonTypeCode","type":"String"},{"name":"stringify","type":"Bool"}],"indexes":[{"name":"reasonTypeCode_reasonCode","unique":false,"properties":[{"name":"reasonTypeCode","type":"Hash","caseSensitive":true},{"name":"reasonCode","type":"Hash","caseSensitive":true}]}],"links":[]}',
   idName: 'id',
   propertyIds: {
     'commentRequired': 0,
     'description': 1,
-    'parentCode': 2,
-    'reasonCode': 3,
-    'reasonTypeCode': 4
+    'hashCode': 2,
+    'parentCode': 3,
+    'reasonCode': 4,
+    'reasonTypeCode': 5,
+    'stringify': 6
   },
   listProperties: {},
   indexIds: {'reasonTypeCode_reasonCode': 0},
@@ -71,18 +73,22 @@ void _reasonCodeEntitySerializeNative(
   final value1 = object.description;
   final _description = IsarBinaryWriter.utf8Encoder.convert(value1);
   dynamicSize += (_description.length) as int;
-  final value2 = object.parentCode;
+  final value2 = object.hashCode;
+  final _hashCode = value2;
+  final value3 = object.parentCode;
   IsarUint8List? _parentCode;
-  if (value2 != null) {
-    _parentCode = IsarBinaryWriter.utf8Encoder.convert(value2);
+  if (value3 != null) {
+    _parentCode = IsarBinaryWriter.utf8Encoder.convert(value3);
   }
   dynamicSize += (_parentCode?.length ?? 0) as int;
-  final value3 = object.reasonCode;
-  final _reasonCode = IsarBinaryWriter.utf8Encoder.convert(value3);
+  final value4 = object.reasonCode;
+  final _reasonCode = IsarBinaryWriter.utf8Encoder.convert(value4);
   dynamicSize += (_reasonCode.length) as int;
-  final value4 = object.reasonTypeCode;
-  final _reasonTypeCode = IsarBinaryWriter.utf8Encoder.convert(value4);
+  final value5 = object.reasonTypeCode;
+  final _reasonTypeCode = IsarBinaryWriter.utf8Encoder.convert(value5);
   dynamicSize += (_reasonTypeCode.length) as int;
+  final value6 = object.stringify;
+  final _stringify = value6;
   final size = staticSize + dynamicSize;
 
   rawObj.buffer = alloc(size);
@@ -91,9 +97,11 @@ void _reasonCodeEntitySerializeNative(
   final writer = IsarBinaryWriter(buffer, staticSize);
   writer.writeBool(offsets[0], _commentRequired);
   writer.writeBytes(offsets[1], _description);
-  writer.writeBytes(offsets[2], _parentCode);
-  writer.writeBytes(offsets[3], _reasonCode);
-  writer.writeBytes(offsets[4], _reasonTypeCode);
+  writer.writeLong(offsets[2], _hashCode);
+  writer.writeBytes(offsets[3], _parentCode);
+  writer.writeBytes(offsets[4], _reasonCode);
+  writer.writeBytes(offsets[5], _reasonTypeCode);
+  writer.writeBool(offsets[6], _stringify);
 }
 
 ReasonCodeEntity _reasonCodeEntityDeserializeNative(
@@ -105,9 +113,9 @@ ReasonCodeEntity _reasonCodeEntityDeserializeNative(
     commentRequired: reader.readBool(offsets[0]),
     description: reader.readString(offsets[1]),
     id: id,
-    parentCode: reader.readStringOrNull(offsets[2]),
-    reasonCode: reader.readString(offsets[3]),
-    reasonTypeCode: reader.readString(offsets[4]),
+    parentCode: reader.readStringOrNull(offsets[3]),
+    reasonCode: reader.readString(offsets[4]),
+    reasonTypeCode: reader.readString(offsets[5]),
   );
   return object;
 }
@@ -122,11 +130,15 @@ P _reasonCodeEntityDeserializePropNative<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readBoolOrNull(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
   }
@@ -137,10 +149,12 @@ dynamic _reasonCodeEntitySerializeWeb(
   final jsObj = IsarNative.newJsObject();
   IsarNative.jsObjectSet(jsObj, 'commentRequired', object.commentRequired);
   IsarNative.jsObjectSet(jsObj, 'description', object.description);
+  IsarNative.jsObjectSet(jsObj, 'hashCode', object.hashCode);
   IsarNative.jsObjectSet(jsObj, 'id', object.id);
   IsarNative.jsObjectSet(jsObj, 'parentCode', object.parentCode);
   IsarNative.jsObjectSet(jsObj, 'reasonCode', object.reasonCode);
   IsarNative.jsObjectSet(jsObj, 'reasonTypeCode', object.reasonTypeCode);
+  IsarNative.jsObjectSet(jsObj, 'stringify', object.stringify);
   return jsObj;
 }
 
@@ -163,6 +177,9 @@ P _reasonCodeEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
       return (IsarNative.jsObjectGet(jsObj, 'commentRequired') ?? false) as P;
     case 'description':
       return (IsarNative.jsObjectGet(jsObj, 'description') ?? '') as P;
+    case 'hashCode':
+      return (IsarNative.jsObjectGet(jsObj, 'hashCode') ??
+          double.negativeInfinity) as P;
     case 'id':
       return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
     case 'parentCode':
@@ -171,6 +188,8 @@ P _reasonCodeEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
       return (IsarNative.jsObjectGet(jsObj, 'reasonCode') ?? '') as P;
     case 'reasonTypeCode':
       return (IsarNative.jsObjectGet(jsObj, 'reasonTypeCode') ?? '') as P;
+    case 'stringify':
+      return (IsarNative.jsObjectGet(jsObj, 'stringify')) as P;
     default:
       throw 'Illegal propertyName';
   }
@@ -433,6 +452,57 @@ extension ReasonCodeEntityQueryFilter
       property: 'description',
       value: pattern,
       caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      hashCodeEqualTo(int value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'hashCode',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'hashCode',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'hashCode',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'hashCode',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
     ));
   }
 
@@ -825,6 +895,24 @@ extension ReasonCodeEntityQueryFilter
       caseSensitive: caseSensitive,
     ));
   }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      stringifyIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'stringify',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      stringifyEqualTo(bool? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'stringify',
+      value: value,
+    ));
+  }
 }
 
 extension ReasonCodeEntityQueryLinks
@@ -850,6 +938,16 @@ extension ReasonCodeEntityQueryWhereSortBy
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
       sortByDescriptionDesc() {
     return addSortByInternal('description', Sort.desc);
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      sortByHashCode() {
+    return addSortByInternal('hashCode', Sort.asc);
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      sortByHashCodeDesc() {
+    return addSortByInternal('hashCode', Sort.desc);
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy> sortById() {
@@ -890,6 +988,16 @@ extension ReasonCodeEntityQueryWhereSortBy
       sortByReasonTypeCodeDesc() {
     return addSortByInternal('reasonTypeCode', Sort.desc);
   }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      sortByStringify() {
+    return addSortByInternal('stringify', Sort.asc);
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      sortByStringifyDesc() {
+    return addSortByInternal('stringify', Sort.desc);
+  }
 }
 
 extension ReasonCodeEntityQueryWhereSortThenBy
@@ -912,6 +1020,16 @@ extension ReasonCodeEntityQueryWhereSortThenBy
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
       thenByDescriptionDesc() {
     return addSortByInternal('description', Sort.desc);
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      thenByHashCode() {
+    return addSortByInternal('hashCode', Sort.asc);
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      thenByHashCodeDesc() {
+    return addSortByInternal('hashCode', Sort.desc);
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy> thenById() {
@@ -952,6 +1070,16 @@ extension ReasonCodeEntityQueryWhereSortThenBy
       thenByReasonTypeCodeDesc() {
     return addSortByInternal('reasonTypeCode', Sort.desc);
   }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      thenByStringify() {
+    return addSortByInternal('stringify', Sort.asc);
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      thenByStringifyDesc() {
+    return addSortByInternal('stringify', Sort.desc);
+  }
 }
 
 extension ReasonCodeEntityQueryWhereDistinct
@@ -964,6 +1092,11 @@ extension ReasonCodeEntityQueryWhereDistinct
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QDistinct>
       distinctByDescription({bool caseSensitive = true}) {
     return addDistinctByInternal('description', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QDistinct>
+      distinctByHashCode() {
+    return addDistinctByInternal('hashCode');
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QDistinct> distinctById() {
@@ -985,6 +1118,11 @@ extension ReasonCodeEntityQueryWhereDistinct
     return addDistinctByInternal('reasonTypeCode',
         caseSensitive: caseSensitive);
   }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QDistinct>
+      distinctByStringify() {
+    return addDistinctByInternal('stringify');
+  }
 }
 
 extension ReasonCodeEntityQueryProperty
@@ -997,6 +1135,10 @@ extension ReasonCodeEntityQueryProperty
   QueryBuilder<ReasonCodeEntity, String, QQueryOperations>
       descriptionProperty() {
     return addPropertyNameInternal('description');
+  }
+
+  QueryBuilder<ReasonCodeEntity, int, QQueryOperations> hashCodeProperty() {
+    return addPropertyNameInternal('hashCode');
   }
 
   QueryBuilder<ReasonCodeEntity, int?, QQueryOperations> idProperty() {
@@ -1016,5 +1158,9 @@ extension ReasonCodeEntityQueryProperty
   QueryBuilder<ReasonCodeEntity, String, QQueryOperations>
       reasonTypeCodeProperty() {
     return addPropertyNameInternal('reasonTypeCode');
+  }
+
+  QueryBuilder<ReasonCodeEntity, bool?, QQueryOperations> stringifyProperty() {
+    return addPropertyNameInternal('stringify');
   }
 }

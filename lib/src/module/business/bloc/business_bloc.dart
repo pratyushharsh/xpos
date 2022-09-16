@@ -1,3 +1,4 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
@@ -14,8 +15,9 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
   final log = Logger('BusinessBloc');
   final BusinessRepository repo;
   final BusinessOperation operation;
+  final CognitoUserPool userPool;
 
-  BusinessBloc({required this.repo, this.operation = BusinessOperation.create})
+  BusinessBloc({required this.repo, this.operation = BusinessOperation.create, required this.userPool})
       : super(BusinessState(operation: operation)) {
     on<LoadBusinessDetail>(_onLoadBusinessDetail);
     on<OnBusinessNameChange>(_onBusinessNameChange);
@@ -85,6 +87,9 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
   void _onCreateNewBusiness(
       OnCreateNewBusiness event, Emitter<BusinessState> emit) async {
     emit(state.copyWith(status: BusinessStatus.loading));
+
+    var user = await userPool.getCurrentUser();
+
     try {
       var resp = await repo.createNewBusiness(CreateBusinessRequest(
         name: state.businessName,
@@ -99,8 +104,13 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
         gst: state.businessGst,
         pan: state.businessPan,
         phone: state.businessContact,
+        createdBy: user?.getUsername()
       ));
       log.info(resp);
+
+      // Save in the shared preferences
+      await userPool.storage.setItem("CURRENT_STORE", resp.rtlLocId.toString());
+
       emit(state.copyWith(
           status: BusinessStatus.newBusinessCreated, entity: resp));
     } catch (e) {

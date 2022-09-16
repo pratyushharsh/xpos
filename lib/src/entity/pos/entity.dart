@@ -12,3 +12,5 @@ export 'trn_line_item_modifier.dart';
 export 'trn_payment_line_item.dart';
 export 'types.dart';
 export 'discount_entity.dart';
+export 'trn_line_item_tax.dart';
+export 'employee_entity.dart';
