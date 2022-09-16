@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
+import 'package:pdf/widgets.dart';
 
 class InvoiceConfig {
   static  List<InvoiceColumnConfig> columnConfig = [
@@ -28,6 +29,8 @@ class InvoiceConfig {
         return entity.lineItemSeq.toString();
       case 'hsn/sac':
         return '';
+      case 'qty':
+        return '${entity.quantity}';
       case 'qtyuom':
         return '${entity.quantity}\n${entity.uom}';
       case 'tax':
@@ -50,6 +53,31 @@ class InvoiceConfig {
       default:
         return '';
     }
+  }
+
+  static Map<int, Alignment> cellAlignments(List<InvoiceColumnConfig> columnConfig) {
+    Map<int, Alignment> alignments = {};
+    for (int i = 0; i < columnConfig.length; i++) {
+      switch (columnConfig[i].align) {
+        case 'right':
+          alignments[i] = Alignment.centerRight;
+          break;
+        case 'center':
+          alignments[i] = Alignment.center;
+          break;
+        default:
+          alignments[i] = Alignment.centerLeft;
+      }
+    }
+    return alignments;
+  }
+
+  static Map<int, TableColumnWidth> columnWidths(List<InvoiceColumnConfig> columnConfig) {
+    Map<int, TableColumnWidth> widths = {};
+    for (int i = 0; i < columnConfig.length; i++) {
+      widths[i] = FlexColumnWidth(columnConfig[i].flex.toDouble());
+    }
+    return widths;
   }
 }
 

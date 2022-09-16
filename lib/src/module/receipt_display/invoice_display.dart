@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:printing/printing.dart';
-import 'package:receipt_generator/src/module/receipt_display/template/invoice_1.dart';
 
 import 'bloc/receipt_display_bloc.dart';
+import 'template/invoice.dart';
 
 
 class AppInvoiceDisplay extends StatelessWidget {

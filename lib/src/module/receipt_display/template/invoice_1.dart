@@ -8,16 +8,9 @@ import 'package:receipt_generator/src/module/receipt_display/template/invoice_co
 
 import '../../../entity/pos/entity.dart';
 
-Future<Uint8List> generateInvoice(
-    PdfPageFormat pageFormat, TransactionHeaderEntity order) async {
-  Invoice invoice = Invoice(order);
-
-  return await invoice.buildPdf(pageFormat);
-}
-
-class Invoice {
+class Invoice1 {
   final TransactionHeaderEntity order;
-  Invoice(this.order);
+  Invoice1(this.order);
 
   TextAlign getColumnAlign(String align) {
     switch (align) {
