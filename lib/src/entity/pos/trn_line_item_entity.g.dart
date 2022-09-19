@@ -3,1073 +3,750 @@
 part of 'trn_line_item_entity.dart';
 
 // **************************************************************************
-// IsarCollectionGenerator
+// IsarEmbeddedGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_localså
 
-extension GetTransactionLineItemEntityCollection on Isar {
-  IsarCollection<TransactionLineItemEntity> get transactionLineItemEntitys =>
-      getCollection();
-}
-
-const TransactionLineItemEntitySchema = CollectionSchema(
-  name: 'TransactionLineItemEntity',
-  schema:
-      '{"name":"TransactionLineItemEntity","idName":"id","properties":[{"name":"baseUnitPrice","type":"Double"},{"name":"businessDate","type":"Long"},{"name":"category","type":"String"},{"name":"discountAmount","type":"Double"},{"name":"extendedAmount","type":"Double"},{"name":"grossAmount","type":"Double"},{"name":"isVoid","type":"Bool"},{"name":"itemDescription","type":"String"},{"name":"itemId","type":"String"},{"name":"itemIdEntryMethod","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"netAmount","type":"Double"},{"name":"nonExchangeableFlag","type":"Bool"},{"name":"nonReturnableFlag","type":"Bool"},{"name":"originalBusinessDate","type":"Long"},{"name":"originalLineItemSeq","type":"Long"},{"name":"originalPosId","type":"Long"},{"name":"originalTransSeq","type":"Long"},{"name":"posId","type":"Long"},{"name":"priceEntryMethod","type":"String"},{"name":"priceOverride","type":"Bool"},{"name":"priceOverrideAmount","type":"Double"},{"name":"priceOverrideReason","type":"String"},{"name":"quantity","type":"Double"},{"name":"returnComment","type":"String"},{"name":"returnFlag","type":"Bool"},{"name":"returnReasonCode","type":"String"},{"name":"returnTypeCode","type":"String"},{"name":"returnedQuantity","type":"Double"},{"name":"serialNumber","type":"String"},{"name":"shippingWeight","type":"Double"},{"name":"storeId","type":"Long"},{"name":"taxAmount","type":"Double"},{"name":"transSeq","type":"Long"},{"name":"unitCost","type":"Double"},{"name":"unitPrice","type":"Double"},{"name":"uom","type":"String"},{"name":"vendorId","type":"String"}],"indexes":[{"name":"originalPosId","unique":false,"properties":[{"name":"originalPosId","type":"Value","caseSensitive":false}]},{"name":"originalTransSeq","unique":false,"properties":[{"name":"originalTransSeq","type":"Value","caseSensitive":false}]},{"name":"storeId","unique":false,"properties":[{"name":"storeId","type":"Value","caseSensitive":false}]}],"links":[{"name":"lineModifiers","target":"TransactionLineItemModifierEntity"},{"name":"taxModifiers","target":"TransactionLineItemTaxModifier"}]}',
-  idName: 'id',
-  propertyIds: {
-    'baseUnitPrice': 0,
-    'businessDate': 1,
-    'category': 2,
-    'discountAmount': 3,
-    'extendedAmount': 4,
-    'grossAmount': 5,
-    'isVoid': 6,
-    'itemDescription': 7,
-    'itemId': 8,
-    'itemIdEntryMethod': 9,
-    'lineItemSeq': 10,
-    'netAmount': 11,
-    'nonExchangeableFlag': 12,
-    'nonReturnableFlag': 13,
-    'originalBusinessDate': 14,
-    'originalLineItemSeq': 15,
-    'originalPosId': 16,
-    'originalTransSeq': 17,
-    'posId': 18,
-    'priceEntryMethod': 19,
-    'priceOverride': 20,
-    'priceOverrideAmount': 21,
-    'priceOverrideReason': 22,
-    'quantity': 23,
-    'returnComment': 24,
-    'returnFlag': 25,
-    'returnReasonCode': 26,
-    'returnTypeCode': 27,
-    'returnedQuantity': 28,
-    'serialNumber': 29,
-    'shippingWeight': 30,
-    'storeId': 31,
-    'taxAmount': 32,
-    'transSeq': 33,
-    'unitCost': 34,
-    'unitPrice': 35,
-    'uom': 36,
-    'vendorId': 37
+const TransactionLineItemEntitySchema = Schema(
+  name: r'TransactionLineItemEntity',
+  id: 2685623274292399999,
+  properties: {
+    r'baseUnitPrice': PropertySchema(
+      id: 0,
+      name: r'baseUnitPrice',
+      type: IsarType.double,
+    ),
+    r'businessDate': PropertySchema(
+      id: 1,
+      name: r'businessDate',
+      type: IsarType.dateTime,
+    ),
+    r'category': PropertySchema(
+      id: 2,
+      name: r'category',
+      type: IsarType.string,
+    ),
+    r'discountAmount': PropertySchema(
+      id: 3,
+      name: r'discountAmount',
+      type: IsarType.double,
+    ),
+    r'extendedAmount': PropertySchema(
+      id: 4,
+      name: r'extendedAmount',
+      type: IsarType.double,
+    ),
+    r'grossAmount': PropertySchema(
+      id: 5,
+      name: r'grossAmount',
+      type: IsarType.double,
+    ),
+    r'isVoid': PropertySchema(
+      id: 6,
+      name: r'isVoid',
+      type: IsarType.bool,
+    ),
+    r'itemDescription': PropertySchema(
+      id: 7,
+      name: r'itemDescription',
+      type: IsarType.string,
+    ),
+    r'itemId': PropertySchema(
+      id: 8,
+      name: r'itemId',
+      type: IsarType.string,
+    ),
+    r'itemIdEntryMethod': PropertySchema(
+      id: 9,
+      name: r'itemIdEntryMethod',
+      type: IsarType.string,
+    ),
+    r'lineItemSeq': PropertySchema(
+      id: 10,
+      name: r'lineItemSeq',
+      type: IsarType.long,
+    ),
+    r'lineModifiers': PropertySchema(
+      id: 11,
+      name: r'lineModifiers',
+      type: IsarType.objectList,
+      target: r'TransactionLineItemModifierEntity',
+    ),
+    r'netAmount': PropertySchema(
+      id: 12,
+      name: r'netAmount',
+      type: IsarType.double,
+    ),
+    r'nonExchangeableFlag': PropertySchema(
+      id: 13,
+      name: r'nonExchangeableFlag',
+      type: IsarType.bool,
+    ),
+    r'nonReturnableFlag': PropertySchema(
+      id: 14,
+      name: r'nonReturnableFlag',
+      type: IsarType.bool,
+    ),
+    r'originalBusinessDate': PropertySchema(
+      id: 15,
+      name: r'originalBusinessDate',
+      type: IsarType.dateTime,
+    ),
+    r'originalLineItemSeq': PropertySchema(
+      id: 16,
+      name: r'originalLineItemSeq',
+      type: IsarType.long,
+    ),
+    r'originalPosId': PropertySchema(
+      id: 17,
+      name: r'originalPosId',
+      type: IsarType.long,
+    ),
+    r'originalTransSeq': PropertySchema(
+      id: 18,
+      name: r'originalTransSeq',
+      type: IsarType.long,
+    ),
+    r'posId': PropertySchema(
+      id: 19,
+      name: r'posId',
+      type: IsarType.long,
+    ),
+    r'priceEntryMethod': PropertySchema(
+      id: 20,
+      name: r'priceEntryMethod',
+      type: IsarType.string,
+    ),
+    r'priceOverride': PropertySchema(
+      id: 21,
+      name: r'priceOverride',
+      type: IsarType.bool,
+    ),
+    r'priceOverrideAmount': PropertySchema(
+      id: 22,
+      name: r'priceOverrideAmount',
+      type: IsarType.double,
+    ),
+    r'priceOverrideReason': PropertySchema(
+      id: 23,
+      name: r'priceOverrideReason',
+      type: IsarType.string,
+    ),
+    r'quantity': PropertySchema(
+      id: 24,
+      name: r'quantity',
+      type: IsarType.double,
+    ),
+    r'returnComment': PropertySchema(
+      id: 25,
+      name: r'returnComment',
+      type: IsarType.string,
+    ),
+    r'returnFlag': PropertySchema(
+      id: 26,
+      name: r'returnFlag',
+      type: IsarType.bool,
+    ),
+    r'returnReasonCode': PropertySchema(
+      id: 27,
+      name: r'returnReasonCode',
+      type: IsarType.string,
+    ),
+    r'returnTypeCode': PropertySchema(
+      id: 28,
+      name: r'returnTypeCode',
+      type: IsarType.string,
+    ),
+    r'returnedQuantity': PropertySchema(
+      id: 29,
+      name: r'returnedQuantity',
+      type: IsarType.double,
+    ),
+    r'serialNumber': PropertySchema(
+      id: 30,
+      name: r'serialNumber',
+      type: IsarType.string,
+    ),
+    r'shippingWeight': PropertySchema(
+      id: 31,
+      name: r'shippingWeight',
+      type: IsarType.double,
+    ),
+    r'storeId': PropertySchema(
+      id: 32,
+      name: r'storeId',
+      type: IsarType.long,
+    ),
+    r'taxAmount': PropertySchema(
+      id: 33,
+      name: r'taxAmount',
+      type: IsarType.double,
+    ),
+    r'taxModifiers': PropertySchema(
+      id: 34,
+      name: r'taxModifiers',
+      type: IsarType.objectList,
+      target: r'TransactionLineItemTaxModifier',
+    ),
+    r'transSeq': PropertySchema(
+      id: 35,
+      name: r'transSeq',
+      type: IsarType.long,
+    ),
+    r'unitCost': PropertySchema(
+      id: 36,
+      name: r'unitCost',
+      type: IsarType.double,
+    ),
+    r'unitPrice': PropertySchema(
+      id: 37,
+      name: r'unitPrice',
+      type: IsarType.double,
+    ),
+    r'uom': PropertySchema(
+      id: 38,
+      name: r'uom',
+      type: IsarType.string,
+    ),
+    r'vendorId': PropertySchema(
+      id: 39,
+      name: r'vendorId',
+      type: IsarType.string,
+    )
   },
-  listProperties: {},
-  indexIds: {'originalPosId': 0, 'originalTransSeq': 1, 'storeId': 2},
-  indexValueTypes: {
-    'originalPosId': [
-      IndexValueType.long,
-    ],
-    'originalTransSeq': [
-      IndexValueType.long,
-    ],
-    'storeId': [
-      IndexValueType.long,
-    ]
-  },
-  linkIds: {'lineModifiers': 0, 'taxModifiers': 1, 'header': 2},
-  backlinkLinkNames: {'header': 'lineItems'},
-  getId: _transactionLineItemEntityGetId,
-  getLinks: _transactionLineItemEntityGetLinks,
-  attachLinks: _transactionLineItemEntityAttachLinks,
+  estimateSize: _transactionLineItemEntityEstimateSize,
   serializeNative: _transactionLineItemEntitySerializeNative,
   deserializeNative: _transactionLineItemEntityDeserializeNative,
   deserializePropNative: _transactionLineItemEntityDeserializePropNative,
   serializeWeb: _transactionLineItemEntitySerializeWeb,
   deserializeWeb: _transactionLineItemEntityDeserializeWeb,
   deserializePropWeb: _transactionLineItemEntityDeserializePropWeb,
-  version: 3,
 );
 
-int? _transactionLineItemEntityGetId(TransactionLineItemEntity object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
+int _transactionLineItemEntityEstimateSize(
+  TransactionLineItemEntity object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  {
+    final value = object.category;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
   }
+  {
+    final value = object.itemDescription;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.itemId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.itemIdEntryMethod;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  bytesCount += 3 + object.lineModifiers.length * 3;
+  {
+    final offsets = allOffsets[TransactionLineItemModifierEntity]!;
+    for (var i = 0; i < object.lineModifiers.length; i++) {
+      final value = object.lineModifiers[i];
+      bytesCount += TransactionLineItemModifierEntitySchema.estimateSize(
+          value, offsets, allOffsets);
+    }
+  }
+  {
+    final value = object.priceEntryMethod;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.priceOverrideReason;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.returnComment;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.returnReasonCode;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.returnTypeCode;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.serialNumber;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  bytesCount += 3 + object.taxModifiers.length * 3;
+  {
+    final offsets = allOffsets[TransactionLineItemTaxModifier]!;
+    for (var i = 0; i < object.taxModifiers.length; i++) {
+      final value = object.taxModifiers[i];
+      bytesCount += TransactionLineItemTaxModifierSchema.estimateSize(
+          value, offsets, allOffsets);
+    }
+  }
+  {
+    final value = object.uom;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.vendorId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  return bytesCount;
 }
 
-List<IsarLinkBase> _transactionLineItemEntityGetLinks(
-    TransactionLineItemEntity object) {
-  return [object.lineModifiers, object.taxModifiers, object.header];
-}
-
-void _transactionLineItemEntitySerializeNative(
-    IsarCollection<TransactionLineItemEntity> collection,
-    IsarRawObject rawObj,
-    TransactionLineItemEntity object,
-    int staticSize,
-    List<int> offsets,
-    AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.baseUnitPrice;
-  final _baseUnitPrice = value0;
-  final value1 = object.businessDate;
-  final _businessDate = value1;
-  final value2 = object.category;
-  IsarUint8List? _category;
-  if (value2 != null) {
-    _category = IsarBinaryWriter.utf8Encoder.convert(value2);
-  }
-  dynamicSize += (_category?.length ?? 0) as int;
-  final value3 = object.discountAmount;
-  final _discountAmount = value3;
-  final value4 = object.extendedAmount;
-  final _extendedAmount = value4;
-  final value5 = object.grossAmount;
-  final _grossAmount = value5;
-  final value6 = object.isVoid;
-  final _isVoid = value6;
-  final value7 = object.itemDescription;
-  final _itemDescription = IsarBinaryWriter.utf8Encoder.convert(value7);
-  dynamicSize += (_itemDescription.length) as int;
-  final value8 = object.itemId;
-  final _itemId = IsarBinaryWriter.utf8Encoder.convert(value8);
-  dynamicSize += (_itemId.length) as int;
-  final value9 = object.itemIdEntryMethod;
-  final _itemIdEntryMethod = IsarBinaryWriter.utf8Encoder.convert(value9);
-  dynamicSize += (_itemIdEntryMethod.length) as int;
-  final value10 = object.lineItemSeq;
-  final _lineItemSeq = value10;
-  final value11 = object.netAmount;
-  final _netAmount = value11;
-  final value12 = object.nonExchangeableFlag;
-  final _nonExchangeableFlag = value12;
-  final value13 = object.nonReturnableFlag;
-  final _nonReturnableFlag = value13;
-  final value14 = object.originalBusinessDate;
-  final _originalBusinessDate = value14;
-  final value15 = object.originalLineItemSeq;
-  final _originalLineItemSeq = value15;
-  final value16 = object.originalPosId;
-  final _originalPosId = value16;
-  final value17 = object.originalTransSeq;
-  final _originalTransSeq = value17;
-  final value18 = object.posId;
-  final _posId = value18;
-  final value19 = object.priceEntryMethod;
-  final _priceEntryMethod = IsarBinaryWriter.utf8Encoder.convert(value19);
-  dynamicSize += (_priceEntryMethod.length) as int;
-  final value20 = object.priceOverride;
-  final _priceOverride = value20;
-  final value21 = object.priceOverrideAmount;
-  final _priceOverrideAmount = value21;
-  final value22 = object.priceOverrideReason;
-  IsarUint8List? _priceOverrideReason;
-  if (value22 != null) {
-    _priceOverrideReason = IsarBinaryWriter.utf8Encoder.convert(value22);
-  }
-  dynamicSize += (_priceOverrideReason?.length ?? 0) as int;
-  final value23 = object.quantity;
-  final _quantity = value23;
-  final value24 = object.returnComment;
-  IsarUint8List? _returnComment;
-  if (value24 != null) {
-    _returnComment = IsarBinaryWriter.utf8Encoder.convert(value24);
-  }
-  dynamicSize += (_returnComment?.length ?? 0) as int;
-  final value25 = object.returnFlag;
-  final _returnFlag = value25;
-  final value26 = object.returnReasonCode;
-  IsarUint8List? _returnReasonCode;
-  if (value26 != null) {
-    _returnReasonCode = IsarBinaryWriter.utf8Encoder.convert(value26);
-  }
-  dynamicSize += (_returnReasonCode?.length ?? 0) as int;
-  final value27 = object.returnTypeCode;
-  IsarUint8List? _returnTypeCode;
-  if (value27 != null) {
-    _returnTypeCode = IsarBinaryWriter.utf8Encoder.convert(value27);
-  }
-  dynamicSize += (_returnTypeCode?.length ?? 0) as int;
-  final value28 = object.returnedQuantity;
-  final _returnedQuantity = value28;
-  final value29 = object.serialNumber;
-  IsarUint8List? _serialNumber;
-  if (value29 != null) {
-    _serialNumber = IsarBinaryWriter.utf8Encoder.convert(value29);
-  }
-  dynamicSize += (_serialNumber?.length ?? 0) as int;
-  final value30 = object.shippingWeight;
-  final _shippingWeight = value30;
-  final value31 = object.storeId;
-  final _storeId = value31;
-  final value32 = object.taxAmount;
-  final _taxAmount = value32;
-  final value33 = object.transSeq;
-  final _transSeq = value33;
-  final value34 = object.unitCost;
-  final _unitCost = value34;
-  final value35 = object.unitPrice;
-  final _unitPrice = value35;
-  final value36 = object.uom;
-  final _uom = IsarBinaryWriter.utf8Encoder.convert(value36);
-  dynamicSize += (_uom.length) as int;
-  final value37 = object.vendorId;
-  IsarUint8List? _vendorId;
-  if (value37 != null) {
-    _vendorId = IsarBinaryWriter.utf8Encoder.convert(value37);
-  }
-  dynamicSize += (_vendorId?.length ?? 0) as int;
-  final size = staticSize + dynamicSize;
-
-  rawObj.buffer = alloc(size);
-  rawObj.buffer_length = size;
-  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeDouble(offsets[0], _baseUnitPrice);
-  writer.writeDateTime(offsets[1], _businessDate);
-  writer.writeBytes(offsets[2], _category);
-  writer.writeDouble(offsets[3], _discountAmount);
-  writer.writeDouble(offsets[4], _extendedAmount);
-  writer.writeDouble(offsets[5], _grossAmount);
-  writer.writeBool(offsets[6], _isVoid);
-  writer.writeBytes(offsets[7], _itemDescription);
-  writer.writeBytes(offsets[8], _itemId);
-  writer.writeBytes(offsets[9], _itemIdEntryMethod);
-  writer.writeLong(offsets[10], _lineItemSeq);
-  writer.writeDouble(offsets[11], _netAmount);
-  writer.writeBool(offsets[12], _nonExchangeableFlag);
-  writer.writeBool(offsets[13], _nonReturnableFlag);
-  writer.writeDateTime(offsets[14], _originalBusinessDate);
-  writer.writeLong(offsets[15], _originalLineItemSeq);
-  writer.writeLong(offsets[16], _originalPosId);
-  writer.writeLong(offsets[17], _originalTransSeq);
-  writer.writeLong(offsets[18], _posId);
-  writer.writeBytes(offsets[19], _priceEntryMethod);
-  writer.writeBool(offsets[20], _priceOverride);
-  writer.writeDouble(offsets[21], _priceOverrideAmount);
-  writer.writeBytes(offsets[22], _priceOverrideReason);
-  writer.writeDouble(offsets[23], _quantity);
-  writer.writeBytes(offsets[24], _returnComment);
-  writer.writeBool(offsets[25], _returnFlag);
-  writer.writeBytes(offsets[26], _returnReasonCode);
-  writer.writeBytes(offsets[27], _returnTypeCode);
-  writer.writeDouble(offsets[28], _returnedQuantity);
-  writer.writeBytes(offsets[29], _serialNumber);
-  writer.writeDouble(offsets[30], _shippingWeight);
-  writer.writeLong(offsets[31], _storeId);
-  writer.writeDouble(offsets[32], _taxAmount);
-  writer.writeLong(offsets[33], _transSeq);
-  writer.writeDouble(offsets[34], _unitCost);
-  writer.writeDouble(offsets[35], _unitPrice);
-  writer.writeBytes(offsets[36], _uom);
-  writer.writeBytes(offsets[37], _vendorId);
+int _transactionLineItemEntitySerializeNative(
+  TransactionLineItemEntity object,
+  IsarBinaryWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeDouble(offsets[0], object.baseUnitPrice);
+  writer.writeDateTime(offsets[1], object.businessDate);
+  writer.writeString(offsets[2], object.category);
+  writer.writeDouble(offsets[3], object.discountAmount);
+  writer.writeDouble(offsets[4], object.extendedAmount);
+  writer.writeDouble(offsets[5], object.grossAmount);
+  writer.writeBool(offsets[6], object.isVoid);
+  writer.writeString(offsets[7], object.itemDescription);
+  writer.writeString(offsets[8], object.itemId);
+  writer.writeString(offsets[9], object.itemIdEntryMethod);
+  writer.writeLong(offsets[10], object.lineItemSeq);
+  writer.writeObjectList<TransactionLineItemModifierEntity>(
+    offsets[11],
+    allOffsets,
+    TransactionLineItemModifierEntitySchema.serializeNative,
+    object.lineModifiers,
+  );
+  writer.writeDouble(offsets[12], object.netAmount);
+  writer.writeBool(offsets[13], object.nonExchangeableFlag);
+  writer.writeBool(offsets[14], object.nonReturnableFlag);
+  writer.writeDateTime(offsets[15], object.originalBusinessDate);
+  writer.writeLong(offsets[16], object.originalLineItemSeq);
+  writer.writeLong(offsets[17], object.originalPosId);
+  writer.writeLong(offsets[18], object.originalTransSeq);
+  writer.writeLong(offsets[19], object.posId);
+  writer.writeString(offsets[20], object.priceEntryMethod);
+  writer.writeBool(offsets[21], object.priceOverride);
+  writer.writeDouble(offsets[22], object.priceOverrideAmount);
+  writer.writeString(offsets[23], object.priceOverrideReason);
+  writer.writeDouble(offsets[24], object.quantity);
+  writer.writeString(offsets[25], object.returnComment);
+  writer.writeBool(offsets[26], object.returnFlag);
+  writer.writeString(offsets[27], object.returnReasonCode);
+  writer.writeString(offsets[28], object.returnTypeCode);
+  writer.writeDouble(offsets[29], object.returnedQuantity);
+  writer.writeString(offsets[30], object.serialNumber);
+  writer.writeDouble(offsets[31], object.shippingWeight);
+  writer.writeLong(offsets[32], object.storeId);
+  writer.writeDouble(offsets[33], object.taxAmount);
+  writer.writeObjectList<TransactionLineItemTaxModifier>(
+    offsets[34],
+    allOffsets,
+    TransactionLineItemTaxModifierSchema.serializeNative,
+    object.taxModifiers,
+  );
+  writer.writeLong(offsets[35], object.transSeq);
+  writer.writeDouble(offsets[36], object.unitCost);
+  writer.writeDouble(offsets[37], object.unitPrice);
+  writer.writeString(offsets[38], object.uom);
+  writer.writeString(offsets[39], object.vendorId);
+  return writer.usedBytes;
 }
 
 TransactionLineItemEntity _transactionLineItemEntityDeserializeNative(
-    IsarCollection<TransactionLineItemEntity> collection,
-    int id,
-    IsarBinaryReader reader,
-    List<int> offsets) {
+  Id id,
+  IsarBinaryReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   final object = TransactionLineItemEntity(
-    baseUnitPrice: reader.readDouble(offsets[0]),
-    businessDate: reader.readDateTime(offsets[1]),
+    baseUnitPrice: reader.readDoubleOrNull(offsets[0]),
+    businessDate: reader.readDateTimeOrNull(offsets[1]),
     category: reader.readStringOrNull(offsets[2]),
-    discountAmount: reader.readDouble(offsets[3]),
-    extendedAmount: reader.readDouble(offsets[4]),
-    grossAmount: reader.readDouble(offsets[5]),
-    id: id,
-    isVoid: reader.readBool(offsets[6]),
-    itemDescription: reader.readString(offsets[7]),
-    itemId: reader.readString(offsets[8]),
-    itemIdEntryMethod: reader.readString(offsets[9]),
-    lineItemSeq: reader.readLong(offsets[10]),
-    netAmount: reader.readDouble(offsets[11]),
-    nonExchangeableFlag: reader.readBool(offsets[12]),
-    nonReturnableFlag: reader.readBool(offsets[13]),
-    originalBusinessDate: reader.readDateTimeOrNull(offsets[14]),
-    originalLineItemSeq: reader.readLongOrNull(offsets[15]),
-    originalPosId: reader.readLongOrNull(offsets[16]),
-    originalTransSeq: reader.readLongOrNull(offsets[17]),
-    posId: reader.readLong(offsets[18]),
-    priceEntryMethod: reader.readString(offsets[19]),
-    priceOverride: reader.readBool(offsets[20]),
-    priceOverrideAmount: reader.readDoubleOrNull(offsets[21]),
-    priceOverrideReason: reader.readStringOrNull(offsets[22]),
-    quantity: reader.readDouble(offsets[23]),
-    returnComment: reader.readStringOrNull(offsets[24]),
-    returnFlag: reader.readBool(offsets[25]),
-    returnReasonCode: reader.readStringOrNull(offsets[26]),
-    returnTypeCode: reader.readStringOrNull(offsets[27]),
-    returnedQuantity: reader.readDoubleOrNull(offsets[28]),
-    serialNumber: reader.readStringOrNull(offsets[29]),
-    shippingWeight: reader.readDoubleOrNull(offsets[30]),
-    storeId: reader.readLong(offsets[31]),
-    taxAmount: reader.readDouble(offsets[32]),
-    transSeq: reader.readLong(offsets[33]),
-    unitCost: reader.readDouble(offsets[34]),
-    unitPrice: reader.readDouble(offsets[35]),
-    uom: reader.readString(offsets[36]),
-    vendorId: reader.readStringOrNull(offsets[37]),
+    discountAmount: reader.readDoubleOrNull(offsets[3]),
+    extendedAmount: reader.readDoubleOrNull(offsets[4]),
+    grossAmount: reader.readDoubleOrNull(offsets[5]),
+    isVoid: reader.readBoolOrNull(offsets[6]) ?? false,
+    itemDescription: reader.readStringOrNull(offsets[7]),
+    itemId: reader.readStringOrNull(offsets[8]),
+    itemIdEntryMethod: reader.readStringOrNull(offsets[9]),
+    lineItemSeq: reader.readLongOrNull(offsets[10]),
+    lineModifiers: reader.readObjectList<TransactionLineItemModifierEntity>(
+          offsets[11],
+          TransactionLineItemModifierEntitySchema.deserializeNative,
+          allOffsets,
+          TransactionLineItemModifierEntity(),
+        ) ??
+        const [],
+    netAmount: reader.readDoubleOrNull(offsets[12]),
+    nonExchangeableFlag: reader.readBoolOrNull(offsets[13]) ?? false,
+    nonReturnableFlag: reader.readBoolOrNull(offsets[14]) ?? false,
+    originalBusinessDate: reader.readDateTimeOrNull(offsets[15]),
+    originalLineItemSeq: reader.readLongOrNull(offsets[16]),
+    originalPosId: reader.readLongOrNull(offsets[17]),
+    originalTransSeq: reader.readLongOrNull(offsets[18]),
+    posId: reader.readLongOrNull(offsets[19]),
+    priceEntryMethod: reader.readStringOrNull(offsets[20]),
+    priceOverride: reader.readBoolOrNull(offsets[21]) ?? false,
+    priceOverrideAmount: reader.readDoubleOrNull(offsets[22]),
+    priceOverrideReason: reader.readStringOrNull(offsets[23]),
+    quantity: reader.readDoubleOrNull(offsets[24]),
+    returnComment: reader.readStringOrNull(offsets[25]),
+    returnFlag: reader.readBoolOrNull(offsets[26]) ?? false,
+    returnReasonCode: reader.readStringOrNull(offsets[27]),
+    returnTypeCode: reader.readStringOrNull(offsets[28]),
+    returnedQuantity: reader.readDoubleOrNull(offsets[29]),
+    serialNumber: reader.readStringOrNull(offsets[30]),
+    shippingWeight: reader.readDoubleOrNull(offsets[31]),
+    storeId: reader.readLongOrNull(offsets[32]),
+    taxAmount: reader.readDoubleOrNull(offsets[33]),
+    taxModifiers: reader.readObjectList<TransactionLineItemTaxModifier>(
+          offsets[34],
+          TransactionLineItemTaxModifierSchema.deserializeNative,
+          allOffsets,
+          TransactionLineItemTaxModifier(),
+        ) ??
+        const [],
+    transSeq: reader.readLongOrNull(offsets[35]),
+    unitCost: reader.readDoubleOrNull(offsets[36]),
+    unitPrice: reader.readDoubleOrNull(offsets[37]),
+    uom: reader.readStringOrNull(offsets[38]),
+    vendorId: reader.readStringOrNull(offsets[39]),
   );
-  _transactionLineItemEntityAttachLinks(collection, id, object);
   return object;
 }
 
 P _transactionLineItemEntityDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
+  IsarBinaryReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 1:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 4:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 5:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 6:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readLong(offset)) as P;
-    case 11:
-      return (reader.readDouble(offset)) as P;
-    case 12:
-      return (reader.readBool(offset)) as P;
-    case 13:
-      return (reader.readBool(offset)) as P;
-    case 14:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 15:
       return (reader.readLongOrNull(offset)) as P;
+    case 11:
+      return (reader.readObjectList<TransactionLineItemModifierEntity>(
+            offset,
+            TransactionLineItemModifierEntitySchema.deserializeNative,
+            allOffsets,
+            TransactionLineItemModifierEntity(),
+          ) ??
+          const []) as P;
+    case 12:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 13:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 14:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 15:
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 16:
       return (reader.readLongOrNull(offset)) as P;
     case 17:
       return (reader.readLongOrNull(offset)) as P;
     case 18:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 19:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 20:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 21:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 22:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 23:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 24:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 25:
-      return (reader.readBool(offset)) as P;
-    case 26:
       return (reader.readStringOrNull(offset)) as P;
+    case 26:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 27:
       return (reader.readStringOrNull(offset)) as P;
     case 28:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 29:
       return (reader.readStringOrNull(offset)) as P;
-    case 30:
+    case 29:
       return (reader.readDoubleOrNull(offset)) as P;
+    case 30:
+      return (reader.readStringOrNull(offset)) as P;
     case 31:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 32:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 33:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 34:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readObjectList<TransactionLineItemTaxModifier>(
+            offset,
+            TransactionLineItemTaxModifierSchema.deserializeNative,
+            allOffsets,
+            TransactionLineItemTaxModifier(),
+          ) ??
+          const []) as P;
     case 35:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 36:
-      return (reader.readString(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 37:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 38:
+      return (reader.readStringOrNull(offset)) as P;
+    case 39:
       return (reader.readStringOrNull(offset)) as P;
     default:
-      throw 'Illegal propertyIndex';
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-dynamic _transactionLineItemEntitySerializeWeb(
+Object _transactionLineItemEntitySerializeWeb(
     IsarCollection<TransactionLineItemEntity> collection,
     TransactionLineItemEntity object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(jsObj, 'baseUnitPrice', object.baseUnitPrice);
-  IsarNative.jsObjectSet(jsObj, 'businessDate',
-      object.businessDate.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, 'category', object.category);
-  IsarNative.jsObjectSet(jsObj, 'discountAmount', object.discountAmount);
-  IsarNative.jsObjectSet(jsObj, 'extendedAmount', object.extendedAmount);
-  IsarNative.jsObjectSet(jsObj, 'grossAmount', object.grossAmount);
-  IsarNative.jsObjectSet(jsObj, 'id', object.id);
-  IsarNative.jsObjectSet(jsObj, 'isVoid', object.isVoid);
-  IsarNative.jsObjectSet(jsObj, 'itemDescription', object.itemDescription);
-  IsarNative.jsObjectSet(jsObj, 'itemId', object.itemId);
-  IsarNative.jsObjectSet(jsObj, 'itemIdEntryMethod', object.itemIdEntryMethod);
-  IsarNative.jsObjectSet(jsObj, 'lineItemSeq', object.lineItemSeq);
-  IsarNative.jsObjectSet(jsObj, 'netAmount', object.netAmount);
-  IsarNative.jsObjectSet(
-      jsObj, 'nonExchangeableFlag', object.nonExchangeableFlag);
-  IsarNative.jsObjectSet(jsObj, 'nonReturnableFlag', object.nonReturnableFlag);
-  IsarNative.jsObjectSet(jsObj, 'originalBusinessDate',
-      object.originalBusinessDate?.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(
-      jsObj, 'originalLineItemSeq', object.originalLineItemSeq);
-  IsarNative.jsObjectSet(jsObj, 'originalPosId', object.originalPosId);
-  IsarNative.jsObjectSet(jsObj, 'originalTransSeq', object.originalTransSeq);
-  IsarNative.jsObjectSet(jsObj, 'posId', object.posId);
-  IsarNative.jsObjectSet(jsObj, 'priceEntryMethod', object.priceEntryMethod);
-  IsarNative.jsObjectSet(jsObj, 'priceOverride', object.priceOverride);
-  IsarNative.jsObjectSet(
-      jsObj, 'priceOverrideAmount', object.priceOverrideAmount);
-  IsarNative.jsObjectSet(
-      jsObj, 'priceOverrideReason', object.priceOverrideReason);
-  IsarNative.jsObjectSet(jsObj, 'quantity', object.quantity);
-  IsarNative.jsObjectSet(jsObj, 'returnComment', object.returnComment);
-  IsarNative.jsObjectSet(jsObj, 'returnFlag', object.returnFlag);
-  IsarNative.jsObjectSet(jsObj, 'returnReasonCode', object.returnReasonCode);
-  IsarNative.jsObjectSet(jsObj, 'returnTypeCode', object.returnTypeCode);
-  IsarNative.jsObjectSet(jsObj, 'returnedQuantity', object.returnedQuantity);
-  IsarNative.jsObjectSet(jsObj, 'serialNumber', object.serialNumber);
-  IsarNative.jsObjectSet(jsObj, 'shippingWeight', object.shippingWeight);
-  IsarNative.jsObjectSet(jsObj, 'storeId', object.storeId);
-  IsarNative.jsObjectSet(jsObj, 'taxAmount', object.taxAmount);
-  IsarNative.jsObjectSet(jsObj, 'transSeq', object.transSeq);
-  IsarNative.jsObjectSet(jsObj, 'unitCost', object.unitCost);
-  IsarNative.jsObjectSet(jsObj, 'unitPrice', object.unitPrice);
-  IsarNative.jsObjectSet(jsObj, 'uom', object.uom);
-  IsarNative.jsObjectSet(jsObj, 'vendorId', object.vendorId);
-  return jsObj;
+  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
 }
 
 TransactionLineItemEntity _transactionLineItemEntityDeserializeWeb(
-    IsarCollection<TransactionLineItemEntity> collection, dynamic jsObj) {
-  final object = TransactionLineItemEntity(
-    baseUnitPrice: IsarNative.jsObjectGet(jsObj, 'baseUnitPrice') ??
-        double.negativeInfinity,
-    businessDate: IsarNative.jsObjectGet(jsObj, 'businessDate') != null
-        ? DateTime.fromMillisecondsSinceEpoch(
-                IsarNative.jsObjectGet(jsObj, 'businessDate'),
-                isUtc: true)
-            .toLocal()
-        : DateTime.fromMillisecondsSinceEpoch(0),
-    category: IsarNative.jsObjectGet(jsObj, 'category'),
-    discountAmount: IsarNative.jsObjectGet(jsObj, 'discountAmount') ??
-        double.negativeInfinity,
-    extendedAmount: IsarNative.jsObjectGet(jsObj, 'extendedAmount') ??
-        double.negativeInfinity,
-    grossAmount:
-        IsarNative.jsObjectGet(jsObj, 'grossAmount') ?? double.negativeInfinity,
-    id: IsarNative.jsObjectGet(jsObj, 'id'),
-    isVoid: IsarNative.jsObjectGet(jsObj, 'isVoid') ?? false,
-    itemDescription: IsarNative.jsObjectGet(jsObj, 'itemDescription') ?? '',
-    itemId: IsarNative.jsObjectGet(jsObj, 'itemId') ?? '',
-    itemIdEntryMethod: IsarNative.jsObjectGet(jsObj, 'itemIdEntryMethod') ?? '',
-    lineItemSeq:
-        IsarNative.jsObjectGet(jsObj, 'lineItemSeq') ?? double.negativeInfinity,
-    netAmount:
-        IsarNative.jsObjectGet(jsObj, 'netAmount') ?? double.negativeInfinity,
-    nonExchangeableFlag:
-        IsarNative.jsObjectGet(jsObj, 'nonExchangeableFlag') ?? false,
-    nonReturnableFlag:
-        IsarNative.jsObjectGet(jsObj, 'nonReturnableFlag') ?? false,
-    originalBusinessDate:
-        IsarNative.jsObjectGet(jsObj, 'originalBusinessDate') != null
-            ? DateTime.fromMillisecondsSinceEpoch(
-                    IsarNative.jsObjectGet(jsObj, 'originalBusinessDate'),
-                    isUtc: true)
-                .toLocal()
-            : null,
-    originalLineItemSeq: IsarNative.jsObjectGet(jsObj, 'originalLineItemSeq'),
-    originalPosId: IsarNative.jsObjectGet(jsObj, 'originalPosId'),
-    originalTransSeq: IsarNative.jsObjectGet(jsObj, 'originalTransSeq'),
-    posId: IsarNative.jsObjectGet(jsObj, 'posId') ?? double.negativeInfinity,
-    priceEntryMethod: IsarNative.jsObjectGet(jsObj, 'priceEntryMethod') ?? '',
-    priceOverride: IsarNative.jsObjectGet(jsObj, 'priceOverride') ?? false,
-    priceOverrideAmount: IsarNative.jsObjectGet(jsObj, 'priceOverrideAmount'),
-    priceOverrideReason: IsarNative.jsObjectGet(jsObj, 'priceOverrideReason'),
-    quantity:
-        IsarNative.jsObjectGet(jsObj, 'quantity') ?? double.negativeInfinity,
-    returnComment: IsarNative.jsObjectGet(jsObj, 'returnComment'),
-    returnFlag: IsarNative.jsObjectGet(jsObj, 'returnFlag') ?? false,
-    returnReasonCode: IsarNative.jsObjectGet(jsObj, 'returnReasonCode'),
-    returnTypeCode: IsarNative.jsObjectGet(jsObj, 'returnTypeCode'),
-    returnedQuantity: IsarNative.jsObjectGet(jsObj, 'returnedQuantity'),
-    serialNumber: IsarNative.jsObjectGet(jsObj, 'serialNumber'),
-    shippingWeight: IsarNative.jsObjectGet(jsObj, 'shippingWeight'),
-    storeId:
-        IsarNative.jsObjectGet(jsObj, 'storeId') ?? double.negativeInfinity,
-    taxAmount:
-        IsarNative.jsObjectGet(jsObj, 'taxAmount') ?? double.negativeInfinity,
-    transSeq:
-        IsarNative.jsObjectGet(jsObj, 'transSeq') ?? double.negativeInfinity,
-    unitCost:
-        IsarNative.jsObjectGet(jsObj, 'unitCost') ?? double.negativeInfinity,
-    unitPrice:
-        IsarNative.jsObjectGet(jsObj, 'unitPrice') ?? double.negativeInfinity,
-    uom: IsarNative.jsObjectGet(jsObj, 'uom') ?? '',
-    vendorId: IsarNative.jsObjectGet(jsObj, 'vendorId'),
-  );
-  _transactionLineItemEntityAttachLinks(
-      collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
-  return object;
+    IsarCollection<TransactionLineItemEntity> collection, Object jsObj) {
+  /*final object = TransactionLineItemEntity(baseUnitPrice: IsarNative.jsObjectGet(jsObj, r'baseUnitPrice') ,businessDate: IsarNative.jsObjectGet(jsObj, r'businessDate') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'businessDate') as int, isUtc: true).toLocal() : null,category: IsarNative.jsObjectGet(jsObj, r'category') ,discountAmount: IsarNative.jsObjectGet(jsObj, r'discountAmount') ,extendedAmount: IsarNative.jsObjectGet(jsObj, r'extendedAmount') ,grossAmount: IsarNative.jsObjectGet(jsObj, r'grossAmount') ,isVoid: IsarNative.jsObjectGet(jsObj, r'isVoid') ?? false,itemDescription: IsarNative.jsObjectGet(jsObj, r'itemDescription') ,itemId: IsarNative.jsObjectGet(jsObj, r'itemId') ,itemIdEntryMethod: IsarNative.jsObjectGet(jsObj, r'itemIdEntryMethod') ,lineItemSeq: IsarNative.jsObjectGet(jsObj, r'lineItemSeq') ,lineModifiers: (IsarNative.jsObjectGet(jsObj, r'lineModifiers') as List?)?.map((e) => e ?? TransactionLineItemModifierEntity()).toList().cast<TransactionLineItemModifierEntity>() ?? [],netAmount: IsarNative.jsObjectGet(jsObj, r'netAmount') ,nonExchangeableFlag: IsarNative.jsObjectGet(jsObj, r'nonExchangeableFlag') ?? false,nonReturnableFlag: IsarNative.jsObjectGet(jsObj, r'nonReturnableFlag') ?? false,originalBusinessDate: IsarNative.jsObjectGet(jsObj, r'originalBusinessDate') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'originalBusinessDate') as int, isUtc: true).toLocal() : null,originalLineItemSeq: IsarNative.jsObjectGet(jsObj, r'originalLineItemSeq') ,originalPosId: IsarNative.jsObjectGet(jsObj, r'originalPosId') ,originalTransSeq: IsarNative.jsObjectGet(jsObj, r'originalTransSeq') ,posId: IsarNative.jsObjectGet(jsObj, r'posId') ,priceEntryMethod: IsarNative.jsObjectGet(jsObj, r'priceEntryMethod') ,priceOverride: IsarNative.jsObjectGet(jsObj, r'priceOverride') ?? false,priceOverrideAmount: IsarNative.jsObjectGet(jsObj, r'priceOverrideAmount') ,priceOverrideReason: IsarNative.jsObjectGet(jsObj, r'priceOverrideReason') ,quantity: IsarNative.jsObjectGet(jsObj, r'quantity') ,returnComment: IsarNative.jsObjectGet(jsObj, r'returnComment') ,returnFlag: IsarNative.jsObjectGet(jsObj, r'returnFlag') ?? false,returnReasonCode: IsarNative.jsObjectGet(jsObj, r'returnReasonCode') ,returnTypeCode: IsarNative.jsObjectGet(jsObj, r'returnTypeCode') ,returnedQuantity: IsarNative.jsObjectGet(jsObj, r'returnedQuantity') ,serialNumber: IsarNative.jsObjectGet(jsObj, r'serialNumber') ,shippingWeight: IsarNative.jsObjectGet(jsObj, r'shippingWeight') ,storeId: IsarNative.jsObjectGet(jsObj, r'storeId') ,taxAmount: IsarNative.jsObjectGet(jsObj, r'taxAmount') ,taxModifiers: (IsarNative.jsObjectGet(jsObj, r'taxModifiers') as List?)?.map((e) => e ?? TransactionLineItemTaxModifier()).toList().cast<TransactionLineItemTaxModifier>() ?? [],transSeq: IsarNative.jsObjectGet(jsObj, r'transSeq') ,unitCost: IsarNative.jsObjectGet(jsObj, r'unitCost') ,unitPrice: IsarNative.jsObjectGet(jsObj, r'unitPrice') ,uom: IsarNative.jsObjectGet(jsObj, r'uom') ,vendorId: IsarNative.jsObjectGet(jsObj, r'vendorId') ,);*/
+  //return object;
+  throw UnimplementedError();
 }
 
 P _transactionLineItemEntityDeserializePropWeb<P>(
     Object jsObj, String propertyName) {
   switch (propertyName) {
-    case 'baseUnitPrice':
-      return (IsarNative.jsObjectGet(jsObj, 'baseUnitPrice') ??
-          double.negativeInfinity) as P;
-    case 'businessDate':
-      return (IsarNative.jsObjectGet(jsObj, 'businessDate') != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'businessDate'),
-                  isUtc: true)
-              .toLocal()
-          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
-    case 'category':
-      return (IsarNative.jsObjectGet(jsObj, 'category')) as P;
-    case 'discountAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'discountAmount') ??
-          double.negativeInfinity) as P;
-    case 'extendedAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'extendedAmount') ??
-          double.negativeInfinity) as P;
-    case 'grossAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'grossAmount') ??
-          double.negativeInfinity) as P;
-    case 'id':
-      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
-    case 'isVoid':
-      return (IsarNative.jsObjectGet(jsObj, 'isVoid') ?? false) as P;
-    case 'itemDescription':
-      return (IsarNative.jsObjectGet(jsObj, 'itemDescription') ?? '') as P;
-    case 'itemId':
-      return (IsarNative.jsObjectGet(jsObj, 'itemId') ?? '') as P;
-    case 'itemIdEntryMethod':
-      return (IsarNative.jsObjectGet(jsObj, 'itemIdEntryMethod') ?? '') as P;
-    case 'lineItemSeq':
-      return (IsarNative.jsObjectGet(jsObj, 'lineItemSeq') ??
-          double.negativeInfinity) as P;
-    case 'netAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'netAmount') ??
-          double.negativeInfinity) as P;
-    case 'nonExchangeableFlag':
-      return (IsarNative.jsObjectGet(jsObj, 'nonExchangeableFlag') ?? false)
-          as P;
-    case 'nonReturnableFlag':
-      return (IsarNative.jsObjectGet(jsObj, 'nonReturnableFlag') ?? false) as P;
-    case 'originalBusinessDate':
-      return (IsarNative.jsObjectGet(jsObj, 'originalBusinessDate') != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'originalBusinessDate'),
-                  isUtc: true)
-              .toLocal()
-          : null) as P;
-    case 'originalLineItemSeq':
-      return (IsarNative.jsObjectGet(jsObj, 'originalLineItemSeq')) as P;
-    case 'originalPosId':
-      return (IsarNative.jsObjectGet(jsObj, 'originalPosId')) as P;
-    case 'originalTransSeq':
-      return (IsarNative.jsObjectGet(jsObj, 'originalTransSeq')) as P;
-    case 'posId':
-      return (IsarNative.jsObjectGet(jsObj, 'posId') ?? double.negativeInfinity)
-          as P;
-    case 'priceEntryMethod':
-      return (IsarNative.jsObjectGet(jsObj, 'priceEntryMethod') ?? '') as P;
-    case 'priceOverride':
-      return (IsarNative.jsObjectGet(jsObj, 'priceOverride') ?? false) as P;
-    case 'priceOverrideAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'priceOverrideAmount')) as P;
-    case 'priceOverrideReason':
-      return (IsarNative.jsObjectGet(jsObj, 'priceOverrideReason')) as P;
-    case 'quantity':
-      return (IsarNative.jsObjectGet(jsObj, 'quantity') ??
-          double.negativeInfinity) as P;
-    case 'returnComment':
-      return (IsarNative.jsObjectGet(jsObj, 'returnComment')) as P;
-    case 'returnFlag':
-      return (IsarNative.jsObjectGet(jsObj, 'returnFlag') ?? false) as P;
-    case 'returnReasonCode':
-      return (IsarNative.jsObjectGet(jsObj, 'returnReasonCode')) as P;
-    case 'returnTypeCode':
-      return (IsarNative.jsObjectGet(jsObj, 'returnTypeCode')) as P;
-    case 'returnedQuantity':
-      return (IsarNative.jsObjectGet(jsObj, 'returnedQuantity')) as P;
-    case 'serialNumber':
-      return (IsarNative.jsObjectGet(jsObj, 'serialNumber')) as P;
-    case 'shippingWeight':
-      return (IsarNative.jsObjectGet(jsObj, 'shippingWeight')) as P;
-    case 'storeId':
-      return (IsarNative.jsObjectGet(jsObj, 'storeId') ??
-          double.negativeInfinity) as P;
-    case 'taxAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'taxAmount') ??
-          double.negativeInfinity) as P;
-    case 'transSeq':
-      return (IsarNative.jsObjectGet(jsObj, 'transSeq') ??
-          double.negativeInfinity) as P;
-    case 'unitCost':
-      return (IsarNative.jsObjectGet(jsObj, 'unitCost') ??
-          double.negativeInfinity) as P;
-    case 'unitPrice':
-      return (IsarNative.jsObjectGet(jsObj, 'unitPrice') ??
-          double.negativeInfinity) as P;
-    case 'uom':
-      return (IsarNative.jsObjectGet(jsObj, 'uom') ?? '') as P;
-    case 'vendorId':
-      return (IsarNative.jsObjectGet(jsObj, 'vendorId')) as P;
     default:
-      throw 'Illegal propertyName';
-  }
-}
-
-void _transactionLineItemEntityAttachLinks(
-    IsarCollection col, int id, TransactionLineItemEntity object) {
-  object.lineModifiers.attach(
-      col, col.isar.transactionLineItemModifierEntitys, 'lineModifiers', id);
-  object.taxModifiers.attach(
-      col, col.isar.transactionLineItemTaxModifiers, 'taxModifiers', id);
-  object.header.attach(col, col.isar.transactionHeaderEntitys, 'header', id);
-}
-
-extension TransactionLineItemEntityQueryWhereSort on QueryBuilder<
-    TransactionLineItemEntity, TransactionLineItemEntity, QWhere> {
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhere> anyId() {
-    return addWhereClauseInternal(const IdWhereClause.any());
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhere> anyOriginalPosId() {
-    return addWhereClauseInternal(
-        const IndexWhereClause.any(indexName: 'originalPosId'));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhere> anyOriginalTransSeq() {
-    return addWhereClauseInternal(
-        const IndexWhereClause.any(indexName: 'originalTransSeq'));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhere> anyStoreId() {
-    return addWhereClauseInternal(
-        const IndexWhereClause.any(indexName: 'storeId'));
-  }
-}
-
-extension TransactionLineItemEntityQueryWhere on QueryBuilder<
-    TransactionLineItemEntity, TransactionLineItemEntity, QWhereClause> {
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> idEqualTo(int id) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: id,
-      includeLower: true,
-      upper: id,
-      includeUpper: true,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> idNotEqualTo(int id) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      );
-    } else {
-      return addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      );
-    }
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> idGreaterThan(int id, {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.greaterThan(lower: id, includeLower: include),
-    );
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> idLessThan(int id, {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.lessThan(upper: id, includeUpper: include),
-    );
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: lowerId,
-      includeLower: includeLower,
-      upper: upperId,
-      includeUpper: includeUpper,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalPosIdEqualTo(int? originalPosId) {
-    return addWhereClauseInternal(IndexWhereClause.equalTo(
-      indexName: 'originalPosId',
-      value: [originalPosId],
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalPosIdNotEqualTo(int? originalPosId) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'originalPosId',
-        upper: [originalPosId],
-        includeUpper: false,
-      )).addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'originalPosId',
-        lower: [originalPosId],
-        includeLower: false,
-      ));
-    } else {
-      return addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'originalPosId',
-        lower: [originalPosId],
-        includeLower: false,
-      )).addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'originalPosId',
-        upper: [originalPosId],
-        includeUpper: false,
-      ));
-    }
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalPosIdIsNull() {
-    return addWhereClauseInternal(const IndexWhereClause.equalTo(
-      indexName: 'originalPosId',
-      value: [null],
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalPosIdIsNotNull() {
-    return addWhereClauseInternal(const IndexWhereClause.greaterThan(
-      indexName: 'originalPosId',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalPosIdGreaterThan(
-    int? originalPosId, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(IndexWhereClause.greaterThan(
-      indexName: 'originalPosId',
-      lower: [originalPosId],
-      includeLower: include,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalPosIdLessThan(
-    int? originalPosId, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(IndexWhereClause.lessThan(
-      indexName: 'originalPosId',
-      upper: [originalPosId],
-      includeUpper: include,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalPosIdBetween(
-    int? lowerOriginalPosId,
-    int? upperOriginalPosId, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addWhereClauseInternal(IndexWhereClause.between(
-      indexName: 'originalPosId',
-      lower: [lowerOriginalPosId],
-      includeLower: includeLower,
-      upper: [upperOriginalPosId],
-      includeUpper: includeUpper,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalTransSeqEqualTo(int? originalTransSeq) {
-    return addWhereClauseInternal(IndexWhereClause.equalTo(
-      indexName: 'originalTransSeq',
-      value: [originalTransSeq],
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalTransSeqNotEqualTo(int? originalTransSeq) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'originalTransSeq',
-        upper: [originalTransSeq],
-        includeUpper: false,
-      )).addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'originalTransSeq',
-        lower: [originalTransSeq],
-        includeLower: false,
-      ));
-    } else {
-      return addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'originalTransSeq',
-        lower: [originalTransSeq],
-        includeLower: false,
-      )).addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'originalTransSeq',
-        upper: [originalTransSeq],
-        includeUpper: false,
-      ));
-    }
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalTransSeqIsNull() {
-    return addWhereClauseInternal(const IndexWhereClause.equalTo(
-      indexName: 'originalTransSeq',
-      value: [null],
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalTransSeqIsNotNull() {
-    return addWhereClauseInternal(const IndexWhereClause.greaterThan(
-      indexName: 'originalTransSeq',
-      lower: [null],
-      includeLower: false,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalTransSeqGreaterThan(
-    int? originalTransSeq, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(IndexWhereClause.greaterThan(
-      indexName: 'originalTransSeq',
-      lower: [originalTransSeq],
-      includeLower: include,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalTransSeqLessThan(
-    int? originalTransSeq, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(IndexWhereClause.lessThan(
-      indexName: 'originalTransSeq',
-      upper: [originalTransSeq],
-      includeUpper: include,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> originalTransSeqBetween(
-    int? lowerOriginalTransSeq,
-    int? upperOriginalTransSeq, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addWhereClauseInternal(IndexWhereClause.between(
-      indexName: 'originalTransSeq',
-      lower: [lowerOriginalTransSeq],
-      includeLower: includeLower,
-      upper: [upperOriginalTransSeq],
-      includeUpper: includeUpper,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> storeIdEqualTo(int storeId) {
-    return addWhereClauseInternal(IndexWhereClause.equalTo(
-      indexName: 'storeId',
-      value: [storeId],
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> storeIdNotEqualTo(int storeId) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'storeId',
-        upper: [storeId],
-        includeUpper: false,
-      )).addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'storeId',
-        lower: [storeId],
-        includeLower: false,
-      ));
-    } else {
-      return addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'storeId',
-        lower: [storeId],
-        includeLower: false,
-      )).addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'storeId',
-        upper: [storeId],
-        includeUpper: false,
-      ));
-    }
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> storeIdGreaterThan(
-    int storeId, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(IndexWhereClause.greaterThan(
-      indexName: 'storeId',
-      lower: [storeId],
-      includeLower: include,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> storeIdLessThan(
-    int storeId, {
-    bool include = false,
-  }) {
-    return addWhereClauseInternal(IndexWhereClause.lessThan(
-      indexName: 'storeId',
-      upper: [storeId],
-      includeUpper: include,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterWhereClause> storeIdBetween(
-    int lowerStoreId,
-    int upperStoreId, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addWhereClauseInternal(IndexWhereClause.between(
-      indexName: 'storeId',
-      lower: [lowerStoreId],
-      includeLower: includeLower,
-      upper: [upperStoreId],
-      includeUpper: includeUpper,
-    ));
+      throw IsarError('Illegal propertyName');
   }
 }
 
 extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     TransactionLineItemEntity, TransactionLineItemEntity, QFilterCondition> {
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> baseUnitPriceGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'baseUnitPrice',
-      value: value,
-    ));
+      QAfterFilterCondition> baseUnitPriceIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'baseUnitPrice',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> baseUnitPriceLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'baseUnitPrice',
-      value: value,
-    ));
+      QAfterFilterCondition> baseUnitPriceIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'baseUnitPrice',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> baseUnitPriceBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'baseUnitPrice',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> baseUnitPriceEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'baseUnitPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> businessDateEqualTo(DateTime value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'businessDate',
-      value: value,
-    ));
+      QAfterFilterCondition> baseUnitPriceGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'baseUnitPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> baseUnitPriceLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'baseUnitPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> baseUnitPriceBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'baseUnitPrice',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> businessDateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'businessDate',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> businessDateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'businessDate',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> businessDateEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'businessDate',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> businessDateGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'businessDate',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'businessDate',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> businessDateLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'businessDate',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'businessDate',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> businessDateBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'businessDate',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'businessDate',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> categoryIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'category',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'category',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> categoryIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'category',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1077,60 +754,65 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'category',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> categoryGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'category',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> categoryLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'category',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> categoryBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'category',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'category',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1138,12 +820,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'category',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1151,257 +834,403 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'category',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       categoryContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'category',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'category',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       categoryMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'category',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'category',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> discountAmountGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'discountAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> categoryIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'category',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> discountAmountLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'discountAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> categoryIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'category',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> discountAmountBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'discountAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> discountAmountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'discountAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> extendedAmountGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'extendedAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> discountAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'discountAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> extendedAmountLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'extendedAmount',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> extendedAmountBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'extendedAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> grossAmountGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'grossAmount',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> grossAmountLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'grossAmount',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> grossAmountBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'grossAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> idIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'id',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> idEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> idGreaterThan(
-    int value, {
-    bool include = false,
+      QAfterFilterCondition> discountAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'discountAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> idLessThan(
-    int value, {
+      QAfterFilterCondition> discountAmountGreaterThan(
+    double? value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'discountAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
+      QAfterFilterCondition> discountAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'discountAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> discountAmountBetween(
+    double? lower,
+    double? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    double epsilon = Query.epsilon,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'discountAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> extendedAmountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'extendedAmount',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> extendedAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'extendedAmount',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> extendedAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'extendedAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> extendedAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'extendedAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> extendedAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'extendedAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> extendedAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'extendedAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> grossAmountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'grossAmount',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> grossAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'grossAmount',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> grossAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'grossAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> grossAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'grossAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> grossAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'grossAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> grossAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'grossAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> isVoidEqualTo(bool value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'isVoid',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isVoid',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemDescriptionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'itemDescription',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemDescriptionIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'itemDescription',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemDescriptionEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'itemDescription',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'itemDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemDescriptionGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'itemDescription',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'itemDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemDescriptionLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'itemDescription',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'itemDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemDescriptionBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'itemDescription',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'itemDescription',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1409,12 +1238,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'itemDescription',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'itemDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1422,95 +1252,141 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'itemDescription',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'itemDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       itemDescriptionContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'itemDescription',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'itemDescription',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       itemDescriptionMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'itemDescription',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'itemDescription',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemDescriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'itemDescription',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemDescriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'itemDescription',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'itemId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'itemId',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'itemId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'itemId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemIdGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'itemId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'itemId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemIdLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'itemId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'itemId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemIdBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'itemId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'itemId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1518,12 +1394,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'itemId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'itemId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1531,95 +1408,141 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'itemId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'itemId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       itemIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'itemId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'itemId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       itemIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'itemId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'itemId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'itemId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'itemId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemIdEntryMethodIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'itemIdEntryMethod',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemIdEntryMethodIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'itemIdEntryMethod',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemIdEntryMethodEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'itemIdEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'itemIdEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemIdEntryMethodGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'itemIdEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'itemIdEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemIdEntryMethodLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'itemIdEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'itemIdEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> itemIdEntryMethodBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'itemIdEntryMethod',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'itemIdEntryMethod',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1627,12 +1550,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'itemIdEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'itemIdEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1640,152 +1564,352 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'itemIdEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'itemIdEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       itemIdEntryMethodContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'itemIdEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'itemIdEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       itemIdEntryMethodMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'itemIdEntryMethod',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'itemIdEntryMethod',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> lineItemSeqEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'lineItemSeq',
-      value: value,
-    ));
+      QAfterFilterCondition> itemIdEntryMethodIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'itemIdEntryMethod',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> itemIdEntryMethodIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'itemIdEntryMethod',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> lineItemSeqIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lineItemSeq',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> lineItemSeqIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lineItemSeq',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> lineItemSeqEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lineItemSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> lineItemSeqGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'lineItemSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lineItemSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> lineItemSeqLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'lineItemSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lineItemSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> lineItemSeqBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lineItemSeq',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> lineModifiersLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'lineModifiers',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> lineModifiersIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'lineModifiers',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> lineModifiersIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'lineModifiers',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> lineModifiersLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'lineModifiers',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> lineModifiersLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'lineModifiers',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> lineModifiersLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'lineItemSeq',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'lineModifiers',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> netAmountGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'netAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> netAmountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'netAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> netAmountLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'netAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> netAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'netAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> netAmountBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'netAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> netAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'netAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> netAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'netAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> netAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'netAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> netAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'netAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> nonExchangeableFlagEqualTo(bool value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'nonExchangeableFlag',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nonExchangeableFlag',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> nonReturnableFlagEqualTo(bool value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'nonReturnableFlag',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nonReturnableFlag',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> originalBusinessDateIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'originalBusinessDate',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'originalBusinessDate',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> originalBusinessDateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'originalBusinessDate',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> originalBusinessDateEqualTo(DateTime? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'originalBusinessDate',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'originalBusinessDate',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1793,12 +1917,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'originalBusinessDate',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'originalBusinessDate',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1806,12 +1931,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     DateTime? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'originalBusinessDate',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'originalBusinessDate',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1821,31 +1947,43 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'originalBusinessDate',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'originalBusinessDate',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> originalLineItemSeqIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'originalLineItemSeq',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'originalLineItemSeq',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> originalLineItemSeqIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'originalLineItemSeq',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> originalLineItemSeqEqualTo(int? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'originalLineItemSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'originalLineItemSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1853,12 +1991,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'originalLineItemSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'originalLineItemSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1866,12 +2005,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'originalLineItemSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'originalLineItemSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1881,31 +2021,43 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'originalLineItemSeq',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'originalLineItemSeq',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> originalPosIdIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'originalPosId',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'originalPosId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> originalPosIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'originalPosId',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> originalPosIdEqualTo(int? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'originalPosId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'originalPosId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1913,12 +2065,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'originalPosId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'originalPosId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1926,12 +2079,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'originalPosId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'originalPosId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1941,31 +2095,43 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'originalPosId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'originalPosId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> originalTransSeqIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'originalTransSeq',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'originalTransSeq',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> originalTransSeqIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'originalTransSeq',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> originalTransSeqEqualTo(int? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'originalTransSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'originalTransSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1973,12 +2139,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'originalTransSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'originalTransSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -1986,12 +2153,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'originalTransSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'originalTransSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2001,125 +2169,173 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'originalTransSeq',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'originalTransSeq',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> posIdEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'posId',
-      value: value,
-    ));
+      QAfterFilterCondition> posIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'posId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> posIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'posId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> posIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'posId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> posIdGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'posId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'posId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> posIdLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'posId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'posId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> posIdBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'posId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'posId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceEntryMethodIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'priceEntryMethod',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceEntryMethodIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'priceEntryMethod',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceEntryMethodEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'priceEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'priceEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceEntryMethodGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'priceEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'priceEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceEntryMethodLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'priceEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'priceEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceEntryMethodBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'priceEntryMethod',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'priceEntryMethod',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2127,12 +2343,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'priceEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'priceEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2140,93 +2357,169 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'priceEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'priceEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       priceEntryMethodContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'priceEntryMethod',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'priceEntryMethod',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       priceEntryMethodMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'priceEntryMethod',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'priceEntryMethod',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceEntryMethodIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'priceEntryMethod',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceEntryMethodIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'priceEntryMethod',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceOverrideEqualTo(bool value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'priceOverride',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'priceOverride',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceOverrideAmountIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'priceOverrideAmount',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'priceOverrideAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> priceOverrideAmountGreaterThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'priceOverrideAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> priceOverrideAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'priceOverrideAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> priceOverrideAmountLessThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'priceOverrideAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> priceOverrideAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'priceOverrideAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-          QAfterFilterCondition>
-      priceOverrideAmountBetween(double? lower, double? upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'priceOverrideAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> priceOverrideAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'priceOverrideAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'priceOverrideAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'priceOverrideAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceOverrideReasonIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'priceOverrideReason',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'priceOverrideReason',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> priceOverrideReasonIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'priceOverrideReason',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2234,60 +2527,65 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'priceOverrideReason',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'priceOverrideReason',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceOverrideReasonGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'priceOverrideReason',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'priceOverrideReason',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceOverrideReasonLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'priceOverrideReason',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'priceOverrideReason',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> priceOverrideReasonBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'priceOverrideReason',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'priceOverrideReason',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2295,12 +2593,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'priceOverrideReason',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'priceOverrideReason',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2308,74 +2607,159 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'priceOverrideReason',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'priceOverrideReason',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       priceOverrideReasonContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'priceOverrideReason',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'priceOverrideReason',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       priceOverrideReasonMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'priceOverrideReason',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'priceOverrideReason',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> quantityGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'quantity',
-      value: value,
-    ));
+      QAfterFilterCondition> priceOverrideReasonIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'priceOverrideReason',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> quantityLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'quantity',
-      value: value,
-    ));
+      QAfterFilterCondition> priceOverrideReasonIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'priceOverrideReason',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> quantityBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'quantity',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> quantityIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'quantity',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> quantityIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'quantity',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> quantityEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'quantity',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> quantityGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'quantity',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> quantityLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'quantity',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> quantityBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'quantity',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnCommentIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'returnComment',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'returnComment',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnCommentIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'returnComment',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2383,60 +2767,65 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'returnComment',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'returnComment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnCommentGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'returnComment',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'returnComment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnCommentLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'returnComment',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'returnComment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnCommentBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'returnComment',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'returnComment',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2444,12 +2833,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'returnComment',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'returnComment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2457,52 +2847,85 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'returnComment',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'returnComment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       returnCommentContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'returnComment',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'returnComment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       returnCommentMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'returnComment',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'returnComment',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnCommentIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'returnComment',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnCommentIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'returnComment',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnFlagEqualTo(bool value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'returnFlag',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'returnFlag',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnReasonCodeIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'returnReasonCode',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'returnReasonCode',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnReasonCodeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'returnReasonCode',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2510,60 +2933,65 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'returnReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'returnReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnReasonCodeGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'returnReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'returnReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnReasonCodeLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'returnReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'returnReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnReasonCodeBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'returnReasonCode',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'returnReasonCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2571,12 +2999,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'returnReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'returnReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2584,43 +3013,75 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'returnReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'returnReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       returnReasonCodeContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'returnReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'returnReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       returnReasonCodeMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'returnReasonCode',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'returnReasonCode',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnReasonCodeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'returnReasonCode',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnReasonCodeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'returnReasonCode',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnTypeCodeIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'returnTypeCode',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'returnTypeCode',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnTypeCodeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'returnTypeCode',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2628,60 +3089,65 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'returnTypeCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'returnTypeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnTypeCodeGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'returnTypeCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'returnTypeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnTypeCodeLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'returnTypeCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'returnTypeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnTypeCodeBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'returnTypeCode',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'returnTypeCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2689,12 +3155,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'returnTypeCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'returnTypeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2702,84 +3169,159 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'returnTypeCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'returnTypeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       returnTypeCodeContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'returnTypeCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'returnTypeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       returnTypeCodeMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'returnTypeCode',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'returnTypeCode',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnTypeCodeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'returnTypeCode',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnTypeCodeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'returnTypeCode',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> returnedQuantityIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'returnedQuantity',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'returnedQuantity',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> returnedQuantityGreaterThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'returnedQuantity',
-      value: value,
-    ));
+      QAfterFilterCondition> returnedQuantityIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'returnedQuantity',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> returnedQuantityLessThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'returnedQuantity',
-      value: value,
-    ));
+      QAfterFilterCondition> returnedQuantityEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'returnedQuantity',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-          QAfterFilterCondition>
-      returnedQuantityBetween(double? lower, double? upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'returnedQuantity',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> returnedQuantityGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'returnedQuantity',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnedQuantityLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'returnedQuantity',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> returnedQuantityBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'returnedQuantity',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> serialNumberIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'serialNumber',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'serialNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> serialNumberIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'serialNumber',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2787,60 +3329,65 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'serialNumber',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'serialNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> serialNumberGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'serialNumber',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'serialNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> serialNumberLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'serialNumber',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'serialNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> serialNumberBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'serialNumber',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'serialNumber',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2848,12 +3395,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'serialNumber',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'serialNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -2861,331 +3409,714 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'serialNumber',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'serialNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       serialNumberContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'serialNumber',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'serialNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       serialNumberMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'serialNumber',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'serialNumber',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> serialNumberIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'serialNumber',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> serialNumberIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'serialNumber',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> shippingWeightIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'shippingWeight',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'shippingWeight',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> shippingWeightGreaterThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'shippingWeight',
-      value: value,
-    ));
+      QAfterFilterCondition> shippingWeightIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'shippingWeight',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> shippingWeightLessThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'shippingWeight',
-      value: value,
-    ));
+      QAfterFilterCondition> shippingWeightEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'shippingWeight',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-          QAfterFilterCondition>
-      shippingWeightBetween(double? lower, double? upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'shippingWeight',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> shippingWeightGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'shippingWeight',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> storeIdEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'storeId',
-      value: value,
-    ));
+      QAfterFilterCondition> shippingWeightLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'shippingWeight',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> shippingWeightBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'shippingWeight',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> storeIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'storeId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> storeIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'storeId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> storeIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'storeId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> storeIdGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'storeId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'storeId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> storeIdLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'storeId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'storeId',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> storeIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'storeId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxAmountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxAmount',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxAmount',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxModifiersLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'taxModifiers',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxModifiersIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'taxModifiers',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxModifiersIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'taxModifiers',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxModifiersLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'taxModifiers',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxModifiersLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'taxModifiers',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> taxModifiersLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'storeId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'taxModifiers',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> taxAmountGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'taxAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> transSeqIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'transSeq',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> taxAmountLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'taxAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> transSeqIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'transSeq',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> taxAmountBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> transSeqEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'transSeq',
-      value: value,
-    ));
+      QAfterFilterCondition> transSeqEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'transSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> transSeqGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'transSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'transSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> transSeqLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'transSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'transSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> transSeqBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'transSeq',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'transSeq',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> unitCostGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'unitCost',
-      value: value,
-    ));
+      QAfterFilterCondition> unitCostIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'unitCost',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> unitCostLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'unitCost',
-      value: value,
-    ));
+      QAfterFilterCondition> unitCostIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'unitCost',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> unitCostBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'unitCost',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> unitCostEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'unitCost',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> unitPriceGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'unitPrice',
-      value: value,
-    ));
+      QAfterFilterCondition> unitCostGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'unitCost',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> unitPriceLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'unitPrice',
-      value: value,
-    ));
+      QAfterFilterCondition> unitCostLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'unitCost',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> unitPriceBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'unitPrice',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> unitCostBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'unitCost',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> unitPriceIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'unitPrice',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> unitPriceIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'unitPrice',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> unitPriceEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'unitPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> unitPriceGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'unitPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> unitPriceLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'unitPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> unitPriceBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'unitPrice',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'uom',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'uom',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> uomEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'uom',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'uom',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> uomGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'uom',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'uom',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> uomLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'uom',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'uom',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> uomBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'uom',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'uom',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3193,12 +4124,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'uom',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'uom',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3206,43 +4138,75 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'uom',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'uom',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       uomContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'uom',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'uom',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       uomMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'uom',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'uom',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'uom',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> uomIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'uom',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> vendorIdIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'vendorId',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'vendorId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> vendorIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'vendorId',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3250,60 +4214,65 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'vendorId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'vendorId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> vendorIdGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'vendorId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'vendorId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> vendorIdLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'vendorId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'vendorId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
       QAfterFilterCondition> vendorIdBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'vendorId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'vendorId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3311,12 +4280,13 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'vendorId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'vendorId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
@@ -3324,1252 +4294,75 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'vendorId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'vendorId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       vendorIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'vendorId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'vendorId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
       vendorIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'vendorId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'vendorId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> vendorIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'vendorId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> vendorIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'vendorId',
+        value: '',
+      ));
+    });
   }
 }
 
-extension TransactionLineItemEntityQueryLinks on QueryBuilder<
+extension TransactionLineItemEntityQueryObject on QueryBuilder<
     TransactionLineItemEntity, TransactionLineItemEntity, QFilterCondition> {
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
-      lineModifiers(FilterQuery<TransactionLineItemModifierEntity> q) {
-    return linkInternal(
-      isar.transactionLineItemModifierEntitys,
-      q,
-      'lineModifiers',
-    );
+      lineModifiersElement(FilterQuery<TransactionLineItemModifierEntity> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'lineModifiers');
+    });
   }
 
   QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
           QAfterFilterCondition>
-      taxModifiers(FilterQuery<TransactionLineItemTaxModifier> q) {
-    return linkInternal(
-      isar.transactionLineItemTaxModifiers,
-      q,
-      'taxModifiers',
-    );
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterFilterCondition> header(FilterQuery<TransactionHeaderEntity> q) {
-    return linkInternal(
-      isar.transactionHeaderEntitys,
-      q,
-      'header',
-    );
-  }
-}
-
-extension TransactionLineItemEntityQueryWhereSortBy on QueryBuilder<
-    TransactionLineItemEntity, TransactionLineItemEntity, QSortBy> {
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByBaseUnitPrice() {
-    return addSortByInternal('baseUnitPrice', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByBaseUnitPriceDesc() {
-    return addSortByInternal('baseUnitPrice', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByBusinessDate() {
-    return addSortByInternal('businessDate', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByBusinessDateDesc() {
-    return addSortByInternal('businessDate', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByCategory() {
-    return addSortByInternal('category', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByCategoryDesc() {
-    return addSortByInternal('category', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByDiscountAmount() {
-    return addSortByInternal('discountAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByDiscountAmountDesc() {
-    return addSortByInternal('discountAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByExtendedAmount() {
-    return addSortByInternal('extendedAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByExtendedAmountDesc() {
-    return addSortByInternal('extendedAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByGrossAmount() {
-    return addSortByInternal('grossAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByGrossAmountDesc() {
-    return addSortByInternal('grossAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByIsVoid() {
-    return addSortByInternal('isVoid', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByIsVoidDesc() {
-    return addSortByInternal('isVoid', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByItemDescription() {
-    return addSortByInternal('itemDescription', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByItemDescriptionDesc() {
-    return addSortByInternal('itemDescription', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByItemId() {
-    return addSortByInternal('itemId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByItemIdDesc() {
-    return addSortByInternal('itemId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByItemIdEntryMethod() {
-    return addSortByInternal('itemIdEntryMethod', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByItemIdEntryMethodDesc() {
-    return addSortByInternal('itemIdEntryMethod', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByLineItemSeq() {
-    return addSortByInternal('lineItemSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByLineItemSeqDesc() {
-    return addSortByInternal('lineItemSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByNetAmount() {
-    return addSortByInternal('netAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByNetAmountDesc() {
-    return addSortByInternal('netAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByNonExchangeableFlag() {
-    return addSortByInternal('nonExchangeableFlag', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByNonExchangeableFlagDesc() {
-    return addSortByInternal('nonExchangeableFlag', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByNonReturnableFlag() {
-    return addSortByInternal('nonReturnableFlag', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByNonReturnableFlagDesc() {
-    return addSortByInternal('nonReturnableFlag', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByOriginalBusinessDate() {
-    return addSortByInternal('originalBusinessDate', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByOriginalBusinessDateDesc() {
-    return addSortByInternal('originalBusinessDate', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByOriginalLineItemSeq() {
-    return addSortByInternal('originalLineItemSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByOriginalLineItemSeqDesc() {
-    return addSortByInternal('originalLineItemSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByOriginalPosId() {
-    return addSortByInternal('originalPosId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByOriginalPosIdDesc() {
-    return addSortByInternal('originalPosId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByOriginalTransSeq() {
-    return addSortByInternal('originalTransSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByOriginalTransSeqDesc() {
-    return addSortByInternal('originalTransSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPosId() {
-    return addSortByInternal('posId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPosIdDesc() {
-    return addSortByInternal('posId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPriceEntryMethod() {
-    return addSortByInternal('priceEntryMethod', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPriceEntryMethodDesc() {
-    return addSortByInternal('priceEntryMethod', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPriceOverride() {
-    return addSortByInternal('priceOverride', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPriceOverrideDesc() {
-    return addSortByInternal('priceOverride', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPriceOverrideAmount() {
-    return addSortByInternal('priceOverrideAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPriceOverrideAmountDesc() {
-    return addSortByInternal('priceOverrideAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPriceOverrideReason() {
-    return addSortByInternal('priceOverrideReason', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByPriceOverrideReasonDesc() {
-    return addSortByInternal('priceOverrideReason', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByQuantity() {
-    return addSortByInternal('quantity', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByQuantityDesc() {
-    return addSortByInternal('quantity', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnComment() {
-    return addSortByInternal('returnComment', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnCommentDesc() {
-    return addSortByInternal('returnComment', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnFlag() {
-    return addSortByInternal('returnFlag', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnFlagDesc() {
-    return addSortByInternal('returnFlag', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnReasonCode() {
-    return addSortByInternal('returnReasonCode', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnReasonCodeDesc() {
-    return addSortByInternal('returnReasonCode', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnTypeCode() {
-    return addSortByInternal('returnTypeCode', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnTypeCodeDesc() {
-    return addSortByInternal('returnTypeCode', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnedQuantity() {
-    return addSortByInternal('returnedQuantity', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByReturnedQuantityDesc() {
-    return addSortByInternal('returnedQuantity', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortBySerialNumber() {
-    return addSortByInternal('serialNumber', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortBySerialNumberDesc() {
-    return addSortByInternal('serialNumber', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByShippingWeight() {
-    return addSortByInternal('shippingWeight', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByShippingWeightDesc() {
-    return addSortByInternal('shippingWeight', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByStoreId() {
-    return addSortByInternal('storeId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByStoreIdDesc() {
-    return addSortByInternal('storeId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByTaxAmount() {
-    return addSortByInternal('taxAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByTaxAmountDesc() {
-    return addSortByInternal('taxAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByTransSeq() {
-    return addSortByInternal('transSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByTransSeqDesc() {
-    return addSortByInternal('transSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByUnitCost() {
-    return addSortByInternal('unitCost', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByUnitCostDesc() {
-    return addSortByInternal('unitCost', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByUnitPrice() {
-    return addSortByInternal('unitPrice', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByUnitPriceDesc() {
-    return addSortByInternal('unitPrice', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByUom() {
-    return addSortByInternal('uom', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByUomDesc() {
-    return addSortByInternal('uom', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByVendorId() {
-    return addSortByInternal('vendorId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> sortByVendorIdDesc() {
-    return addSortByInternal('vendorId', Sort.desc);
-  }
-}
-
-extension TransactionLineItemEntityQueryWhereSortThenBy on QueryBuilder<
-    TransactionLineItemEntity, TransactionLineItemEntity, QSortThenBy> {
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByBaseUnitPrice() {
-    return addSortByInternal('baseUnitPrice', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByBaseUnitPriceDesc() {
-    return addSortByInternal('baseUnitPrice', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByBusinessDate() {
-    return addSortByInternal('businessDate', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByBusinessDateDesc() {
-    return addSortByInternal('businessDate', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByCategory() {
-    return addSortByInternal('category', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByCategoryDesc() {
-    return addSortByInternal('category', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByDiscountAmount() {
-    return addSortByInternal('discountAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByDiscountAmountDesc() {
-    return addSortByInternal('discountAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByExtendedAmount() {
-    return addSortByInternal('extendedAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByExtendedAmountDesc() {
-    return addSortByInternal('extendedAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByGrossAmount() {
-    return addSortByInternal('grossAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByGrossAmountDesc() {
-    return addSortByInternal('grossAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByIsVoid() {
-    return addSortByInternal('isVoid', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByIsVoidDesc() {
-    return addSortByInternal('isVoid', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByItemDescription() {
-    return addSortByInternal('itemDescription', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByItemDescriptionDesc() {
-    return addSortByInternal('itemDescription', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByItemId() {
-    return addSortByInternal('itemId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByItemIdDesc() {
-    return addSortByInternal('itemId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByItemIdEntryMethod() {
-    return addSortByInternal('itemIdEntryMethod', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByItemIdEntryMethodDesc() {
-    return addSortByInternal('itemIdEntryMethod', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByLineItemSeq() {
-    return addSortByInternal('lineItemSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByLineItemSeqDesc() {
-    return addSortByInternal('lineItemSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByNetAmount() {
-    return addSortByInternal('netAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByNetAmountDesc() {
-    return addSortByInternal('netAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByNonExchangeableFlag() {
-    return addSortByInternal('nonExchangeableFlag', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByNonExchangeableFlagDesc() {
-    return addSortByInternal('nonExchangeableFlag', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByNonReturnableFlag() {
-    return addSortByInternal('nonReturnableFlag', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByNonReturnableFlagDesc() {
-    return addSortByInternal('nonReturnableFlag', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByOriginalBusinessDate() {
-    return addSortByInternal('originalBusinessDate', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByOriginalBusinessDateDesc() {
-    return addSortByInternal('originalBusinessDate', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByOriginalLineItemSeq() {
-    return addSortByInternal('originalLineItemSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByOriginalLineItemSeqDesc() {
-    return addSortByInternal('originalLineItemSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByOriginalPosId() {
-    return addSortByInternal('originalPosId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByOriginalPosIdDesc() {
-    return addSortByInternal('originalPosId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByOriginalTransSeq() {
-    return addSortByInternal('originalTransSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByOriginalTransSeqDesc() {
-    return addSortByInternal('originalTransSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPosId() {
-    return addSortByInternal('posId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPosIdDesc() {
-    return addSortByInternal('posId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPriceEntryMethod() {
-    return addSortByInternal('priceEntryMethod', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPriceEntryMethodDesc() {
-    return addSortByInternal('priceEntryMethod', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPriceOverride() {
-    return addSortByInternal('priceOverride', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPriceOverrideDesc() {
-    return addSortByInternal('priceOverride', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPriceOverrideAmount() {
-    return addSortByInternal('priceOverrideAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPriceOverrideAmountDesc() {
-    return addSortByInternal('priceOverrideAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPriceOverrideReason() {
-    return addSortByInternal('priceOverrideReason', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByPriceOverrideReasonDesc() {
-    return addSortByInternal('priceOverrideReason', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByQuantity() {
-    return addSortByInternal('quantity', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByQuantityDesc() {
-    return addSortByInternal('quantity', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnComment() {
-    return addSortByInternal('returnComment', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnCommentDesc() {
-    return addSortByInternal('returnComment', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnFlag() {
-    return addSortByInternal('returnFlag', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnFlagDesc() {
-    return addSortByInternal('returnFlag', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnReasonCode() {
-    return addSortByInternal('returnReasonCode', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnReasonCodeDesc() {
-    return addSortByInternal('returnReasonCode', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnTypeCode() {
-    return addSortByInternal('returnTypeCode', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnTypeCodeDesc() {
-    return addSortByInternal('returnTypeCode', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnedQuantity() {
-    return addSortByInternal('returnedQuantity', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByReturnedQuantityDesc() {
-    return addSortByInternal('returnedQuantity', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenBySerialNumber() {
-    return addSortByInternal('serialNumber', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenBySerialNumberDesc() {
-    return addSortByInternal('serialNumber', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByShippingWeight() {
-    return addSortByInternal('shippingWeight', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByShippingWeightDesc() {
-    return addSortByInternal('shippingWeight', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByStoreId() {
-    return addSortByInternal('storeId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByStoreIdDesc() {
-    return addSortByInternal('storeId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByTaxAmount() {
-    return addSortByInternal('taxAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByTaxAmountDesc() {
-    return addSortByInternal('taxAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByTransSeq() {
-    return addSortByInternal('transSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByTransSeqDesc() {
-    return addSortByInternal('transSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByUnitCost() {
-    return addSortByInternal('unitCost', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByUnitCostDesc() {
-    return addSortByInternal('unitCost', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByUnitPrice() {
-    return addSortByInternal('unitPrice', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByUnitPriceDesc() {
-    return addSortByInternal('unitPrice', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByUom() {
-    return addSortByInternal('uom', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByUomDesc() {
-    return addSortByInternal('uom', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByVendorId() {
-    return addSortByInternal('vendorId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
-      QAfterSortBy> thenByVendorIdDesc() {
-    return addSortByInternal('vendorId', Sort.desc);
-  }
-}
-
-extension TransactionLineItemEntityQueryWhereDistinct on QueryBuilder<
-    TransactionLineItemEntity, TransactionLineItemEntity, QDistinct> {
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByBaseUnitPrice() {
-    return addDistinctByInternal('baseUnitPrice');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByBusinessDate() {
-    return addDistinctByInternal('businessDate');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByCategory({bool caseSensitive = true}) {
-    return addDistinctByInternal('category', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByDiscountAmount() {
-    return addDistinctByInternal('discountAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByExtendedAmount() {
-    return addDistinctByInternal('extendedAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByGrossAmount() {
-    return addDistinctByInternal('grossAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctById() {
-    return addDistinctByInternal('id');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByIsVoid() {
-    return addDistinctByInternal('isVoid');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByItemDescription({bool caseSensitive = true}) {
-    return addDistinctByInternal('itemDescription',
-        caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByItemId({bool caseSensitive = true}) {
-    return addDistinctByInternal('itemId', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByItemIdEntryMethod({bool caseSensitive = true}) {
-    return addDistinctByInternal('itemIdEntryMethod',
-        caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByLineItemSeq() {
-    return addDistinctByInternal('lineItemSeq');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByNetAmount() {
-    return addDistinctByInternal('netAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByNonExchangeableFlag() {
-    return addDistinctByInternal('nonExchangeableFlag');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByNonReturnableFlag() {
-    return addDistinctByInternal('nonReturnableFlag');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByOriginalBusinessDate() {
-    return addDistinctByInternal('originalBusinessDate');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByOriginalLineItemSeq() {
-    return addDistinctByInternal('originalLineItemSeq');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByOriginalPosId() {
-    return addDistinctByInternal('originalPosId');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByOriginalTransSeq() {
-    return addDistinctByInternal('originalTransSeq');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByPosId() {
-    return addDistinctByInternal('posId');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByPriceEntryMethod({bool caseSensitive = true}) {
-    return addDistinctByInternal('priceEntryMethod',
-        caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByPriceOverride() {
-    return addDistinctByInternal('priceOverride');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByPriceOverrideAmount() {
-    return addDistinctByInternal('priceOverrideAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByPriceOverrideReason({bool caseSensitive = true}) {
-    return addDistinctByInternal('priceOverrideReason',
-        caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByQuantity() {
-    return addDistinctByInternal('quantity');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByReturnComment({bool caseSensitive = true}) {
-    return addDistinctByInternal('returnComment', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByReturnFlag() {
-    return addDistinctByInternal('returnFlag');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByReturnReasonCode({bool caseSensitive = true}) {
-    return addDistinctByInternal('returnReasonCode',
-        caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByReturnTypeCode({bool caseSensitive = true}) {
-    return addDistinctByInternal('returnTypeCode',
-        caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByReturnedQuantity() {
-    return addDistinctByInternal('returnedQuantity');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctBySerialNumber({bool caseSensitive = true}) {
-    return addDistinctByInternal('serialNumber', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByShippingWeight() {
-    return addDistinctByInternal('shippingWeight');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByStoreId() {
-    return addDistinctByInternal('storeId');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByTaxAmount() {
-    return addDistinctByInternal('taxAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByTransSeq() {
-    return addDistinctByInternal('transSeq');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByUnitCost() {
-    return addDistinctByInternal('unitCost');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByUnitPrice() {
-    return addDistinctByInternal('unitPrice');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByUom({bool caseSensitive = true}) {
-    return addDistinctByInternal('uom', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity, QDistinct>
-      distinctByVendorId({bool caseSensitive = true}) {
-    return addDistinctByInternal('vendorId', caseSensitive: caseSensitive);
-  }
-}
-
-extension TransactionLineItemEntityQueryProperty on QueryBuilder<
-    TransactionLineItemEntity, TransactionLineItemEntity, QQueryProperty> {
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      baseUnitPriceProperty() {
-    return addPropertyNameInternal('baseUnitPrice');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, DateTime, QQueryOperations>
-      businessDateProperty() {
-    return addPropertyNameInternal('businessDate');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>
-      categoryProperty() {
-    return addPropertyNameInternal('category');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      discountAmountProperty() {
-    return addPropertyNameInternal('discountAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      extendedAmountProperty() {
-    return addPropertyNameInternal('extendedAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      grossAmountProperty() {
-    return addPropertyNameInternal('grossAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, int?, QQueryOperations> idProperty() {
-    return addPropertyNameInternal('id');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, bool, QQueryOperations>
-      isVoidProperty() {
-    return addPropertyNameInternal('isVoid');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
-      itemDescriptionProperty() {
-    return addPropertyNameInternal('itemDescription');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
-      itemIdProperty() {
-    return addPropertyNameInternal('itemId');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
-      itemIdEntryMethodProperty() {
-    return addPropertyNameInternal('itemIdEntryMethod');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, int, QQueryOperations>
-      lineItemSeqProperty() {
-    return addPropertyNameInternal('lineItemSeq');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      netAmountProperty() {
-    return addPropertyNameInternal('netAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, bool, QQueryOperations>
-      nonExchangeableFlagProperty() {
-    return addPropertyNameInternal('nonExchangeableFlag');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, bool, QQueryOperations>
-      nonReturnableFlagProperty() {
-    return addPropertyNameInternal('nonReturnableFlag');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, DateTime?, QQueryOperations>
-      originalBusinessDateProperty() {
-    return addPropertyNameInternal('originalBusinessDate');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, int?, QQueryOperations>
-      originalLineItemSeqProperty() {
-    return addPropertyNameInternal('originalLineItemSeq');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, int?, QQueryOperations>
-      originalPosIdProperty() {
-    return addPropertyNameInternal('originalPosId');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, int?, QQueryOperations>
-      originalTransSeqProperty() {
-    return addPropertyNameInternal('originalTransSeq');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, int, QQueryOperations>
-      posIdProperty() {
-    return addPropertyNameInternal('posId');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
-      priceEntryMethodProperty() {
-    return addPropertyNameInternal('priceEntryMethod');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, bool, QQueryOperations>
-      priceOverrideProperty() {
-    return addPropertyNameInternal('priceOverride');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double?, QQueryOperations>
-      priceOverrideAmountProperty() {
-    return addPropertyNameInternal('priceOverrideAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>
-      priceOverrideReasonProperty() {
-    return addPropertyNameInternal('priceOverrideReason');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      quantityProperty() {
-    return addPropertyNameInternal('quantity');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>
-      returnCommentProperty() {
-    return addPropertyNameInternal('returnComment');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, bool, QQueryOperations>
-      returnFlagProperty() {
-    return addPropertyNameInternal('returnFlag');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>
-      returnReasonCodeProperty() {
-    return addPropertyNameInternal('returnReasonCode');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>
-      returnTypeCodeProperty() {
-    return addPropertyNameInternal('returnTypeCode');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double?, QQueryOperations>
-      returnedQuantityProperty() {
-    return addPropertyNameInternal('returnedQuantity');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>
-      serialNumberProperty() {
-    return addPropertyNameInternal('serialNumber');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double?, QQueryOperations>
-      shippingWeightProperty() {
-    return addPropertyNameInternal('shippingWeight');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, int, QQueryOperations>
-      storeIdProperty() {
-    return addPropertyNameInternal('storeId');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      taxAmountProperty() {
-    return addPropertyNameInternal('taxAmount');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, int, QQueryOperations>
-      transSeqProperty() {
-    return addPropertyNameInternal('transSeq');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      unitCostProperty() {
-    return addPropertyNameInternal('unitCost');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, double, QQueryOperations>
-      unitPriceProperty() {
-    return addPropertyNameInternal('unitPrice');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String, QQueryOperations>
-      uomProperty() {
-    return addPropertyNameInternal('uom');
-  }
-
-  QueryBuilder<TransactionLineItemEntity, String?, QQueryOperations>
-      vendorIdProperty() {
-    return addPropertyNameInternal('vendorId');
+      taxModifiersElement(FilterQuery<TransactionLineItemTaxModifier> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'taxModifiers');
+    });
   }
 }

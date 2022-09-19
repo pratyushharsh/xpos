@@ -1,5 +1,6 @@
-
-
+import 'package:isar/isar.dart';
+part 'address.g.dart';
+@embedded
 class Address {
   final String? zipcode;
   final String? building;
@@ -8,11 +9,11 @@ class Address {
   final String? state;
 
   Address(
-      {required this.zipcode,
-      required this.building,
-      required this.street,
-      required this.city,
-      required this.state});
+      {this.zipcode,
+      this.building,
+      this.street,
+      this.city,
+      this.state});
 
   @override
   String toString() {

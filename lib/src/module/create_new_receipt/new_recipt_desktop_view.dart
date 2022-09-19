@@ -64,7 +64,7 @@ class NewReceiptDesktopView extends StatelessWidget {
                                 const Expanded(
                                     child: SearchUserDisplayDesktop()),
                               if (SaleStep.payment == state.step)
-                                const Expanded(child: TenderDisplayDesktop()),
+                                Expanded(child: TenderDisplayDesktop(suggestedAmount: state.amountDue,)),
                               const Expanded(child: SaleReturnDisplayDesktop()),
                             ],
                           ),
@@ -285,7 +285,8 @@ class SaleReturnDisplayDesktop extends StatelessWidget {
 
 class TenderDisplayDesktop extends StatefulWidget {
   final Function? onTender;
-  const TenderDisplayDesktop({Key? key, this.onTender}) : super(key: key);
+  final double? suggestedAmount;
+  const TenderDisplayDesktop({Key? key, this.onTender, this.suggestedAmount}) : super(key: key);
 
   @override
   State<TenderDisplayDesktop> createState() => _TenderDisplayDesktopState();
@@ -338,12 +339,12 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          const Positioned(
+          Positioned(
             top: 10,
             left: 10,
             child: Text(
-              "Tender Amount",
-              style: TextStyle(
+              "Tender Amount ${widget.suggestedAmount != null ? "| ${widget.suggestedAmount}" : ""}",
+              style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),

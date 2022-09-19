@@ -48,32 +48,32 @@ class CreateNewReceiptState extends Equatable {
 
   double get total {
     return lineItem.fold(0.0,
-                (previousValue, element) => previousValue + element.grossAmount);
+                (previousValue, element) => previousValue + element.grossAmount!);
   }
 
   double get subTotal {
     return lineItem.fold(0.0,
-            (previousValue, element) => previousValue + element.netAmount);
+            (previousValue, element) => previousValue + element.netAmount!);
   }
 
   double get discount {
     return lineItem.fold(0.0,
-        (previousValue, element) => previousValue + element.discountAmount);
+        (previousValue, element) => previousValue + element.discountAmount!);
   }
 
   double get tax {
     return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.taxAmount);
+        0.0, (previousValue, element) => previousValue + element.taxAmount!);
   }
 
   double get items {
     return lineItem.fold(
-        0.0, (previousValue, element) => previousValue + element.quantity);
+        0.0, (previousValue, element) => previousValue + element.quantity!);
   }
 
   double get paidAmount {
     return tenderLine.fold(
-        0.0, (previousValue, element) => previousValue + element.amount);
+        0.0, (previousValue, element) => previousValue + element.amount!);
   }
 
   double get amountDue {

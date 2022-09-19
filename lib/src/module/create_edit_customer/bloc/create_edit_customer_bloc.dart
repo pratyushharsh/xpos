@@ -58,7 +58,7 @@ class CreateEditCustomerBloc
         createTime: DateTime.now(),
         lastName: event.customer.lastName,
       );
-      await db.writeTxn((isar) => isar.contactEntitys.put(ce, replaceOnConflict: true));
+      await db.writeTxn(() => db.contactEntitys.put(ce));
       emit(state.copyWith(status: CreateEditCustomerStatus.addingSuccess));
     } catch (e) {
       log.severe(e);

@@ -6,99 +6,117 @@ part of 'tax_group_entity.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
 
 extension GetTaxGroupEntityCollection on Isar {
-  IsarCollection<TaxGroupEntity> get taxGroupEntitys => getCollection();
+  IsarCollection<TaxGroupEntity> get taxGroupEntitys => this.collection();
 }
 
 const TaxGroupEntitySchema = CollectionSchema(
-  name: 'TaxGroupEntity',
-  schema:
-      '{"name":"TaxGroupEntity","idName":"id","properties":[{"name":"description","type":"String"},{"name":"groupId","type":"String"},{"name":"name","type":"String"}],"indexes":[{"name":"groupId","unique":true,"properties":[{"name":"groupId","type":"Hash","caseSensitive":true}]}],"links":[{"name":"taxRules","target":"TaxRuleEntity"}]}',
-  idName: 'id',
-  propertyIds: {'description': 0, 'groupId': 1, 'name': 2},
-  listProperties: {},
-  indexIds: {'groupId': 0},
-  indexValueTypes: {
-    'groupId': [
-      IndexValueType.stringHash,
-    ]
+  name: r'TaxGroupEntity',
+  id: 5537736958724919907,
+  properties: {
+    r'description': PropertySchema(
+      id: 0,
+      name: r'description',
+      type: IsarType.string,
+    ),
+    r'groupId': PropertySchema(
+      id: 1,
+      name: r'groupId',
+      type: IsarType.string,
+    ),
+    r'name': PropertySchema(
+      id: 2,
+      name: r'name',
+      type: IsarType.string,
+    )
   },
-  linkIds: {'taxRules': 0},
-  backlinkLinkNames: {},
-  getId: _taxGroupEntityGetId,
-  getLinks: _taxGroupEntityGetLinks,
-  attachLinks: _taxGroupEntityAttachLinks,
+  estimateSize: _taxGroupEntityEstimateSize,
   serializeNative: _taxGroupEntitySerializeNative,
   deserializeNative: _taxGroupEntityDeserializeNative,
   deserializePropNative: _taxGroupEntityDeserializePropNative,
   serializeWeb: _taxGroupEntitySerializeWeb,
   deserializeWeb: _taxGroupEntityDeserializeWeb,
   deserializePropWeb: _taxGroupEntityDeserializePropWeb,
-  version: 3,
+  idName: r'id',
+  indexes: {
+    r'groupId': IndexSchema(
+      id: -8523216633229774932,
+      name: r'groupId',
+      unique: true,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'groupId',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
+  links: {
+    r'taxRules': LinkSchema(
+      id: 3567598860729266625,
+      name: r'taxRules',
+      target: r'TaxRuleEntity',
+      isSingle: false,
+    )
+  },
+  embeddedSchemas: {},
+  getId: _taxGroupEntityGetId,
+  getLinks: _taxGroupEntityGetLinks,
+  attach: _taxGroupEntityAttach,
+  version: '3.0.0-dev.14',
 );
 
-int? _taxGroupEntityGetId(TaxGroupEntity object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
-  }
+int _taxGroupEntityEstimateSize(
+  TaxGroupEntity object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.description.length * 3;
+  bytesCount += 3 + object.groupId.length * 3;
+  bytesCount += 3 + object.name.length * 3;
+  return bytesCount;
 }
 
-List<IsarLinkBase> _taxGroupEntityGetLinks(TaxGroupEntity object) {
-  return [object.taxRules];
-}
-
-void _taxGroupEntitySerializeNative(
-    IsarCollection<TaxGroupEntity> collection,
-    IsarRawObject rawObj,
-    TaxGroupEntity object,
-    int staticSize,
-    List<int> offsets,
-    AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.description;
-  final _description = IsarBinaryWriter.utf8Encoder.convert(value0);
-  dynamicSize += (_description.length) as int;
-  final value1 = object.groupId;
-  final _groupId = IsarBinaryWriter.utf8Encoder.convert(value1);
-  dynamicSize += (_groupId.length) as int;
-  final value2 = object.name;
-  final _name = IsarBinaryWriter.utf8Encoder.convert(value2);
-  dynamicSize += (_name.length) as int;
-  final size = staticSize + dynamicSize;
-
-  rawObj.buffer = alloc(size);
-  rawObj.buffer_length = size;
-  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeBytes(offsets[0], _description);
-  writer.writeBytes(offsets[1], _groupId);
-  writer.writeBytes(offsets[2], _name);
+int _taxGroupEntitySerializeNative(
+  TaxGroupEntity object,
+  IsarBinaryWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.description);
+  writer.writeString(offsets[1], object.groupId);
+  writer.writeString(offsets[2], object.name);
+  return writer.usedBytes;
 }
 
 TaxGroupEntity _taxGroupEntityDeserializeNative(
-    IsarCollection<TaxGroupEntity> collection,
-    int id,
-    IsarBinaryReader reader,
-    List<int> offsets) {
+  Id id,
+  IsarBinaryReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   final object = TaxGroupEntity(
     description: reader.readString(offsets[0]),
     groupId: reader.readString(offsets[1]),
     id: id,
     name: reader.readString(offsets[2]),
   );
-  _taxGroupEntityAttachLinks(collection, id, object);
   return object;
 }
 
 P _taxGroupEntityDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
+  IsarBinaryReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
@@ -106,100 +124,104 @@ P _taxGroupEntityDeserializePropNative<P>(
     case 2:
       return (reader.readString(offset)) as P;
     default:
-      throw 'Illegal propertyIndex';
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-dynamic _taxGroupEntitySerializeWeb(
+Object _taxGroupEntitySerializeWeb(
     IsarCollection<TaxGroupEntity> collection, TaxGroupEntity object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(jsObj, 'description', object.description);
-  IsarNative.jsObjectSet(jsObj, 'groupId', object.groupId);
-  IsarNative.jsObjectSet(jsObj, 'id', object.id);
-  IsarNative.jsObjectSet(jsObj, 'name', object.name);
-  return jsObj;
+  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
 }
 
 TaxGroupEntity _taxGroupEntityDeserializeWeb(
-    IsarCollection<TaxGroupEntity> collection, dynamic jsObj) {
-  final object = TaxGroupEntity(
-    description: IsarNative.jsObjectGet(jsObj, 'description') ?? '',
-    groupId: IsarNative.jsObjectGet(jsObj, 'groupId') ?? '',
-    id: IsarNative.jsObjectGet(jsObj, 'id'),
-    name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
-  );
-  _taxGroupEntityAttachLinks(
-      collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
-  return object;
+    IsarCollection<TaxGroupEntity> collection, Object jsObj) {
+  /*final object = TaxGroupEntity(description: IsarNative.jsObjectGet(jsObj, r'description') ?? '',groupId: IsarNative.jsObjectGet(jsObj, r'groupId') ?? '',id: IsarNative.jsObjectGet(jsObj, r'id') ,name: IsarNative.jsObjectGet(jsObj, r'name') ?? '',);*/
+  //return object;
+  throw UnimplementedError();
 }
 
 P _taxGroupEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
   switch (propertyName) {
-    case 'description':
-      return (IsarNative.jsObjectGet(jsObj, 'description') ?? '') as P;
-    case 'groupId':
-      return (IsarNative.jsObjectGet(jsObj, 'groupId') ?? '') as P;
-    case 'id':
-      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
-    case 'name':
-      return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
     default:
-      throw 'Illegal propertyName';
+      throw IsarError('Illegal propertyName');
   }
 }
 
-void _taxGroupEntityAttachLinks(
-    IsarCollection col, int id, TaxGroupEntity object) {
-  object.taxRules.attach(col, col.isar.taxRuleEntitys, 'taxRules', id);
+Id _taxGroupEntityGetId(TaxGroupEntity object) {
+  return object.id ?? Isar.autoIncrement;
+}
+
+List<IsarLinkBase<dynamic>> _taxGroupEntityGetLinks(TaxGroupEntity object) {
+  return [object.taxRules];
+}
+
+void _taxGroupEntityAttach(
+    IsarCollection<dynamic> col, Id id, TaxGroupEntity object) {
+  object.taxRules
+      .attach(col, col.isar.collection<TaxRuleEntity>(), r'taxRules', id);
 }
 
 extension TaxGroupEntityByIndex on IsarCollection<TaxGroupEntity> {
   Future<TaxGroupEntity?> getByGroupId(String groupId) {
-    return getByIndex('groupId', [groupId]);
+    return getByIndex(r'groupId', [groupId]);
   }
 
   TaxGroupEntity? getByGroupIdSync(String groupId) {
-    return getByIndexSync('groupId', [groupId]);
+    return getByIndexSync(r'groupId', [groupId]);
   }
 
   Future<bool> deleteByGroupId(String groupId) {
-    return deleteByIndex('groupId', [groupId]);
+    return deleteByIndex(r'groupId', [groupId]);
   }
 
   bool deleteByGroupIdSync(String groupId) {
-    return deleteByIndexSync('groupId', [groupId]);
+    return deleteByIndexSync(r'groupId', [groupId]);
   }
 
   Future<List<TaxGroupEntity?>> getAllByGroupId(List<String> groupIdValues) {
     final values = groupIdValues.map((e) => [e]).toList();
-    return getAllByIndex('groupId', values);
+    return getAllByIndex(r'groupId', values);
   }
 
   List<TaxGroupEntity?> getAllByGroupIdSync(List<String> groupIdValues) {
     final values = groupIdValues.map((e) => [e]).toList();
-    return getAllByIndexSync('groupId', values);
+    return getAllByIndexSync(r'groupId', values);
   }
 
   Future<int> deleteAllByGroupId(List<String> groupIdValues) {
     final values = groupIdValues.map((e) => [e]).toList();
-    return deleteAllByIndex('groupId', values);
+    return deleteAllByIndex(r'groupId', values);
   }
 
   int deleteAllByGroupIdSync(List<String> groupIdValues) {
     final values = groupIdValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync('groupId', values);
+    return deleteAllByIndexSync(r'groupId', values);
+  }
+
+  Future<int> putByGroupId(TaxGroupEntity object) {
+    return putByIndex(r'groupId', object);
+  }
+
+  int putByGroupIdSync(TaxGroupEntity object, {bool saveLinks = true}) {
+    return putByIndexSync(r'groupId', object, saveLinks: saveLinks);
+  }
+
+  Future<List<int>> putAllByGroupId(List<TaxGroupEntity> objects) {
+    return putAllByIndex(r'groupId', objects);
+  }
+
+  List<int> putAllByGroupIdSync(List<TaxGroupEntity> objects,
+      {bool saveLinks = true}) {
+    return putAllByIndexSync(r'groupId', objects, saveLinks: saveLinks);
   }
 }
 
 extension TaxGroupEntityQueryWhereSort
     on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QWhere> {
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const IdWhereClause.any());
-  }
-
-  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhere> anyGroupId() {
-    return addWhereClauseInternal(
-        const IndexWhereClause.any(indexName: 'groupId'));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
   }
 }
 
@@ -207,45 +229,55 @@ extension TaxGroupEntityQueryWhere
     on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QWhereClause> {
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idEqualTo(
       int id) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: id,
-      includeLower: true,
-      upper: id,
-      includeUpper: true,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idNotEqualTo(
       int id) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      );
-    } else {
-      return addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      );
-    }
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idGreaterThan(
       int id,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.greaterThan(lower: id, includeLower: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idLessThan(
       int id,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.lessThan(upper: id, includeUpper: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idBetween(
@@ -254,45 +286,59 @@ extension TaxGroupEntityQueryWhere
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: lowerId,
-      includeLower: includeLower,
-      upper: upperId,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause>
       groupIdEqualTo(String groupId) {
-    return addWhereClauseInternal(IndexWhereClause.equalTo(
-      indexName: 'groupId',
-      value: [groupId],
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'groupId',
+        value: [groupId],
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause>
       groupIdNotEqualTo(String groupId) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'groupId',
-        upper: [groupId],
-        includeUpper: false,
-      )).addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'groupId',
-        lower: [groupId],
-        includeLower: false,
-      ));
-    } else {
-      return addWhereClauseInternal(IndexWhereClause.greaterThan(
-        indexName: 'groupId',
-        lower: [groupId],
-        includeLower: false,
-      )).addWhereClauseInternal(IndexWhereClause.lessThan(
-        indexName: 'groupId',
-        upper: [groupId],
-        includeUpper: false,
-      ));
-    }
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'groupId',
+              lower: [],
+              upper: [groupId],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'groupId',
+              lower: [groupId],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'groupId',
+              lower: [groupId],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'groupId',
+              lower: [],
+              upper: [groupId],
+              includeUpper: false,
+            ));
+      }
+    });
   }
 }
 
@@ -303,60 +349,65 @@ extension TaxGroupEntityQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       descriptionGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       descriptionLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       descriptionBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'description',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'description',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
@@ -364,12 +415,13 @@ extension TaxGroupEntityQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
@@ -377,32 +429,55 @@ extension TaxGroupEntityQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       descriptionContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       descriptionMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'description',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'description',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      descriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'description',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      descriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'description',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
@@ -410,60 +485,65 @@ extension TaxGroupEntityQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'groupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'groupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       groupIdGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'groupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'groupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       groupIdLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'groupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'groupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       groupIdBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'groupId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'groupId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
@@ -471,12 +551,13 @@ extension TaxGroupEntityQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'groupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'groupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
@@ -484,91 +565,128 @@ extension TaxGroupEntityQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'groupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'groupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       groupIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'groupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'groupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       groupIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'groupId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'groupId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      groupIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'groupId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      groupIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'groupId',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       idIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'id',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition> idEqualTo(
-      int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-    ));
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       idGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       idLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
@@ -576,60 +694,65 @@ extension TaxGroupEntityQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       nameGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       nameLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       nameBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'name',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'name',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
@@ -637,12 +760,13 @@ extension TaxGroupEntityQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
@@ -650,120 +774,218 @@ extension TaxGroupEntityQueryFilter
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       nameContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'name',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       nameMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'name',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'name',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      nameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'name',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      nameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'name',
+        value: '',
+      ));
+    });
   }
 }
+
+extension TaxGroupEntityQueryObject
+    on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QFilterCondition> {}
 
 extension TaxGroupEntityQueryLinks
     on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QFilterCondition> {
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition> taxRules(
       FilterQuery<TaxRuleEntity> q) {
-    return linkInternal(
-      isar.taxRuleEntitys,
-      q,
-      'taxRules',
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'taxRules');
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      taxRulesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'taxRules', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      taxRulesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'taxRules', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      taxRulesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'taxRules', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      taxRulesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'taxRules', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      taxRulesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'taxRules', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      taxRulesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'taxRules', lower, includeLower, upper, includeUpper);
+    });
   }
 }
 
-extension TaxGroupEntityQueryWhereSortBy
+extension TaxGroupEntityQuerySortBy
     on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QSortBy> {
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy>
       sortByDescription() {
-    return addSortByInternal('description', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.asc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy>
       sortByDescriptionDesc() {
-    return addSortByInternal('description', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.desc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> sortByGroupId() {
-    return addSortByInternal('groupId', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'groupId', Sort.asc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy>
       sortByGroupIdDesc() {
-    return addSortByInternal('groupId', Sort.desc);
-  }
-
-  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'groupId', Sort.desc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> sortByName() {
-    return addSortByInternal('name', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.asc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> sortByNameDesc() {
-    return addSortByInternal('name', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.desc);
+    });
   }
 }
 
-extension TaxGroupEntityQueryWhereSortThenBy
+extension TaxGroupEntityQuerySortThenBy
     on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QSortThenBy> {
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy>
       thenByDescription() {
-    return addSortByInternal('description', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.asc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy>
       thenByDescriptionDesc() {
-    return addSortByInternal('description', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.desc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> thenByGroupId() {
-    return addSortByInternal('groupId', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'groupId', Sort.asc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy>
       thenByGroupIdDesc() {
-    return addSortByInternal('groupId', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'groupId', Sort.desc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> thenByName() {
-    return addSortByInternal('name', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.asc);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterSortBy> thenByNameDesc() {
-    return addSortByInternal('name', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.desc);
+    });
   }
 }
 
@@ -771,39 +993,49 @@ extension TaxGroupEntityQueryWhereDistinct
     on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QDistinct> {
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QDistinct> distinctByDescription(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('description', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'description', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QDistinct> distinctByGroupId(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('groupId', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'groupId', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('name', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
   }
 }
 
 extension TaxGroupEntityQueryProperty
     on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QQueryProperty> {
+  QueryBuilder<TaxGroupEntity, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
   QueryBuilder<TaxGroupEntity, String, QQueryOperations> descriptionProperty() {
-    return addPropertyNameInternal('description');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'description');
+    });
   }
 
   QueryBuilder<TaxGroupEntity, String, QQueryOperations> groupIdProperty() {
-    return addPropertyNameInternal('groupId');
-  }
-
-  QueryBuilder<TaxGroupEntity, int?, QQueryOperations> idProperty() {
-    return addPropertyNameInternal('id');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'groupId');
+    });
   }
 
   QueryBuilder<TaxGroupEntity, String, QQueryOperations> nameProperty() {
-    return addPropertyNameInternal('name');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'name');
+    });
   }
 }

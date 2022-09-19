@@ -346,12 +346,12 @@ class TenderLineDisplay extends StatelessWidget {
           Expanded(
               child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text(tenderLine.tenderId))),
+                  child: Text(tenderLine.tenderId!))),
           Expanded(
               child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    '${Currency.inr} ${tenderLine.amount.toStringAsFixed(2)}',
+                    '${Currency.inr} ${tenderLine.amount!.toStringAsFixed(2)}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ))),
         ],
@@ -416,10 +416,10 @@ class NewLineItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(saleLine.itemDescription),
-                    Text(saleLine.itemDescription),
+                    Text(saleLine.itemDescription!),
+                    Text(saleLine.itemDescription!),
                     Text(
-                      saleLine.itemId,
+                      saleLine.itemId!,
                       style: NewLineItem.textStyle,
                     ),
                   ],
@@ -459,7 +459,7 @@ class NewLineItem extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    "${Currency.inr}${saleLine.netAmount.toStringAsFixed(2)}",
+                    "${Currency.inr}${saleLine.netAmount!.toStringAsFixed(2)}",
                     style: NewLineItem.textStyle,
                   ),
                 ),
@@ -612,6 +612,7 @@ class NewInvoiceButtonBar extends StatelessWidget {
                                         onTender: BlocProvider.of<
                                                 CreateNewReceiptBloc>(context)
                                             .add,
+                                    suggestedAmount: state.amountDue,
                                       )));
                             }
                           }

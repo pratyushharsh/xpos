@@ -14,7 +14,7 @@ class TaxRepository {
   TaxRepository({required this.db, required this.restClient});
 
   Future<int> createNewTaxGroup(TaxGroupEntity taxGroup) async {
-    return db.writeTxn((isar) => isar.taxGroupEntitys.put(taxGroup, replaceOnConflict: true));
+    return db.writeTxn(() => db.taxGroupEntitys.put(taxGroup));
   }
 
   Future<void> createNewTaxRule(TaxGroupEntity taxGroup, TaxRuleEntity taxRule) async {
@@ -34,7 +34,7 @@ class TaxRepository {
     await tg.taxRules.load();
     tg.taxRules.add(taxRule);
 
-    db.writeTxn((isar) async {
+    db.writeTxn(() async {
       await tg.taxRules.save();
     });
 
@@ -60,8 +60,8 @@ class TaxRepository {
     await tg.taxRules.load();
     tg.taxRules.remove(taxRule);
 
-    db.writeTxn((isar) async {
-      await isar.taxRuleEntitys.delete(taxRule.id!);
+    db.writeTxn(() async {
+      await db.taxRuleEntitys.delete(taxRule.id!);
       await tg.taxRules.save();
     });
 

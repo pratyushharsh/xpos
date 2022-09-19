@@ -52,7 +52,7 @@ class TaxHelper {
 
   double calculateTaxAmount(TransactionLineItemEntity lineItem) {
     return lineItem.taxModifiers
-        .fold(0.00, (acc, taxModifier) => acc + taxModifier.taxAmount);
+        .fold(0.00, (acc, taxModifier) => acc + taxModifier.taxAmount!);
   }
 
   double calculateTransactionTaxAmount(TransactionHeaderEntity transaction) {
@@ -70,7 +70,7 @@ class TaxHelper {
     for (var i = 0; i < originalTaxLines.length; i++) {
       TransactionLineItemTaxModifier originalTaxLine = originalTaxLines[i];
 
-      var unitTaxAmount = originalTaxLine.taxAmount / originalTransaction.quantity;
+      var unitTaxAmount = originalTaxLine.taxAmount! / originalTransaction.quantity!;
 
       TransactionLineItemTaxModifier newTaxLine =
           TransactionLineItemTaxModifier(
@@ -83,11 +83,11 @@ class TaxHelper {
         taxableAmount: newTransaction.netAmount,
         taxRuleId: originalTaxLine.taxRuleId,
         taxRuleName: originalTaxLine.taxRuleName,
-        taxAmount: - unitTaxAmount * newTransaction.quantity,
-        taxPercent: - originalTaxLine.taxPercent,
-        rawTaxAmount: - (originalTaxLine.rawTaxAmount / originalTransaction.quantity) * newTransaction.quantity,
-        originalTaxableAmount: - (originalTaxLine.originalTaxableAmount / originalTransaction.quantity) * newTransaction.quantity,
-        rawTaxPercentage: - originalTaxLine.rawTaxPercentage,
+        taxAmount: - unitTaxAmount * newTransaction.quantity!,
+        taxPercent: - originalTaxLine.taxPercent!,
+        rawTaxAmount: - (originalTaxLine.rawTaxAmount! / originalTransaction.quantity!) * newTransaction.quantity!,
+        originalTaxableAmount: - (originalTaxLine.originalTaxableAmount! / originalTransaction.quantity!) * newTransaction.quantity!,
+        rawTaxPercentage: - originalTaxLine.rawTaxPercentage!,
       );
       newTaxLines.add(newTaxLine);
     }

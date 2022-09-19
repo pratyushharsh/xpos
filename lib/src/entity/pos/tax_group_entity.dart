@@ -6,8 +6,7 @@ part 'tax_group_entity.g.dart';
 
 @Collection()
 class TaxGroupEntity {
-  @Id()
-  final int? id;
+  final Id? id;
 
   @Index(unique: true)
   final String groupId;

@@ -5,7 +5,7 @@ part 'code_value_entity.g.dart';
 @Collection()
 class CodeValueEntity {
 
-  final int? id;
+  final Id? id;
 
   @Index(type: IndexType.value)
   @Index(composite: [CompositeIndex("code")], unique: true)

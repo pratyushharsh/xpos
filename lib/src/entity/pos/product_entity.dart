@@ -9,8 +9,7 @@ part 'product_entity.g.dart';
 
 @Collection()
 class ProductEntity {
-  @Id()
-  int? id;
+  Id? id;
 
   @Index(unique: true, type: IndexType.value)
   String? productId;

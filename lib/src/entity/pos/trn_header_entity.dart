@@ -1,14 +1,13 @@
 import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
-import '../../model/address.dart';
+import 'address.dart';
 
 part 'trn_header_entity.g.dart';
 
 @Collection()
 class TransactionHeaderEntity {
-  @Id()
-  final int transId;
+  final Id transId;
 
   final int storeId;
   final String transactionType;
@@ -28,10 +27,8 @@ class TransactionHeaderEntity {
   @Index()
   final String? customerPhone;
 
-  @AddressConverter()
   final Address? shippingAddress;
 
-  @AddressConverter()
   final Address? billingAddress;
   final String? customerName;
   final int syncState;
@@ -41,8 +38,11 @@ class TransactionHeaderEntity {
   late DateTime? lastChangedAt;
   late int version;
 
-  final lineItems = IsarLinks<TransactionLineItemEntity>();
-  final paymentLineItems = IsarLinks<TransactionPaymentLineItemEntity>();
+  List<TransactionLineItemEntity> lineItems;
+  List<TransactionPaymentLineItemEntity> paymentLineItems;
+
+  // final lineItems = IsarLinks<TransactionLineItemEntity>();
+  // final paymentLineItems = IsarLinks<TransactionPaymentLineItemEntity>();
 
   TransactionHeaderEntity(
       {required this.transId,
@@ -57,6 +57,8 @@ class TransactionHeaderEntity {
       required this.roundTotal,
       required this.discountTotal,
       required this.status,
+      this.lineItems = const [],
+      this.paymentLineItems = const [],
       this.customerId,
       this.customerPhone,
       this.shippingAddress,

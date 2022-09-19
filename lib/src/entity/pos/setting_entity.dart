@@ -5,8 +5,7 @@ part 'setting_entity.g.dart';
 @Collection()
 class SettingEntity {
 
-  @Id()
-  final int? id;
+  final Id? id;
 
   final String category;
   final String subCategory;

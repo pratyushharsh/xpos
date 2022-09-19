@@ -461,12 +461,12 @@ class ReceiptLineItem extends StatelessWidget {
         Expanded(
             flex: 2,
             child: Text(
-              lineItem.itemId,
+              lineItem.itemId!,
             )),
         Expanded(
             flex: 5,
             child: Text(
-              lineItem.itemDescription,
+              lineItem.itemDescription!,
             )),
         Expanded(
             flex: 1,
@@ -477,7 +477,7 @@ class ReceiptLineItem extends StatelessWidget {
         Expanded(
             flex: 2,
             child: Text(
-              "${Currency.inr}${lineItem.grossAmount.toStringAsFixed(2)}",
+              "${Currency.inr}${lineItem.grossAmount!.toStringAsFixed(2)}",
               textAlign: TextAlign.right,
             )),
       ],

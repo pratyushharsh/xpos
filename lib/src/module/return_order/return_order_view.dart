@@ -257,10 +257,10 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.lineItem.itemId,
+                      widget.lineItem.itemId!,
                     ),
                     Text(
-                      widget.lineItem.itemDescription,
+                      widget.lineItem.itemDescription!,
                     ),
                   ],
                 ),
@@ -275,7 +275,7 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                           width: 80,
                           child: CustomTextField(
                               enabled: false,
-                              initialValue: (widget.lineItem.quantity -
+                              initialValue: (widget.lineItem.quantity! -
                                       widget.returnedQuantity)
                                   .toString(),
                               label: "Qty"),
@@ -291,7 +291,7 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                               CustomInputTextFormatter.positiveNumber,
                               MinMaxDecimalFormatter(
                                 min: 1.0,
-                                max: widget.lineItem.quantity -
+                                max: widget.lineItem.quantity! -
                                     widget.returnedQuantity,
                               ),
                             ],
@@ -406,10 +406,10 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.lineItem.itemId,
+                          widget.lineItem.itemId!,
                         ),
                         Text(
-                          widget.lineItem.itemDescription,
+                          widget.lineItem.itemDescription!,
                         ),
                       ],
                     ),
@@ -423,7 +423,7 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                     Expanded(
                       child: CustomTextField(
                           enabled: false,
-                          initialValue: (widget.lineItem.quantity -
+                          initialValue: (widget.lineItem.quantity! -
                                   widget.returnedQuantity)
                               .toString(),
                           label: "Qty"),
@@ -439,7 +439,7 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                           CustomInputTextFormatter.positiveNumber,
                           MinMaxDecimalFormatter(
                             min: 1.0,
-                            max: widget.lineItem.quantity -
+                            max: widget.lineItem.quantity! -
                                 widget.returnedQuantity,
                           ),
                         ],

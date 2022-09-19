@@ -17,7 +17,7 @@ class TaxModifierCalculator implements AbstractCalculator {
   Future<TransactionLineItemEntity> calculateTaxForLineItem(TransactionLineItemEntity lineItem) async {
     for(TransactionLineItemTaxModifier mod in lineItem.taxModifiers) {
       // Check for tax override
-      TaxRuleEntity? taxRule = await taxRepository.getTaxRulesByGroupIdAndRuleName(mod.taxGroupId, mod.taxRuleName);
+      TaxRuleEntity? taxRule = await taxRepository.getTaxRulesByGroupIdAndRuleName(mod.taxGroupId!, mod.taxRuleName!);
 
       if (taxRule == null) {
         log.severe("Tax rule not found for group id: ${mod.taxGroupId} and rule name: ${mod.taxRuleName}");
@@ -27,15 +27,15 @@ class TaxModifierCalculator implements AbstractCalculator {
       TaxCalculationInfo taxInfo = TaxCalculationInfo(
           modifier: mod,
           taxRule: taxRule,
-          taxableAmount: mod.taxableAmount,
-          itemQuantity: lineItem.quantity,
-          rawTaxableAmount: mod.taxableAmount);
-      double originalTaxableAmount  = mod.originalTaxableAmount;
+          taxableAmount: mod.taxableAmount!,
+          itemQuantity: lineItem.quantity!,
+          rawTaxableAmount: mod.taxableAmount!);
+      double originalTaxableAmount  = mod.originalTaxableAmount!;
       if (mod.taxOverride && mod.taxOverridePercent != null && mod.taxOverridePercent! > 0 && originalTaxableAmount > 0) {
         taxInfo.rawTaxableAmount = originalTaxableAmount;
       }
 
-      AbstractTaxStrategy taxStrategy = getTaxStrategy(mod.authorityType);
+      AbstractTaxStrategy taxStrategy = getTaxStrategy(mod.authorityType!);
       double modifierTax = calculateModifierTax(taxStrategy, taxInfo, lineItem.returnFlag);
     }
     return lineItem;

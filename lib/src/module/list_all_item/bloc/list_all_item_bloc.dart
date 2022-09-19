@@ -26,7 +26,7 @@ class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
             .where()
             .productIdEqualTo(state.filterCriteria.filter)
             .or()
-            .descriptionWordsAnyStartsWith(state.filterCriteria.filter!)
+            .descriptionWordsElementStartsWith(state.filterCriteria.filter!)
             .limit(state.filterCriteria.limit).findAll();
       } else {
         prod = await db.productEntitys.where().limit(state.filterCriteria.limit).findAll();
@@ -48,7 +48,7 @@ class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
             .where()
             .productIdEqualTo(state.filterCriteria.filter)
             .or()
-            .descriptionWordsAnyStartsWith(state.filterCriteria.filter!)
+            .descriptionWordsElementStartsWith(state.filterCriteria.filter!)
             .offset(state.products.length)
             .limit(state.filterCriteria.limit).findAll();
       } else {

@@ -3,217 +3,265 @@
 part of 'trn_line_item_tax.dart';
 
 // **************************************************************************
-// IsarCollectionGenerator
+// IsarEmbeddedGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_localså
 
-extension GetTransactionLineItemTaxModifierCollection on Isar {
-  IsarCollection<TransactionLineItemTaxModifier>
-      get transactionLineItemTaxModifiers => getCollection();
-}
-
-const TransactionLineItemTaxModifierSchema = CollectionSchema(
-  name: 'TransactionLineItemTaxModifier',
-  schema:
-      '{"name":"TransactionLineItemTaxModifier","idName":"id","properties":[{"name":"authorityId","type":"String"},{"name":"authorityName","type":"String"},{"name":"authorityType","type":"String"},{"name":"lineItemSeq","type":"Long"},{"name":"originalTaxableAmount","type":"Double"},{"name":"rawTaxAmount","type":"Double"},{"name":"rawTaxPercentage","type":"Double"},{"name":"taxAmount","type":"Double"},{"name":"taxGroupId","type":"String"},{"name":"taxLocationId","type":"String"},{"name":"taxOverride","type":"Bool"},{"name":"taxOverrideAmount","type":"Double"},{"name":"taxOverridePercent","type":"Double"},{"name":"taxOverrideReasonCode","type":"String"},{"name":"taxPercent","type":"Double"},{"name":"taxRuleId","type":"String"},{"name":"taxRuleName","type":"String"},{"name":"taxableAmount","type":"Double"},{"name":"transSeq","type":"Long"}],"indexes":[],"links":[]}',
-  idName: 'id',
-  propertyIds: {
-    'authorityId': 0,
-    'authorityName': 1,
-    'authorityType': 2,
-    'lineItemSeq': 3,
-    'originalTaxableAmount': 4,
-    'rawTaxAmount': 5,
-    'rawTaxPercentage': 6,
-    'taxAmount': 7,
-    'taxGroupId': 8,
-    'taxLocationId': 9,
-    'taxOverride': 10,
-    'taxOverrideAmount': 11,
-    'taxOverridePercent': 12,
-    'taxOverrideReasonCode': 13,
-    'taxPercent': 14,
-    'taxRuleId': 15,
-    'taxRuleName': 16,
-    'taxableAmount': 17,
-    'transSeq': 18
+const TransactionLineItemTaxModifierSchema = Schema(
+  name: r'TransactionLineItemTaxModifier',
+  id: -1101477557729710666,
+  properties: {
+    r'authorityId': PropertySchema(
+      id: 0,
+      name: r'authorityId',
+      type: IsarType.string,
+    ),
+    r'authorityName': PropertySchema(
+      id: 1,
+      name: r'authorityName',
+      type: IsarType.string,
+    ),
+    r'authorityType': PropertySchema(
+      id: 2,
+      name: r'authorityType',
+      type: IsarType.string,
+    ),
+    r'lineItemSeq': PropertySchema(
+      id: 3,
+      name: r'lineItemSeq',
+      type: IsarType.long,
+    ),
+    r'originalTaxableAmount': PropertySchema(
+      id: 4,
+      name: r'originalTaxableAmount',
+      type: IsarType.double,
+    ),
+    r'rawTaxAmount': PropertySchema(
+      id: 5,
+      name: r'rawTaxAmount',
+      type: IsarType.double,
+    ),
+    r'rawTaxPercentage': PropertySchema(
+      id: 6,
+      name: r'rawTaxPercentage',
+      type: IsarType.double,
+    ),
+    r'taxAmount': PropertySchema(
+      id: 7,
+      name: r'taxAmount',
+      type: IsarType.double,
+    ),
+    r'taxGroupId': PropertySchema(
+      id: 8,
+      name: r'taxGroupId',
+      type: IsarType.string,
+    ),
+    r'taxLocationId': PropertySchema(
+      id: 9,
+      name: r'taxLocationId',
+      type: IsarType.string,
+    ),
+    r'taxOverride': PropertySchema(
+      id: 10,
+      name: r'taxOverride',
+      type: IsarType.bool,
+    ),
+    r'taxOverrideAmount': PropertySchema(
+      id: 11,
+      name: r'taxOverrideAmount',
+      type: IsarType.double,
+    ),
+    r'taxOverridePercent': PropertySchema(
+      id: 12,
+      name: r'taxOverridePercent',
+      type: IsarType.double,
+    ),
+    r'taxOverrideReasonCode': PropertySchema(
+      id: 13,
+      name: r'taxOverrideReasonCode',
+      type: IsarType.string,
+    ),
+    r'taxPercent': PropertySchema(
+      id: 14,
+      name: r'taxPercent',
+      type: IsarType.double,
+    ),
+    r'taxRuleId': PropertySchema(
+      id: 15,
+      name: r'taxRuleId',
+      type: IsarType.string,
+    ),
+    r'taxRuleName': PropertySchema(
+      id: 16,
+      name: r'taxRuleName',
+      type: IsarType.string,
+    ),
+    r'taxableAmount': PropertySchema(
+      id: 17,
+      name: r'taxableAmount',
+      type: IsarType.double,
+    ),
+    r'transSeq': PropertySchema(
+      id: 18,
+      name: r'transSeq',
+      type: IsarType.long,
+    )
   },
-  listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
-  linkIds: {},
-  backlinkLinkNames: {},
-  getId: _transactionLineItemTaxModifierGetId,
-  getLinks: _transactionLineItemTaxModifierGetLinks,
-  attachLinks: _transactionLineItemTaxModifierAttachLinks,
+  estimateSize: _transactionLineItemTaxModifierEstimateSize,
   serializeNative: _transactionLineItemTaxModifierSerializeNative,
   deserializeNative: _transactionLineItemTaxModifierDeserializeNative,
   deserializePropNative: _transactionLineItemTaxModifierDeserializePropNative,
   serializeWeb: _transactionLineItemTaxModifierSerializeWeb,
   deserializeWeb: _transactionLineItemTaxModifierDeserializeWeb,
   deserializePropWeb: _transactionLineItemTaxModifierDeserializePropWeb,
-  version: 3,
 );
 
-int? _transactionLineItemTaxModifierGetId(
-    TransactionLineItemTaxModifier object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
+int _transactionLineItemTaxModifierEstimateSize(
+  TransactionLineItemTaxModifier object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  {
+    final value = object.authorityId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
   }
+  {
+    final value = object.authorityName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.authorityType;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.taxGroupId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.taxLocationId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.taxOverrideReasonCode;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.taxRuleId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.taxRuleName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  return bytesCount;
 }
 
-List<IsarLinkBase> _transactionLineItemTaxModifierGetLinks(
-    TransactionLineItemTaxModifier object) {
-  return [];
-}
-
-void _transactionLineItemTaxModifierSerializeNative(
-    IsarCollection<TransactionLineItemTaxModifier> collection,
-    IsarRawObject rawObj,
-    TransactionLineItemTaxModifier object,
-    int staticSize,
-    List<int> offsets,
-    AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.authorityId;
-  final _authorityId = IsarBinaryWriter.utf8Encoder.convert(value0);
-  dynamicSize += (_authorityId.length) as int;
-  final value1 = object.authorityName;
-  final _authorityName = IsarBinaryWriter.utf8Encoder.convert(value1);
-  dynamicSize += (_authorityName.length) as int;
-  final value2 = object.authorityType;
-  final _authorityType = IsarBinaryWriter.utf8Encoder.convert(value2);
-  dynamicSize += (_authorityType.length) as int;
-  final value3 = object.lineItemSeq;
-  final _lineItemSeq = value3;
-  final value4 = object.originalTaxableAmount;
-  final _originalTaxableAmount = value4;
-  final value5 = object.rawTaxAmount;
-  final _rawTaxAmount = value5;
-  final value6 = object.rawTaxPercentage;
-  final _rawTaxPercentage = value6;
-  final value7 = object.taxAmount;
-  final _taxAmount = value7;
-  final value8 = object.taxGroupId;
-  final _taxGroupId = IsarBinaryWriter.utf8Encoder.convert(value8);
-  dynamicSize += (_taxGroupId.length) as int;
-  final value9 = object.taxLocationId;
-  IsarUint8List? _taxLocationId;
-  if (value9 != null) {
-    _taxLocationId = IsarBinaryWriter.utf8Encoder.convert(value9);
-  }
-  dynamicSize += (_taxLocationId?.length ?? 0) as int;
-  final value10 = object.taxOverride;
-  final _taxOverride = value10;
-  final value11 = object.taxOverrideAmount;
-  final _taxOverrideAmount = value11;
-  final value12 = object.taxOverridePercent;
-  final _taxOverridePercent = value12;
-  final value13 = object.taxOverrideReasonCode;
-  IsarUint8List? _taxOverrideReasonCode;
-  if (value13 != null) {
-    _taxOverrideReasonCode = IsarBinaryWriter.utf8Encoder.convert(value13);
-  }
-  dynamicSize += (_taxOverrideReasonCode?.length ?? 0) as int;
-  final value14 = object.taxPercent;
-  final _taxPercent = value14;
-  final value15 = object.taxRuleId;
-  final _taxRuleId = IsarBinaryWriter.utf8Encoder.convert(value15);
-  dynamicSize += (_taxRuleId.length) as int;
-  final value16 = object.taxRuleName;
-  final _taxRuleName = IsarBinaryWriter.utf8Encoder.convert(value16);
-  dynamicSize += (_taxRuleName.length) as int;
-  final value17 = object.taxableAmount;
-  final _taxableAmount = value17;
-  final value18 = object.transSeq;
-  final _transSeq = value18;
-  final size = staticSize + dynamicSize;
-
-  rawObj.buffer = alloc(size);
-  rawObj.buffer_length = size;
-  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeBytes(offsets[0], _authorityId);
-  writer.writeBytes(offsets[1], _authorityName);
-  writer.writeBytes(offsets[2], _authorityType);
-  writer.writeLong(offsets[3], _lineItemSeq);
-  writer.writeDouble(offsets[4], _originalTaxableAmount);
-  writer.writeDouble(offsets[5], _rawTaxAmount);
-  writer.writeDouble(offsets[6], _rawTaxPercentage);
-  writer.writeDouble(offsets[7], _taxAmount);
-  writer.writeBytes(offsets[8], _taxGroupId);
-  writer.writeBytes(offsets[9], _taxLocationId);
-  writer.writeBool(offsets[10], _taxOverride);
-  writer.writeDouble(offsets[11], _taxOverrideAmount);
-  writer.writeDouble(offsets[12], _taxOverridePercent);
-  writer.writeBytes(offsets[13], _taxOverrideReasonCode);
-  writer.writeDouble(offsets[14], _taxPercent);
-  writer.writeBytes(offsets[15], _taxRuleId);
-  writer.writeBytes(offsets[16], _taxRuleName);
-  writer.writeDouble(offsets[17], _taxableAmount);
-  writer.writeLong(offsets[18], _transSeq);
+int _transactionLineItemTaxModifierSerializeNative(
+  TransactionLineItemTaxModifier object,
+  IsarBinaryWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.authorityId);
+  writer.writeString(offsets[1], object.authorityName);
+  writer.writeString(offsets[2], object.authorityType);
+  writer.writeLong(offsets[3], object.lineItemSeq);
+  writer.writeDouble(offsets[4], object.originalTaxableAmount);
+  writer.writeDouble(offsets[5], object.rawTaxAmount);
+  writer.writeDouble(offsets[6], object.rawTaxPercentage);
+  writer.writeDouble(offsets[7], object.taxAmount);
+  writer.writeString(offsets[8], object.taxGroupId);
+  writer.writeString(offsets[9], object.taxLocationId);
+  writer.writeBool(offsets[10], object.taxOverride);
+  writer.writeDouble(offsets[11], object.taxOverrideAmount);
+  writer.writeDouble(offsets[12], object.taxOverridePercent);
+  writer.writeString(offsets[13], object.taxOverrideReasonCode);
+  writer.writeDouble(offsets[14], object.taxPercent);
+  writer.writeString(offsets[15], object.taxRuleId);
+  writer.writeString(offsets[16], object.taxRuleName);
+  writer.writeDouble(offsets[17], object.taxableAmount);
+  writer.writeLong(offsets[18], object.transSeq);
+  return writer.usedBytes;
 }
 
 TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeNative(
-    IsarCollection<TransactionLineItemTaxModifier> collection,
-    int id,
-    IsarBinaryReader reader,
-    List<int> offsets) {
+  Id id,
+  IsarBinaryReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   final object = TransactionLineItemTaxModifier(
-    authorityId: reader.readString(offsets[0]),
-    authorityName: reader.readString(offsets[1]),
-    authorityType: reader.readString(offsets[2]),
-    id: id,
-    lineItemSeq: reader.readLong(offsets[3]),
-    originalTaxableAmount: reader.readDouble(offsets[4]),
-    rawTaxAmount: reader.readDouble(offsets[5]),
-    rawTaxPercentage: reader.readDouble(offsets[6]),
-    taxAmount: reader.readDouble(offsets[7]),
-    taxGroupId: reader.readString(offsets[8]),
+    authorityId: reader.readStringOrNull(offsets[0]),
+    authorityName: reader.readStringOrNull(offsets[1]),
+    authorityType: reader.readStringOrNull(offsets[2]),
+    lineItemSeq: reader.readLongOrNull(offsets[3]),
+    originalTaxableAmount: reader.readDoubleOrNull(offsets[4]),
+    rawTaxAmount: reader.readDoubleOrNull(offsets[5]),
+    rawTaxPercentage: reader.readDoubleOrNull(offsets[6]),
+    taxAmount: reader.readDoubleOrNull(offsets[7]),
+    taxGroupId: reader.readStringOrNull(offsets[8]),
     taxLocationId: reader.readStringOrNull(offsets[9]),
-    taxOverride: reader.readBool(offsets[10]),
+    taxOverride: reader.readBoolOrNull(offsets[10]) ?? false,
     taxOverrideAmount: reader.readDoubleOrNull(offsets[11]),
     taxOverridePercent: reader.readDoubleOrNull(offsets[12]),
     taxOverrideReasonCode: reader.readStringOrNull(offsets[13]),
-    taxPercent: reader.readDouble(offsets[14]),
-    taxRuleId: reader.readString(offsets[15]),
-    taxRuleName: reader.readString(offsets[16]),
-    taxableAmount: reader.readDouble(offsets[17]),
-    transSeq: reader.readLong(offsets[18]),
+    taxPercent: reader.readDoubleOrNull(offsets[14]),
+    taxRuleId: reader.readStringOrNull(offsets[15]),
+    taxRuleName: reader.readStringOrNull(offsets[16]),
+    taxableAmount: reader.readDoubleOrNull(offsets[17]),
+    transSeq: reader.readLongOrNull(offsets[18]),
   );
   return object;
 }
 
 P _transactionLineItemTaxModifierDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
+  IsarBinaryReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 5:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 6:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 7:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
       return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 11:
       return (reader.readDoubleOrNull(offset)) as P;
     case 12:
@@ -221,212 +269,38 @@ P _transactionLineItemTaxModifierDeserializePropNative<P>(
     case 13:
       return (reader.readStringOrNull(offset)) as P;
     case 14:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 15:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 16:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 17:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 18:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     default:
-      throw 'Illegal propertyIndex';
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-dynamic _transactionLineItemTaxModifierSerializeWeb(
+Object _transactionLineItemTaxModifierSerializeWeb(
     IsarCollection<TransactionLineItemTaxModifier> collection,
     TransactionLineItemTaxModifier object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(jsObj, 'authorityId', object.authorityId);
-  IsarNative.jsObjectSet(jsObj, 'authorityName', object.authorityName);
-  IsarNative.jsObjectSet(jsObj, 'authorityType', object.authorityType);
-  IsarNative.jsObjectSet(jsObj, 'id', object.id);
-  IsarNative.jsObjectSet(jsObj, 'lineItemSeq', object.lineItemSeq);
-  IsarNative.jsObjectSet(
-      jsObj, 'originalTaxableAmount', object.originalTaxableAmount);
-  IsarNative.jsObjectSet(jsObj, 'rawTaxAmount', object.rawTaxAmount);
-  IsarNative.jsObjectSet(jsObj, 'rawTaxPercentage', object.rawTaxPercentage);
-  IsarNative.jsObjectSet(jsObj, 'taxAmount', object.taxAmount);
-  IsarNative.jsObjectSet(jsObj, 'taxGroupId', object.taxGroupId);
-  IsarNative.jsObjectSet(jsObj, 'taxLocationId', object.taxLocationId);
-  IsarNative.jsObjectSet(jsObj, 'taxOverride', object.taxOverride);
-  IsarNative.jsObjectSet(jsObj, 'taxOverrideAmount', object.taxOverrideAmount);
-  IsarNative.jsObjectSet(
-      jsObj, 'taxOverridePercent', object.taxOverridePercent);
-  IsarNative.jsObjectSet(
-      jsObj, 'taxOverrideReasonCode', object.taxOverrideReasonCode);
-  IsarNative.jsObjectSet(jsObj, 'taxPercent', object.taxPercent);
-  IsarNative.jsObjectSet(jsObj, 'taxRuleId', object.taxRuleId);
-  IsarNative.jsObjectSet(jsObj, 'taxRuleName', object.taxRuleName);
-  IsarNative.jsObjectSet(jsObj, 'taxableAmount', object.taxableAmount);
-  IsarNative.jsObjectSet(jsObj, 'transSeq', object.transSeq);
-  return jsObj;
+  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
 }
 
 TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeWeb(
-    IsarCollection<TransactionLineItemTaxModifier> collection, dynamic jsObj) {
-  final object = TransactionLineItemTaxModifier(
-    authorityId: IsarNative.jsObjectGet(jsObj, 'authorityId') ?? '',
-    authorityName: IsarNative.jsObjectGet(jsObj, 'authorityName') ?? '',
-    authorityType: IsarNative.jsObjectGet(jsObj, 'authorityType') ?? '',
-    id: IsarNative.jsObjectGet(jsObj, 'id'),
-    lineItemSeq:
-        IsarNative.jsObjectGet(jsObj, 'lineItemSeq') ?? double.negativeInfinity,
-    originalTaxableAmount:
-        IsarNative.jsObjectGet(jsObj, 'originalTaxableAmount') ??
-            double.negativeInfinity,
-    rawTaxAmount: IsarNative.jsObjectGet(jsObj, 'rawTaxAmount') ??
-        double.negativeInfinity,
-    rawTaxPercentage: IsarNative.jsObjectGet(jsObj, 'rawTaxPercentage') ??
-        double.negativeInfinity,
-    taxAmount:
-        IsarNative.jsObjectGet(jsObj, 'taxAmount') ?? double.negativeInfinity,
-    taxGroupId: IsarNative.jsObjectGet(jsObj, 'taxGroupId') ?? '',
-    taxLocationId: IsarNative.jsObjectGet(jsObj, 'taxLocationId'),
-    taxOverride: IsarNative.jsObjectGet(jsObj, 'taxOverride') ?? false,
-    taxOverrideAmount: IsarNative.jsObjectGet(jsObj, 'taxOverrideAmount'),
-    taxOverridePercent: IsarNative.jsObjectGet(jsObj, 'taxOverridePercent'),
-    taxOverrideReasonCode:
-        IsarNative.jsObjectGet(jsObj, 'taxOverrideReasonCode'),
-    taxPercent:
-        IsarNative.jsObjectGet(jsObj, 'taxPercent') ?? double.negativeInfinity,
-    taxRuleId: IsarNative.jsObjectGet(jsObj, 'taxRuleId') ?? '',
-    taxRuleName: IsarNative.jsObjectGet(jsObj, 'taxRuleName') ?? '',
-    taxableAmount: IsarNative.jsObjectGet(jsObj, 'taxableAmount') ??
-        double.negativeInfinity,
-    transSeq:
-        IsarNative.jsObjectGet(jsObj, 'transSeq') ?? double.negativeInfinity,
-  );
-  return object;
+    IsarCollection<TransactionLineItemTaxModifier> collection, Object jsObj) {
+  /*final object = TransactionLineItemTaxModifier(authorityId: IsarNative.jsObjectGet(jsObj, r'authorityId') ,authorityName: IsarNative.jsObjectGet(jsObj, r'authorityName') ,authorityType: IsarNative.jsObjectGet(jsObj, r'authorityType') ,lineItemSeq: IsarNative.jsObjectGet(jsObj, r'lineItemSeq') ,originalTaxableAmount: IsarNative.jsObjectGet(jsObj, r'originalTaxableAmount') ,rawTaxAmount: IsarNative.jsObjectGet(jsObj, r'rawTaxAmount') ,rawTaxPercentage: IsarNative.jsObjectGet(jsObj, r'rawTaxPercentage') ,taxAmount: IsarNative.jsObjectGet(jsObj, r'taxAmount') ,taxGroupId: IsarNative.jsObjectGet(jsObj, r'taxGroupId') ,taxLocationId: IsarNative.jsObjectGet(jsObj, r'taxLocationId') ,taxOverride: IsarNative.jsObjectGet(jsObj, r'taxOverride') ?? false,taxOverrideAmount: IsarNative.jsObjectGet(jsObj, r'taxOverrideAmount') ,taxOverridePercent: IsarNative.jsObjectGet(jsObj, r'taxOverridePercent') ,taxOverrideReasonCode: IsarNative.jsObjectGet(jsObj, r'taxOverrideReasonCode') ,taxPercent: IsarNative.jsObjectGet(jsObj, r'taxPercent') ,taxRuleId: IsarNative.jsObjectGet(jsObj, r'taxRuleId') ,taxRuleName: IsarNative.jsObjectGet(jsObj, r'taxRuleName') ,taxableAmount: IsarNative.jsObjectGet(jsObj, r'taxableAmount') ,transSeq: IsarNative.jsObjectGet(jsObj, r'transSeq') ,);*/
+  //return object;
+  throw UnimplementedError();
 }
 
 P _transactionLineItemTaxModifierDeserializePropWeb<P>(
     Object jsObj, String propertyName) {
   switch (propertyName) {
-    case 'authorityId':
-      return (IsarNative.jsObjectGet(jsObj, 'authorityId') ?? '') as P;
-    case 'authorityName':
-      return (IsarNative.jsObjectGet(jsObj, 'authorityName') ?? '') as P;
-    case 'authorityType':
-      return (IsarNative.jsObjectGet(jsObj, 'authorityType') ?? '') as P;
-    case 'id':
-      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
-    case 'lineItemSeq':
-      return (IsarNative.jsObjectGet(jsObj, 'lineItemSeq') ??
-          double.negativeInfinity) as P;
-    case 'originalTaxableAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'originalTaxableAmount') ??
-          double.negativeInfinity) as P;
-    case 'rawTaxAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'rawTaxAmount') ??
-          double.negativeInfinity) as P;
-    case 'rawTaxPercentage':
-      return (IsarNative.jsObjectGet(jsObj, 'rawTaxPercentage') ??
-          double.negativeInfinity) as P;
-    case 'taxAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'taxAmount') ??
-          double.negativeInfinity) as P;
-    case 'taxGroupId':
-      return (IsarNative.jsObjectGet(jsObj, 'taxGroupId') ?? '') as P;
-    case 'taxLocationId':
-      return (IsarNative.jsObjectGet(jsObj, 'taxLocationId')) as P;
-    case 'taxOverride':
-      return (IsarNative.jsObjectGet(jsObj, 'taxOverride') ?? false) as P;
-    case 'taxOverrideAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'taxOverrideAmount')) as P;
-    case 'taxOverridePercent':
-      return (IsarNative.jsObjectGet(jsObj, 'taxOverridePercent')) as P;
-    case 'taxOverrideReasonCode':
-      return (IsarNative.jsObjectGet(jsObj, 'taxOverrideReasonCode')) as P;
-    case 'taxPercent':
-      return (IsarNative.jsObjectGet(jsObj, 'taxPercent') ??
-          double.negativeInfinity) as P;
-    case 'taxRuleId':
-      return (IsarNative.jsObjectGet(jsObj, 'taxRuleId') ?? '') as P;
-    case 'taxRuleName':
-      return (IsarNative.jsObjectGet(jsObj, 'taxRuleName') ?? '') as P;
-    case 'taxableAmount':
-      return (IsarNative.jsObjectGet(jsObj, 'taxableAmount') ??
-          double.negativeInfinity) as P;
-    case 'transSeq':
-      return (IsarNative.jsObjectGet(jsObj, 'transSeq') ??
-          double.negativeInfinity) as P;
     default:
-      throw 'Illegal propertyName';
-  }
-}
-
-void _transactionLineItemTaxModifierAttachLinks(
-    IsarCollection col, int id, TransactionLineItemTaxModifier object) {}
-
-extension TransactionLineItemTaxModifierQueryWhereSort on QueryBuilder<
-    TransactionLineItemTaxModifier, TransactionLineItemTaxModifier, QWhere> {
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterWhere> anyId() {
-    return addWhereClauseInternal(const IdWhereClause.any());
-  }
-}
-
-extension TransactionLineItemTaxModifierQueryWhere on QueryBuilder<
-    TransactionLineItemTaxModifier,
-    TransactionLineItemTaxModifier,
-    QWhereClause> {
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterWhereClause> idEqualTo(int id) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: id,
-      includeLower: true,
-      upper: id,
-      includeUpper: true,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterWhereClause> idNotEqualTo(int id) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      );
-    } else {
-      return addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      );
-    }
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterWhereClause> idGreaterThan(int id, {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.greaterThan(lower: id, includeLower: include),
-    );
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterWhereClause> idLessThan(int id, {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.lessThan(upper: id, includeUpper: include),
-    );
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: lowerId,
-      includeLower: includeLower,
-      upper: upperId,
-      includeUpper: includeUpper,
-    ));
+      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -435,64 +309,87 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     TransactionLineItemTaxModifier,
     QFilterCondition> {
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'authorityId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'authorityId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'authorityId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'authorityId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityIdGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'authorityId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'authorityId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityIdLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'authorityId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'authorityId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityIdBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'authorityId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'authorityId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -500,12 +397,13 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'authorityId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'authorityId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -513,95 +411,141 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'authorityId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'authorityId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       authorityIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'authorityId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'authorityId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       authorityIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'authorityId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'authorityId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'authorityId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'authorityId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'authorityName',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'authorityName',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityNameEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'authorityName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'authorityName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityNameGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'authorityName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'authorityName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityNameLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'authorityName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'authorityName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityNameBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'authorityName',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'authorityName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -609,12 +553,13 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'authorityName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'authorityName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -622,95 +567,141 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'authorityName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'authorityName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       authorityNameContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'authorityName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'authorityName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       authorityNameMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'authorityName',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'authorityName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'authorityName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'authorityName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityTypeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'authorityType',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> authorityTypeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'authorityType',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityTypeEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'authorityType',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'authorityType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityTypeGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'authorityType',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'authorityType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityTypeLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'authorityType',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'authorityType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> authorityTypeBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'authorityType',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'authorityType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -718,12 +709,13 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'authorityType',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'authorityType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -731,332 +723,551 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'authorityType',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'authorityType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       authorityTypeContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'authorityType',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'authorityType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       authorityTypeMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'authorityType',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'authorityType',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> idIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'id',
-      value: null,
-    ));
+      QAfterFilterCondition> authorityTypeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'authorityType',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> idEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-    ));
+      QAfterFilterCondition> authorityTypeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'authorityType',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> idGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+      QAfterFilterCondition> lineItemSeqIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lineItemSeq',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> idLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+      QAfterFilterCondition> lineItemSeqIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lineItemSeq',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> lineItemSeqEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'lineItemSeq',
-      value: value,
-    ));
+      QAfterFilterCondition> lineItemSeqEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lineItemSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> lineItemSeqGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'lineItemSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lineItemSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> lineItemSeqLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'lineItemSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lineItemSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> lineItemSeqBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'lineItemSeq',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lineItemSeq',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> originalTaxableAmountGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'originalTaxableAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> originalTaxableAmountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'originalTaxableAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> originalTaxableAmountLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'originalTaxableAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> originalTaxableAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'originalTaxableAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-          QAfterFilterCondition>
-      originalTaxableAmountBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'originalTaxableAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> originalTaxableAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'originalTaxableAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> rawTaxAmountGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'rawTaxAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> originalTaxableAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'originalTaxableAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> rawTaxAmountLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'rawTaxAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> originalTaxableAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'originalTaxableAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> rawTaxAmountBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'rawTaxAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> originalTaxableAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'originalTaxableAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> rawTaxPercentageGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'rawTaxPercentage',
-      value: value,
-    ));
+      QAfterFilterCondition> rawTaxAmountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'rawTaxAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> rawTaxPercentageLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'rawTaxPercentage',
-      value: value,
-    ));
+      QAfterFilterCondition> rawTaxAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'rawTaxAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-          QAfterFilterCondition>
-      rawTaxPercentageBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'rawTaxPercentage',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> rawTaxAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'rawTaxAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxAmountGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'taxAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> rawTaxAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'rawTaxAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxAmountLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'taxAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> rawTaxAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'rawTaxAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxAmountBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> rawTaxAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'rawTaxAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> rawTaxPercentageIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'rawTaxPercentage',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> rawTaxPercentageIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'rawTaxPercentage',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> rawTaxPercentageEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'rawTaxPercentage',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> rawTaxPercentageGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'rawTaxPercentage',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> rawTaxPercentageLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'rawTaxPercentage',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> rawTaxPercentageBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'rawTaxPercentage',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxAmountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxAmount',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxAmount',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxGroupIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxGroupId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxGroupIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxGroupId',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxGroupIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxGroupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxGroupIdGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxGroupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxGroupIdLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxGroupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxGroupIdBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxGroupId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxGroupId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1064,12 +1275,13 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'taxGroupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1077,43 +1289,75 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'taxGroupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxGroupIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'taxGroupId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'taxGroupId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxGroupIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'taxGroupId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'taxGroupId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxGroupIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxGroupId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxGroupIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'taxGroupId',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxLocationIdIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'taxLocationId',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxLocationId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxLocationIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxLocationId',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1121,60 +1365,65 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'taxLocationId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxLocationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxLocationIdGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'taxLocationId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxLocationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxLocationIdLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'taxLocationId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxLocationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxLocationIdBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxLocationId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxLocationId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1182,12 +1431,13 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'taxLocationId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'taxLocationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1195,134 +1445,253 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'taxLocationId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'taxLocationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxLocationIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'taxLocationId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'taxLocationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxLocationIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'taxLocationId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'taxLocationId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxLocationIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxLocationId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxLocationIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'taxLocationId',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxOverrideEqualTo(bool value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'taxOverride',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxOverride',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxOverrideAmountIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'taxOverrideAmount',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxOverrideAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxOverrideAmountGreaterThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'taxOverrideAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> taxOverrideAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxOverrideAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxOverrideAmountLessThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'taxOverrideAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> taxOverrideAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxOverrideAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-          QAfterFilterCondition>
-      taxOverrideAmountBetween(double? lower, double? upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxOverrideAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> taxOverrideAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxOverrideAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxOverrideAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxOverrideAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxOverrideAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxOverrideAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxOverridePercentIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'taxOverridePercent',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxOverridePercent',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxOverridePercentGreaterThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'taxOverridePercent',
-      value: value,
-    ));
+      QAfterFilterCondition> taxOverridePercentIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxOverridePercent',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxOverridePercentLessThan(double? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'taxOverridePercent',
-      value: value,
-    ));
+      QAfterFilterCondition> taxOverridePercentEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxOverridePercent',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-          QAfterFilterCondition>
-      taxOverridePercentBetween(double? lower, double? upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxOverridePercent',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> taxOverridePercentGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxOverridePercent',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxOverridePercentLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxOverridePercent',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxOverridePercentBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxOverridePercent',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxOverrideReasonCodeIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'taxOverrideReasonCode',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxOverrideReasonCode',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxOverrideReasonCodeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxOverrideReasonCode',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1330,60 +1699,65 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'taxOverrideReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxOverrideReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxOverrideReasonCodeGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'taxOverrideReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxOverrideReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxOverrideReasonCodeLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'taxOverrideReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxOverrideReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxOverrideReasonCodeBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxOverrideReasonCode',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxOverrideReasonCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1391,12 +1765,13 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'taxOverrideReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'taxOverrideReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1404,127 +1779,226 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'taxOverrideReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'taxOverrideReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxOverrideReasonCodeContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'taxOverrideReasonCode',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'taxOverrideReasonCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxOverrideReasonCodeMatches(String pattern,
           {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'taxOverrideReasonCode',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'taxOverrideReasonCode',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxPercentGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'taxPercent',
-      value: value,
-    ));
+      QAfterFilterCondition> taxOverrideReasonCodeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxOverrideReasonCode',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxPercentLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'taxPercent',
-      value: value,
-    ));
+      QAfterFilterCondition> taxOverrideReasonCodeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'taxOverrideReasonCode',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxPercentBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxPercent',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> taxPercentIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxPercent',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxPercentIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxPercent',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxPercentEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxPercent',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxPercentGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxPercent',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxPercentLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxPercent',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxPercentBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxPercent',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxRuleIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxRuleId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxRuleIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxRuleId',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxRuleIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'taxRuleId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxRuleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxRuleIdGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'taxRuleId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxRuleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxRuleIdLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'taxRuleId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxRuleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxRuleIdBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxRuleId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxRuleId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1532,12 +2006,13 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'taxRuleId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'taxRuleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1545,95 +2020,141 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'taxRuleId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'taxRuleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxRuleIdContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'taxRuleId',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'taxRuleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxRuleIdMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'taxRuleId',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'taxRuleId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxRuleIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxRuleId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxRuleIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'taxRuleId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxRuleNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxRuleName',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxRuleNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxRuleName',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxRuleNameEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'taxRuleName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxRuleName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxRuleNameGreaterThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'taxRuleName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxRuleName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxRuleNameLessThan(
-    String value, {
-    bool caseSensitive = true,
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'taxRuleName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxRuleName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> taxRuleNameBetween(
-    String lower,
-    String upper, {
-    bool caseSensitive = true,
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxRuleName',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxRuleName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1641,12 +2162,13 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'taxRuleName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'taxRuleName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
@@ -1654,737 +2176,219 @@ extension TransactionLineItemTaxModifierQueryFilter on QueryBuilder<
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'taxRuleName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'taxRuleName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxRuleNameContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'taxRuleName',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'taxRuleName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
           QAfterFilterCondition>
       taxRuleNameMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'taxRuleName',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'taxRuleName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxableAmountGreaterThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: false,
-      property: 'taxableAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> taxRuleNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxRuleName',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxableAmountLessThan(double value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: false,
-      property: 'taxableAmount',
-      value: value,
-    ));
+      QAfterFilterCondition> taxRuleNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'taxRuleName',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> taxableAmountBetween(double lower, double upper) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'taxableAmount',
-      lower: lower,
-      includeLower: false,
-      upper: upper,
-      includeUpper: false,
-    ));
+      QAfterFilterCondition> taxableAmountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'taxableAmount',
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterFilterCondition> transSeqEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'transSeq',
-      value: value,
-    ));
+      QAfterFilterCondition> taxableAmountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'taxableAmount',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxableAmountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'taxableAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxableAmountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'taxableAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxableAmountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'taxableAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> taxableAmountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'taxableAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> transSeqIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'transSeq',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> transSeqIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'transSeq',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
+      QAfterFilterCondition> transSeqEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'transSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> transSeqGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'transSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'transSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> transSeqLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'transSeq',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'transSeq',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
       QAfterFilterCondition> transSeqBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'transSeq',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'transSeq',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 }
 
-extension TransactionLineItemTaxModifierQueryLinks on QueryBuilder<
+extension TransactionLineItemTaxModifierQueryObject on QueryBuilder<
     TransactionLineItemTaxModifier,
     TransactionLineItemTaxModifier,
     QFilterCondition> {}
-
-extension TransactionLineItemTaxModifierQueryWhereSortBy on QueryBuilder<
-    TransactionLineItemTaxModifier, TransactionLineItemTaxModifier, QSortBy> {
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByAuthorityId() {
-    return addSortByInternal('authorityId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByAuthorityIdDesc() {
-    return addSortByInternal('authorityId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByAuthorityName() {
-    return addSortByInternal('authorityName', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByAuthorityNameDesc() {
-    return addSortByInternal('authorityName', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByAuthorityType() {
-    return addSortByInternal('authorityType', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByAuthorityTypeDesc() {
-    return addSortByInternal('authorityType', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByLineItemSeq() {
-    return addSortByInternal('lineItemSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByLineItemSeqDesc() {
-    return addSortByInternal('lineItemSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByOriginalTaxableAmount() {
-    return addSortByInternal('originalTaxableAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByOriginalTaxableAmountDesc() {
-    return addSortByInternal('originalTaxableAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByRawTaxAmount() {
-    return addSortByInternal('rawTaxAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByRawTaxAmountDesc() {
-    return addSortByInternal('rawTaxAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByRawTaxPercentage() {
-    return addSortByInternal('rawTaxPercentage', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByRawTaxPercentageDesc() {
-    return addSortByInternal('rawTaxPercentage', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxAmount() {
-    return addSortByInternal('taxAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxAmountDesc() {
-    return addSortByInternal('taxAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxGroupId() {
-    return addSortByInternal('taxGroupId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxGroupIdDesc() {
-    return addSortByInternal('taxGroupId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxLocationId() {
-    return addSortByInternal('taxLocationId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxLocationIdDesc() {
-    return addSortByInternal('taxLocationId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxOverride() {
-    return addSortByInternal('taxOverride', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxOverrideDesc() {
-    return addSortByInternal('taxOverride', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxOverrideAmount() {
-    return addSortByInternal('taxOverrideAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxOverrideAmountDesc() {
-    return addSortByInternal('taxOverrideAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxOverridePercent() {
-    return addSortByInternal('taxOverridePercent', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxOverridePercentDesc() {
-    return addSortByInternal('taxOverridePercent', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxOverrideReasonCode() {
-    return addSortByInternal('taxOverrideReasonCode', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxOverrideReasonCodeDesc() {
-    return addSortByInternal('taxOverrideReasonCode', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxPercent() {
-    return addSortByInternal('taxPercent', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxPercentDesc() {
-    return addSortByInternal('taxPercent', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxRuleId() {
-    return addSortByInternal('taxRuleId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxRuleIdDesc() {
-    return addSortByInternal('taxRuleId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxRuleName() {
-    return addSortByInternal('taxRuleName', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxRuleNameDesc() {
-    return addSortByInternal('taxRuleName', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxableAmount() {
-    return addSortByInternal('taxableAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTaxableAmountDesc() {
-    return addSortByInternal('taxableAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTransSeq() {
-    return addSortByInternal('transSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> sortByTransSeqDesc() {
-    return addSortByInternal('transSeq', Sort.desc);
-  }
-}
-
-extension TransactionLineItemTaxModifierQueryWhereSortThenBy on QueryBuilder<
-    TransactionLineItemTaxModifier,
-    TransactionLineItemTaxModifier,
-    QSortThenBy> {
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByAuthorityId() {
-    return addSortByInternal('authorityId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByAuthorityIdDesc() {
-    return addSortByInternal('authorityId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByAuthorityName() {
-    return addSortByInternal('authorityName', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByAuthorityNameDesc() {
-    return addSortByInternal('authorityName', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByAuthorityType() {
-    return addSortByInternal('authorityType', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByAuthorityTypeDesc() {
-    return addSortByInternal('authorityType', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByLineItemSeq() {
-    return addSortByInternal('lineItemSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByLineItemSeqDesc() {
-    return addSortByInternal('lineItemSeq', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByOriginalTaxableAmount() {
-    return addSortByInternal('originalTaxableAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByOriginalTaxableAmountDesc() {
-    return addSortByInternal('originalTaxableAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByRawTaxAmount() {
-    return addSortByInternal('rawTaxAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByRawTaxAmountDesc() {
-    return addSortByInternal('rawTaxAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByRawTaxPercentage() {
-    return addSortByInternal('rawTaxPercentage', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByRawTaxPercentageDesc() {
-    return addSortByInternal('rawTaxPercentage', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxAmount() {
-    return addSortByInternal('taxAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxAmountDesc() {
-    return addSortByInternal('taxAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxGroupId() {
-    return addSortByInternal('taxGroupId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxGroupIdDesc() {
-    return addSortByInternal('taxGroupId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxLocationId() {
-    return addSortByInternal('taxLocationId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxLocationIdDesc() {
-    return addSortByInternal('taxLocationId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxOverride() {
-    return addSortByInternal('taxOverride', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxOverrideDesc() {
-    return addSortByInternal('taxOverride', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxOverrideAmount() {
-    return addSortByInternal('taxOverrideAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxOverrideAmountDesc() {
-    return addSortByInternal('taxOverrideAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxOverridePercent() {
-    return addSortByInternal('taxOverridePercent', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxOverridePercentDesc() {
-    return addSortByInternal('taxOverridePercent', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxOverrideReasonCode() {
-    return addSortByInternal('taxOverrideReasonCode', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxOverrideReasonCodeDesc() {
-    return addSortByInternal('taxOverrideReasonCode', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxPercent() {
-    return addSortByInternal('taxPercent', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxPercentDesc() {
-    return addSortByInternal('taxPercent', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxRuleId() {
-    return addSortByInternal('taxRuleId', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxRuleIdDesc() {
-    return addSortByInternal('taxRuleId', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxRuleName() {
-    return addSortByInternal('taxRuleName', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxRuleNameDesc() {
-    return addSortByInternal('taxRuleName', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxableAmount() {
-    return addSortByInternal('taxableAmount', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTaxableAmountDesc() {
-    return addSortByInternal('taxableAmount', Sort.desc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTransSeq() {
-    return addSortByInternal('transSeq', Sort.asc);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QAfterSortBy> thenByTransSeqDesc() {
-    return addSortByInternal('transSeq', Sort.desc);
-  }
-}
-
-extension TransactionLineItemTaxModifierQueryWhereDistinct on QueryBuilder<
-    TransactionLineItemTaxModifier, TransactionLineItemTaxModifier, QDistinct> {
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByAuthorityId({bool caseSensitive = true}) {
-    return addDistinctByInternal('authorityId', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByAuthorityName({bool caseSensitive = true}) {
-    return addDistinctByInternal('authorityName', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByAuthorityType({bool caseSensitive = true}) {
-    return addDistinctByInternal('authorityType', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctById() {
-    return addDistinctByInternal('id');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByLineItemSeq() {
-    return addDistinctByInternal('lineItemSeq');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByOriginalTaxableAmount() {
-    return addDistinctByInternal('originalTaxableAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByRawTaxAmount() {
-    return addDistinctByInternal('rawTaxAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByRawTaxPercentage() {
-    return addDistinctByInternal('rawTaxPercentage');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxAmount() {
-    return addDistinctByInternal('taxAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxGroupId({bool caseSensitive = true}) {
-    return addDistinctByInternal('taxGroupId', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxLocationId({bool caseSensitive = true}) {
-    return addDistinctByInternal('taxLocationId', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxOverride() {
-    return addDistinctByInternal('taxOverride');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxOverrideAmount() {
-    return addDistinctByInternal('taxOverrideAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxOverridePercent() {
-    return addDistinctByInternal('taxOverridePercent');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxOverrideReasonCode({bool caseSensitive = true}) {
-    return addDistinctByInternal('taxOverrideReasonCode',
-        caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxPercent() {
-    return addDistinctByInternal('taxPercent');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxRuleId({bool caseSensitive = true}) {
-    return addDistinctByInternal('taxRuleId', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxRuleName({bool caseSensitive = true}) {
-    return addDistinctByInternal('taxRuleName', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTaxableAmount() {
-    return addDistinctByInternal('taxableAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, TransactionLineItemTaxModifier,
-      QDistinct> distinctByTransSeq() {
-    return addDistinctByInternal('transSeq');
-  }
-}
-
-extension TransactionLineItemTaxModifierQueryProperty on QueryBuilder<
-    TransactionLineItemTaxModifier,
-    TransactionLineItemTaxModifier,
-    QQueryProperty> {
-  QueryBuilder<TransactionLineItemTaxModifier, String, QQueryOperations>
-      authorityIdProperty() {
-    return addPropertyNameInternal('authorityId');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, String, QQueryOperations>
-      authorityNameProperty() {
-    return addPropertyNameInternal('authorityName');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, String, QQueryOperations>
-      authorityTypeProperty() {
-    return addPropertyNameInternal('authorityType');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, int?, QQueryOperations>
-      idProperty() {
-    return addPropertyNameInternal('id');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, int, QQueryOperations>
-      lineItemSeqProperty() {
-    return addPropertyNameInternal('lineItemSeq');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, double, QQueryOperations>
-      originalTaxableAmountProperty() {
-    return addPropertyNameInternal('originalTaxableAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, double, QQueryOperations>
-      rawTaxAmountProperty() {
-    return addPropertyNameInternal('rawTaxAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, double, QQueryOperations>
-      rawTaxPercentageProperty() {
-    return addPropertyNameInternal('rawTaxPercentage');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, double, QQueryOperations>
-      taxAmountProperty() {
-    return addPropertyNameInternal('taxAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, String, QQueryOperations>
-      taxGroupIdProperty() {
-    return addPropertyNameInternal('taxGroupId');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, String?, QQueryOperations>
-      taxLocationIdProperty() {
-    return addPropertyNameInternal('taxLocationId');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, bool, QQueryOperations>
-      taxOverrideProperty() {
-    return addPropertyNameInternal('taxOverride');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, double?, QQueryOperations>
-      taxOverrideAmountProperty() {
-    return addPropertyNameInternal('taxOverrideAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, double?, QQueryOperations>
-      taxOverridePercentProperty() {
-    return addPropertyNameInternal('taxOverridePercent');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, String?, QQueryOperations>
-      taxOverrideReasonCodeProperty() {
-    return addPropertyNameInternal('taxOverrideReasonCode');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, double, QQueryOperations>
-      taxPercentProperty() {
-    return addPropertyNameInternal('taxPercent');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, String, QQueryOperations>
-      taxRuleIdProperty() {
-    return addPropertyNameInternal('taxRuleId');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, String, QQueryOperations>
-      taxRuleNameProperty() {
-    return addPropertyNameInternal('taxRuleName');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, double, QQueryOperations>
-      taxableAmountProperty() {
-    return addPropertyNameInternal('taxableAmount');
-  }
-
-  QueryBuilder<TransactionLineItemTaxModifier, int, QQueryOperations>
-      transSeqProperty() {
-    return addPropertyNameInternal('transSeq');
-  }
-}

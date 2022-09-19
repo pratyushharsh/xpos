@@ -8,10 +8,10 @@ class TransactionHelper {
       {required TaxCalculationMethod taxCalculationMethod,
       required TaxApplicationMethod taxApplicationMethod}) {
     // Calculate all the amount again for the item and assign
-    double discountAmount = line.discountAmount;
-    double unitPrice = line.unitPrice;
+    double discountAmount = line.discountAmount!;
+    double unitPrice = line.unitPrice!;
 
-    double grossAmount = unitPrice * line.quantity;
+    double grossAmount = unitPrice * line.quantity!;
     double netAmount = grossAmount - discountAmount;
 
     // @TODO Recalculate the tax based on the new discount amount
@@ -22,7 +22,7 @@ class TransactionHelper {
       unitTaxAmount = taxAmount;
     }
 
-    double taxAmt = unitTaxAmount * line.quantity;
+    double taxAmt = unitTaxAmount * line.quantity!;
 
     double extendedAmount = netAmount + taxAmt;
 

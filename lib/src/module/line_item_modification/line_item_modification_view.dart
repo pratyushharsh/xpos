@@ -137,38 +137,39 @@ class ModifyLineItemViewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          (productModel != null && productModel!.imageUrl.isNotEmpty) ?
-          Image.file(
-              File(Constants.baseImagePath + productModel!.imageUrl[0]),
-              fit: BoxFit.cover,
-              height: 100,
-              width: 100, errorBuilder: (context, obj, trace) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        (productModel != null && productModel!.imageUrl.isNotEmpty) ?
+        Image.file(
+            File(Constants.baseImagePath + productModel!.imageUrl[0]),
+            fit: BoxFit.cover,
+            height: 100,
+            width: 100, errorBuilder: (context, obj, trace) {
+          return const SizedBox(
+            height: 100,
+            width: 100,
+          );
+        }) : Image.network(
+          "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+          fit: BoxFit.cover,
+          height: 100,
+          width: 100,
+          errorBuilder: (context, obj, trace) {
             return const SizedBox(
               height: 100,
               width: 100,
             );
-          }) : Image.network(
-            "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
-            fit: BoxFit.cover,
-            height: 100,
-            width: 100,
-            errorBuilder: (context, obj, trace) {
-              return const SizedBox(
-                height: 100,
-                width: 100,
-              );
-            },
-          ),
-          Column(
+          },
+        ),
+        Expanded(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 productModel?.displayName ?? "",
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
                 "SKU Code: ${productModel?.skuCode ?? ""}",
@@ -179,9 +180,9 @@ class ModifyLineItemViewCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
               )
             ]
-          )
-        ]
-      )
+          ),
+        )
+      ]
     );
   }
 }

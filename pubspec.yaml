@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   logging: ^1.0.2
-  google_fonts: ^2.3.1
+  google_fonts: ^3.0.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,7 +40,7 @@ dependencies:
   equatable: ^2.0.3
   csv: ^5.0.1
   path_provider: ^2.0.10
-  file_picker: ^4.6.1
+  file_picker: ^5.1.0
   intl: ^0.17.0
   flutter_contacts: ^1.1.4
   barcode_widget: ^2.0.2
@@ -61,20 +61,20 @@ dependencies:
   amazon_cognito_identity_dart_2: ^3.0.0
   otp_text_field: ^1.1.2
   shared_preferences: ^2.0.13
-  device_info_plus: ^3.2.4
+  device_info_plus: ^4.1.2
   number_to_words: ^1.0.0
   flutter_svg: ^1.0.3
   blurrycontainer: ^1.0.2
-  isar: ^2.5.0
-  isar_flutter_libs: ^2.5.0
+  isar: ^3.0.0-dev.14
+  isar_flutter_libs: 3.0.0-dev.14 # contains Isar Core
   archive: ^3.3.0
   easy_localization: ^3.0.1
-#  firebase_messaging: ^11.4.1
+#  firebase_messaging: ^13.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  isar_generator: ^2.5.0
+  isar_generator: 3.0.0-dev.14
   build_runner: ^2.1.11
 
   # The "flutter_lints" package below contains a set of recommended lints to

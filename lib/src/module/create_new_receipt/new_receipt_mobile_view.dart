@@ -115,8 +115,9 @@ class NewReceiptMobileView extends StatelessWidget {
 
 class AcceptTenderDisplayMobile extends StatelessWidget {
   final Function onTender;
+  final double? suggestedAmount;
 
-  const AcceptTenderDisplayMobile({Key? key, required this.onTender})
+  const AcceptTenderDisplayMobile({Key? key, required this.onTender, this.suggestedAmount})
       : super(key: key);
 
   @override
@@ -127,6 +128,7 @@ class AcceptTenderDisplayMobile extends StatelessWidget {
         child: Scaffold(
             body: TenderDisplayDesktop(
               onTender: onTender,
+              suggestedAmount: suggestedAmount,
             )),
       ),
     );

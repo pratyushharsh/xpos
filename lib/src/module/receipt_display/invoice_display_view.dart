@@ -868,7 +868,7 @@ class InvoiceTableOrderSummary extends StatelessWidget {
                 InvoiceTableCellModel(label: "", flex: 4),
                 InvoiceTableCellModel(
                     label:
-                        "${state.lineItems!.fold<double>(0, (pv, e) => pv + e.quantity)}",
+                        "${state.lineItems!.fold<double>(0, (pv, e) => pv + e.quantity!)}",
                     flex: 4,
                     fontWeight: FontWeight.bold,
                     textAlign: TextAlign.right),
