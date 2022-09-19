@@ -2,28 +2,26 @@ import 'package:isar/isar.dart';
 
 part 'trn_line_item_tax.g.dart';
 
-@Collection()
+@embedded
 class TransactionLineItemTaxModifier {
-  @Id()
-  final int? id;
 
-  final int transSeq;
-  final int lineItemSeq;
+  int? transSeq;
+  int? lineItemSeq;
 
-  final String authorityId;
-  final String authorityName;
-  final String authorityType;
-  final String taxGroupId;
-  final String taxRuleId;
-  final String taxRuleName;
-  final String? taxLocationId;
+  String? authorityId;
+  String? authorityName;
+  String? authorityType;
+  String? taxGroupId;
+  String? taxRuleId;
+  String? taxRuleName;
+  String? taxLocationId;
 
-  double taxableAmount;
-  double taxAmount;
-  double taxPercent;
-  double originalTaxableAmount;
-  double rawTaxPercentage;
-  double rawTaxAmount;
+  double? taxableAmount;
+  double? taxAmount;
+  double? taxPercent;
+  double? originalTaxableAmount;
+  double? rawTaxPercentage;
+  double? rawTaxAmount;
 
   // Tax Exempt Parameter
 
@@ -34,22 +32,22 @@ class TransactionLineItemTaxModifier {
   String? taxOverrideReasonCode;
 
   TransactionLineItemTaxModifier(
-      {this.id,
-      required this.transSeq,
-      required this.lineItemSeq,
-      required this.authorityId,
-      required this.authorityName,
-      required this.authorityType,
-      required this.taxGroupId,
-      required this.taxRuleId,
-      required this.taxRuleName,
+      {
+      this.transSeq,
+      this.lineItemSeq,
+      this.authorityId,
+      this.authorityName,
+      this.authorityType,
+      this.taxGroupId,
+      this.taxRuleId,
+      this.taxRuleName,
       this.taxLocationId,
-      required this.taxableAmount,
-      required this.taxAmount,
-      required this.taxPercent,
-      required this.originalTaxableAmount,
-      required this.rawTaxPercentage,
-      required this.rawTaxAmount,
+      this.taxableAmount,
+      this.taxAmount,
+      this.taxPercent,
+      this.originalTaxableAmount,
+      this.rawTaxPercentage,
+      this.rawTaxAmount,
       this.taxOverride = false,
       this.taxOverrideAmount,
       this.taxOverridePercent,

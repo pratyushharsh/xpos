@@ -34,7 +34,7 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
           .transform(const CsvToListConverter(shouldParseNumbers: false, eol: '\n'))
           .toList();
 
-      var resp = await db.writeTxn((isar) async {
+      var resp = await db.writeTxn(() async {
         for (var i = 1; i < fields.length; i++) {
           var e = fields[i];
 
@@ -65,7 +65,7 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
             createTime: DateTime.now(),
             id: seq,
           );
-          await db.productEntitys.put(entity, replaceOnConflict: true);
+          await db.productEntitys.put(entity);
         }
       });
       log.info(resp);

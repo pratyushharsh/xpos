@@ -46,9 +46,9 @@ class ReturnOrderBloc extends Bloc<ReturnOrderEvent, ReturnOrderState> {
             var key = "${lineItem.originalLineItemSeq}#${lineItem.itemId}";
             if (alreadyReturnedOrderMap.containsKey(key)) {
               alreadyReturnedOrderMap[key] =
-                  alreadyReturnedOrderMap[key]! + lineItem.quantity;
+                  alreadyReturnedOrderMap[key]! + lineItem.quantity!;
             } else {
-              alreadyReturnedOrderMap[key] = lineItem.quantity;
+              alreadyReturnedOrderMap[key] = lineItem.quantity!;
             }
           }
         }
@@ -59,9 +59,9 @@ class ReturnOrderBloc extends Bloc<ReturnOrderEvent, ReturnOrderState> {
 
         if (alreadyReturnedOrderMap.containsKey(key)) {
           alreadyReturnedOrderMap[key] =
-              alreadyReturnedOrderMap[key]! + element.quantity;
+              alreadyReturnedOrderMap[key]! + element.quantity!;
         } else {
-          alreadyReturnedOrderMap[key] = element.quantity;
+          alreadyReturnedOrderMap[key] = element.quantity!;
         }
       }
 
@@ -71,7 +71,7 @@ class ReturnOrderBloc extends Bloc<ReturnOrderEvent, ReturnOrderState> {
             .containsKey("${lineItem.lineItemSeq}#${lineItem.itemId}")) {
           if (alreadyReturnedOrderMap[
                   "${lineItem.lineItemSeq}#${lineItem.itemId}"]! <
-              lineItem.quantity) {
+              lineItem.quantity!) {
             availableLineItemToReturn.add(lineItem);
           }
         } else {

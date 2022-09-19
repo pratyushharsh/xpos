@@ -184,7 +184,7 @@ class Invoice1 {
 
   Widget _contentTable(Context context) {
     var lineItems = order.lineItems.toList();
-    lineItems.sort((a, b) => a.lineItemSeq.compareTo(b.lineItemSeq));
+    lineItems.sort((a, b) => a.lineItemSeq!.compareTo(b.lineItemSeq!));
     return Container(
         child: Column(
             children: lineItems

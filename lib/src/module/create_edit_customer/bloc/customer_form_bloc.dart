@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../../entity/pos/contact_entity.dart';
-import '../../../model/address.dart';
+import '../../../entity/pos/address.dart';
 
 part 'customer_form_event.dart';
 part 'customer_form_state.dart';

@@ -4,9 +4,9 @@ import 'package:isar/isar.dart';
 part 'reason_code_entity.g.dart';
 
 @Collection()
-class ReasonCodeEntity extends Equatable {
-  @Id()
-  final int? id;
+class ReasonCodeEntity {
+
+  final Id? id;
 
   @Index(composite: [CompositeIndex("reasonCode")])
   final String reasonTypeCode;
@@ -28,15 +28,5 @@ class ReasonCodeEntity extends Equatable {
   String toString() {
     return 'ReasonCodeEntity{id: $id, reasonTypeCode: $reasonTypeCode, reasonCode: $reasonCode, description: $description, parentCode: $parentCode, commentRequired: $commentRequired}';
   }
-
-  @override
-  List<Object?> get props => [
-    id,
-    reasonTypeCode,
-    reasonCode,
-    description,
-    parentCode,
-    commentRequired,
-  ];
 }
 

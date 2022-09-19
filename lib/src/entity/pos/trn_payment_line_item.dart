@@ -4,33 +4,28 @@ import 'entity.dart';
 
 part 'trn_payment_line_item.g.dart';
 
-@Collection()
+@embedded
 class TransactionPaymentLineItemEntity {
-  @Id()
-  final int? id;
 
-  final int transId;
-  final int paymentSeq;
-  final double amount;
-  final DateTime beginDate;
-  final DateTime? endDate;
-  final String currencyId;
-  final String tenderId;
-  final String tenderStatusCode;
-  final String? authCode;
-
-  @Backlink(to: 'paymentLineItems')
-  final header = IsarLink<TransactionHeaderEntity>();
+  int? transId;
+  int? paymentSeq;
+  double? amount;
+  DateTime? beginDate;
+  DateTime? endDate;
+  String? currencyId;
+  String? tenderId;
+  String? tenderStatusCode;
+  String? authCode;
 
   TransactionPaymentLineItemEntity(
-      {this.id,
-      required this.transId,
-      required this.paymentSeq,
-      required this.amount,
-      required this.beginDate,
+      {
+      this.transId,
+      this.paymentSeq,
+      this.amount,
+      this.beginDate,
       this.endDate,
-      required this.currencyId,
-      required this.tenderId,
-      required this.tenderStatusCode,
+      this.currencyId,
+      this.tenderId,
+      this.tenderStatusCode,
       this.authCode});
 }

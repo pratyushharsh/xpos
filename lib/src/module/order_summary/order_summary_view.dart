@@ -307,8 +307,8 @@ class OrderItemDetailDisplay extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(entity.itemDescription),
-                    Text(entity.itemId),
+                    Text(entity.itemDescription!),
+                    Text(entity.itemId!),
                   ],
                 ),
               ],
@@ -316,7 +316,7 @@ class OrderItemDetailDisplay extends StatelessWidget {
           ),
           Expanded(
             child: Column(
-              children: entity.taxModifiers.map((e) => Text(e.taxRuleName)).toList(),
+              children: entity.taxModifiers.map((e) => Text(e.taxRuleName ?? "Tax Rule")).toList(),
             ),
           ),
           Expanded(
@@ -380,9 +380,9 @@ class PaymentLineDisplay extends StatelessWidget {
                   .map(
                     (e) => DataRow(cells: [
                       DataCell(Text(e.paymentSeq.toString())),
-                      DataCell(Text(e.tenderId)),
-                      DataCell(Text(e.beginDate.toIso8601String())),
-                      DataCell(Text(e.amount.toStringAsFixed(2))),
+                      DataCell(Text(e.tenderId!)),
+                      DataCell(Text(e.beginDate!.toIso8601String())),
+                      DataCell(Text(e.amount!.toStringAsFixed(2))),
                     ]),
                   )
                   .toList(),
@@ -419,7 +419,7 @@ class OrderDetailSummary extends StatelessWidget {
                       Text("\$${order.subtotal}"),
                     ]),
               ),
-              Divider(),
+              const Divider(),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Row(

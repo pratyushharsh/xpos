@@ -9,7 +9,7 @@ class DiscountHelper {
       TransactionLineItemEntity lineItem,
       DiscountEntity discount,
       String reason) {
-    double itemBasePrice = lineItem.unitPrice;
+    double itemBasePrice = lineItem.unitPrice!;
 
     if (DiscountCalculationMethod.percentage.name == discount.discountType) {
       var unitDiscount = itemBasePrice * min(discount.percent!, 100) / 100;
@@ -21,8 +21,8 @@ class DiscountHelper {
         transSeq: lineItem.transSeq,
         lineItemSeq: lineItem.lineItemSeq,
         lineItemModSeq: lineItem.lineModifiers.length + 1,
-        extendedAmount: unitDiscount * lineItem.quantity,
-        amount: unitDiscount * lineItem.quantity,
+        extendedAmount: unitDiscount * lineItem.quantity!,
+        amount: unitDiscount * lineItem.quantity!,
         percent: discount.percent,
         priceModifierReasonCode: PriceModifierReasonCode.discountPercent.code,
         description: discount.description,
@@ -30,8 +30,8 @@ class DiscountHelper {
         discountReasonCode: reason,
       );
     } else if (DiscountCalculationMethod.amount.name == discount.discountType) {
-      var rawUnitDiscount = discount.amount! / lineItem.quantity;
-      var unitDiscount = math.min(rawUnitDiscount, lineItem.unitPrice);
+      var rawUnitDiscount = discount.amount! / lineItem.quantity!;
+      var unitDiscount = math.min(rawUnitDiscount, lineItem.unitPrice!);
 
       return TransactionLineItemModifierEntity(
         storeId: lineItem.storeId,
@@ -40,7 +40,7 @@ class DiscountHelper {
         transSeq: lineItem.transSeq,
         lineItemSeq: lineItem.lineItemSeq,
         lineItemModSeq: lineItem.lineModifiers.length + 1,
-        extendedAmount: unitDiscount * lineItem.quantity,
+        extendedAmount: unitDiscount * lineItem.quantity!,
         amount: discount.amount!,
         priceModifierReasonCode: PriceModifierReasonCode.discountAmount.code,
         description: discount.description,
@@ -72,7 +72,7 @@ class DiscountHelper {
       if (lineModifier.priceModifierReasonCode ==
           PriceModifierReasonCode.discountPercent.code) {
         double discountPercent = lineModifier.percent!;
-        var unitDiscount = lineItem.unitPrice * discountPercent / 100;
+        var unitDiscount = lineItem.unitPrice! * discountPercent / 100;
 
         lineModifier.extendedAmount = unitDiscount * quantity;
         lineModifier.amount = unitDiscount * quantity;
@@ -80,7 +80,7 @@ class DiscountHelper {
           PriceModifierReasonCode.discountAmount.code) {
         var maximumDiscount = lineModifier.amount;
         var unitDiscount =
-            math.min(maximumDiscount / quantity, lineItem.unitPrice);
+            math.min(maximumDiscount / quantity, lineItem.unitPrice!);
 
         lineModifier.extendedAmount = unitDiscount * quantity;
       }
@@ -105,7 +105,7 @@ class DiscountHelper {
     List<TransactionLineItemModifierEntity> originalLineModifiers = originalLine.lineModifiers.toList();
 
     for (var lineModifier in originalLineModifiers) {
-      var unitDiscount = lineModifier.amount / originalLine.quantity;
+      var unitDiscount = lineModifier.amount / originalLine.quantity!;
       var newModifier = TransactionLineItemModifierEntity(
         storeId: newLine.storeId,
         businessDate: newLine.businessDate,
@@ -113,8 +113,8 @@ class DiscountHelper {
         transSeq: newLine.transSeq,
         lineItemSeq: newLine.lineItemSeq,
         lineItemModSeq: newLineModifiers.length + 1,
-        extendedAmount: - unitDiscount * newLine.quantity,
-        amount: - unitDiscount * newLine.quantity,
+        extendedAmount: - unitDiscount * newLine.quantity!,
+        amount: - unitDiscount * newLine.quantity!,
         priceModifierReasonCode: lineModifier.priceModifierReasonCode,
         description: lineModifier.description,
         discountCode: lineModifier.discountCode,

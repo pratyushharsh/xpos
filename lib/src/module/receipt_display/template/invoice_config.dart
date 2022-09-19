@@ -45,7 +45,7 @@ class InvoiceConfig {
   static String buildLineItemSummaryValue(String key, TransactionHeaderEntity entity) {
     switch (key) {
       case 'qtyuom':
-        return entity.lineItems.fold<double>(0.00, (previousValue, element) => previousValue + element.quantity).toString();
+        return entity.lineItems.fold<double>(0.00, (previousValue, element) => previousValue + element.quantity!).toString();
       case 'tax':
         return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.taxTotal);
       case 'amount':

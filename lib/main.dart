@@ -35,8 +35,7 @@ Future<void> main() {
     log.info('App Documents Directory:  $appDoc');
     log.info('App Support Directory:  $dir');
     final isar = await Isar.open(
-      inspector: true,
-      schemas: [
+      [
         RetailLocationEntitySchema,
         ContactEntitySchema,
         EmployeeEntitySchema,
@@ -46,15 +45,12 @@ Future<void> main() {
         SettingEntitySchema,
         SyncEntitySchema,
         TransactionHeaderEntitySchema,
-        TransactionLineItemEntitySchema,
-        TransactionPaymentLineItemEntitySchema,
-        TransactionLineItemModifierEntitySchema,
         CodeValueEntitySchema,
         ReasonCodeEntitySchema,
         TaxRuleEntitySchema,
         TaxGroupEntitySchema,
-        TransactionLineItemTaxModifierSchema
       ],
+      inspector: true,
       directory: dir.path,
     );
 

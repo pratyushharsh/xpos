@@ -53,7 +53,7 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
           'SKU$seq';
       e.storeId = storeId;
 
-      db.writeTxnSync((isar) => isar.productEntitys.putSync(e));
+      db.writeTxnSync(() => db.productEntitys.putSync(e));
       emit(state.copyWith(status: ItemStatus.addingSuccess));
     } catch (e) {
       log.severe(e);

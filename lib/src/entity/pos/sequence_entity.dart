@@ -10,8 +10,7 @@ enum SequenceType {
 
 @Collection()
 class SequenceEntity {
-  @Id()
-  final int id;
+  final Id id;
 
   final String name;
   final int nextSeq;

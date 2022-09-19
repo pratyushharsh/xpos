@@ -49,18 +49,17 @@ class SyncConfigRepository {
   }
 
   Future<void> _loadReasonCode(List<List<dynamic>> fields) async {
-    var res = await db.writeTxn((isar) async {
+    var res = await db.writeTxn(() async {
       for (int i = 0; i < fields.length; i++) {
         var c = fields[i];
-        isar.reasonCodeEntitys.put(
+        db.reasonCodeEntitys.put(
             ReasonCodeEntity(
               reasonTypeCode: c[0],
               reasonCode: c[1],
               description: c[2],
               parentCode: c[3],
               commentRequired: "Y" == c[4],
-            ),
-            replaceOnConflict: true);
+            ),);
       }
     });
   }
@@ -68,16 +67,15 @@ class SyncConfigRepository {
   Future<void> _loadConfiguration(
       String filename, List<List<dynamic>> fields) async {
     String category = filename.replaceAll(".csv", "");
-    var res = await db.writeTxn((isar) async {
+    var res = await db.writeTxn(() async {
       for (int i = 0; i < fields.length; i++) {
         var c = fields[i];
-        isar.codeValueEntitys.put(
+        db.codeValueEntitys.put(
             CodeValueEntity(
                 category: category,
                 code: c[0].toString(),
                 value: c[1].toString(),
-                description: c[1].toString()),
-            replaceOnConflict: true);
+                description: c[1].toString()),);
       }
     });
   }
@@ -152,7 +150,7 @@ class SyncConfigRepository {
             .transform(const CsvToListConverter())
             .toList();
 
-        var resp = await db.writeTxn((isar) async {
+        var resp = await db.writeTxn(() async {
           for (var i = 1; i < fields.length; i++) {
             var e = fields[i];
 
@@ -186,7 +184,7 @@ class SyncConfigRepository {
               createTime: DateTime.now(),
               id: seq,
             );
-            await db.productEntitys.put(entity, replaceOnConflict: true);
+            await db.productEntitys.put(entity,);
           }
         });
       }

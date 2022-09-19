@@ -4,25 +4,21 @@ import 'entity.dart';
 
 part 'trn_line_item_modifier.g.dart';
 
-@Collection()
+@embedded
 class TransactionLineItemModifierEntity {
-  @Id()
-  final int? id;
-
-  @Index(composite: [CompositeIndex("transSeq"), CompositeIndex("lineItemSeq")])
-  final int storeId;
-  final DateTime businessDate;
-  final int posId;
-  final int transSeq;
-  final int lineItemSeq;
-  final int lineItemModSeq;
+  int? storeId;
+  DateTime? businessDate;
+  int? posId;
+  int? transSeq;
+  int? lineItemSeq;
+  int? lineItemModSeq;
 
   double amount;
   double extendedAmount;
   String? notes;
 
   double? percent;
-  String priceModifierReasonCode;
+  String? priceModifierReasonCode;
 
   String? description;
   String? promotionId;
@@ -31,22 +27,21 @@ class TransactionLineItemModifierEntity {
   String? groupDiscountId;
   String? discountReasonCode;
 
-  @Backlink(to: 'lineModifiers')
-  final lineItem = IsarLink<TransactionLineItemEntity>();
+  // @Backlink(to: 'lineModifiers')
+  // final lineItem = IsarLink<TransactionLineItemEntity>();
 
   TransactionLineItemModifierEntity({
-    this.id,
-    required this.storeId,
-    required this.businessDate,
-    required this.posId,
-    required this.transSeq,
-    required this.lineItemSeq,
-    required this.lineItemModSeq,
-    required this.amount,
-    required this.extendedAmount,
+    this.storeId,
+    this.businessDate,
+    this.posId,
+    this.transSeq,
+    this.lineItemSeq,
+    this.lineItemModSeq,
+    this.amount = 0,
+    this.extendedAmount = 0,
     this.notes,
     this.percent,
-    required this.priceModifierReasonCode,
+    this.priceModifierReasonCode,
     this.description,
     this.promotionId,
     this.dealId,

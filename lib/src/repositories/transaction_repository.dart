@@ -13,33 +13,34 @@ class TransactionRepository {
   TransactionRepository({required this.db, required this.restClient });
 
   Future<void> createNewSale(TransactionHeaderEntity header) async {
-    await db.writeTxn((isar) async {
-      await isar.transactionHeaderEntitys.put(header, replaceOnConflict: true);
-      await header.lineItems.save();
-      await header.paymentLineItems.save();
-      for (var element in header.lineItems) {
-        await element.lineModifiers.save();
-        await element.taxModifiers.save();
-      }
+    await db.writeTxn(() async {
+      await db.transactionHeaderEntitys.put(header);
+      // await header.lineItems.save();
+      // await header.paymentLineItems.save();
+      // for (var element in header.lineItems) {
+      //   await element.lineModifiers.save();
+      //   await element.taxModifiers.save();
+      // }
     });
   }
 
   Future<TransactionHeaderEntity?> getTransaction(int id) async {
     TransactionHeaderEntity? order = await db.transactionHeaderEntitys.get(id);
     if (order != null) {
-      await order.lineItems.load();
-      for (var element in order.lineItems) {
-        await element.lineModifiers.load();
-        await element.taxModifiers.load();
-      }
-      await order.paymentLineItems.load();
+      // await order.lineItems.load();
+      // for (var element in order.lineItems) {
+      //   await element.lineModifiers.load();
+      //   await element.taxModifiers.load();
+      // }
+      // await order.paymentLineItems.load();
       return order;
     }
     return null;
   }
 
+  // @TODO
   Future<List<TransactionLineItemEntity>> getLineItemWithOriginalTransactionNo(int id) async {
-    List<TransactionLineItemEntity> order = await db.transactionLineItemEntitys.where().originalTransSeqEqualTo(id).findAll();
-    return order;
+    // var order = await db.transactionHeaderEntitys.where().lineItemsProperty().originalTransSeqProperty().equalTo(id).findAll();
+    return [];
   }
 }

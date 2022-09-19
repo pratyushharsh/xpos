@@ -6,8 +6,7 @@ part 'business_entity.g.dart';
 @Collection()
 class RetailLocationEntity extends BaseEntity {
 
-  @Id()
-  final int rtlLocId;
+  final Id rtlLocId;
   final String? storeName;
   final String? storeEmail;
   final String? storeContact;

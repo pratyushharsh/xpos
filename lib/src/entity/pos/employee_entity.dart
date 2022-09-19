@@ -4,8 +4,7 @@ part 'employee_entity.g.dart';
 
 @Collection()
 class EmployeeEntity {
-  @Id()
-  int? id;
+  Id? id;
 
   @Index(unique: true, type: IndexType.value)
   String? employeeId;

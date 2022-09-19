@@ -4,8 +4,7 @@ part 'employee_role_entity.g.dart';
 
 @Collection()
 class EmployeeRoleEntity {
-  @Id()
-  int? id;
+  Id? id;
 
   @Index(composite: [CompositeIndex("storeId")], unique: true)
   String employeeId;

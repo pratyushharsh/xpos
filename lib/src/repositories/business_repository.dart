@@ -44,7 +44,7 @@ class BusinessRepository {
             locale: resp.locale,
             postalCode: resp.postalCode,
           );
-          await db.writeTxn((isar) => isar.retailLocationEntitys.put(entity));
+          await db.writeTxn(() => db.retailLocationEntitys.put(entity));
           return entity;
         } catch (e) {
           log.severe(e);
@@ -79,7 +79,7 @@ class BusinessRepository {
   Future<RetailLocationEntity> updateBusiness(
       RetailLocationEntity entity) async {
     try {
-      await db.writeTxn((isar) => isar.retailLocationEntitys.put(entity));
+      await db.writeTxn(() => db.retailLocationEntitys.put(entity));
       return entity;
     } catch (e) {
       log.severe(e);
@@ -116,7 +116,7 @@ class BusinessRepository {
             locale: resp.locale,
             postalCode: resp.postalCode,
           );
-          await db.writeTxn((isar) => isar.retailLocationEntitys.put(entity));
+          await db.writeTxn(() => db.retailLocationEntitys.put(entity));
           return entity;
         } catch (e) {
           log.severe(e);

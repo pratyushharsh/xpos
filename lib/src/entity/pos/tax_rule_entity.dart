@@ -6,8 +6,7 @@ part 'tax_rule_entity.g.dart';
 
 @Collection()
 class TaxRuleEntity {
-  @Id()
-  final int? id;
+  final Id? id;
 
   @Index()
   @Index(composite: [CompositeIndex("ruleName")], unique: true)

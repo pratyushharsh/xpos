@@ -13,12 +13,12 @@ class SequenceRepository {
   SequenceRepository({required this.db, required this.restClient});
 
   Future<SequenceEntity> getNextSequence(SequenceType type) async {
-    var data = await db.writeTxn((isar) async {
-      var seq = await isar.sequenceEntitys.get(type.index);
+    var data = await db.writeTxn(() async {
+      var seq = await db.sequenceEntitys.get(type.index);
       if (seq != null) {
-        await isar.sequenceEntitys.put(seq.copyWith(nextSeq: seq.nextSeq + 1));
+        await db.sequenceEntitys.put(seq.copyWith(nextSeq: seq.nextSeq + 1));
       } else {
-        await isar.sequenceEntitys.put(SequenceEntity(id: type.index, name: type.name, nextSeq: 1));
+        await db.sequenceEntitys.put(SequenceEntity(id: type.index, name: type.name, nextSeq: 1));
       }
     });
 

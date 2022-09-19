@@ -4,8 +4,7 @@ part 'discount_entity.g.dart';
 
 @Collection()
 class DiscountEntity {
-  @Id()
-  final int? id;
+  final Id? id;
 
   @Index(unique: true)
   final String discountId;

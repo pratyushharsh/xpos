@@ -30,7 +30,7 @@ class ItemSearchBloc extends Bloc<ItemSearchEvent, ItemSearchState> {
           .where()
           .productIdEqualTo(event.filter)
           .or()
-          .descriptionWordsAnyStartsWith(event.filter)
+          .descriptionWordsElementStartsWith(event.filter)
           .limit(10)
           .findAll();
       emit(state.copyWith(products: prod, status: ItemSearchStatus.success, filter: state.filter.copyWith(filterText: event.filter)));

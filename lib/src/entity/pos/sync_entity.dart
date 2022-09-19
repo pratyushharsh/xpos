@@ -4,8 +4,7 @@ part 'sync_entity.g.dart';
 
 @Collection()
 class SyncEntity {
-  @Id()
-  final int? id;
+  final Id? id;
 
   @Index()
   final String type;

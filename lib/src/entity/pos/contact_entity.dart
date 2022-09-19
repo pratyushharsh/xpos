@@ -2,15 +2,14 @@ import 'dart:convert';
 
 import 'package:isar/isar.dart';
 
-import '../../model/address.dart';
+import 'address.dart';
 
 part 'contact_entity.g.dart';
 
 @Collection()
 class ContactEntity {
 
-  @Id()
-  final int? id;
+  final Id? id;
 
   @Index(unique: true)
   final String contactId;
@@ -26,10 +25,8 @@ class ContactEntity {
   @Index()
   final String? email;
 
-  @AddressConverter()
   final Address? shippingAddress;
 
-  @AddressConverter()
   final Address? billingAddress;
   final int syncState;
 
@@ -61,24 +58,24 @@ class ContactEntity {
 }
 
 
-class AddressConverter extends TypeConverter<Address?, String?> {
-  const AddressConverter(); // Converters need to have an empty const constructor
-
-  @override
-  Address? fromIsar(String? input) {
-    if (input == null) {
-      return null;
-    }
-    var inp = json.decode(input);
-    return Address.fromJson(inp);
-  }
-
-  @override
-  String? toIsar(Address? address) {
-    if (address == null) {
-      return null;
-    }
-    var out = address.toJson();
-    return json.encode(out);
-  }
-}
+// class AddressConverter extends TypeConverter<Address?, String?> {
+//   const AddressConverter(); // Converters need to have an empty const constructor
+//
+//   @override
+//   Address? fromIsar(String? input) {
+//     if (input == null) {
+//       return null;
+//     }
+//     var inp = json.decode(input);
+//     return Address.fromJson(inp);
+//   }
+//
+//   @override
+//   String? toIsar(Address? address) {
+//     if (address == null) {
+//       return null;
+//     }
+//     var out = address.toJson();
+//     return json.encode(out);
+//   }
+// }
