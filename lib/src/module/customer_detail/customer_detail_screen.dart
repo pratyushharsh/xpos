@@ -20,7 +20,7 @@ class CustomerDetailScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           body: BlocProvider(
             create: (context) => CustomerDetailBloc(
-                customerId: userId, db: RepositoryProvider.of(context))
+                customerId: userId, customerRepository: RepositoryProvider.of(context))
               ..add(LoadCustomerPurchaseList()),
             child: Stack(
               fit: StackFit.expand,

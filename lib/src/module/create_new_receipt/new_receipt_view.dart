@@ -31,10 +31,11 @@ class NewReceiptView extends StatelessWidget {
         BlocProvider(
           lazy: false,
           create: (ctx) => CreateNewReceiptBloc(
-            db: RepositoryProvider.of(ctx),
             authenticationBloc: BlocProvider.of(ctx),
             sequenceRepository: RepositoryProvider.of(ctx),
             transactionRepository: RepositoryProvider.of(ctx),
+            productRepository: RepositoryProvider.of(ctx),
+            customerRepository: RepositoryProvider.of(ctx),
             taxHelper: RepositoryProvider.of(ctx),
             taxModifierCalculator: RepositoryProvider.of(ctx),
             priceHelper: RepositoryProvider.of(ctx),

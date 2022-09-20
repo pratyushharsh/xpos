@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
@@ -17,6 +14,8 @@ import '../../../pos/calculator/tax_calculator.dart';
 import '../../../pos/config/config.dart';
 import '../../../pos/helper/pos_helper.dart';
 import '../../../pos/helper/price_helper.dart';
+import '../../../repositories/customer_repository.dart';
+import '../../../repositories/product_repository.dart';
 import '../../return_order/bloc/return_order_bloc.dart';
 
 part 'create_new_receipt_event.dart';
@@ -25,19 +24,21 @@ part 'create_new_receipt_state.dart';
 class CreateNewReceiptBloc
     extends Bloc<CreateNewReceiptEvent, CreateNewReceiptState> {
   final log = Logger('CreateNewReceiptBloc');
-  final Isar db;
   final AuthenticationBloc authenticationBloc;
   final SequenceRepository sequenceRepository;
   final TransactionRepository transactionRepository;
+  final ProductRepository productRepository;
+  final CustomerRepository customerRepository;
   final TaxHelper taxHelper;
   final PriceHelper priceHelper;
   final DiscountHelper discountHelper;
   final TaxModifierCalculator taxModifierCalculator;
 
   CreateNewReceiptBloc(
-      {required this.db,
-      required this.transactionRepository,
+      {required this.transactionRepository,
       required this.authenticationBloc,
+      required this.productRepository,
+      required this.customerRepository,
       required this.taxHelper,
       required this.priceHelper,
       required this.discountHelper,
@@ -104,7 +105,8 @@ class CreateNewReceiptBloc
         netAmount: itemPrice * 1,
         grossAmount: itemPrice,
         taxAmount: 0.00,
-        extendedAmount: itemPrice * 1, unitCost: 0.0);
+        extendedAmount: itemPrice * 1,
+        unitCost: 0.0);
 
     List<TransactionLineItemTaxModifier> taxModifiers =
         taxHelper.createSaleTaxModifiers(newLine, taxRules);
@@ -129,35 +131,34 @@ class CreateNewReceiptBloc
     int? storeId = authenticationBloc.state.store?.rtlLocId;
     if (storeId == null) throw Exception("Store Not Found");
 
-
     var currentEmployee = authenticationBloc.state.employee;
 
     TransactionHeaderEntity header = TransactionHeaderEntity(
-        transId: state.transSeq,
-        businessDate: DateTime.now(),
-        beginDatetime: DateTime.now(),
-        transactionType: TransactionType.cashSale,
-        total: state.total,
-        taxTotal: state.tax,
-        subtotal: state.subTotal,
-        roundTotal: 0.00,
-        discountTotal: 0.00,
-        status: SaleStatus.completed,
-        customerId: state.customer?.contactId,
-        customerName:
-            '${state.customer?.firstName} ${state.customer?.lastName}',
-        customerPhone: state.customer?.phoneNumber,
-        shippingAddress: state.customer?.shippingAddress,
-        storeId: storeId,
-        createTime: DateTime.now(),
-        associateId: currentEmployee!.employeeId,
-        associateName: '${currentEmployee.firstName} ${currentEmployee.lastName}',
+      transId: state.transSeq,
+      businessDate: DateTime.now(),
+      beginDatetime: DateTime.now(),
+      transactionType: TransactionType.cashSale,
+      total: state.total,
+      taxTotal: state.tax,
+      subtotal: state.subTotal,
+      roundTotal: 0.00,
+      discountTotal: 0.00,
+      status: SaleStatus.completed,
+      customerId: state.customer?.contactId,
+      customerName: '${state.customer?.firstName} ${state.customer?.lastName}',
+      customerPhone: state.customer?.phoneNumber,
+      shippingAddress: state.customer?.shippingAddress,
+      storeId: storeId,
+      createTime: DateTime.now(),
+      associateId: currentEmployee!.employeeId,
+      associateName: '${currentEmployee.firstName} ${currentEmployee.lastName}',
     );
     List<TransactionLineItemEntity> lineItems = state.lineItem;
     header.lineItems = lineItems;
     header.paymentLineItems = state.tenderLine;
 
-    double discountAmount = discountHelper.calculateTransactionDiscountTotal(header);
+    double discountAmount =
+        discountHelper.calculateTransactionDiscountTotal(header);
     double taxAmount = taxHelper.calculateTransactionTaxAmount(header);
 
     header.discountTotal = discountAmount;
@@ -166,11 +167,7 @@ class CreateNewReceiptBloc
     // Create If Contact Does not exist else override
     if (state.customer != null) {
       try {
-        db.writeTxn(() async {
-          if (state.customer != null) {
-            await db.contactEntitys.put(state.customer!);
-          }
-        });
+        await customerRepository.createOrUpdateCustomer(state.customer!);
       } catch (e) {
         log.severe(e);
       }
@@ -211,7 +208,8 @@ class CreateNewReceiptBloc
         newLine.extendedAmount = event.quantity * newLine.unitPrice!;
         newLine.quantity = event.quantity;
         // Find if any existing modifier is there.
-        discountHelper.updateUnitPriceOnDiscountQuantityChange(newLine, event.quantity);
+        discountHelper.updateUnitPriceOnDiscountQuantityChange(
+            newLine, event.quantity);
 
         double discountAmount = discountHelper.calculateDiscountAmount(line);
         newLine.discountAmount = discountAmount;
@@ -251,7 +249,8 @@ class CreateNewReceiptBloc
           line.taxableAmount = newLine.netAmount;
         }
 
-        List<TransactionLineItemModifierEntity> modifier = newLine.lineModifiers.toList();
+        List<TransactionLineItemModifierEntity> modifier =
+            newLine.lineModifiers.toList();
         // newLine.lineModifiers.removeAll(modifier);
         newLine.discountAmount = 0.0;
 
@@ -309,7 +308,8 @@ class CreateNewReceiptBloc
         newList.add(line);
       }
     }
-    emit(state.copyWith(lineItem: newList, status: CreateNewReceiptStatus.inProgress));
+    emit(state.copyWith(
+        lineItem: newList, status: CreateNewReceiptStatus.inProgress));
   }
 
   void _onLineItemDiscountPercent(OnApplyLineItemDiscountPercent event,
@@ -352,7 +352,8 @@ class CreateNewReceiptBloc
         newList.add(line);
       }
     }
-    emit(state.copyWith(lineItem: newList, status: CreateNewReceiptStatus.inProgress));
+    emit(state.copyWith(
+        lineItem: newList, status: CreateNewReceiptStatus.inProgress));
   }
 
   void _onChangeLineItemTaxAmount(OnChangeLineItemTaxAmount event,
@@ -482,9 +483,9 @@ class CreateNewReceiptBloc
 
         // Quantitative Data
         quantity: returnData.quantity,
-        unitPrice: - line.unitPrice!,
-        extendedAmount: returnData.quantity * (- line.unitPrice!),
-        baseUnitPrice: - line.baseUnitPrice!,
+        unitPrice: -line.unitPrice!,
+        extendedAmount: returnData.quantity * (-line.unitPrice!),
+        baseUnitPrice: -line.baseUnitPrice!,
         netAmount: 0.0,
 
         taxAmount: 0.0,
@@ -492,14 +493,18 @@ class CreateNewReceiptBloc
         grossAmount: 0.0,
       );
       // Calculate Line Modifier
-      List<TransactionLineItemModifierEntity> newLineModifier = discountHelper.createLineItemModifierFromOriginalTransaction(line, returnLine);
+      List<TransactionLineItemModifierEntity> newLineModifier = discountHelper
+          .createLineItemModifierFromOriginalTransaction(line, returnLine);
       returnLine.lineModifiers = newLineModifier;
 
-      returnLine.discountAmount = discountHelper.calculateDiscountAmount(returnLine);
-      returnLine.netAmount = returnLine.extendedAmount! - returnLine.discountAmount!;
+      returnLine.discountAmount =
+          discountHelper.calculateDiscountAmount(returnLine);
+      returnLine.netAmount =
+          returnLine.extendedAmount! - returnLine.discountAmount!;
 
       // Calculate Tax Amount
-      List<TransactionLineItemTaxModifier> newTaxLine = taxHelper.createTaxModifierFromOriginalTransaction(line, returnLine);
+      List<TransactionLineItemTaxModifier> newTaxLine =
+          taxHelper.createTaxModifierFromOriginalTransaction(line, returnLine);
       returnLine.taxModifiers = newTaxLine;
 
       double taxAmount = taxHelper.calculateTaxAmount(returnLine);
@@ -509,11 +514,7 @@ class CreateNewReceiptBloc
 
       newList.add(returnLine);
 
-
-      ProductEntity? pe = db.productEntitys
-          .where()
-          .productIdEqualTo(line.itemId)
-          .findFirstSync();
+      ProductEntity? pe = await productRepository.getProductById(line.itemId!);
       if (pe != null) {
         pm.putIfAbsent(line.itemId!, () => pe);
       }

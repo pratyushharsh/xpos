@@ -32,6 +32,7 @@ import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 import 'src/module/login/choose_create_business_view.dart';
 import 'src/repositories/employee_repository.dart';
+import 'src/repositories/product_repository.dart';
 import 'src/repositories/reason_code_repository.dart';
 
 class MyApp extends StatelessWidget {
@@ -98,6 +99,10 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(
             create: (context) =>
                 CustomerRepository(db: database, restClient: restClient),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                ProductRepository(db: database, restClient: restClient),
           ),
           RepositoryProvider(
             lazy: false,

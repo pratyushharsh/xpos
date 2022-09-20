@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
@@ -8,16 +7,18 @@ import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 
+import '../../../repositories/product_repository.dart';
+
 part 'item_event.dart';
 part 'item_state.dart';
 
 class ItemBloc extends Bloc<ItemEvent, ItemState> {
   final log = Logger('ItemBloc');
-  final Isar db;
+  final ProductRepository productRepository;
   final AuthenticationBloc authenticationBloc;
   final SequenceRepository sequenceRepository;
 
-  ItemBloc({required this.db, required this.authenticationBloc, required this.sequenceRepository}) : super(ItemState()) {
+  ItemBloc({required this.authenticationBloc, required this.sequenceRepository, required this.productRepository}) : super(ItemState()) {
     on<AddItem>(_onAddItem);
     on<LoadExistingItem>(_onLoadExistingItem);
     on<UpdateItem>(_onUpdateItem);
@@ -31,7 +32,7 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
     }
     emit(state.copyWith(status: ItemStatus.loading,));
     try {
-      var product = await db.productEntitys.getByProductId(event.productId);
+      var product = await productRepository.getProductById(event.productId!);
       if (product != null) {
         emit(state.copyWith(status: ItemStatus.editProduct, existingProduct: product));
       }
@@ -53,7 +54,7 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
           'SKU$seq';
       e.storeId = storeId;
 
-      db.writeTxnSync(() => db.productEntitys.putSync(e));
+      await productRepository.createNewProduct(e);
       emit(state.copyWith(status: ItemStatus.addingSuccess));
     } catch (e) {
       log.severe(e);
