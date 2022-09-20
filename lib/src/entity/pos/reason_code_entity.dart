@@ -28,5 +28,26 @@ class ReasonCodeEntity {
   String toString() {
     return 'ReasonCodeEntity{id: $id, reasonTypeCode: $reasonTypeCode, reasonCode: $reasonCode, description: $description, parentCode: $parentCode, commentRequired: $commentRequired}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReasonCodeEntity &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          reasonTypeCode == other.reasonTypeCode &&
+          reasonCode == other.reasonCode &&
+          description == other.description &&
+          parentCode == other.parentCode &&
+          commentRequired == other.commentRequired;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      reasonTypeCode.hashCode ^
+      reasonCode.hashCode ^
+      description.hashCode ^
+      parentCode.hashCode ^
+      commentRequired.hashCode;
 }
 

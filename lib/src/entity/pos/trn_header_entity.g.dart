@@ -18,122 +18,132 @@ const TransactionHeaderEntitySchema = CollectionSchema(
   name: r'TransactionHeaderEntity',
   id: -2037456124358543318,
   properties: {
-    r'beginDatetime': PropertySchema(
+    r'associateId': PropertySchema(
       id: 0,
+      name: r'associateId',
+      type: IsarType.string,
+    ),
+    r'associateName': PropertySchema(
+      id: 1,
+      name: r'associateName',
+      type: IsarType.string,
+    ),
+    r'beginDatetime': PropertySchema(
+      id: 2,
       name: r'beginDatetime',
       type: IsarType.dateTime,
     ),
     r'billingAddress': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'billingAddress',
       type: IsarType.object,
       target: r'Address',
     ),
     r'businessDate': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'businessDate',
       type: IsarType.dateTime,
     ),
     r'createTime': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'createTime',
       type: IsarType.dateTime,
     ),
     r'customerId': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'customerId',
       type: IsarType.string,
     ),
     r'customerName': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'customerName',
       type: IsarType.string,
     ),
     r'customerPhone': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'customerPhone',
       type: IsarType.string,
     ),
     r'discountTotal': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'discountTotal',
       type: IsarType.double,
     ),
     r'endDateTime': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'endDateTime',
       type: IsarType.dateTime,
     ),
     r'lastChangedAt': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'lastChangedAt',
       type: IsarType.dateTime,
     ),
     r'lineItems': PropertySchema(
-      id: 10,
+      id: 12,
       name: r'lineItems',
       type: IsarType.objectList,
       target: r'TransactionLineItemEntity',
     ),
     r'paymentLineItems': PropertySchema(
-      id: 11,
+      id: 13,
       name: r'paymentLineItems',
       type: IsarType.objectList,
       target: r'TransactionPaymentLineItemEntity',
     ),
     r'roundTotal': PropertySchema(
-      id: 12,
+      id: 14,
       name: r'roundTotal',
       type: IsarType.double,
     ),
     r'shippingAddress': PropertySchema(
-      id: 13,
+      id: 15,
       name: r'shippingAddress',
       type: IsarType.object,
       target: r'Address',
     ),
     r'status': PropertySchema(
-      id: 14,
+      id: 16,
       name: r'status',
       type: IsarType.string,
     ),
     r'storeId': PropertySchema(
-      id: 15,
+      id: 17,
       name: r'storeId',
       type: IsarType.long,
     ),
     r'subtotal': PropertySchema(
-      id: 16,
+      id: 18,
       name: r'subtotal',
       type: IsarType.double,
     ),
     r'syncState': PropertySchema(
-      id: 17,
+      id: 19,
       name: r'syncState',
       type: IsarType.long,
     ),
     r'taxTotal': PropertySchema(
-      id: 18,
+      id: 20,
       name: r'taxTotal',
       type: IsarType.double,
     ),
     r'total': PropertySchema(
-      id: 19,
+      id: 21,
       name: r'total',
       type: IsarType.double,
     ),
     r'transactionType': PropertySchema(
-      id: 20,
+      id: 22,
       name: r'transactionType',
       type: IsarType.string,
     ),
     r'updateTime': PropertySchema(
-      id: 21,
+      id: 23,
       name: r'updateTime',
       type: IsarType.dateTime,
     ),
     r'version': PropertySchema(
-      id: 22,
+      id: 24,
       name: r'version',
       type: IsarType.long,
     )
@@ -196,6 +206,18 @@ int _transactionHeaderEntityEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
+    final value = object.associateId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.associateName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.billingAddress;
     if (value != null) {
       bytesCount += 3 +
@@ -256,49 +278,51 @@ int _transactionHeaderEntitySerializeNative(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.beginDatetime);
+  writer.writeString(offsets[0], object.associateId);
+  writer.writeString(offsets[1], object.associateName);
+  writer.writeDateTime(offsets[2], object.beginDatetime);
   writer.writeObject<Address>(
-    offsets[1],
+    offsets[3],
     allOffsets,
     AddressSchema.serializeNative,
     object.billingAddress,
   );
-  writer.writeDateTime(offsets[2], object.businessDate);
-  writer.writeDateTime(offsets[3], object.createTime);
-  writer.writeString(offsets[4], object.customerId);
-  writer.writeString(offsets[5], object.customerName);
-  writer.writeString(offsets[6], object.customerPhone);
-  writer.writeDouble(offsets[7], object.discountTotal);
-  writer.writeDateTime(offsets[8], object.endDateTime);
-  writer.writeDateTime(offsets[9], object.lastChangedAt);
+  writer.writeDateTime(offsets[4], object.businessDate);
+  writer.writeDateTime(offsets[5], object.createTime);
+  writer.writeString(offsets[6], object.customerId);
+  writer.writeString(offsets[7], object.customerName);
+  writer.writeString(offsets[8], object.customerPhone);
+  writer.writeDouble(offsets[9], object.discountTotal);
+  writer.writeDateTime(offsets[10], object.endDateTime);
+  writer.writeDateTime(offsets[11], object.lastChangedAt);
   writer.writeObjectList<TransactionLineItemEntity>(
-    offsets[10],
+    offsets[12],
     allOffsets,
     TransactionLineItemEntitySchema.serializeNative,
     object.lineItems,
   );
   writer.writeObjectList<TransactionPaymentLineItemEntity>(
-    offsets[11],
+    offsets[13],
     allOffsets,
     TransactionPaymentLineItemEntitySchema.serializeNative,
     object.paymentLineItems,
   );
-  writer.writeDouble(offsets[12], object.roundTotal);
+  writer.writeDouble(offsets[14], object.roundTotal);
   writer.writeObject<Address>(
-    offsets[13],
+    offsets[15],
     allOffsets,
     AddressSchema.serializeNative,
     object.shippingAddress,
   );
-  writer.writeString(offsets[14], object.status);
-  writer.writeLong(offsets[15], object.storeId);
-  writer.writeDouble(offsets[16], object.subtotal);
-  writer.writeLong(offsets[17], object.syncState);
-  writer.writeDouble(offsets[18], object.taxTotal);
-  writer.writeDouble(offsets[19], object.total);
-  writer.writeString(offsets[20], object.transactionType);
-  writer.writeDateTime(offsets[21], object.updateTime);
-  writer.writeLong(offsets[22], object.version);
+  writer.writeString(offsets[16], object.status);
+  writer.writeLong(offsets[17], object.storeId);
+  writer.writeDouble(offsets[18], object.subtotal);
+  writer.writeLong(offsets[19], object.syncState);
+  writer.writeDouble(offsets[20], object.taxTotal);
+  writer.writeDouble(offsets[21], object.total);
+  writer.writeString(offsets[22], object.transactionType);
+  writer.writeDateTime(offsets[23], object.updateTime);
+  writer.writeLong(offsets[24], object.version);
   return writer.usedBytes;
 }
 
@@ -309,50 +333,52 @@ TransactionHeaderEntity _transactionHeaderEntityDeserializeNative(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = TransactionHeaderEntity(
-    beginDatetime: reader.readDateTime(offsets[0]),
+    associateId: reader.readStringOrNull(offsets[0]),
+    associateName: reader.readStringOrNull(offsets[1]),
+    beginDatetime: reader.readDateTime(offsets[2]),
     billingAddress: reader.readObjectOrNull<Address>(
-      offsets[1],
+      offsets[3],
       AddressSchema.deserializeNative,
       allOffsets,
     ),
-    businessDate: reader.readDateTime(offsets[2]),
-    createTime: reader.readDateTime(offsets[3]),
-    customerId: reader.readStringOrNull(offsets[4]),
-    customerName: reader.readStringOrNull(offsets[5]),
-    customerPhone: reader.readStringOrNull(offsets[6]),
-    discountTotal: reader.readDouble(offsets[7]),
-    endDateTime: reader.readDateTimeOrNull(offsets[8]),
-    lastChangedAt: reader.readDateTimeOrNull(offsets[9]),
+    businessDate: reader.readDateTime(offsets[4]),
+    createTime: reader.readDateTime(offsets[5]),
+    customerId: reader.readStringOrNull(offsets[6]),
+    customerName: reader.readStringOrNull(offsets[7]),
+    customerPhone: reader.readStringOrNull(offsets[8]),
+    discountTotal: reader.readDouble(offsets[9]),
+    endDateTime: reader.readDateTimeOrNull(offsets[10]),
+    lastChangedAt: reader.readDateTimeOrNull(offsets[11]),
     lineItems: reader.readObjectList<TransactionLineItemEntity>(
-          offsets[10],
+          offsets[12],
           TransactionLineItemEntitySchema.deserializeNative,
           allOffsets,
           TransactionLineItemEntity(),
         ) ??
         const [],
     paymentLineItems: reader.readObjectList<TransactionPaymentLineItemEntity>(
-          offsets[11],
+          offsets[13],
           TransactionPaymentLineItemEntitySchema.deserializeNative,
           allOffsets,
           TransactionPaymentLineItemEntity(),
         ) ??
         const [],
-    roundTotal: reader.readDouble(offsets[12]),
+    roundTotal: reader.readDouble(offsets[14]),
     shippingAddress: reader.readObjectOrNull<Address>(
-      offsets[13],
+      offsets[15],
       AddressSchema.deserializeNative,
       allOffsets,
     ),
-    status: reader.readString(offsets[14]),
-    storeId: reader.readLong(offsets[15]),
-    subtotal: reader.readDouble(offsets[16]),
-    syncState: reader.readLongOrNull(offsets[17]) ?? 100,
-    taxTotal: reader.readDouble(offsets[18]),
-    total: reader.readDouble(offsets[19]),
+    status: reader.readString(offsets[16]),
+    storeId: reader.readLong(offsets[17]),
+    subtotal: reader.readDouble(offsets[18]),
+    syncState: reader.readLongOrNull(offsets[19]) ?? 100,
+    taxTotal: reader.readDouble(offsets[20]),
+    total: reader.readDouble(offsets[21]),
     transId: id,
-    transactionType: reader.readString(offsets[20]),
-    updateTime: reader.readDateTimeOrNull(offsets[21]),
-    version: reader.readLongOrNull(offsets[22]) ?? 1,
+    transactionType: reader.readString(offsets[22]),
+    updateTime: reader.readDateTimeOrNull(offsets[23]),
+    version: reader.readLongOrNull(offsets[24]) ?? 1,
   );
   return object;
 }
@@ -365,30 +391,34 @@ P _transactionHeaderEntityDeserializePropNative<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
+      return (reader.readStringOrNull(offset)) as P;
+    case 2:
+      return (reader.readDateTime(offset)) as P;
+    case 3:
       return (reader.readObjectOrNull<Address>(
         offset,
         AddressSchema.deserializeNative,
         allOffsets,
       )) as P;
-    case 2:
-      return (reader.readDateTime(offset)) as P;
-    case 3:
-      return (reader.readDateTime(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 10:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 11:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 12:
       return (reader.readObjectList<TransactionLineItemEntity>(
             offset,
             TransactionLineItemEntitySchema.deserializeNative,
@@ -396,7 +426,7 @@ P _transactionHeaderEntityDeserializePropNative<P>(
             TransactionLineItemEntity(),
           ) ??
           const []) as P;
-    case 11:
+    case 13:
       return (reader.readObjectList<TransactionPaymentLineItemEntity>(
             offset,
             TransactionPaymentLineItemEntitySchema.deserializeNative,
@@ -404,31 +434,31 @@ P _transactionHeaderEntityDeserializePropNative<P>(
             TransactionPaymentLineItemEntity(),
           ) ??
           const []) as P;
-    case 12:
+    case 14:
       return (reader.readDouble(offset)) as P;
-    case 13:
+    case 15:
       return (reader.readObjectOrNull<Address>(
         offset,
         AddressSchema.deserializeNative,
         allOffsets,
       )) as P;
-    case 14:
-      return (reader.readString(offset)) as P;
-    case 15:
-      return (reader.readLong(offset)) as P;
     case 16:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 17:
-      return (reader.readLongOrNull(offset) ?? 100) as P;
+      return (reader.readLong(offset)) as P;
     case 18:
       return (reader.readDouble(offset)) as P;
     case 19:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 100) as P;
     case 20:
-      return (reader.readString(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 21:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 22:
+      return (reader.readString(offset)) as P;
+    case 23:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 24:
       return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -443,7 +473,7 @@ Object _transactionHeaderEntitySerializeWeb(
 
 TransactionHeaderEntity _transactionHeaderEntityDeserializeWeb(
     IsarCollection<TransactionHeaderEntity> collection, Object jsObj) {
-  /*final object = TransactionHeaderEntity(beginDatetime: IsarNative.jsObjectGet(jsObj, r'beginDatetime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'beginDatetime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),billingAddress: IsarNative.jsObjectGet(jsObj, r'billingAddress') ,businessDate: IsarNative.jsObjectGet(jsObj, r'businessDate') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'businessDate') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),customerId: IsarNative.jsObjectGet(jsObj, r'customerId') ,customerName: IsarNative.jsObjectGet(jsObj, r'customerName') ,customerPhone: IsarNative.jsObjectGet(jsObj, r'customerPhone') ,discountTotal: IsarNative.jsObjectGet(jsObj, r'discountTotal') ?? double.negativeInfinity,endDateTime: IsarNative.jsObjectGet(jsObj, r'endDateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'endDateTime') as int, isUtc: true).toLocal() : null,lastChangedAt: IsarNative.jsObjectGet(jsObj, r'lastChangedAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastChangedAt') as int, isUtc: true).toLocal() : null,lineItems: (IsarNative.jsObjectGet(jsObj, r'lineItems') as List?)?.map((e) => e ?? TransactionLineItemEntity()).toList().cast<TransactionLineItemEntity>() ?? [],paymentLineItems: (IsarNative.jsObjectGet(jsObj, r'paymentLineItems') as List?)?.map((e) => e ?? TransactionPaymentLineItemEntity()).toList().cast<TransactionPaymentLineItemEntity>() ?? [],roundTotal: IsarNative.jsObjectGet(jsObj, r'roundTotal') ?? double.negativeInfinity,shippingAddress: IsarNative.jsObjectGet(jsObj, r'shippingAddress') ,status: IsarNative.jsObjectGet(jsObj, r'status') ?? '',storeId: IsarNative.jsObjectGet(jsObj, r'storeId') ?? (double.negativeInfinity as int),subtotal: IsarNative.jsObjectGet(jsObj, r'subtotal') ?? double.negativeInfinity,syncState: IsarNative.jsObjectGet(jsObj, r'syncState') ?? (double.negativeInfinity as int),taxTotal: IsarNative.jsObjectGet(jsObj, r'taxTotal') ?? double.negativeInfinity,total: IsarNative.jsObjectGet(jsObj, r'total') ?? double.negativeInfinity,transId: IsarNative.jsObjectGet(jsObj, r'transId') ?? (double.negativeInfinity as int),transactionType: IsarNative.jsObjectGet(jsObj, r'transactionType') ?? '',updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
+  /*final object = TransactionHeaderEntity(associateId: IsarNative.jsObjectGet(jsObj, r'associateId') ,associateName: IsarNative.jsObjectGet(jsObj, r'associateName') ,beginDatetime: IsarNative.jsObjectGet(jsObj, r'beginDatetime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'beginDatetime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),billingAddress: IsarNative.jsObjectGet(jsObj, r'billingAddress') ,businessDate: IsarNative.jsObjectGet(jsObj, r'businessDate') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'businessDate') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),customerId: IsarNative.jsObjectGet(jsObj, r'customerId') ,customerName: IsarNative.jsObjectGet(jsObj, r'customerName') ,customerPhone: IsarNative.jsObjectGet(jsObj, r'customerPhone') ,discountTotal: IsarNative.jsObjectGet(jsObj, r'discountTotal') ?? double.negativeInfinity,endDateTime: IsarNative.jsObjectGet(jsObj, r'endDateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'endDateTime') as int, isUtc: true).toLocal() : null,lastChangedAt: IsarNative.jsObjectGet(jsObj, r'lastChangedAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastChangedAt') as int, isUtc: true).toLocal() : null,lineItems: (IsarNative.jsObjectGet(jsObj, r'lineItems') as List?)?.map((e) => e ?? TransactionLineItemEntity()).toList().cast<TransactionLineItemEntity>() ?? [],paymentLineItems: (IsarNative.jsObjectGet(jsObj, r'paymentLineItems') as List?)?.map((e) => e ?? TransactionPaymentLineItemEntity()).toList().cast<TransactionPaymentLineItemEntity>() ?? [],roundTotal: IsarNative.jsObjectGet(jsObj, r'roundTotal') ?? double.negativeInfinity,shippingAddress: IsarNative.jsObjectGet(jsObj, r'shippingAddress') ,status: IsarNative.jsObjectGet(jsObj, r'status') ?? '',storeId: IsarNative.jsObjectGet(jsObj, r'storeId') ?? (double.negativeInfinity as int),subtotal: IsarNative.jsObjectGet(jsObj, r'subtotal') ?? double.negativeInfinity,syncState: IsarNative.jsObjectGet(jsObj, r'syncState') ?? (double.negativeInfinity as int),taxTotal: IsarNative.jsObjectGet(jsObj, r'taxTotal') ?? double.negativeInfinity,total: IsarNative.jsObjectGet(jsObj, r'total') ?? double.negativeInfinity,transId: IsarNative.jsObjectGet(jsObj, r'transId') ?? (double.negativeInfinity as int),transactionType: IsarNative.jsObjectGet(jsObj, r'transactionType') ?? '',updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
   //return object;
   throw UnimplementedError();
 }
@@ -686,6 +716,318 @@ extension TransactionHeaderEntityQueryWhere on QueryBuilder<
 
 extension TransactionHeaderEntityQueryFilter on QueryBuilder<
     TransactionHeaderEntity, TransactionHeaderEntity, QFilterCondition> {
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'associateId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'associateId',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'associateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'associateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'associateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'associateId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'associateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'associateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      associateIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'associateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      associateIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'associateId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'associateId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'associateId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'associateName',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'associateName',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'associateName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'associateName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'associateName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'associateName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'associateName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'associateName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      associateNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'associateName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      associateNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'associateName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'associateName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> associateNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'associateName',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> beginDatetimeEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
@@ -2628,6 +2970,34 @@ extension TransactionHeaderEntityQueryLinks on QueryBuilder<
 extension TransactionHeaderEntityQuerySortBy
     on QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QSortBy> {
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByAssociateId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'associateId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByAssociateIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'associateId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByAssociateName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'associateName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByAssociateNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'associateName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       sortByBeginDatetime() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'beginDatetime', Sort.asc);
@@ -2896,6 +3266,34 @@ extension TransactionHeaderEntityQuerySortBy
 
 extension TransactionHeaderEntityQuerySortThenBy on QueryBuilder<
     TransactionHeaderEntity, TransactionHeaderEntity, QSortThenBy> {
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByAssociateId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'associateId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByAssociateIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'associateId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByAssociateName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'associateName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByAssociateNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'associateName', Sort.desc);
+    });
+  }
+
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       thenByBeginDatetime() {
     return QueryBuilder.apply(this, (query) {
@@ -3180,6 +3578,21 @@ extension TransactionHeaderEntityQuerySortThenBy on QueryBuilder<
 extension TransactionHeaderEntityQueryWhereDistinct on QueryBuilder<
     TransactionHeaderEntity, TransactionHeaderEntity, QDistinct> {
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
+      distinctByAssociateId({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'associateId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
+      distinctByAssociateName({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'associateName',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
       distinctByBeginDatetime() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'beginDatetime');
@@ -3321,6 +3734,20 @@ extension TransactionHeaderEntityQueryProperty on QueryBuilder<
       transIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'transId');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, String?, QQueryOperations>
+      associateIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'associateId');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, String?, QQueryOperations>
+      associateNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'associateName');
     });
   }
 

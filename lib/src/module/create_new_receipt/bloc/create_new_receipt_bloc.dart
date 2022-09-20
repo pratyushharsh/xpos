@@ -130,6 +130,8 @@ class CreateNewReceiptBloc
     if (storeId == null) throw Exception("Store Not Found");
 
 
+    var currentEmployee = authenticationBloc.state.employee;
+
     TransactionHeaderEntity header = TransactionHeaderEntity(
         transId: state.transSeq,
         businessDate: DateTime.now(),
@@ -147,7 +149,10 @@ class CreateNewReceiptBloc
         customerPhone: state.customer?.phoneNumber,
         shippingAddress: state.customer?.shippingAddress,
         storeId: storeId,
-        createTime: DateTime.now());
+        createTime: DateTime.now(),
+        associateId: currentEmployee!.employeeId,
+        associateName: '${currentEmployee.firstName} ${currentEmployee.lastName}',
+    );
     List<TransactionLineItemEntity> lineItems = state.lineItem;
     header.lineItems = lineItems;
     header.paymentLineItems = state.tenderLine;
@@ -488,14 +493,14 @@ class CreateNewReceiptBloc
       );
       // Calculate Line Modifier
       List<TransactionLineItemModifierEntity> newLineModifier = discountHelper.createLineItemModifierFromOriginalTransaction(line, returnLine);
-      returnLine.lineModifiers.addAll(newLineModifier);
+      returnLine.lineModifiers = newLineModifier;
 
       returnLine.discountAmount = discountHelper.calculateDiscountAmount(returnLine);
       returnLine.netAmount = returnLine.extendedAmount! - returnLine.discountAmount!;
 
       // Calculate Tax Amount
       List<TransactionLineItemTaxModifier> newTaxLine = taxHelper.createTaxModifierFromOriginalTransaction(line, returnLine);
-      returnLine.taxModifiers.addAll(newTaxLine);
+      returnLine.taxModifiers = newTaxLine;
 
       double taxAmount = taxHelper.calculateTaxAmount(returnLine);
       returnLine.taxAmount = taxAmount;
