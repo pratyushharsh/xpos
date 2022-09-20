@@ -2,6 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 
 import '../entity/pos/contact_entity.dart';
+import '../entity/pos/entity.dart';
 import '../util/helper/rest_api.dart';
 
 class CustomerRepository {
@@ -31,5 +32,9 @@ class CustomerRepository {
       log.severe(e);
     }
     return null;
+  }
+
+  Future<List<TransactionHeaderEntity>> getPurchaseListByCustomerId(String customerId) {
+    return db.transactionHeaderEntitys.where().customerIdEqualTo(customerId).findAll();
   }
 }

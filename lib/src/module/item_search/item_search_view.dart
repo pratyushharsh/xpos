@@ -33,7 +33,7 @@ class SearchItemView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: true,
-      create: (ctx) => ItemSearchBloc(db: RepositoryProvider.of(ctx)),
+      create: (ctx) => ItemSearchBloc(productRepository: RepositoryProvider.of(ctx)),
       child: Card(
         child: Container(
           padding: const EdgeInsets.all(8),

@@ -36,7 +36,7 @@ class NewReceiptDesktopView extends StatelessWidget {
           backgroundColor: AppColor.background,
           body: BlocProvider(
             lazy: true,
-            create: (ctx) => ItemSearchBloc(db: RepositoryProvider.of(ctx)),
+            create: (ctx) => ItemSearchBloc(productRepository: RepositoryProvider.of(ctx)),
             child: BlocConsumer<CreateNewReceiptBloc, CreateNewReceiptState>(
               listener: (context, state) {},
               builder: (context, state) {
