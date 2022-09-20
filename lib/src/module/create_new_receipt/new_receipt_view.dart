@@ -838,38 +838,42 @@ class CustomerWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        const FaIcon(
-                          FontAwesomeIcons.circleUser,
-                          color: AppColor.primary,
-                        ),
-                        const SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              state.isCustomerPresent
-                                  ? state.customer!.firstName
-                                  : "Add Customer",
-                              style: const TextStyle(
-                                  fontSize: 18, color: AppColor.primary),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const FaIcon(
+                            FontAwesomeIcons.circleUser,
+                            color: AppColor.primary,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  state.isCustomerPresent
+                                      ? state.customer!.firstName
+                                      : "Add Customer",
+                                  style: const TextStyle(
+                                      fontSize: 18, color: AppColor.primary),
+                                ),
+                                if (state.isCustomerPresent && state.customer != null && state.customer!.phoneNumber != null)
+                                  Text(
+                                    'Phone: ${state.customer!.phoneNumber!}',
+                                    style: const TextStyle(
+                                        fontSize: 16, color: AppColor.primary),
+                                  ),
+                                if (state.isCustomerPresent && state.customer != null && state.customer!.email != null)
+                                  Text(
+                                    'Email: ${state.customer!.email!}',
+                                    style: const TextStyle(
+                                        fontSize: 16, color: AppColor.primary),
+                                  ),
+                              ],
                             ),
-                            if (state.isCustomerPresent && state.customer != null && state.customer!.phoneNumber != null)
-                              Text(
-                                'Phone: ${state.customer!.phoneNumber!}',
-                                style: const TextStyle(
-                                    fontSize: 16, color: AppColor.primary),
-                              ),
-                            if (state.isCustomerPresent && state.customer != null && state.customer!.email != null)
-                              Text(
-                                'Email: ${state.customer!.email!}',
-                                style: const TextStyle(
-                                    fontSize: 16, color: AppColor.primary),
-                              ),
-                          ],
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                     if (!state.isCustomerPresent)
                       const FaIcon(

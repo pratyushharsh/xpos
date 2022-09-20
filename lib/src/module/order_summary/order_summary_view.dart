@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,58 +24,61 @@ class OrderSummaryView extends StatelessWidget {
       lazy: false,
       create: (context) => OrderSummaryBloc(
           db: RepositoryProvider.of(context), orderId: orderId),
-      child: Scaffold(
-        body: Stack(
-          children: [
-            // CustomerAddress(),
-            // OrderLine(),
-            // PaymentLineDisplay()
-            Container(
-              color: AppColor.background,
-              child: SafeArea(
-                child: BlocBuilder<OrderSummaryBloc, OrderSummaryState>(
-                  builder: (context, state) {
-                    if (state.status == OrderSummaryStatus.loading) {
-                      return const MyLoader();
-                    }
-                    if (state.status == OrderSummaryStatus.success) {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 100,
-                              color: AppColor.headerBackground,
-                            ),
-                            CustomerAddress(
-                              order: state.order!,
-                            ),
-                            OrderLine(
-                              order: state.order!,
-                              productMap: state.productMap,
-                            ),
-                            // Paym entLineDisplay(state.order),
-                            OrderDetailSummary(order: state.order!),
-                          ],
-                        ),
-                      );
-                    }
-                    return Container();
-                  },
+      child: Container(
+        color: AppColor.color3,
+        child: SafeArea(
+          child: Scaffold(
+            body: Stack(
+              children: [
+                // CustomerAddress(),
+                // OrderLine(),
+                // PaymentLineDisplay()
+                Container(
+                  color: AppColor.background,
+                  child: BlocBuilder<OrderSummaryBloc, OrderSummaryState>(
+                    builder: (context, state) {
+                      if (state.status == OrderSummaryStatus.loading) {
+                        return const MyLoader();
+                      }
+                      if (state.status == OrderSummaryStatus.success) {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 100,
+                                color: AppColor.headerBackground,
+                              ),
+                              CustomerAddress(
+                                order: state.order!,
+                              ),
+                              OrderLine(
+                                order: state.order!,
+                                productMap: state.productMap,
+                              ),
+                              // Paym entLineDisplay(state.order),
+                              OrderDetailSummary(order: state.order!),
+                            ],
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
                 ),
-              ),
+                Positioned(
+                  top: 20,
+                  left: 16,
+                  child: AppBarLeading(
+                    heading: "Order Detail  #$orderId",
+                    icon: Icons.arrow_back,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              ],
             ),
-            Positioned(
-              top: 20,
-              left: 16,
-              child: AppBarLeading(
-                heading: "Order Detail  #$orderId",
-                icon: Icons.arrow_back,
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );
@@ -101,9 +105,9 @@ class CustomerAddress extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(AppFormatter.longDateFormatter
-                            .format(DateTime.now())),
+                            .format(order.createTime)),
                         Text('Invoice #' + order.transId.toString()),
-                        Text('Sales Associate : ' + 'Bill Gates'),
+                        Text('Sales Associate : ${order.associateName}'),
                         Text('Notes : ' + 'Yet to add this'),
                       ]),
                 ),
@@ -113,13 +117,13 @@ class CustomerAddress extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          'Pratyush Harsh',
-                          style: TextStyle(
+                          '${order.customerName}',
+                          style: const TextStyle(
                               fontWeight: FontWeight.w300, fontSize: 24),
                         ),
-                        SizedBox(height: 16),
-                        Text('pratyushharsh2015@gmail.com'),
-                        Text('+91 9430123120'),
+                        const SizedBox(height: 16),
+                        // Text('${order.customerAddress}'),
+                        Text('${order.customerPhone}'),
                       ]),
                 )
               ]),
@@ -404,7 +408,7 @@ class OrderDetailSummary extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          constraints: const BoxConstraints(maxWidth: 400),
+          constraints: BoxConstraints(maxWidth: min(400, MediaQuery.of(context).size.width)),
           child: Column(
             children: [
               const SizedBox(

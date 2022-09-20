@@ -21,6 +21,7 @@ import 'package:receipt_generator/src/pos/helper/tax_helper.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 import 'package:receipt_generator/src/repositories/config_repository.dart';
 import 'package:receipt_generator/src/repositories/contact_repository.dart';
+import 'package:receipt_generator/src/repositories/customer_repository.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/setting_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_config_repository.dart';
@@ -93,6 +94,10 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(
             create: (context) =>
                 EmployeeRepository(db: database, restClient: restClient),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                CustomerRepository(db: database, restClient: restClient),
           ),
           RepositoryProvider(
             lazy: false,

@@ -38,6 +38,9 @@ class TransactionHeaderEntity {
   late DateTime? lastChangedAt;
   late int version;
 
+  final String? associateId;
+  final String? associateName;
+
   List<TransactionLineItemEntity> lineItems;
   List<TransactionPaymentLineItemEntity> paymentLineItems;
 
@@ -68,5 +71,7 @@ class TransactionHeaderEntity {
       this.version = 1,
       this.lastChangedAt,
       this.syncState = 100,
-      this.updateTime});
+      this.updateTime,
+      this.associateId,
+      this.associateName});
 }

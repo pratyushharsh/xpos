@@ -6,6 +6,8 @@ import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 
+import '../../../repositories/customer_repository.dart';
+
 part 'create_edit_customer_event.dart';
 part 'create_edit_customer_state.dart';
 
@@ -14,12 +16,14 @@ class CreateEditCustomerBloc
   final log = Logger('CreateEditCustomerBloc');
   final Isar db;
   final SequenceRepository sequenceRepository;
+  final CustomerRepository customerRepository;
   final bool editMode;
   final String? customerId;
 
   CreateEditCustomerBloc(
       {required this.db,
       required this.sequenceRepository,
+      required this.customerRepository,
       this.editMode = false,
       this.customerId})
       : assert(editMode ? customerId != null : true),
@@ -58,7 +62,7 @@ class CreateEditCustomerBloc
         createTime: DateTime.now(),
         lastName: event.customer.lastName,
       );
-      await db.writeTxn(() => db.contactEntitys.put(ce));
+      await customerRepository.createOrUpdateCustomer(ce);
       emit(state.copyWith(status: CreateEditCustomerStatus.addingSuccess));
     } catch (e) {
       log.severe(e);
@@ -76,10 +80,7 @@ class CreateEditCustomerBloc
     try {
       emit(state.copyWith(
           status: CreateEditCustomerStatus.loadedExistingCustomer));
-      ContactEntity? ce = await db.contactEntitys
-          .where()
-          .contactIdEqualTo(customerId!)
-          .findFirst();
+      ContactEntity? ce = await customerRepository.getCustomerById(customerId!);
       List<TransactionHeaderEntity> purchaseHistory = await db
           .transactionHeaderEntitys
           .where()
