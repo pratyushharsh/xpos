@@ -53,4 +53,6 @@ class OnEmployeeProfileChanged extends CreateEditEmployeeEvent {
   OnEmployeeProfileChanged(this.profile);
 }
 
-class OnEmployeeSave extends CreateEditEmployeeEvent {}
+class OnCreateNewEmployee extends CreateEditEmployeeEvent {}
+
+class OnSaveEmployee extends CreateEditEmployeeEvent {}
