@@ -77,7 +77,7 @@ class MockTransactionRepository extends TransactionRepository {
       returnFlag: false,
     );
 
-    lineItem1.taxModifiers.add(taxModifier);
+    lineItem1.taxModifiers = [taxModifier];
 
     TransactionHeaderEntity header = TransactionHeaderEntity(
       transId: 1000,
@@ -94,7 +94,7 @@ class MockTransactionRepository extends TransactionRepository {
       status: 'COMPLETED',
       createTime: DateTime.now(),
     );
-    header.lineItems.add(lineItem1);
+    header.lineItems = [lineItem1, lineItem1, lineItem1, lineItem1, lineItem1];
 
     return header;
   }

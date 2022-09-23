@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/model/hsn_tax_summary.dart';
@@ -83,8 +82,8 @@ class ReceiptDisplayBloc
           lineItems: transaction!.lineItems.toList(),
           status: ReceiptDisplayStatus.success,
           taxSummary: []));
-    } catch (e) {
-      log.severe(e);
+    } catch (e, s) {
+      log.severe(s);
       emit(state.copyWith(status: ReceiptDisplayStatus.failure));
     }
   }

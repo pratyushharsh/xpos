@@ -42,6 +42,8 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
       panCard: event.contactEntity.panCard,
       gstin: event.contactEntity.gstin,
       status: CustomerFormStatus.loadingExistingCustomerSuccess,
+      sameAddress: event.contactEntity.billingAddress ==
+          event.contactEntity.shippingAddress,
     ));
   }
 

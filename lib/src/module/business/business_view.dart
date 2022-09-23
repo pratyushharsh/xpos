@@ -211,30 +211,56 @@ class _BusinessDetailState extends State<BusinessDetail> {
                     .add(OnBusinessEmailChange(val));
               },
             ),
+            // GestureDetector(
+            //   onTap: () {
+            //     showModalBottomSheet(
+            //       context: context,
+            //       backgroundColor: AppColor.background,
+            //       isScrollControlled: true,
+            //       shape: const RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.only(
+            //         topLeft: Radius.circular(20),
+            //         topRight: Radius.circular(20),
+            //       )),
+            //       builder: (context) => const AddressFormDialog(),
+            //     ).then((value) => {
+            //           if (value != null && value is Address)
+            //             {
+            //               BlocProvider.of<BusinessBloc>(context)
+            //                   .add(OnBusinessAddressChange(value))
+            //             }
+            //         });
+            //   },
+            //   child: TextFieldPlaceholderWidget(
+            //     label: "Business Address",
+            //     value: state.businessAddress?.toString() ?? "",
+            //   ),
+            // ),
             GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
+              onTap: () {
+                showDialog(
                     context: context,
-                    backgroundColor: AppColor.background,
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    )),
-                    builder: (context) => const AddressFormDialog(),
-                  ).then((value) => {
-                        if (value != null && value is Address)
-                          {
-                            BlocProvider.of<BusinessBloc>(context)
-                                .add(OnBusinessAddressChange(value))
-                          }
-                      });
-                },
-                child: TextFieldPlaceholderWidget(
-                  label: "Business Address",
-                  value: state.businessAddress?.toString() ?? "",
-                )),
+                    builder: (ctx) {
+                      return Dialog(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: const AddressFormDialog(),
+                        ),
+                      );
+                    }).then((value) => {
+                  if (value != null && value is Address)
+                    {
+                      BlocProvider.of<BusinessBloc>(context)
+                          .add(OnBusinessAddressChange(value))
+                    }
+                });
+              },
+              child: TextFieldPlaceholderWidget(
+                label: "Business Address",
+                value: state.businessAddress?.toString() ?? "",
+              ),
+            ),
             CustomTextField(
               controller: _businessGstController,
               label: "GST Number",
