@@ -68,7 +68,7 @@ class RestApiClient {
     // print('************************');
     final response =
     await http.get(_url, headers: header);
-    log.info("GET Response: ");
+    log.info("GET Response: ${response.statusCode}");
     log.info(response.body);
     return response;
   }
@@ -82,17 +82,27 @@ class RestApiClient {
     log.info(restOptions);
     final response =
     await http.post(_url, headers: header, body: restOptions.body);
-    log.info("Post Response: ");
+    log.info("Post Response: ${response.statusCode}");
     log.info(response.body);
     return response;
   }
 
   Response delete({required RestOptions restOptions}) {
-    throw UnimplementedError('get has not been implemented.');
+    throw UnimplementedError('delete has not been implemented.');
   }
 
-  Response put({required RestOptions restOptions}) {
-    throw UnimplementedError('get has not been implemented.');
+  Future<Response> put({required RestOptions restOptions}) async {
+    CognitoUserSession session = await getCurrentSession();
+    Map<String, String> auth = await buildAuthHeader(session);
+    Map<String, String> header = HashMap.from(auth);
+    var _url = Uri.parse(baseUrl + restOptions.path);
+    log.info("Put Request: ");
+    log.info(restOptions);
+    final response =
+        await http.put(_url, headers: header, body: restOptions.body);
+    log.info("Put Response: ${response.statusCode}");
+    log.info(response.body);
+    return response;
   }
 
   dynamic parsedResponse(Response response) {

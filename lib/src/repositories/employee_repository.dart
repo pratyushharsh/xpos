@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/employee_entity.dart';
 
 import '../model/api/api.dart';
+import '../model/api/create_store_employee_request.dart';
 import '../model/api/get_employee_response.dart';
 import '../util/helper/rest_api.dart';
 
@@ -16,15 +17,15 @@ class EmployeeRepository {
 
   EmployeeRepository({required this.db, required this.restClient});
 
-  Future<EmployeeEntity?> getEmployeeByUserId(String userId) async {
-    try {
-      var data = await db.employeeEntitys.where().employeeIdEqualTo(userId).findFirst();
-      return data;
-    } catch (e) {
-      log.severe(e);
-    }
-    return null;
-  }
+  // Future<EmployeeEntity?> getEmployeeByUserId(String userId) async {
+  //   try {
+  //     var data = await db.employeeEntitys.where().employeeIdEqualTo(userId).findFirst();
+  //     return data;
+  //   } catch (e) {
+  //     log.severe(e);
+  //   }
+  //   return null;
+  // }
 
   Future<List<UserBusiness>> getBusinessAssociatedWithUser(String userId) async {
     List<UserBusiness> userBusinesses = [];
@@ -87,5 +88,39 @@ class EmployeeRepository {
       rethrow;
     }
     return storeEmployees;
+  }
+
+  Future<void> createNewEmployeeForStore(CreateStoreEmployeeRequest emp) async {
+    try {
+      var body = json.encode(emp.toJson());
+      var option = RestOptions(path: '/business/${emp.businessId}/user', body: body);
+      var rawResp = await restClient.post(restOptions: option);
+      if (rawResp.statusCode == 200 || rawResp.statusCode == 201) {
+
+      } else {
+        log.info('Failed to create new employee for store');
+        throw Exception('Failed to create new employee ${rawResp.statusCode} : ${rawResp.body}');
+      }
+    } catch (e) {
+      log.severe(e);
+      rethrow;
+    }
+  }
+
+  Future<void> updateEmployee(UpdateEmployeeRequest emp, String userId) async {
+    try {
+      var body = json.encode(emp.toJson());
+      var option = RestOptions(path: '/user/$userId', body: body);
+      var rawResp = await restClient.put(restOptions: option);
+      if (rawResp.statusCode == 200 || rawResp.statusCode == 201) {
+
+      } else {
+        log.info('Failed to update employee.');
+        throw Exception('Failed update employee ${rawResp.statusCode} : ${rawResp.body}');
+      }
+    } catch (e) {
+      log.severe(e);
+      rethrow;
+    }
   }
 }

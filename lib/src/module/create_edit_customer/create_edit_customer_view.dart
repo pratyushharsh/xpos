@@ -219,9 +219,11 @@ class CustomerTabs extends StatelessWidget {
                         icon: FaIcon(
                           FontAwesomeIcons.list,
                         ),
+                        iconMargin: EdgeInsets.only(bottom: 6, top: 15),
                         text: "Purchase History"),
                   const Tab(
                       icon: FaIcon(FontAwesomeIcons.circleUser),
+                      iconMargin: EdgeInsets.only(bottom: 6, top: 15),
                       text: "Customer Detail"),
                 ],
               ),
@@ -386,7 +388,7 @@ class CreateCustomerForm extends StatelessWidget {
                   },
                   child: TextFieldPlaceholderWidget(
                     label: "Billing Address",
-                    value: state.billingAddress.toString(),
+                    value: state.billingAddress?.toString() ?? "",
                   ),
                 ),
                 if (!state.sameAddress)
@@ -414,7 +416,7 @@ class CreateCustomerForm extends StatelessWidget {
                     },
                     child: TextFieldPlaceholderWidget(
                       label: "Shipping Address",
-                      value: state.shippingAddress.toString(),
+                      value: state.shippingAddress?.toString() ?? "",
                     ),
                   ),
                 const SizedBox(

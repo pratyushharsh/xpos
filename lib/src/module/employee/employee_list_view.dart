@@ -1,12 +1,14 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
 import '../../config/theme_settings.dart';
 import '../../model/api/get_employee_response.dart';
 import '../../widgets/appbar_leading.dart';
+import '../employee_detail/employee_detail_view.dart';
 import 'bloc/employee_bloc.dart';
 
 class EmployeeView extends StatelessWidget {
@@ -14,18 +16,23 @@ class EmployeeView extends StatelessWidget {
 
   Widget _buildEmployeeItem(StoreEmployee employee) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Employee Id: ${employee.employeeId}'),
-                Text('Joined At: ${employee.joinedAt}'),
-              ],
-            )
-          ],
+      child: InkWell(
+        onTap: () {
+
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Employee Id: ${employee.employeeId}'),
+                  Text('Joined At: ${DateFormat('dd-MMM-yyyy – kk:mm').format(employee.joinedAt)}'),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -60,10 +67,9 @@ class EmployeeView extends StatelessWidget {
                     builder: (context, state) {
                       if (state.status == EmployeeListStatus.loading) {
                         return const Center(
-                          child: MyLoader(),
+                          child: MyLoader(color: AppColor.primary),
                         );
                       }
-
                       return ListView(
                         children: state.employees
                             .map((e) => _buildEmployeeItem(e))
@@ -90,7 +96,7 @@ class EmployeeView extends StatelessWidget {
                     transitionType: ContainerTransitionType.fade,
                     transitionDuration: const Duration(milliseconds: 300),
                     openBuilder: (BuildContext context, VoidCallback _) {
-                      return Container();
+                      return const EmployeeDetailView();
                     },
                     closedElevation: 6.0,
                     closedShape: const RoundedRectangleBorder(
