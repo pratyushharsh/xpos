@@ -107,7 +107,7 @@ class CustomTextField extends StatelessWidget {
               prefixIconConstraints: prefixIconConstraint,
               prefixIcon: icon,
               suffixIcon: suffixIcon,
-              contentPadding: const EdgeInsets.all(12),
+              contentPadding: const EdgeInsets.all(14.2),
               border: const OutlineInputBorder(),
               isDense: true,
               errorText: errorText,

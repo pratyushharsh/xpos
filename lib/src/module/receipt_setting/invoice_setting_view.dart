@@ -11,9 +11,13 @@ class InvoiceSettingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (context) =>
-    ReceiptSettingBloc(settingsRepo: RepositoryProvider.of(context))..add(OnInitReceiptSettingEvent()),
-      child: const InvoiceSettingForm(),);
+    return BlocProvider(
+      create: (context) => ReceiptSettingBloc(
+        settingsRepo: RepositoryProvider.of(context),
+        authBloc: BlocProvider.of(context),
+      )..add(OnInitReceiptSettingEvent()),
+      child: const InvoiceSettingForm(),
+    );
   }
 }
 
@@ -34,7 +38,8 @@ class InvoiceSettingForm extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: Column(
                       children: const [
                         SizedBox(
@@ -61,9 +66,7 @@ class InvoiceSettingForm extends StatelessWidget {
               top: 20,
               right: 16,
               child: ElevatedButton(
-                onPressed: () {
-
-                },
+                onPressed: () {},
                 child: const Text(
                   "Save",
                   style: TextStyle(color: AppColor.primary),
@@ -71,7 +74,7 @@ class InvoiceSettingForm extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   padding:
-                  const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
                   primary: AppColor.color8,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0)),

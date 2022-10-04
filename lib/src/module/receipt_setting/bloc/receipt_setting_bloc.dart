@@ -5,6 +5,9 @@ import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/repositories/setting_repository.dart';
 
+import '../../../entity/pos/business_entity.dart';
+import '../../authentication/bloc/authentication_bloc.dart';
+
 part 'receipt_setting_event.dart';
 part 'receipt_setting_state.dart';
 
@@ -13,8 +16,9 @@ class ReceiptSettingBloc
   final log = Logger('ReceiptSettingBloc');
 
   final SettingsRepository settingsRepo;
+  final AuthenticationBloc authBloc;
 
-  ReceiptSettingBloc({required this.settingsRepo})
+  ReceiptSettingBloc({required this.settingsRepo, required this.authBloc})
       : super(const ReceiptSettingState()) {
     on<OnStoreNumberChange>(_onStoreNumberChangeEvent);
     on<OnTaglineChange>(_onStoreTaglineChangeEvent);
@@ -63,12 +67,13 @@ class ReceiptSettingBloc
 
   void _onInitReceiptSettingEvent(OnInitReceiptSettingEvent event, Emitter<ReceiptSettingState> emit) async {
     ReceiptSettingsModel settings = await settingsRepo.getReceiptSettings();
+    RetailLocationEntity store = authBloc.state.store!;
     emit(state.copyWith(
       storeNumber: settings.storeNumber,
       tagLine: settings.tagLine,
       footerTitle: settings.footerTitle,
       footerSubtitle: settings.footerSubtitle,
-      storeAddress: settings.storeAddress,
+      storeAddress: settings.storeAddress ?? store.address?.toString(),
       status: ReceiptSettingStatus.initLoad
     ));
   }

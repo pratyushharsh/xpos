@@ -27,18 +27,23 @@ const ReasonCodeEntitySchema = CollectionSchema(
       name: r'description',
       type: IsarType.string,
     ),
-    r'parentCode': PropertySchema(
+    r'hashCode': PropertySchema(
       id: 2,
+      name: r'hashCode',
+      type: IsarType.long,
+    ),
+    r'parentCode': PropertySchema(
+      id: 3,
       name: r'parentCode',
       type: IsarType.string,
     ),
     r'reasonCode': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'reasonCode',
       type: IsarType.string,
     ),
     r'reasonTypeCode': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'reasonTypeCode',
       type: IsarType.string,
     )
@@ -105,9 +110,10 @@ int _reasonCodeEntitySerializeNative(
 ) {
   writer.writeBool(offsets[0], object.commentRequired);
   writer.writeString(offsets[1], object.description);
-  writer.writeString(offsets[2], object.parentCode);
-  writer.writeString(offsets[3], object.reasonCode);
-  writer.writeString(offsets[4], object.reasonTypeCode);
+  writer.writeLong(offsets[2], object.hashCode);
+  writer.writeString(offsets[3], object.parentCode);
+  writer.writeString(offsets[4], object.reasonCode);
+  writer.writeString(offsets[5], object.reasonTypeCode);
   return writer.usedBytes;
 }
 
@@ -121,9 +127,9 @@ ReasonCodeEntity _reasonCodeEntityDeserializeNative(
     commentRequired: reader.readBool(offsets[0]),
     description: reader.readString(offsets[1]),
     id: id,
-    parentCode: reader.readStringOrNull(offsets[2]),
-    reasonCode: reader.readString(offsets[3]),
-    reasonTypeCode: reader.readString(offsets[4]),
+    parentCode: reader.readStringOrNull(offsets[3]),
+    reasonCode: reader.readString(offsets[4]),
+    reasonTypeCode: reader.readString(offsets[5]),
   );
   return object;
 }
@@ -140,10 +146,12 @@ P _reasonCodeEntityDeserializePropNative<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -495,6 +503,62 @@ extension ReasonCodeEntityQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'description',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      hashCodeEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
+      hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hashCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1037,6 +1101,20 @@ extension ReasonCodeEntityQuerySortBy
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      sortByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      sortByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
       sortByParentCode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'parentCode', Sort.asc);
@@ -1106,6 +1184,20 @@ extension ReasonCodeEntityQuerySortThenBy
       thenByDescriptionDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      thenByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterSortBy>
+      thenByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
     });
   }
 
@@ -1182,6 +1274,13 @@ extension ReasonCodeEntityQueryWhereDistinct
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QDistinct>
+      distinctByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hashCode');
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QDistinct>
       distinctByParentCode({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'parentCode', caseSensitive: caseSensitive);
@@ -1223,6 +1322,12 @@ extension ReasonCodeEntityQueryProperty
       descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'description');
+    });
+  }
+
+  QueryBuilder<ReasonCodeEntity, int, QQueryOperations> hashCodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hashCode');
     });
   }
 

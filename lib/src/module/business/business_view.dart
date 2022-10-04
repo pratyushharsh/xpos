@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
@@ -5,12 +6,12 @@ import 'package:receipt_generator/src/entity/pos/address.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/config_repository.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
-import 'package:receipt_generator/src/widgets/custom_dropdown.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import '../../entity/config/code_value_entity.dart';
 import '../../widgets/appbar_leading.dart';
+import '../../widgets/code_value_dropdown.dart';
 import 'bloc/business_bloc.dart';
 
 class BusinessView extends StatelessWidget {
@@ -299,8 +300,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
   late TextEditingController _streetController;
   late TextEditingController _cityController;
   late TextEditingController _stateController;
-  late String? _country;
-  late String? _state;
+  // late String? _country;
+  late CodeValueEntity? _selectedCountry;
+  late CodeValueEntity? _selectedState;
 
   List<CodeValueEntity> countryCode = [];
   List<CodeValueEntity> stateCode = [];
@@ -313,8 +315,8 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
     _streetController = TextEditingController();
     _cityController = TextEditingController();
     _stateController = TextEditingController();
-    _country = null;
-    _state = null;
+    _selectedCountry = null;
+    _selectedState = null;
     _fetchData();
   }
 
@@ -324,7 +326,6 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
     _buildingController.dispose();
     _streetController.dispose();
     _cityController.dispose();
-    _stateController.dispose();
     super.dispose();
   }
 
@@ -338,15 +339,15 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
     });
   }
 
-  void _onCountryChange(String? value) {
+  void _onSelectedCountryChange(CodeValueEntity? value) {
     setState(() {
-      _country = value;
+      _selectedCountry = value;
     });
   }
 
-  void _onStateChange(String? value) {
+  void _onStateChange(CodeValueEntity? value) {
     setState(() {
-      _state = value;
+      _selectedState = value;
     });
   }
 
@@ -360,14 +361,20 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CustomDropDown<String>(
-                value: _country,
-                data: countryCode
-                    .map((e) => DropDownData(key: e.code, value: e.value))
-                    .toList(),
-                onChanged: _onCountryChange,
-                label: 'Country',
+              CodeValueDropDown(
+                category: "COUNTRY_CODE",
+                onChanged: _onSelectedCountryChange,
+                label: "Country",
+                value: _selectedCountry,
               ),
+              // CustomDropDown<String>(
+              //   value: _country,
+              //   data: countryCode
+              //       .map((e) => DropDownData(key: e.code, value: e.value))
+              //       .toList(),
+              //   onChanged: _onCountryChange,
+              //   label: 'Country',
+              // ),
               CustomTextField(
                 label: "Pincode",
                 controller: _zipcodeController,
@@ -385,13 +392,11 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                 label: "Town/City",
                 controller: _cityController,
               ),
-              CustomDropDown<String>(
-                value: _state,
-                data: stateCode
-                    .map((e) => DropDownData(key: e.code, value: e.value))
-                    .toList(),
+              CodeValueDropDown(
+                category: "IN_STATE",
                 onChanged: _onStateChange,
-                label: 'State',
+                label: "State",
+                value: _selectedState,
               ),
               SizedBox(
                 width: double.infinity,
@@ -404,7 +409,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                         building: _buildingController.text,
                         street: _streetController.text,
                         city: _cityController.text,
-                        state: _stateController.text));
+                        state: _selectedState!.value,
+                        country: _selectedCountry?.value ?? "",
+                    ));
                   },
                 ),
               )

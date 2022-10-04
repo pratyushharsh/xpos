@@ -27,40 +27,45 @@ class CustomDropDown<T> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-              fontWeight: FontWeight.w400, color: Color(0xFF6B7281)),
-        ),
-        const SizedBox(
-          height: 1,
-        ),
-        Container(
-          decoration: BoxDecoration(
-              // color: AppColor.background,
-              borderRadius: BorderRadius.circular(5)),
-          child: DropdownButtonFormField<T>(
-            autovalidateMode: AutovalidateMode.always,
-            validator: validator,
-            // style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-            decoration: const InputDecoration(
-              errorStyle: TextStyle(height: 0.65),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFFB1B4E6), width: 2.0),
-              ),
-              contentPadding: EdgeInsets.all(10),
-              border: OutlineInputBorder(),
-              isDense: true,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w400, color: Color(0xFF6B7281)),
             ),
-            value: value,
-            isDense: true,
-            isExpanded: true,
-            items: data.map((e) => buildMenuItem(e)).toList(),
-            onChanged: onChanged,
-          ),
-        ),
-        const SizedBox(
-          height: 12,
+            const SizedBox(
+              height: 1,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  // color: AppColor.background,
+                  borderRadius: BorderRadius.circular(5)),
+              child: DropdownButtonFormField<T>(
+                autovalidateMode: AutovalidateMode.always,
+                validator: validator,
+                // style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                decoration: const InputDecoration(
+                  errorStyle: TextStyle(height: 0.65),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFFB1B4E6), width: 2.0),
+                  ),
+                  contentPadding: EdgeInsets.all(10),
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+                value: value,
+                isDense: true,
+                isExpanded: true,
+                items: data.map((e) => buildMenuItem(e)).toList(),
+                onChanged: onChanged,
+              ),
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+          ],
         ),
       ],
     );

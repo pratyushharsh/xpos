@@ -77,7 +77,13 @@ class CreateNewReceiptState extends Equatable {
   }
 
   double get amountDue {
-    return total - paidAmount;
+    return total - paidAmount - roundedAmount;
+  }
+
+  double get roundedAmount {
+    var rawAmount = total - paidAmount;
+    var roundedAmount = (rawAmount * 100).roundToDouble() / 100;
+    return (total - paidAmount) - roundedAmount;
   }
 
   @override

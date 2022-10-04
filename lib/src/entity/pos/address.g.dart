@@ -23,18 +23,28 @@ const AddressSchema = Schema(
       name: r'city',
       type: IsarType.string,
     ),
-    r'state': PropertySchema(
+    r'country': PropertySchema(
       id: 2,
+      name: r'country',
+      type: IsarType.string,
+    ),
+    r'hashCode': PropertySchema(
+      id: 3,
+      name: r'hashCode',
+      type: IsarType.long,
+    ),
+    r'state': PropertySchema(
+      id: 4,
       name: r'state',
       type: IsarType.string,
     ),
     r'street': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'street',
       type: IsarType.string,
     ),
     r'zipcode': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'zipcode',
       type: IsarType.string,
     )
@@ -62,6 +72,12 @@ int _addressEstimateSize(
   }
   {
     final value = object.city;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.country;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -95,9 +111,11 @@ int _addressSerializeNative(
 ) {
   writer.writeString(offsets[0], object.building);
   writer.writeString(offsets[1], object.city);
-  writer.writeString(offsets[2], object.state);
-  writer.writeString(offsets[3], object.street);
-  writer.writeString(offsets[4], object.zipcode);
+  writer.writeString(offsets[2], object.country);
+  writer.writeLong(offsets[3], object.hashCode);
+  writer.writeString(offsets[4], object.state);
+  writer.writeString(offsets[5], object.street);
+  writer.writeString(offsets[6], object.zipcode);
   return writer.usedBytes;
 }
 
@@ -110,9 +128,10 @@ Address _addressDeserializeNative(
   final object = Address(
     building: reader.readStringOrNull(offsets[0]),
     city: reader.readStringOrNull(offsets[1]),
-    state: reader.readStringOrNull(offsets[2]),
-    street: reader.readStringOrNull(offsets[3]),
-    zipcode: reader.readStringOrNull(offsets[4]),
+    country: reader.readStringOrNull(offsets[2]),
+    state: reader.readStringOrNull(offsets[4]),
+    street: reader.readStringOrNull(offsets[5]),
+    zipcode: reader.readStringOrNull(offsets[6]),
   );
   return object;
 }
@@ -131,8 +150,12 @@ P _addressDeserializePropNative<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -146,7 +169,7 @@ Object _addressSerializeWeb(
 
 Address _addressDeserializeWeb(
     IsarCollection<Address> collection, Object jsObj) {
-  /*final object = Address(building: IsarNative.jsObjectGet(jsObj, r'building') ,city: IsarNative.jsObjectGet(jsObj, r'city') ,state: IsarNative.jsObjectGet(jsObj, r'state') ,street: IsarNative.jsObjectGet(jsObj, r'street') ,zipcode: IsarNative.jsObjectGet(jsObj, r'zipcode') ,);*/
+  /*final object = Address(building: IsarNative.jsObjectGet(jsObj, r'building') ,city: IsarNative.jsObjectGet(jsObj, r'city') ,country: IsarNative.jsObjectGet(jsObj, r'country') ,state: IsarNative.jsObjectGet(jsObj, r'state') ,street: IsarNative.jsObjectGet(jsObj, r'street') ,zipcode: IsarNative.jsObjectGet(jsObj, r'zipcode') ,);*/
   //return object;
   throw UnimplementedError();
 }
@@ -448,6 +471,205 @@ extension AddressQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'city',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'country',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'country',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'country',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'country',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'country',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'country',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'country',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'country',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'country',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'country',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'country',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'country',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hashCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }

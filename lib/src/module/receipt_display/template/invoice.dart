@@ -8,7 +8,8 @@ import 'invoice_2.dart';
 
 Future<Uint8List> generateInvoice(
     PdfPageFormat pageFormat, TransactionHeaderEntity order) async {
-  Invoice2 invoice = Invoice2(order);
+  // Invoice2 invoice = Invoice2(order);
+  Invoice1 invoice = Invoice1(order);
 
   return await invoice.buildPdf(pageFormat);
 }

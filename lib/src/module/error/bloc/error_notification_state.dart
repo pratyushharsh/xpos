@@ -1,6 +1,13 @@
 part of 'error_notification_bloc.dart';
 
-@immutable
-abstract class ErrorNotificationState {}
+class ErrorNotificationState {
+  final List<String> errors;
 
-class ErrorNotificationInitial extends ErrorNotificationState {}
+  const ErrorNotificationState({this.errors = const []});
+
+  ErrorNotificationState copyWith({List<String>? errors}) {
+    return ErrorNotificationState(
+      errors: errors ?? this.errors,
+    );
+  }
+}

@@ -51,7 +51,7 @@ class CreateBusinessResponse {
       'gst': gst,
       'pan': pan,
       'created_by': createdBy,
-      'createdAt': createdAt,
+      'created_at': createdAt,
     };
   }
 
@@ -73,6 +73,6 @@ class CreateBusinessResponse {
         pan: map['pan'] as String?,
         createdBy: map['created_by'] as String,
         createdAt:
-            DateTime.tryParse(map['creates_at'].toString()) ?? DateTime.now());
+            DateTime.tryParse(map['created_at'].toString()) ?? DateTime.now());
   }
 }
