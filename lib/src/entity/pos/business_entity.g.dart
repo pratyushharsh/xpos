@@ -18,93 +18,69 @@ const RetailLocationEntitySchema = CollectionSchema(
   name: r'RetailLocationEntity',
   id: 1894392434087363926,
   properties: {
-    r'address1': PropertySchema(
+    r'address': PropertySchema(
       id: 0,
-      name: r'address1',
-      type: IsarType.string,
-    ),
-    r'address2': PropertySchema(
-      id: 1,
-      name: r'address2',
-      type: IsarType.string,
-    ),
-    r'city': PropertySchema(
-      id: 2,
-      name: r'city',
-      type: IsarType.string,
-    ),
-    r'country': PropertySchema(
-      id: 3,
-      name: r'country',
-      type: IsarType.string,
+      name: r'address',
+      type: IsarType.object,
+      target: r'Address',
     ),
     r'createTime': PropertySchema(
-      id: 4,
+      id: 1,
       name: r'createTime',
       type: IsarType.dateTime,
     ),
     r'currencyId': PropertySchema(
-      id: 5,
+      id: 2,
       name: r'currencyId',
       type: IsarType.string,
     ),
     r'gst': PropertySchema(
-      id: 6,
+      id: 3,
       name: r'gst',
       type: IsarType.string,
     ),
     r'lastChangedAt': PropertySchema(
-      id: 7,
+      id: 4,
       name: r'lastChangedAt',
       type: IsarType.dateTime,
     ),
     r'locale': PropertySchema(
-      id: 8,
+      id: 5,
       name: r'locale',
       type: IsarType.string,
     ),
     r'pan': PropertySchema(
-      id: 9,
+      id: 6,
       name: r'pan',
       type: IsarType.string,
     ),
-    r'postalCode': PropertySchema(
-      id: 10,
-      name: r'postalCode',
-      type: IsarType.string,
-    ),
-    r'state': PropertySchema(
-      id: 11,
-      name: r'state',
-      type: IsarType.string,
-    ),
     r'storeContact': PropertySchema(
-      id: 12,
+      id: 7,
       name: r'storeContact',
       type: IsarType.string,
     ),
     r'storeEmail': PropertySchema(
-      id: 13,
+      id: 8,
       name: r'storeEmail',
       type: IsarType.string,
     ),
     r'storeName': PropertySchema(
-      id: 14,
+      id: 9,
       name: r'storeName',
       type: IsarType.string,
     ),
     r'storeNumber': PropertySchema(
-      id: 15,
+      id: 10,
       name: r'storeNumber',
       type: IsarType.string,
     ),
     r'updateTime': PropertySchema(
-      id: 16,
+      id: 11,
       name: r'updateTime',
       type: IsarType.dateTime,
     ),
     r'version': PropertySchema(
-      id: 17,
+      id: 12,
       name: r'version',
       type: IsarType.long,
     )
@@ -119,7 +95,7 @@ const RetailLocationEntitySchema = CollectionSchema(
   idName: r'rtlLocId',
   indexes: {},
   links: {},
-  embeddedSchemas: {},
+  embeddedSchemas: {r'Address': AddressSchema},
   getId: _retailLocationEntityGetId,
   getLinks: _retailLocationEntityGetLinks,
   attach: _retailLocationEntityAttach,
@@ -133,27 +109,10 @@ int _retailLocationEntityEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.address1;
+    final value = object.address;
     if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.address2;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.city;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.country;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
+      bytesCount += 3 +
+          AddressSchema.estimateSize(value, allOffsets[Address]!, allOffsets);
     }
   }
   {
@@ -176,18 +135,6 @@ int _retailLocationEntityEstimateSize(
   }
   {
     final value = object.pan;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.postalCode;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.state;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -225,24 +172,24 @@ int _retailLocationEntitySerializeNative(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.address1);
-  writer.writeString(offsets[1], object.address2);
-  writer.writeString(offsets[2], object.city);
-  writer.writeString(offsets[3], object.country);
-  writer.writeDateTime(offsets[4], object.createTime);
-  writer.writeString(offsets[5], object.currencyId);
-  writer.writeString(offsets[6], object.gst);
-  writer.writeDateTime(offsets[7], object.lastChangedAt);
-  writer.writeString(offsets[8], object.locale);
-  writer.writeString(offsets[9], object.pan);
-  writer.writeString(offsets[10], object.postalCode);
-  writer.writeString(offsets[11], object.state);
-  writer.writeString(offsets[12], object.storeContact);
-  writer.writeString(offsets[13], object.storeEmail);
-  writer.writeString(offsets[14], object.storeName);
-  writer.writeString(offsets[15], object.storeNumber);
-  writer.writeDateTime(offsets[16], object.updateTime);
-  writer.writeLong(offsets[17], object.version);
+  writer.writeObject<Address>(
+    offsets[0],
+    allOffsets,
+    AddressSchema.serializeNative,
+    object.address,
+  );
+  writer.writeDateTime(offsets[1], object.createTime);
+  writer.writeString(offsets[2], object.currencyId);
+  writer.writeString(offsets[3], object.gst);
+  writer.writeDateTime(offsets[4], object.lastChangedAt);
+  writer.writeString(offsets[5], object.locale);
+  writer.writeString(offsets[6], object.pan);
+  writer.writeString(offsets[7], object.storeContact);
+  writer.writeString(offsets[8], object.storeEmail);
+  writer.writeString(offsets[9], object.storeName);
+  writer.writeString(offsets[10], object.storeNumber);
+  writer.writeDateTime(offsets[11], object.updateTime);
+  writer.writeLong(offsets[12], object.version);
   return writer.usedBytes;
 }
 
@@ -253,25 +200,24 @@ RetailLocationEntity _retailLocationEntityDeserializeNative(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = RetailLocationEntity(
-    address1: reader.readStringOrNull(offsets[0]),
-    address2: reader.readStringOrNull(offsets[1]),
-    city: reader.readStringOrNull(offsets[2]),
-    country: reader.readStringOrNull(offsets[3]),
-    createTime: reader.readDateTime(offsets[4]),
-    currencyId: reader.readStringOrNull(offsets[5]),
-    gst: reader.readStringOrNull(offsets[6]),
-    lastChangedAt: reader.readDateTimeOrNull(offsets[7]),
-    locale: reader.readStringOrNull(offsets[8]),
-    pan: reader.readStringOrNull(offsets[9]),
-    postalCode: reader.readStringOrNull(offsets[10]),
+    address: reader.readObjectOrNull<Address>(
+      offsets[0],
+      AddressSchema.deserializeNative,
+      allOffsets,
+    ),
+    createTime: reader.readDateTime(offsets[1]),
+    currencyId: reader.readStringOrNull(offsets[2]),
+    gst: reader.readStringOrNull(offsets[3]),
+    lastChangedAt: reader.readDateTimeOrNull(offsets[4]),
+    locale: reader.readStringOrNull(offsets[5]),
+    pan: reader.readStringOrNull(offsets[6]),
     rtlLocId: id,
-    state: reader.readStringOrNull(offsets[11]),
-    storeContact: reader.readStringOrNull(offsets[12]),
-    storeEmail: reader.readStringOrNull(offsets[13]),
-    storeName: reader.readStringOrNull(offsets[14]),
-    storeNumber: reader.readStringOrNull(offsets[15]),
-    updateTime: reader.readDateTimeOrNull(offsets[16]),
-    version: reader.readLongOrNull(offsets[17]) ?? 1,
+    storeContact: reader.readStringOrNull(offsets[7]),
+    storeEmail: reader.readStringOrNull(offsets[8]),
+    storeName: reader.readStringOrNull(offsets[9]),
+    storeNumber: reader.readStringOrNull(offsets[10]),
+    updateTime: reader.readDateTimeOrNull(offsets[11]),
+    version: reader.readLongOrNull(offsets[12]) ?? 1,
   );
   return object;
 }
@@ -284,21 +230,25 @@ P _retailLocationEntityDeserializePropNative<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readObjectOrNull<Address>(
+        offset,
+        AddressSchema.deserializeNative,
+        allOffsets,
+      )) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
@@ -306,18 +256,8 @@ P _retailLocationEntityDeserializePropNative<P>(
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
-    case 12:
-      return (reader.readStringOrNull(offset)) as P;
-    case 13:
-      return (reader.readStringOrNull(offset)) as P;
-    case 14:
-      return (reader.readStringOrNull(offset)) as P;
-    case 15:
-      return (reader.readStringOrNull(offset)) as P;
-    case 16:
       return (reader.readDateTimeOrNull(offset)) as P;
-    case 17:
+    case 12:
       return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -332,7 +272,7 @@ Object _retailLocationEntitySerializeWeb(
 
 RetailLocationEntity _retailLocationEntityDeserializeWeb(
     IsarCollection<RetailLocationEntity> collection, Object jsObj) {
-  /*final object = RetailLocationEntity(address1: IsarNative.jsObjectGet(jsObj, r'address1') ,address2: IsarNative.jsObjectGet(jsObj, r'address2') ,city: IsarNative.jsObjectGet(jsObj, r'city') ,country: IsarNative.jsObjectGet(jsObj, r'country') ,createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),currencyId: IsarNative.jsObjectGet(jsObj, r'currencyId') ,gst: IsarNative.jsObjectGet(jsObj, r'gst') ,lastChangedAt: IsarNative.jsObjectGet(jsObj, r'lastChangedAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastChangedAt') as int, isUtc: true).toLocal() : null,locale: IsarNative.jsObjectGet(jsObj, r'locale') ,pan: IsarNative.jsObjectGet(jsObj, r'pan') ,postalCode: IsarNative.jsObjectGet(jsObj, r'postalCode') ,rtlLocId: IsarNative.jsObjectGet(jsObj, r'rtlLocId') ?? (double.negativeInfinity as int),state: IsarNative.jsObjectGet(jsObj, r'state') ,storeContact: IsarNative.jsObjectGet(jsObj, r'storeContact') ,storeEmail: IsarNative.jsObjectGet(jsObj, r'storeEmail') ,storeName: IsarNative.jsObjectGet(jsObj, r'storeName') ,storeNumber: IsarNative.jsObjectGet(jsObj, r'storeNumber') ,updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
+  /*final object = RetailLocationEntity(address: IsarNative.jsObjectGet(jsObj, r'address') ,createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),currencyId: IsarNative.jsObjectGet(jsObj, r'currencyId') ,gst: IsarNative.jsObjectGet(jsObj, r'gst') ,lastChangedAt: IsarNative.jsObjectGet(jsObj, r'lastChangedAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastChangedAt') as int, isUtc: true).toLocal() : null,locale: IsarNative.jsObjectGet(jsObj, r'locale') ,pan: IsarNative.jsObjectGet(jsObj, r'pan') ,rtlLocId: IsarNative.jsObjectGet(jsObj, r'rtlLocId') ?? (double.negativeInfinity as int),storeContact: IsarNative.jsObjectGet(jsObj, r'storeContact') ,storeEmail: IsarNative.jsObjectGet(jsObj, r'storeEmail') ,storeName: IsarNative.jsObjectGet(jsObj, r'storeName') ,storeNumber: IsarNative.jsObjectGet(jsObj, r'storeNumber') ,updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
   //return object;
   throw UnimplementedError();
 }
@@ -441,625 +381,19 @@ extension RetailLocationEntityQueryWhere
 extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
     RetailLocationEntity, QFilterCondition> {
   QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1IsNull() {
+      QAfterFilterCondition> addressIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'address1',
+        property: r'address',
       ));
     });
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1IsNotNull() {
+      QAfterFilterCondition> addressIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'address1',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1EqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'address1',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1GreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'address1',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1LessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'address1',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1Between(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'address1',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1StartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'address1',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1EndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'address1',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      address1Contains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'address1',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      address1Matches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'address1',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1IsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'address1',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address1IsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'address1',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2IsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'address2',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2IsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'address2',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2EqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'address2',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2GreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'address2',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2LessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'address2',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2Between(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'address2',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2StartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'address2',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2EndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'address2',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      address2Contains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'address2',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      address2Matches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'address2',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2IsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'address2',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> address2IsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'address2',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'city',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'city',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'city',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      cityContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      cityMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'city',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'city',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> cityIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'city',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'country',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'country',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'country',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      countryContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      countryMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'country',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'country',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> countryIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'country',
-        value: '',
+        property: r'address',
       ));
     });
   }
@@ -1819,162 +1153,6 @@ extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'postalCode',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'postalCode',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'postalCode',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'postalCode',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'postalCode',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'postalCode',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'postalCode',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'postalCode',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      postalCodeContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'postalCode',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      postalCodeMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'postalCode',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'postalCode',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> postalCodeIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'postalCode',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
       QAfterFilterCondition> rtlLocIdEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2026,162 +1204,6 @@ extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'state',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'state',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'state',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      stateContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-          QAfterFilterCondition>
-      stateMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'state',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'state',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> stateIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'state',
-        value: '',
       ));
     });
   }
@@ -2942,69 +1964,20 @@ extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
 }
 
 extension RetailLocationEntityQueryObject on QueryBuilder<RetailLocationEntity,
-    RetailLocationEntity, QFilterCondition> {}
+    RetailLocationEntity, QFilterCondition> {
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> address(FilterQuery<Address> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'address');
+    });
+  }
+}
 
 extension RetailLocationEntityQueryLinks on QueryBuilder<RetailLocationEntity,
     RetailLocationEntity, QFilterCondition> {}
 
 extension RetailLocationEntityQuerySortBy
     on QueryBuilder<RetailLocationEntity, RetailLocationEntity, QSortBy> {
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByAddress1() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address1', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByAddress1Desc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address1', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByAddress2() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address2', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByAddress2Desc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address2', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByCity() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'city', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByCityDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'city', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByCountry() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'country', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByCountryDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'country', Sort.desc);
-    });
-  }
-
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
       sortByCreateTime() {
     return QueryBuilder.apply(this, (query) {
@@ -3086,34 +2059,6 @@ extension RetailLocationEntityQuerySortBy
       sortByPanDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pan', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByPostalCode() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'postalCode', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByPostalCodeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'postalCode', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByState() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'state', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      sortByStateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'state', Sort.desc);
     });
   }
 
@@ -3205,62 +2150,6 @@ extension RetailLocationEntityQuerySortBy
 extension RetailLocationEntityQuerySortThenBy
     on QueryBuilder<RetailLocationEntity, RetailLocationEntity, QSortThenBy> {
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByAddress1() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address1', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByAddress1Desc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address1', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByAddress2() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address2', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByAddress2Desc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'address2', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByCity() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'city', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByCityDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'city', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByCountry() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'country', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByCountryDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'country', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
       thenByCreateTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createTime', Sort.asc);
@@ -3345,20 +2234,6 @@ extension RetailLocationEntityQuerySortThenBy
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByPostalCode() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'postalCode', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByPostalCodeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'postalCode', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
       thenByRtlLocId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rtlLocId', Sort.asc);
@@ -3369,20 +2244,6 @@ extension RetailLocationEntityQuerySortThenBy
       thenByRtlLocIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rtlLocId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByState() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'state', Sort.asc);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
-      thenByStateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'state', Sort.desc);
     });
   }
 
@@ -3474,34 +2335,6 @@ extension RetailLocationEntityQuerySortThenBy
 extension RetailLocationEntityQueryWhereDistinct
     on QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct> {
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
-      distinctByAddress1({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'address1', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
-      distinctByAddress2({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'address2', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
-      distinctByCity({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'city', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
-      distinctByCountry({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'country', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
       distinctByCreateTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createTime');
@@ -3540,20 +2373,6 @@ extension RetailLocationEntityQueryWhereDistinct
       distinctByPan({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'pan', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
-      distinctByPostalCode({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'postalCode', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
-      distinctByState({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'state', caseSensitive: caseSensitive);
     });
   }
 
@@ -3608,30 +2427,10 @@ extension RetailLocationEntityQueryProperty on QueryBuilder<
     });
   }
 
-  QueryBuilder<RetailLocationEntity, String?, QQueryOperations>
-      address1Property() {
+  QueryBuilder<RetailLocationEntity, Address?, QQueryOperations>
+      addressProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'address1');
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, String?, QQueryOperations>
-      address2Property() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'address2');
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, String?, QQueryOperations> cityProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'city');
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, String?, QQueryOperations>
-      countryProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'country');
+      return query.addPropertyName(r'address');
     });
   }
 
@@ -3672,20 +2471,6 @@ extension RetailLocationEntityQueryProperty on QueryBuilder<
   QueryBuilder<RetailLocationEntity, String?, QQueryOperations> panProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'pan');
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, String?, QQueryOperations>
-      postalCodeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'postalCode');
-    });
-  }
-
-  QueryBuilder<RetailLocationEntity, String?, QQueryOperations>
-      stateProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'state');
     });
   }
 

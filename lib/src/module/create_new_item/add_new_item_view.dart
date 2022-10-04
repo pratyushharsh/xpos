@@ -16,9 +16,11 @@ import 'package:receipt_generator/src/widgets/loading.dart';
 import 'package:validators/sanitizers.dart';
 
 import '../../config/constants.dart';
+import '../../config/defaults.dart';
 import '../../entity/config/code_value_entity.dart';
 import '../../entity/pos/tax_group_entity.dart';
 import '../../repositories/tax_repository.dart';
+import '../../widgets/code_value_dropdown.dart';
 
 enum NewItemScreenState { editItem, createItem }
 
@@ -53,7 +55,7 @@ class AddNewItemForm extends StatefulWidget {
 }
 
 class _AddNewItemFormState extends State<AddNewItemForm> {
-  String? _uom;
+  CodeValueEntity? _uom;
   String? _taxGroup;
   bool _formValid = false;
   final _formKey = GlobalKey<FormState>();
@@ -95,13 +97,9 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   }
 
   void _fetchData() async {
-    var repo = RepositoryProvider.of<ConfigRepository>(context);
-    var _uom = await repo.getCodeByCategory("UOM");
-
     var taxRepo = RepositoryProvider.of<TaxRepository>(context);
     var _taxGroup = await taxRepo.getAllTaxGroups();
     setState(() {
-      uom = _uom;
       taxGroups = _taxGroup;
     });
   }
@@ -142,7 +140,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           purchasePrice: _purchasePriceController.text.isNotEmpty
               ? toFloat(_purchasePriceController.text)
               : null,
-          uom: _uom ?? "EACH",
+          uom: _uom?.value ?? DefaultConfig.uom().value,
           brand:
               _brandController.text.isNotEmpty ? _brandController.text : null,
           hsn: _hsnController.text.isNotEmpty ? _hsnController.text : null,
@@ -154,13 +152,13 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     }
   }
 
-  void _onUomChange(String? value) {
+  void _onUomChange(CodeValueEntity? value) {
     setState(() {
       _uom = value;
     });
   }
 
-void _onTaxGroupChange(String? value) {
+  void _onTaxGroupChange(String? value) {
     setState(() {
       _taxGroup = value;
     });
@@ -190,7 +188,11 @@ void _onTaxGroupChange(String? value) {
         } else if (ItemStatus.editProduct == state.status) {
           setState(() {
             _inEditMode = true;
-            _uom = state.existingProduct!.uom;
+            _uom = CodeValueEntity(
+                category: 'UOM',
+                code: state.existingProduct!.uom,
+                value: state.existingProduct!.uom,
+                description: state.existingProduct!.uom);
             _taxGroup = state.existingProduct!.taxGroupId;
             _productId = state.existingProduct!.skuCode ??
                 state.existingProduct!.productId;
@@ -229,7 +231,8 @@ void _onTaxGroupChange(String? value) {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    if (state.status != ItemStatus.loading || state.status != ItemStatus.initial)
+                    if (state.status != ItemStatus.loading ||
+                        state.status != ItemStatus.initial)
                       SingleChildScrollView(
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -272,19 +275,30 @@ void _onTaxGroupChange(String? value) {
                                   const SizedBox(
                                     width: 8,
                                   ),
+                                  // Expanded(
+                                  //   child: CustomDropDown<String>(
+                                  //     value: _uom,
+                                  //     data: uom
+                                  //         .map((e) => DropDownData(
+                                  //             key: e.code, value: e.value))
+                                  //         .toList(),
+                                  //     label: 'UOM',
+                                  //     onChanged: _onUomChange,
+                                  //     validator:
+                                  //         NewProductFieldValidator.validateUOM,
+                                  //   ),
+                                  // ),
                                   Expanded(
-                                    child: CustomDropDown<String>(
-                                      value: _uom,
-                                      data: uom
-                                          .map((e) => DropDownData(
-                                              key: e.code, value: e.value))
-                                          .toList(),
-                                      label: 'UOM',
-                                      onChanged: _onUomChange,
-                                      validator:
-                                          NewProductFieldValidator.validateUOM,
-                                    ),
-                                  )
+                                      child: CodeValueDropDown(
+                                    label: "UOM",
+                                    onChanged: _onUomChange,
+                                    category: "UOM",
+                                    value: _uom,
+                                    validator: (value) {
+                                      return NewProductFieldValidator
+                                          .validateUOM(value?.value);
+                                    },
+                                  ))
                                 ],
                               ),
                               Row(
@@ -368,12 +382,13 @@ void _onTaxGroupChange(String? value) {
                                       value: _taxGroup,
                                       data: taxGroups
                                           .map((e) => DropDownData(
-                                          key: e.groupId, value: e.description))
+                                              key: e.groupId,
+                                              value: e.description))
                                           .toList(),
                                       label: 'Tax Group',
                                       onChanged: _onTaxGroupChange,
                                       validator:
-                                      NewProductFieldValidator.validateUOM,
+                                          NewProductFieldValidator.validateUOM,
                                     ),
                                   ),
                                 ],
@@ -482,7 +497,6 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
     });
   }
 
-
   @override
   void didUpdateWidget(ProductItemsImage oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -492,7 +506,6 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
       }
     });
   }
-
 
   Widget _buildHorizontal() {
     return Row(
@@ -511,17 +524,17 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
             direction: Axis.vertical,
             children: widget.imageUrl
                 .map((e) => InkWell(
-              onTap: () {
-                setState(() {
-                  selectedUrl = e;
-                });
-              },
-              child: Image.file(
-                File('${Constants.baseImagePath}/$e'),
-                height: 100,
-                width: 100,
-              ),
-            ))
+                      onTap: () {
+                        setState(() {
+                          selectedUrl = e;
+                        });
+                      },
+                      child: Image.file(
+                        File('${Constants.baseImagePath}/$e'),
+                        height: 100,
+                        width: 100,
+                      ),
+                    ))
                 .toList(),
           ),
         ),
@@ -539,28 +552,25 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
           direction: Axis.horizontal,
           children: widget.imageUrl
               .map((e) => InkWell(
-            onTap: () {
-              setState(() {
-                selectedUrl = e;
-              });
-            },
-            child: Image.file(
-              File('${Constants.baseImagePath}/$e'),
-              height: 60,
-              width: 50,
-            ),
-          ))
+                    onTap: () {
+                      setState(() {
+                        selectedUrl = e;
+                      });
+                    },
+                    child: Image.file(
+                      File('${Constants.baseImagePath}/$e'),
+                      height: 60,
+                      width: 50,
+                    ),
+                  ))
               .toList(),
         )
       ],
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     Size size = MediaQuery.of(context).size;
 
     return size.width < 600 ? _buildVertical() : _buildHorizontal();

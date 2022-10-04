@@ -6,6 +6,7 @@ import 'package:receipt_generator/src/model/api/api.dart';
 import 'package:receipt_generator/src/model/api/create_business_response.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
+import '../entity/pos/address.dart';
 import '../entity/pos/entity.dart';
 
 class BusinessRepository {
@@ -16,8 +17,7 @@ class BusinessRepository {
 
   BusinessRepository({required this.db, required this.restClient});
 
-  Future<RetailLocationEntity> _findAndPersistBusiness(
-      int businessId) async {
+  Future<RetailLocationEntity> _findAndPersistBusiness(int businessId) async {
     try {
       var option = RestOptions(path: '/business/$businessId');
       var rawResp = await restClient.get(restOptions: option);
@@ -31,18 +31,21 @@ class BusinessRepository {
             version: 1,
             createTime: resp.createdAt,
             storeName: resp.name,
+            storeEmail: resp.email,
             storeNumber: '${resp.businessId}',
             storeContact: resp.phone,
-            address1: resp.address1,
-            address2: resp.address2,
-            city: resp.city,
-            state: resp.state,
-            country: resp.country,
+            address: Address(
+              building: resp.address1,
+              street: resp.address2,
+              city: resp.city,
+              state: resp.state,
+              zipcode: resp.postalCode,
+              country: resp.country,
+            ),
             pan: resp.pan,
             gst: resp.gst,
             currencyId: resp.currency,
             locale: resp.locale,
-            postalCode: resp.postalCode,
           );
           await db.writeTxn(() => db.retailLocationEntitys.put(entity));
           return entity;
@@ -61,7 +64,6 @@ class BusinessRepository {
 
   Future<RetailLocationEntity> getBusinessById(int businessId) async {
     try {
-
       var data = await db.retailLocationEntitys.get(businessId);
 
       if (data == null) {
@@ -103,18 +105,21 @@ class BusinessRepository {
             version: 1,
             createTime: resp.createdAt,
             storeName: resp.name,
-            storeNumber: '$resp.businessId',
+            storeEmail: resp.email,
+            storeNumber: '${resp.businessId}',
             storeContact: resp.phone,
-            address1: resp.address1,
-            address2: resp.address2,
-            city: resp.city,
-            state: resp.state,
-            country: resp.country,
+            address: Address(
+              building: resp.address1,
+              street: resp.address2,
+              city: resp.city,
+              state: resp.state,
+              zipcode: resp.postalCode,
+              country: resp.country,
+            ),
             pan: resp.pan,
             gst: resp.gst,
             currencyId: resp.currency,
             locale: resp.locale,
-            postalCode: resp.postalCode,
           );
           await db.writeTxn(() => db.retailLocationEntitys.put(entity));
           return entity;

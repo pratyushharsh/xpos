@@ -17,7 +17,10 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
   final BusinessOperation operation;
   final CognitoUserPool userPool;
 
-  BusinessBloc({required this.repo, this.operation = BusinessOperation.create, required this.userPool})
+  BusinessBloc(
+      {required this.repo,
+      this.operation = BusinessOperation.create,
+      required this.userPool})
       : super(BusinessState(operation: operation)) {
     on<LoadBusinessDetail>(_onLoadBusinessDetail);
     on<OnBusinessNameChange>(_onBusinessNameChange);
@@ -46,12 +49,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
             businessGst: data.gst,
             businessPan: data.pan,
             businessEmail: data.storeEmail,
-            businessAddress: Address(
-                zipcode: data.postalCode,
-                building: data.address1,
-                street: data.address2,
-                city: data.city,
-                state: data.state),
+            businessAddress: data.address,
             businessContact: data.storeContact),
       );
     } catch (e) {
@@ -69,11 +67,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
             storeName: state.businessName,
             storeEmail: state.businessEmail,
             storeContact: state.businessContact,
-            address1: state.businessAddress?.building,
-            address2: state.businessAddress?.street,
-            city: state.businessAddress?.city,
-            state: state.businessAddress?.state,
-            postalCode: state.businessAddress?.zipcode,
+            address: state.businessAddress,
             gst: state.businessGst,
             pan: state.businessPan));
         emit(state.copyWith(status: BusinessStatus.success, entity: entity));
@@ -92,20 +86,20 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
 
     try {
       var resp = await repo.createNewBusiness(CreateBusinessRequest(
-        name: state.businessName,
-        address1: state.businessAddress?.building,
-        address2: state.businessAddress?.street,
-        city: state.businessAddress?.city,
-        state: state.businessAddress?.state,
-        postalCode: state.businessAddress?.zipcode,
-        country: "India",
-        currency: "INR",
-        locale: "en_IN",
-        gst: state.businessGst,
-        pan: state.businessPan,
-        phone: state.businessContact,
-        createdBy: user?.getUsername()
-      ));
+          name: state.businessName,
+          address1: state.businessAddress?.building,
+          address2: state.businessAddress?.street,
+          city: state.businessAddress?.city,
+          state: state.businessAddress?.state,
+          postalCode: state.businessAddress?.zipcode,
+          email: state.businessEmail,
+          country: "India",
+          currency: "INR",
+          locale: "en_IN",
+          gst: state.businessGst,
+          pan: state.businessPan,
+          phone: state.businessContact,
+          createdBy: user?.getUsername()));
       log.info(resp);
 
       // Save in the shared preferences

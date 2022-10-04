@@ -11,6 +11,7 @@ import 'package:receipt_generator/src/module/home/settings_view.dart';
 import 'package:receipt_generator/src/module/load_customer_contact/bloc/load_customer_contact_bloc.dart';
 
 import '../../widgets/clipper/wave_clipper.dart';
+import '../error/error_notification.dart';
 
 typedef _LetIndexPage = void Function(int value);
 
@@ -56,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: AppColor.background,
           body: Stack(
             fit: StackFit.expand,
+            clipBehavior: Clip.none,
             children: [
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 100),
@@ -74,6 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   selectedIndex: selectedIndex,
                 ),
               ),
+              const Positioned(
+                top: 30,
+                right: 30,
+                child: ErrorNotification(),
+              )
             ],
           ),
         ),

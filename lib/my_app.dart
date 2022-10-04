@@ -30,7 +30,9 @@ import 'package:receipt_generator/src/repositories/tax_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
+import 'src/module/error/bloc/error_notification_bloc.dart';
 import 'src/module/login/choose_create_business_view.dart';
+import 'src/repositories/checklist_helper.dart';
 import 'src/repositories/employee_repository.dart';
 import 'src/repositories/product_repository.dart';
 import 'src/repositories/reason_code_repository.dart';
@@ -52,6 +54,8 @@ class MyApp extends StatelessWidget {
         providers: [
           RepositoryProvider(lazy: false, create: (context) => database),
           RepositoryProvider(lazy: false, create: (context) => restClient),
+          RepositoryProvider(
+              lazy: false, create: (context) => CheckListHelper(db: database)),
           RepositoryProvider(create: (context) => ContactRepository()),
           RepositoryProvider(create: (context) => userPool),
           RepositoryProvider(
@@ -106,7 +110,8 @@ class MyApp extends StatelessWidget {
           ),
           RepositoryProvider(
             lazy: false,
-            create: (context) => TaxHelper(taxRepository: RepositoryProvider.of(context)),
+            create: (context) =>
+                TaxHelper(taxRepository: RepositoryProvider.of(context)),
           ),
           RepositoryProvider(
             lazy: false,
@@ -118,7 +123,8 @@ class MyApp extends StatelessWidget {
           ),
           RepositoryProvider(
             lazy: false,
-            create: (context) => TaxModifierCalculator(taxRepository: RepositoryProvider.of(context)),
+            create: (context) => TaxModifierCalculator(
+                taxRepository: RepositoryProvider.of(context)),
           )
           // ..._buildHelperList(db: database, restClient: restClient),
           // ..._buildCalculatorList(db: database, restClient: restClient),
@@ -151,6 +157,11 @@ class MyApp extends StatelessWidget {
                 auth: BlocProvider.of(context),
                 sequenceRepository: RepositoryProvider.of(context)),
           ),
+          BlocProvider(
+              create: (context) => ErrorNotificationBloc(
+                  checkListHelper: RepositoryProvider.of(context),
+                authenticationBloc: BlocProvider.of(context),
+              )..add(ValidateStoreSetup()))
         ], child: MyAppView()));
   }
 }
@@ -188,14 +199,14 @@ class _MyAppViewState extends State<MyAppView> {
               case AuthenticationStatus.authenticated:
                 _navigator.pushAndRemoveUntil<void>(
                   HomeScreen.route(),
-                      (route) => false,
+                  (route) => false,
                 );
                 break;
               case AuthenticationStatus.unauthenticated:
               case AuthenticationStatus.unknown:
                 _navigator.pushAndRemoveUntil<void>(
                   LoginView.route(),
-                      (route) => false,
+                  (route) => false,
                 );
                 break;
               case AuthenticationStatus.verifyUser:
