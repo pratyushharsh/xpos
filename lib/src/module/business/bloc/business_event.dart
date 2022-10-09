@@ -45,6 +45,12 @@ class OnBusinessEmailChange extends BusinessEvent {
   OnBusinessEmailChange(this.email);
 }
 
+class OnChangePhoto extends BusinessEvent {
+  final File photo;
+
+  OnChangePhoto(this.photo);
+}
+
 class OnCreateNewBusiness extends BusinessEvent {}
 
 class OnSaveBusiness extends BusinessEvent {}

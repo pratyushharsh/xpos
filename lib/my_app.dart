@@ -179,6 +179,21 @@ class _MyAppViewState extends State<MyAppView> {
   NavigatorState get _navigator => _navigatorKey.currentState!;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) {
+          BlocProvider.of<ErrorNotificationBloc>(context).add(PeriodicValidatorStartEvent());
+    });
+  }
+
+  @override
+  void dispose() {
+    BlocProvider.of<ErrorNotificationBloc>(context).add(PeriodicValidatorStopEvent());
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: _navigatorKey,

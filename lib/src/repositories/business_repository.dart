@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
@@ -17,19 +18,38 @@ class BusinessRepository {
 
   BusinessRepository({required this.db, required this.restClient});
 
-  Future<RetailLocationEntity> _findAndPersistBusiness(int businessId) async {
+  Future<RetailLocationEntity> findAndPersistBusiness(int businessId) async {
     try {
       var option = RestOptions(path: '/business/$businessId');
       var rawResp = await restClient.get(restOptions: option);
       if (rawResp.statusCode == 200) {
         try {
-          var resp = CreateBusinessResponse.fromMap(
+          var resp = CreateBusinessResponse.fromJson(
               restClient.parsedResponse(rawResp));
 
+          List<String> imgs = [];
+          // build image
+          if (resp.logo != null) {
+            String? small = resp.logo!.small;
+            String? medium = resp.logo!.medium;
+            String? large = resp.logo!.large;
+            if (small != null) {
+              imgs.add(small);
+            }
+
+            if (medium != null) {
+              imgs.add(medium);
+            }
+
+            if (large != null) {
+              imgs.add(large);
+            }
+          }
+
           var entity = RetailLocationEntity(
-            rtlLocId: resp.businessId,
+            rtlLocId: resp.businessId!,
             version: 1,
-            createTime: resp.createdAt,
+            createTime: resp.createdAt!,
             storeName: resp.name,
             storeEmail: resp.email,
             storeNumber: '${resp.businessId}',
@@ -42,10 +62,11 @@ class BusinessRepository {
               zipcode: resp.postalCode,
               country: resp.country,
             ),
-            pan: resp.pan,
-            gst: resp.gst,
+            pan: resp.customAttribute?.gST,
+            gst: resp.customAttribute?.pAN,
             currencyId: resp.currency,
             locale: resp.locale,
+            logo: imgs,
           );
           await db.writeTxn(() => db.retailLocationEntitys.put(entity));
           return entity;
@@ -68,7 +89,7 @@ class BusinessRepository {
 
       if (data == null) {
         log.info('Cannot find business in the database');
-        data = await _findAndPersistBusiness(businessId);
+        data = await findAndPersistBusiness(businessId);
       }
 
       return data;
@@ -79,10 +100,12 @@ class BusinessRepository {
   }
 
   Future<RetailLocationEntity> updateBusiness(
-      RetailLocationEntity entity) async {
+      int businessId, CreateBusinessRequest request) async {
     try {
-      await db.writeTxn(() => db.retailLocationEntitys.put(entity));
-      return entity;
+      var option = RestOptions(
+          path: '/business/$businessId', body: json.encode(request.toMap()));
+      var rawResp = await restClient.put(restOptions: option);
+      return findAndPersistBusiness(businessId);
     } catch (e) {
       log.severe(e);
       throw 'Error while updating business';
@@ -97,13 +120,13 @@ class BusinessRepository {
       var rawResp = await restClient.post(restOptions: option);
       if (rawResp.statusCode == 200) {
         try {
-          var resp = CreateBusinessResponse.fromMap(
+          var resp = CreateBusinessResponse.fromJson(
               restClient.parsedResponse(rawResp));
 
           var entity = RetailLocationEntity(
-            rtlLocId: resp.businessId,
+            rtlLocId: resp.businessId!,
             version: 1,
-            createTime: resp.createdAt,
+            createTime: resp.createdAt!,
             storeName: resp.name,
             storeEmail: resp.email,
             storeNumber: '${resp.businessId}',
@@ -116,8 +139,8 @@ class BusinessRepository {
               zipcode: resp.postalCode,
               country: resp.country,
             ),
-            pan: resp.pan,
-            gst: resp.gst,
+            pan: resp.customAttribute?.gST,
+            gst: resp.customAttribute?.pAN,
             currencyId: resp.currency,
             locale: resp.locale,
           );
@@ -133,6 +156,42 @@ class BusinessRepository {
     } catch (e) {
       log.severe(e);
       throw 'Error while creating business';
+    }
+  }
+
+  Future<String> getLogoUploadUrl(int businessId) async {
+    try {
+      var option = RestOptions(path: '/business/$businessId/logo');
+      var rawResp = await restClient.get(restOptions: option);
+      if (rawResp.statusCode == 200) {
+        try {
+          var resp = restClient.parsedResponse(rawResp);
+          return resp['uploadURL'];
+        } catch (e) {
+          log.severe(e);
+          throw 'Error While Parsing business';
+        }
+      } else {
+        throw 'Unable to create new business. Contact Admin';
+      }
+    } catch (e) {
+      log.severe(e);
+      throw 'Error while creating business';
+    }
+  }
+
+  Future<void> uploadImage(String url, Uint8List inp) async {
+    try {
+      var option = RestOptions(url: url, body: inp, path: '');
+      var rawResp = await restClient.rawPut(restOptions: option);
+      if (rawResp.statusCode == 200) {
+        return;
+      } else {
+        throw 'Unable to upload image. Contact Admin';
+      }
+    } catch (e) {
+      log.severe(e);
+      throw 'Error while uploading the image.';
     }
   }
 }

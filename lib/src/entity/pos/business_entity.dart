@@ -18,6 +18,7 @@ class RetailLocationEntity {
   final Address? address;
   final String? gst;
   final String? pan;
+  final List<String>? logo;
   late DateTime createTime;
   late DateTime? updateTime;
   late DateTime? lastChangedAt;
@@ -33,7 +34,7 @@ class RetailLocationEntity {
       this.locale,
       this.address,
       this.gst,
-      this.pan,
+      this.pan, this.logo,
       required this.createTime,
       this.version = 1,
       this.lastChangedAt,
@@ -50,6 +51,7 @@ class RetailLocationEntity {
       Address? address,
       String? gst,
       String? pan,
+      List<String>? logo,
       DateTime? createTime,
       int? version,
       DateTime? lastChangedAt,
@@ -65,6 +67,7 @@ class RetailLocationEntity {
       address: address ?? this.address,
       gst: gst ?? this.gst,
       pan: pan ?? this.pan,
+      logo: logo ?? this.logo,
       createTime: createTime ?? this.createTime,
       version: version ?? this.version,
       lastChangedAt: lastChangedAt ?? this.lastChangedAt,

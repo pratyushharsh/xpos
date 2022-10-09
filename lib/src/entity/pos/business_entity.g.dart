@@ -49,38 +49,43 @@ const RetailLocationEntitySchema = CollectionSchema(
       name: r'locale',
       type: IsarType.string,
     ),
-    r'pan': PropertySchema(
+    r'logo': PropertySchema(
       id: 6,
+      name: r'logo',
+      type: IsarType.stringList,
+    ),
+    r'pan': PropertySchema(
+      id: 7,
       name: r'pan',
       type: IsarType.string,
     ),
     r'storeContact': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'storeContact',
       type: IsarType.string,
     ),
     r'storeEmail': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'storeEmail',
       type: IsarType.string,
     ),
     r'storeName': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'storeName',
       type: IsarType.string,
     ),
     r'storeNumber': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'storeNumber',
       type: IsarType.string,
     ),
     r'updateTime': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'updateTime',
       type: IsarType.dateTime,
     ),
     r'version': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'version',
       type: IsarType.long,
     )
@@ -134,6 +139,18 @@ int _retailLocationEntityEstimateSize(
     }
   }
   {
+    final list = object.logo;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
+    }
+  }
+  {
     final value = object.pan;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -183,13 +200,14 @@ int _retailLocationEntitySerializeNative(
   writer.writeString(offsets[3], object.gst);
   writer.writeDateTime(offsets[4], object.lastChangedAt);
   writer.writeString(offsets[5], object.locale);
-  writer.writeString(offsets[6], object.pan);
-  writer.writeString(offsets[7], object.storeContact);
-  writer.writeString(offsets[8], object.storeEmail);
-  writer.writeString(offsets[9], object.storeName);
-  writer.writeString(offsets[10], object.storeNumber);
-  writer.writeDateTime(offsets[11], object.updateTime);
-  writer.writeLong(offsets[12], object.version);
+  writer.writeStringList(offsets[6], object.logo);
+  writer.writeString(offsets[7], object.pan);
+  writer.writeString(offsets[8], object.storeContact);
+  writer.writeString(offsets[9], object.storeEmail);
+  writer.writeString(offsets[10], object.storeName);
+  writer.writeString(offsets[11], object.storeNumber);
+  writer.writeDateTime(offsets[12], object.updateTime);
+  writer.writeLong(offsets[13], object.version);
   return writer.usedBytes;
 }
 
@@ -210,14 +228,15 @@ RetailLocationEntity _retailLocationEntityDeserializeNative(
     gst: reader.readStringOrNull(offsets[3]),
     lastChangedAt: reader.readDateTimeOrNull(offsets[4]),
     locale: reader.readStringOrNull(offsets[5]),
-    pan: reader.readStringOrNull(offsets[6]),
+    logo: reader.readStringList(offsets[6]),
+    pan: reader.readStringOrNull(offsets[7]),
     rtlLocId: id,
-    storeContact: reader.readStringOrNull(offsets[7]),
-    storeEmail: reader.readStringOrNull(offsets[8]),
-    storeName: reader.readStringOrNull(offsets[9]),
-    storeNumber: reader.readStringOrNull(offsets[10]),
-    updateTime: reader.readDateTimeOrNull(offsets[11]),
-    version: reader.readLongOrNull(offsets[12]) ?? 1,
+    storeContact: reader.readStringOrNull(offsets[8]),
+    storeEmail: reader.readStringOrNull(offsets[9]),
+    storeName: reader.readStringOrNull(offsets[10]),
+    storeNumber: reader.readStringOrNull(offsets[11]),
+    updateTime: reader.readDateTimeOrNull(offsets[12]),
+    version: reader.readLongOrNull(offsets[13]) ?? 1,
   );
   return object;
 }
@@ -246,7 +265,7 @@ P _retailLocationEntityDeserializePropNative<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringList(offset)) as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
@@ -256,8 +275,10 @@ P _retailLocationEntityDeserializePropNative<P>(
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 12:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 13:
       return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -272,7 +293,7 @@ Object _retailLocationEntitySerializeWeb(
 
 RetailLocationEntity _retailLocationEntityDeserializeWeb(
     IsarCollection<RetailLocationEntity> collection, Object jsObj) {
-  /*final object = RetailLocationEntity(address: IsarNative.jsObjectGet(jsObj, r'address') ,createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),currencyId: IsarNative.jsObjectGet(jsObj, r'currencyId') ,gst: IsarNative.jsObjectGet(jsObj, r'gst') ,lastChangedAt: IsarNative.jsObjectGet(jsObj, r'lastChangedAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastChangedAt') as int, isUtc: true).toLocal() : null,locale: IsarNative.jsObjectGet(jsObj, r'locale') ,pan: IsarNative.jsObjectGet(jsObj, r'pan') ,rtlLocId: IsarNative.jsObjectGet(jsObj, r'rtlLocId') ?? (double.negativeInfinity as int),storeContact: IsarNative.jsObjectGet(jsObj, r'storeContact') ,storeEmail: IsarNative.jsObjectGet(jsObj, r'storeEmail') ,storeName: IsarNative.jsObjectGet(jsObj, r'storeName') ,storeNumber: IsarNative.jsObjectGet(jsObj, r'storeNumber') ,updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
+  /*final object = RetailLocationEntity(address: IsarNative.jsObjectGet(jsObj, r'address') ,createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),currencyId: IsarNative.jsObjectGet(jsObj, r'currencyId') ,gst: IsarNative.jsObjectGet(jsObj, r'gst') ,lastChangedAt: IsarNative.jsObjectGet(jsObj, r'lastChangedAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastChangedAt') as int, isUtc: true).toLocal() : null,locale: IsarNative.jsObjectGet(jsObj, r'locale') ,logo: (IsarNative.jsObjectGet(jsObj, r'logo') as List?)?.map((e) => e ?? '').toList().cast<String>() ,pan: IsarNative.jsObjectGet(jsObj, r'pan') ,rtlLocId: IsarNative.jsObjectGet(jsObj, r'rtlLocId') ?? (double.negativeInfinity as int),storeContact: IsarNative.jsObjectGet(jsObj, r'storeContact') ,storeEmail: IsarNative.jsObjectGet(jsObj, r'storeEmail') ,storeName: IsarNative.jsObjectGet(jsObj, r'storeName') ,storeNumber: IsarNative.jsObjectGet(jsObj, r'storeNumber') ,updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
   //return object;
   throw UnimplementedError();
 }
@@ -993,6 +1014,251 @@ extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
         property: r'locale',
         value: '',
       ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'logo',
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'logo',
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'logo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'logo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'logo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'logo',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'logo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'logo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+          QAfterFilterCondition>
+      logoElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'logo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+          QAfterFilterCondition>
+      logoElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'logo',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'logo',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'logo',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'logo',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'logo',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'logo',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'logo',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'logo',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> logoLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'logo',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -2370,6 +2636,13 @@ extension RetailLocationEntityQueryWhereDistinct
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
+      distinctByLogo() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'logo');
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
       distinctByPan({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'pan', caseSensitive: caseSensitive);
@@ -2465,6 +2738,13 @@ extension RetailLocationEntityQueryProperty on QueryBuilder<
       localeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'locale');
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, List<String>?, QQueryOperations>
+      logoProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'logo');
     });
   }
 

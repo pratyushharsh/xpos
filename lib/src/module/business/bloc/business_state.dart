@@ -7,8 +7,12 @@ enum BusinessStatus {
   failure,
   success,
   newBusinessCreated,
-  newBusinessFailure
+  newBusinessFailure,
+  uploadingImage,
+  imageUploadedFailure,
+  imageUploaded,
 }
+
 enum BusinessOperation { create, update, delete }
 
 class BusinessState extends Equatable {
@@ -21,6 +25,7 @@ class BusinessState extends Equatable {
   final Address? businessAddress;
   final String businessGst;
   final String businessPan;
+  final File? photo;
 
   bool get error {
     return businessName.isNotEmpty;
@@ -36,6 +41,7 @@ class BusinessState extends Equatable {
     this.businessAddress,
     this.businessGst = '',
     this.businessPan = '',
+    this.photo,
   });
 
   @override
@@ -48,7 +54,8 @@ class BusinessState extends Equatable {
         businessContact,
         businessGst,
         businessPan,
-        businessEmail
+        businessEmail,
+        photo
       ];
 
   BusinessState copyWith({
@@ -61,6 +68,7 @@ class BusinessState extends Equatable {
     Address? businessAddress,
     String? businessGst,
     String? businessPan,
+    File? photo,
   }) {
     return BusinessState(
       status: status ?? this.status,
@@ -72,6 +80,7 @@ class BusinessState extends Equatable {
       businessAddress: businessAddress ?? this.businessAddress,
       businessGst: businessGst ?? this.businessGst,
       businessPan: businessPan ?? this.businessPan,
+      photo: photo ?? this.photo,
     );
   }
 

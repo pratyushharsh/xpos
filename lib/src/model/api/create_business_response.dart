@@ -1,6 +1,7 @@
 class CreateBusinessResponse {
-  int businessId;
-  String name;
+  String? type;
+  int? businessId;
+  String? name;
   String? email;
   String? address1;
   String? address2;
@@ -11,68 +12,116 @@ class CreateBusinessResponse {
   String? currency;
   String? phone;
   String? locale;
-  String? gst;
-  String? pan;
-  String createdBy;
-  DateTime createdAt;
+  String? createdBy;
+  DateTime? createdAt;
+  CustomAttribute? customAttribute;
+  Logo? logo;
 
   CreateBusinessResponse(
-      {required this.businessId,
-      required this.name,
+      {this.type,
+        this.businessId,
+        this.name,
         this.email,
-      this.address1,
-      this.address2,
-      this.city,
-      this.state,
-      this.postalCode,
-      this.country,
-      this.currency,
-      this.phone,
-      this.locale,
-      this.gst,
-      this.pan,
-      required this.createdBy,
-      required this.createdAt});
+        this.address1,
+        this.address2,
+        this.city,
+        this.state,
+        this.postalCode,
+        this.country,
+        this.currency,
+        this.phone,
+        this.locale,
+        this.createdBy,
+        this.createdAt,
+        this.customAttribute,
+        this.logo});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'businessId': businessId,
-      'name': name,
-      'email': email,
-      'address1': address1,
-      'address2': address2,
-      'city': city,
-      'state': state,
-      'postal_code': postalCode,
-      'country': country,
-      'currency': currency,
-      'phone': phone,
-      'locale': locale,
-      'gst': gst,
-      'pan': pan,
-      'created_by': createdBy,
-      'created_at': createdAt,
-    };
+  CreateBusinessResponse.fromJson(Map<String, dynamic> json) {
+    type = json['Type'];
+    businessId = json['business_id'];
+    name = json['name'];
+    email = json['email'];
+    address1 = json['address1'];
+    address2 = json['address2'];
+    city = json['city'];
+    state = json['state'];
+    postalCode = json['postal_code'];
+    country = json['country'];
+    currency = json['currency'];
+    phone = json['phone'];
+    locale = json['locale'];
+    createdBy = json['created_by'];
+    createdAt = DateTime.tryParse(json['created_at'].toString()) ?? DateTime.now();
+    customAttribute = json['custom_attribute'] != null
+        ? CustomAttribute.fromJson(json['custom_attribute'])
+        : null;
+    logo = json['logo'] != null ? Logo.fromJson(json['logo']) : null;
   }
 
-  factory CreateBusinessResponse.fromMap(Map<String, dynamic> map) {
-    return CreateBusinessResponse(
-        businessId: map['business_id'] as int,
-        name: map['name'] as String,
-        email: map['email'] as String?,
-        address1: map['address1'] as String?,
-        address2: map['address2'] as String?,
-        city: map['city'] as String?,
-        state: map['state'] as String?,
-        postalCode: map['postal_code'] as String?,
-        country: map['country'] as String?,
-        currency: map['currency'] as String?,
-        phone: map['phone'] as String?,
-        locale: map['locale'] as String?,
-        gst: map['gst'] as String?,
-        pan: map['pan'] as String?,
-        createdBy: map['created_by'] as String,
-        createdAt:
-            DateTime.tryParse(map['created_at'].toString()) ?? DateTime.now());
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Type'] = type;
+    data['business_id'] = businessId;
+    data['name'] = name;
+    data['email'] = email;
+    data['address1'] = address1;
+    data['address2'] = address2;
+    data['city'] = city;
+    data['state'] = state;
+    data['postal_code'] = postalCode;
+    data['country'] = country;
+    data['currency'] = currency;
+    data['phone'] = phone;
+    data['locale'] = locale;
+    data['created_by'] = createdBy;
+    data['created_at'] = createdAt;
+    if (customAttribute != null) {
+      data['custom_attribute'] = customAttribute!.toJson();
+    }
+    if (logo != null) {
+      data['logo'] = logo!.toJson();
+    }
+    return data;
+  }
+}
+
+class CustomAttribute {
+  String? gST;
+  String? pAN;
+
+  CustomAttribute({this.gST, this.pAN});
+
+  CustomAttribute.fromJson(Map<String, dynamic> json) {
+    gST = json['GST'];
+    pAN = json['PAN'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['GST'] = gST;
+    data['PAN'] = pAN;
+    return data;
+  }
+}
+
+class Logo {
+  String? large;
+  String? medium;
+  String? small;
+
+  Logo({this.large, this.medium, this.small});
+
+  Logo.fromJson(Map<String, dynamic> json) {
+    large = json['large'];
+    medium = json['medium'];
+    small = json['small'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['large'] = large;
+    data['medium'] = medium;
+    data['small'] = small;
+    return data;
   }
 }

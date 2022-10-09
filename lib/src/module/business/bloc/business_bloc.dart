@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -31,6 +33,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     on<OnBusinessPanChange>(_onBusinessPanChange);
     on<OnSaveBusiness>(_onSaveBusinessDetail);
     on<OnCreateNewBusiness>(_onCreateNewBusiness);
+    on<OnChangePhoto>(_onChangePhoto);
   }
 
   void _onLoadBusinessDetail(
@@ -63,14 +66,31 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     emit(state.copyWith(status: BusinessStatus.loading));
     try {
       if (state.entity != null) {
-        var entity = await repo.updateBusiness(state.entity!.copyWith(
-            storeName: state.businessName,
-            storeEmail: state.businessEmail,
-            storeContact: state.businessContact,
-            address: state.businessAddress,
-            gst: state.businessGst,
-            pan: state.businessPan));
-        emit(state.copyWith(status: BusinessStatus.success, entity: entity));
+        // var entity = await repo.updateBusiness(
+        //     state.entity!.rtlLocId,
+        //     CreateBusinessRequest(
+        //       name: state.businessName,
+        //       address1: state.businessAddress?.building,
+        //       address2: state.businessAddress?.street,
+        //       city: state.businessAddress?.city,
+        //       state: state.businessAddress?.state,
+        //       postalCode: state.businessAddress?.zipcode,
+        //       email: state.businessEmail,
+        //       country: "India",
+        //       currency: "INR",
+        //       locale: "en_IN",
+        //       gst: state.businessGst,
+        //       pan: state.businessPan,
+        //       phone: state.businessContact,
+        //     ));
+        // emit(state.copyWith(status: BusinessStatus.success, entity: entity));
+
+
+        emit(state.copyWith(status: BusinessStatus.uploadingImage));
+        var uploadUrl = await repo.getLogoUploadUrl(state.entity!.rtlLocId);
+        var data = await state.photo!.readAsBytes();
+        var response = await repo.uploadImage(uploadUrl, data);
+        emit(state.copyWith(status: BusinessStatus.modified));
       }
     } catch (e) {
       log.severe(e);
@@ -156,5 +176,9 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     emit(
       state.copyWith(businessGst: event.gst, status: BusinessStatus.modified),
     );
+  }
+
+  void _onChangePhoto(OnChangePhoto event, Emitter<BusinessState> emit) async {
+    emit(state.copyWith(photo: event.photo, status: BusinessStatus.modified));
   }
 }

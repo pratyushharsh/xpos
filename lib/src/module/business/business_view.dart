@@ -1,6 +1,7 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import "dart:io";
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/entity/pos/address.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:receipt_generator/src/widgets/my_loader.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import '../../entity/config/code_value_entity.dart';
+import '../../entity/pos/business_entity.dart';
 import '../../widgets/appbar_leading.dart';
 import '../../widgets/code_value_dropdown.dart';
 import 'bloc/business_bloc.dart';
@@ -52,17 +54,7 @@ class BusinessView extends StatelessWidget {
                           SizedBox(
                             height: 70,
                           ),
-                          Hero(
-                            tag: "business-logo",
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  'https://images.unsplash.com/photo-1541569863345-f97c6484a917?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80'),
-                              maxRadius: 60,
-                              child: Text(
-                                "",
-                              ),
-                            ),
-                          ),
+                          BusinessLogo(),
                           SizedBox(
                             height: 20,
                           ),
@@ -101,6 +93,8 @@ class BusinessView extends StatelessWidget {
                             } else {
                               BlocProvider.of<BusinessBloc>(context)
                                   .add(OnSaveBusiness());
+                              // BlocProvider.of<BusinessBloc>(context)
+                              //     .add(OnSaveBusiness());
                             }
                           },
                           child: const Text(
@@ -250,12 +244,12 @@ class _BusinessDetailState extends State<BusinessDetail> {
                         ),
                       );
                     }).then((value) => {
-                  if (value != null && value is Address)
-                    {
-                      BlocProvider.of<BusinessBloc>(context)
-                          .add(OnBusinessAddressChange(value))
-                    }
-                });
+                      if (value != null && value is Address)
+                        {
+                          BlocProvider.of<BusinessBloc>(context)
+                              .add(OnBusinessAddressChange(value))
+                        }
+                    });
               },
               child: TextFieldPlaceholderWidget(
                 label: "Business Address",
@@ -405,12 +399,12 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                   borderRadius: BorderRadius.circular(5.0),
                   onPressed: () {
                     Navigator.of(context).pop(Address(
-                        zipcode: _zipcodeController.text,
-                        building: _buildingController.text,
-                        street: _streetController.text,
-                        city: _cityController.text,
-                        state: _selectedState!.value,
-                        country: _selectedCountry?.value ?? "",
+                      zipcode: _zipcodeController.text,
+                      building: _buildingController.text,
+                      street: _streetController.text,
+                      city: _cityController.text,
+                      state: _selectedState!.value,
+                      country: _selectedCountry?.value ?? "",
                     ));
                   },
                 ),
@@ -418,6 +412,95 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+typedef OnPickImageCallback = void Function(
+    double? maxWidth, double? maxHeight, int? quality);
+
+class BusinessLogo extends StatefulWidget {
+  const BusinessLogo({Key? key}) : super(key: key);
+
+  @override
+  State<BusinessLogo> createState() => _BusinessLogoState();
+}
+
+class _BusinessLogoState extends State<BusinessLogo> {
+  final ImagePicker _picker = ImagePicker();
+  final TextEditingController maxWidthController = TextEditingController();
+  final TextEditingController maxHeightController = TextEditingController();
+  final TextEditingController qualityController = TextEditingController();
+  bool _newImage = false;
+  File? _imagePath;
+
+  Future<void> _onImageButtonPressed(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+          source: source, maxWidth: 500, maxHeight: 500);
+      if (pickedFile != null) {
+        setState(() {
+          _imagePath = File(pickedFile.path);
+          _newImage = true;
+
+          BlocProvider.of<BusinessBloc>(context)
+              .add(OnChangePhoto(_imagePath!));
+        });
+      }
+    } catch (e) {
+      // setState(() {
+      //   _pickImageError = e;
+      // });
+    }
+  }
+
+  ImageProvider _getImage(RetailLocationEntity? state) {
+    if (_imagePath != null) {
+      return FileImage(_imagePath!);
+    } else {
+      if (state != null && state.logo != null && state.logo!.isNotEmpty) {
+        return NetworkImage(state.logo![0]);
+      } else {
+        return const NetworkImage(
+            'https://images.unsplash.com/photo-1541569863345-f97c6484a917?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        _onImageButtonPressed(
+          ImageSource.gallery,
+        );
+      },
+      child: BlocBuilder<BusinessBloc, BusinessState>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              Hero(
+                tag: "business-logo",
+                child: CircleAvatar(
+                  backgroundImage: _getImage(state.entity),
+                  maxRadius: 60,
+                  child: const Text(
+                    "",
+                  ),
+                ),
+              ),
+              if (state.status == BusinessStatus.uploadingImage)
+                const Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: CircularProgressIndicator(),
+                )
+            ],
+          );
+        },
       ),
     );
   }

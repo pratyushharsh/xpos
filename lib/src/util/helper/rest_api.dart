@@ -105,6 +105,22 @@ class RestApiClient {
     return response;
   }
 
+  Future<Response> rawPut({required RestOptions restOptions}) async {
+    if (restOptions.url == null) {
+      throw 'URL is required for rawPut';
+    }
+
+    var _url = Uri.parse(restOptions.url!);
+    log.info("RawPut Request: ");
+    log.info(restOptions);
+    final response =
+    await http.put(_url, headers: restOptions.headers, body: restOptions.body);
+    log.info("RawPut Response: ${response.statusCode}");
+    log.info(response.body);
+    return response;
+  }
+
+
   dynamic parsedResponse(Response response) {
     switch (response.statusCode) {
       case 200:
@@ -153,20 +169,22 @@ class BadRequestException extends AppException {
 
 class RestOptions {
   String path;
-  String? body;
+  Object? body;
+  String? url;
   Map<String, String>? queryParameters;
   Map<String, String>? headers;
 
   RestOptions({
     required this.path,
     this.body,
+    this.url,
     this.queryParameters,
     this.headers,
-  });
+  }): assert(path != null || url != null);
 
   @override
   String toString() {
-    return 'RestOptions{path: $path, body: $body, queryParameters: $queryParameters, headers: $headers}';
+    return 'RestOptions{path: $path, body: $body, url: $url  queryParameters: $queryParameters, headers: $headers}';
   }
 }
 

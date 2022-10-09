@@ -31,3 +31,5 @@ class ChooseBusinessEvent extends AuthenticationEvent {
   final UserBusiness business;
   ChooseBusinessEvent(this.business);
 }
+
+class RefreshBusinessEvent extends AuthenticationEvent {}

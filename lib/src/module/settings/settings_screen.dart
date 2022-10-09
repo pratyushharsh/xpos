@@ -7,6 +7,7 @@ import 'package:receipt_generator/src/module/authentication/bloc/authentication_
 import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart';
 
 import '../../../locale_keys.dart';
+import '../../repositories/business_repository.dart';
 import '../../widgets/custom_button.dart';
 
 const String dummyImage =
@@ -17,138 +18,162 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListView(
-        children: [
-          const SizedBox(
-            height: 40,
-          ),
-          const ProfileCard(),
-          const SizedBox(
-            height: 50,
-          ),
-          BlocBuilder<AuthenticationBloc, AuthenticationState>(
-            builder: (context, state) {
-              return AccountWidget(
-                name: "${state.employee?.firstName ?? ""} ${state.employee?.middleName ?? ""} ${state.employee?.lastName ?? ""}",
-                role: "Kachre Wala",
+    return RefreshIndicator(
+      onRefresh: () async {
+        var storeId =
+            BlocProvider.of<AuthenticationBloc>(context).state.store?.rtlLocId;
+        if (storeId != null) {
+          try {
+            await RepositoryProvider.of<BusinessRepository>(context)
+                .findAndPersistBusiness(storeId);
+          } catch (e) {
+            print(e);
+          }
+        }
+      },
+      child: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 40,
+              ),
+              const ProfileCard(),
+              const SizedBox(
+                height: 50,
+              ),
+              BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                builder: (context, state) {
+                  return AccountWidget(
+                    name:
+                        "${state.employee?.firstName ?? ""} ${state.employee?.middleName ?? ""} ${state.employee?.lastName ?? ""}",
+                    role: "Kachre Wala",
+                    data: Detail(
+                      title: LocaleKeys.settingsAccount.tr(),
+                      subtitle: LocaleKeys.settingsAccountDescription.tr(),
+                      icon: Icons.sync_alt_outlined,
+                      children: [
+                        SettingsItem(
+                            text: "Email",
+                            subtext: state.employee?.email,
+                            onTap: () {}),
+                        SettingsItem(
+                            text: "Phone",
+                            subtext: state.employee?.phone,
+                            onTap: () {}),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              SectionWidget(
                 data: Detail(
-                  title: LocaleKeys.settingsAccount.tr(),
-                  subtitle: LocaleKeys.settingsAccountDescription.tr(),
-                  icon: Icons.sync_alt_outlined,
+                  title: LocaleKeys.settingsStore.tr(),
+                  subtitle: LocaleKeys.settingsStoreDescription.tr(),
+                  icon: Icons.home_repair_service,
                   children: [
                     SettingsItem(
-                        text: "Email",
-                        subtext: state.employee?.email,
-                        onTap: () {}),
+                        text: "Employee Maintenance",
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteConfig.employeeScreen);
+                        }),
+                    SettingsItem(text: "Feature Settings", onTap: () {}),
                     SettingsItem(
-                        text: "Phone", subtext: state.employee?.phone, onTap: () {}),
+                        text: "Change Locale",
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteConfig.localeScreen)
+                              .then((value) {
+                            print('Locale changed : $value');
+                            if (value != null && value is Locale) {
+                              print('Setting Locale changed : $value');
+                              EasyLocalization.of(context)?.setLocale(value);
+                            }
+                          });
+                        }),
+                    SettingsItem(
+                        text: "Tax Configuration",
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteConfig.taxConfigurationScreen);
+                        }),
+                    SettingsItem(text: "Receipt Config", onTap: () {}),
                   ],
                 ),
-              );
-            },
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          SectionWidget(
-            data: Detail(
-              title: LocaleKeys.settingsStore.tr(),
-              subtitle: LocaleKeys.settingsStoreDescription.tr(),
-              icon: Icons.home_repair_service,
-              children: [
-                SettingsItem(text: "Employee Maintenance", onTap: () {
-                  Navigator.of(context)
-                      .pushNamed(RouteConfig.employeeScreen);
-                }),
-                SettingsItem(text: "Feature Settings", onTap: () {}),
-                SettingsItem(
-                    text: "Change Locale",
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushNamed(RouteConfig.localeScreen)
-                          .then((value) {
-                        print('Locale changed : $value');
-                        if (value != null && value is Locale) {
-                          print('Setting Locale changed : $value');
-                          EasyLocalization.of(context)?.setLocale(value);
-                        }
-                      });
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              SectionWidget(
+                data: Detail(
+                  title: LocaleKeys.settingsSettings.tr(),
+                  subtitle: LocaleKeys.settingsSettingsDescription.tr(),
+                  icon: Icons.settings,
+                  children: [
+                    SettingsItem(
+                        text: "Sync Data",
+                        onTap: () async {
+                          BlocProvider.of<BackgroundSyncBloc>(context)
+                              .add(SyncAllConfigDataEvent());
+                        }),
+                    SettingsItem(
+                        text: "Invoice Setting",
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteConfig.invoiceSettingViewScreen);
+                        }),
+                    SettingsItem(
+                        text: "Receipt Setting",
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteConfig.receiptSettingViewScreen);
+                        }),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 60,
+              ),
+              SectionWidget(
+                data: Detail(
+                  title: LocaleKeys.settingsHelp.tr(),
+                  subtitle: LocaleKeys.settingsHelpDescription.tr(),
+                  icon: Icons.mail_rounded,
+                  children: [
+                    SettingsItem(
+                        text: "Load Sample Data",
+                        onTap: () {
+                          BlocProvider.of<BackgroundSyncBloc>(context)
+                              .add(LoadSampleData());
+                        }),
+                    SettingsItem(text: "FAQ and Videos", onTap: () {}),
+                    SettingsItem(text: "Contact us", onTap: () {}),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: RejectButton(
+                    label: "Log Out",
+                    onPressed: () {
+                      BlocProvider.of<AuthenticationBloc>(context)
+                          .add(LogOutUserEvent());
                     }),
-                SettingsItem(
-                    text: "Tax Configuration",
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushNamed(RouteConfig.taxConfigurationScreen);
-                    }),
-                SettingsItem(text: "Receipt Config", onTap: () {}),
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 300,
+              ),
+            ],
           ),
-          const SizedBox(
-            height: 40,
-          ),
-          SectionWidget(
-            data: Detail(
-              title: LocaleKeys.settingsSettings.tr(),
-              subtitle: LocaleKeys.settingsSettingsDescription.tr(),
-              icon: Icons.settings,
-              children: [
-                SettingsItem(
-                    text: "Sync Data",
-                    onTap: () async {
-                      BlocProvider.of<BackgroundSyncBloc>(context)
-                          .add(SyncAllConfigDataEvent());
-                    }),
-                SettingsItem(
-                    text: "Invoice Setting",
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushNamed(RouteConfig.invoiceSettingViewScreen);
-                    }),
-                SettingsItem(
-                    text: "Receipt Setting",
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushNamed(RouteConfig.receiptSettingViewScreen);
-                    }),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 60,
-          ),
-          SectionWidget(
-            data: Detail(
-              title: LocaleKeys.settingsHelp.tr(),
-              subtitle: LocaleKeys.settingsHelpDescription.tr(),
-              icon: Icons.mail_rounded,
-              children: [
-                SettingsItem(
-                    text: "Load Sample Data",
-                    onTap: () {
-                      BlocProvider.of<BackgroundSyncBloc>(context)
-                          .add(LoadSampleData());
-                    }),
-                SettingsItem(text: "FAQ and Videos", onTap: () {}),
-                SettingsItem(text: "Contact us", onTap: () {}),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          RejectButton(
-              label: "Log Out",
-              onPressed: () {
-                BlocProvider.of<AuthenticationBloc>(context)
-                    .add(LogOutUserEvent());
-              }),
-          const SizedBox(
-            height: 300,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -168,13 +193,16 @@ class ProfileCard extends StatelessWidget {
                 Navigator.of(context).pushNamed(RouteConfig.businessViewScreen,
                     arguments: state.store?.rtlLocId);
               },
-              child: const Hero(
+              child: Hero(
                 tag: "business-logo",
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      'https://images.unsplash.com/photo-1541569863345-f97c6484a917?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80'),
+                  backgroundImage: (state.store!.logo != null &&
+                          state.store!.logo!.isNotEmpty)
+                      ? NetworkImage(state.store!.logo![0])
+                      : const NetworkImage(
+                          'https://images.unsplash.com/photo-1541569863345-f97c6484a917?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80'),
                   maxRadius: 60,
-                  child: Text(
+                  child: const Text(
                     "",
                   ),
                 ),
@@ -268,7 +296,7 @@ class SectionWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(17),
           child: Card(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
             elevation: 0,
             margin: const EdgeInsets.all(0),
             child: ListView.builder(
@@ -298,7 +326,9 @@ class AccountWidget extends StatelessWidget {
   final String name;
   final String role;
 
-  const AccountWidget({Key? key, required this.data, required this.name, required this.role}) : super(key: key);
+  const AccountWidget(
+      {Key? key, required this.data, required this.name, required this.role})
+      : super(key: key);
 
   Widget _buildButton(SettingsItem item) {
     return Container(
@@ -383,21 +413,20 @@ class AccountWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(17),
           child: Card(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
             elevation: 0,
             margin: const EdgeInsets.all(0),
             child: InkWell(
               onTap: () {
                 Navigator.of(context).pushNamed(
                     RouteConfig.employeeDetailScreen,
-                    arguments: BlocProvider
-                        .of<AuthenticationBloc>(context)
+                    arguments: BlocProvider.of<AuthenticationBloc>(context)
                         .state
                         .employee);
               },
               child: Container(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 child: Column(
                   children: [
                     Container(
@@ -482,10 +511,11 @@ class Detail {
   final String subtitle;
   final List<SettingsItem> children;
 
-  Detail({required this.icon,
-    required this.title,
-    required this.subtitle,
-    this.children = const []});
+  Detail(
+      {required this.icon,
+      required this.title,
+      required this.subtitle,
+      this.children = const []});
 }
 
 class SettingsItem {

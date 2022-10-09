@@ -37,6 +37,7 @@ class AuthenticationBloc
     on<VerifyUserDeviceStep>(_onVerifyUserDevice);
     on<LogOutUserEvent>(_logOutUser);
     on<ChooseBusinessEvent>(_chooseBusinessEvent);
+    on<RefreshBusinessEvent>(_refreshBusinessEvent);
   }
   // signInIfSessionAvailable() async {
   //   log.info('Getting if user already present');
@@ -126,5 +127,10 @@ class AuthenticationBloc
     var business = await businessRepository.getBusinessById(int.parse(event.business.storeId!));
     var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(event.business.storeId!, user.getUsername()!);
     emit(AuthenticationState.authenticated(user, business, userDetail!));
+  }
+
+  void _refreshBusinessEvent(
+      RefreshBusinessEvent event, Emitter<AuthenticationState> emit) async {
+    log.info("Business Data will be refreshed");
   }
 }
