@@ -31,6 +31,12 @@ const TaxGroupEntitySchema = CollectionSchema(
       id: 2,
       name: r'name',
       type: IsarType.string,
+    ),
+    r'taxRules': PropertySchema(
+      id: 3,
+      name: r'taxRules',
+      type: IsarType.objectList,
+      target: r'TaxRuleEntity',
     )
   },
   estimateSize: _taxGroupEntityEstimateSize,
@@ -56,15 +62,8 @@ const TaxGroupEntitySchema = CollectionSchema(
       ],
     )
   },
-  links: {
-    r'taxRules': LinkSchema(
-      id: 3567598860729266625,
-      name: r'taxRules',
-      target: r'TaxRuleEntity',
-      isSingle: false,
-    )
-  },
-  embeddedSchemas: {},
+  links: {},
+  embeddedSchemas: {r'TaxRuleEntity': TaxRuleEntitySchema},
   getId: _taxGroupEntityGetId,
   getLinks: _taxGroupEntityGetLinks,
   attach: _taxGroupEntityAttach,
@@ -80,6 +79,15 @@ int _taxGroupEntityEstimateSize(
   bytesCount += 3 + object.description.length * 3;
   bytesCount += 3 + object.groupId.length * 3;
   bytesCount += 3 + object.name.length * 3;
+  bytesCount += 3 + object.taxRules.length * 3;
+  {
+    final offsets = allOffsets[TaxRuleEntity]!;
+    for (var i = 0; i < object.taxRules.length; i++) {
+      final value = object.taxRules[i];
+      bytesCount +=
+          TaxRuleEntitySchema.estimateSize(value, offsets, allOffsets);
+    }
+  }
   return bytesCount;
 }
 
@@ -92,6 +100,12 @@ int _taxGroupEntitySerializeNative(
   writer.writeString(offsets[0], object.description);
   writer.writeString(offsets[1], object.groupId);
   writer.writeString(offsets[2], object.name);
+  writer.writeObjectList<TaxRuleEntity>(
+    offsets[3],
+    allOffsets,
+    TaxRuleEntitySchema.serializeNative,
+    object.taxRules,
+  );
   return writer.usedBytes;
 }
 
@@ -106,6 +120,13 @@ TaxGroupEntity _taxGroupEntityDeserializeNative(
     groupId: reader.readString(offsets[1]),
     id: id,
     name: reader.readString(offsets[2]),
+    taxRules: reader.readObjectList<TaxRuleEntity>(
+          offsets[3],
+          TaxRuleEntitySchema.deserializeNative,
+          allOffsets,
+          TaxRuleEntity(),
+        ) ??
+        const [],
   );
   return object;
 }
@@ -123,6 +144,14 @@ P _taxGroupEntityDeserializePropNative<P>(
       return (reader.readString(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readObjectList<TaxRuleEntity>(
+            offset,
+            TaxRuleEntitySchema.deserializeNative,
+            allOffsets,
+            TaxRuleEntity(),
+          ) ??
+          const []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -135,7 +164,7 @@ Object _taxGroupEntitySerializeWeb(
 
 TaxGroupEntity _taxGroupEntityDeserializeWeb(
     IsarCollection<TaxGroupEntity> collection, Object jsObj) {
-  /*final object = TaxGroupEntity(description: IsarNative.jsObjectGet(jsObj, r'description') ?? '',groupId: IsarNative.jsObjectGet(jsObj, r'groupId') ?? '',id: IsarNative.jsObjectGet(jsObj, r'id') ,name: IsarNative.jsObjectGet(jsObj, r'name') ?? '',);*/
+  /*final object = TaxGroupEntity(description: IsarNative.jsObjectGet(jsObj, r'description') ?? '',groupId: IsarNative.jsObjectGet(jsObj, r'groupId') ?? '',id: IsarNative.jsObjectGet(jsObj, r'id') ,name: IsarNative.jsObjectGet(jsObj, r'name') ?? '',taxRules: (IsarNative.jsObjectGet(jsObj, r'taxRules') as List?)?.map((e) => e ?? TaxRuleEntity()).toList().cast<TaxRuleEntity>() ?? [],);*/
   //return object;
   throw UnimplementedError();
 }
@@ -152,14 +181,11 @@ Id _taxGroupEntityGetId(TaxGroupEntity object) {
 }
 
 List<IsarLinkBase<dynamic>> _taxGroupEntityGetLinks(TaxGroupEntity object) {
-  return [object.taxRules];
+  return [];
 }
 
 void _taxGroupEntityAttach(
-    IsarCollection<dynamic> col, Id id, TaxGroupEntity object) {
-  object.taxRules
-      .attach(col, col.isar.collection<TaxRuleEntity>(), r'taxRules', id);
-}
+    IsarCollection<dynamic> col, Id id, TaxGroupEntity object) {}
 
 extension TaxGroupEntityByIndex on IsarCollection<TaxGroupEntity> {
   Future<TaxGroupEntity?> getByGroupId(String groupId) {
@@ -824,38 +850,43 @@ extension TaxGroupEntityQueryFilter
       ));
     });
   }
-}
-
-extension TaxGroupEntityQueryObject
-    on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QFilterCondition> {}
-
-extension TaxGroupEntityQueryLinks
-    on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QFilterCondition> {
-  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition> taxRules(
-      FilterQuery<TaxRuleEntity> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'taxRules');
-    });
-  }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       taxRulesLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'taxRules', length, true, length, true);
+      return query.listLength(
+        r'taxRules',
+        length,
+        true,
+        length,
+        true,
+      );
     });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       taxRulesIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'taxRules', 0, true, 0, true);
+      return query.listLength(
+        r'taxRules',
+        0,
+        true,
+        0,
+        true,
+      );
     });
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       taxRulesIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'taxRules', 0, false, 999999, true);
+      return query.listLength(
+        r'taxRules',
+        0,
+        false,
+        999999,
+        true,
+      );
     });
   }
 
@@ -865,7 +896,13 @@ extension TaxGroupEntityQueryLinks
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'taxRules', 0, true, length, include);
+      return query.listLength(
+        r'taxRules',
+        0,
+        true,
+        length,
+        include,
+      );
     });
   }
 
@@ -875,7 +912,13 @@ extension TaxGroupEntityQueryLinks
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'taxRules', length, include, 999999, true);
+      return query.listLength(
+        r'taxRules',
+        length,
+        include,
+        999999,
+        true,
+      );
     });
   }
 
@@ -887,11 +930,29 @@ extension TaxGroupEntityQueryLinks
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'taxRules', lower, includeLower, upper, includeUpper);
+      return query.listLength(
+        r'taxRules',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 }
+
+extension TaxGroupEntityQueryObject
+    on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QFilterCondition> {
+  QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
+      taxRulesElement(FilterQuery<TaxRuleEntity> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'taxRules');
+    });
+  }
+}
+
+extension TaxGroupEntityQueryLinks
+    on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QFilterCondition> {}
 
 extension TaxGroupEntityQuerySortBy
     on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QSortBy> {
@@ -1036,6 +1097,13 @@ extension TaxGroupEntityQueryProperty
   QueryBuilder<TaxGroupEntity, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<TaxGroupEntity, List<TaxRuleEntity>, QQueryOperations>
+      taxRulesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'taxRules');
     });
   }
 }

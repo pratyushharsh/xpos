@@ -47,7 +47,6 @@ Future<void> main() {
         TransactionHeaderEntitySchema,
         CodeValueEntitySchema,
         ReasonCodeEntitySchema,
-        TaxRuleEntitySchema,
         TaxGroupEntitySchema,
       ],
       inspector: true,
@@ -59,15 +58,20 @@ Future<void> main() {
     var customStorage = CustomStorage();
     await customStorage.init();
 
+    // 'ap-south-1_gXgaeT7lu',
+    // '366tbopn6vh1f3v88e4u2drne2',
+
+    // 'ap-south-1_6L70C39jY',
+    // '2oabjq1j5kh9nqgd5hd7qs3cbi',
     final userPool = CognitoUserPool(
-      'ap-south-1_gXgaeT7lu',
-      '366tbopn6vh1f3v88e4u2drne2',
+      'ap-south-1_6L70C39jY',
+      '2oabjq1j5kh9nqgd5hd7qs3cbi',
       storage: customStorage,
     );
 
     final restClient = RestApiClient(
         userPool: userPool,
-        baseUrl: "https://3lw9rlveu5.execute-api.ap-south-1.amazonaws.com/dev");
+        baseUrl: "https://yp4fg0z7dc.execute-api.ap-south-1.amazonaws.com/DEV");
 
     runApp(
       EasyLocalization(

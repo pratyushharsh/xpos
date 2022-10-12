@@ -46,7 +46,7 @@ class EmployeeRepository {
 
   Future<EmployeeEntity?> getEmployeeByStoreAndUserId(String storeId, String userId) async {
     try {
-      var option = RestOptions(path: '/business/$storeId/user/$userId');
+      var option = RestOptions(path: '/business/$storeId/employee/$userId');
       var rawResp = await restClient.get(restOptions: option);
 
       if (rawResp.statusCode == 200) {
@@ -76,7 +76,7 @@ class EmployeeRepository {
   Future<List<StoreEmployee>> getEmployeeByStoreId(String storeId) async {
     List<StoreEmployee> storeEmployees = [];
     try {
-      var option = RestOptions(path: '/business/$storeId/user');
+      var option = RestOptions(path: '/business/$storeId/employee');
       var rawResp = await restClient.get(restOptions: option);
       if (rawResp.statusCode == 200) {
         var decode = json.decode(rawResp.body) as List;
@@ -93,7 +93,7 @@ class EmployeeRepository {
   Future<void> createNewEmployeeForStore(CreateStoreEmployeeRequest emp) async {
     try {
       var body = json.encode(emp.toJson());
-      var option = RestOptions(path: '/business/${emp.businessId}/user', body: body);
+      var option = RestOptions(path: '/business/${emp.businessId}/employee', body: body);
       var rawResp = await restClient.post(restOptions: option);
       if (rawResp.statusCode == 200 || rawResp.statusCode == 201) {
 

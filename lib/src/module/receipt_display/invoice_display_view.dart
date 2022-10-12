@@ -483,14 +483,14 @@ class InvoiceBusinessDetail extends StatelessWidget {
             style:
                 TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize + 1),
           ),
-          if (store.address?.building != null)
+          if (store.address?.address1 != null)
           Text(
-            store.address!.building!,
+            store.address!.address1!,
             style: TextStyle(fontSize: fontSize),
           ),
-          if (store.address?.street != null)
+          if (store.address?.address2 != null)
           Text(
-            store.address!.street!,
+            store.address!.address2!,
             style: TextStyle(fontSize: fontSize),
           ),
           if (store.storeContact != null)

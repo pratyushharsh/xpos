@@ -30,12 +30,11 @@ class TaxRepository {
       log.severe('Tax group is not found');
       return;
     }
+    
+    tg.taxRules = [...tg.taxRules, taxRule];
 
-    await tg.taxRules.load();
-    tg.taxRules.add(taxRule);
-
-    db.writeTxn(() async {
-      await tg.taxRules.save();
+    await db.writeTxn(() async {
+      await db.taxGroupEntitys.put(tg);
     });
 
     // await db.writeTxn((isar) => {
@@ -43,26 +42,24 @@ class TaxRepository {
     // });
   }
 
-  Future<void> deleteTaxRule(TaxGroupEntity taxGroup, TaxRuleEntity taxRule) async {
+  Future<void> deleteTaxRule(TaxRuleEntity taxRule) async {
 
-    if (taxGroup.id == null) {
+    if (taxRule.groupId == null) {
       log.severe('Tax group id is null');
       return;
     }
 
-    var tg = await db.taxGroupEntitys.get(taxGroup.id!);
+    var tg = await db.taxGroupEntitys.getByGroupId((taxRule.groupId!));
 
     if (tg == null) {
       log.severe('Tax group is not found');
       return;
     }
 
-    await tg.taxRules.load();
-    tg.taxRules.remove(taxRule);
+    tg.taxRules = tg.taxRules.where((element) => element.ruleName!.compareTo(taxRule.ruleName!) != 0).toList();
 
-    db.writeTxn(() async {
-      await db.taxRuleEntitys.delete(taxRule.id!);
-      await tg.taxRules.save();
+    await db.writeTxn(() async {
+      await db.taxGroupEntitys.put(tg);
     });
 
     // await db.writeTxn((isar) => {
@@ -72,19 +69,23 @@ class TaxRepository {
 
   Future<List<TaxGroupEntity>> getAllTaxGroups({bool loadRules = false}) async {
       var taxGroups = await db.taxGroupEntitys.where().findAll();
-      if (loadRules) {
-        for (var taxGroup in taxGroups) {
-          await taxGroup.taxRules.load();
-        }
-      }
     return taxGroups;
   }
 
-  Future<List<TaxRuleEntity>> getTaxRulesByGroupId(String groupId) {
-    return db.taxRuleEntitys.where().groupIdEqualTo(groupId).findAll();
+  Future<List<TaxRuleEntity>> getTaxRulesByGroupId(String groupId) async {
+    var taxGroup = await db.taxGroupEntitys.getByGroupId(groupId);
+    if (taxGroup != null) {
+      log.severe('Tax group $groupId is not found');
+    }
+    return taxGroup!.taxRules;
   }
 
-  Future<TaxRuleEntity?> getTaxRulesByGroupIdAndRuleName(String groupId, String ruleName) {
-    return db.taxRuleEntitys.where().groupIdRuleNameEqualTo(groupId, ruleName).findFirst();
+  Future<TaxRuleEntity?> getTaxRulesByGroupIdAndRuleName(String groupId, String ruleName) async {
+    var taxGroup = await db.taxGroupEntitys.getByGroupId(groupId);
+    if (taxGroup != null) {
+      log.severe('Tax group $groupId is not found');
+      throw Exception('Tax group $groupId is not found');
+    }
+    return taxGroup!.taxRules.firstWhere((element) => element.ruleName!.compareTo(ruleName) == 0);
   }
 }

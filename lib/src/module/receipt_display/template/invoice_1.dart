@@ -10,7 +10,8 @@ import '../../../entity/pos/entity.dart';
 
 class Invoice1 {
   final TransactionHeaderEntity order;
-  Invoice1(this.order);
+  final RetailLocationEntity store;
+  Invoice1(this.order, this.store);
 
   TextAlign getColumnAlign(String align) {
     switch (align) {
@@ -28,7 +29,10 @@ class Invoice1 {
   Future<Uint8List> buildPdf(PdfPageFormat pageFormat) async {
     // Create a PDF document.
     final doc = Document();
-    _logoImage = await networkImage('https://cdn.freebiesupply.com/images/large/2x/google-logo-transparent.png');
+    if (store.logo != null) {
+      _logoImage = await networkImage(store.logo![1]);
+    }
+    // _logoImage = await networkImage('https://cdn.freebiesupply.com/images/large/2x/google-logo-transparent.png');
     // Add page to the PDF
     doc.addPage(
       MultiPage(
@@ -92,39 +96,26 @@ class Invoice1 {
           Divider(),
           Row(children: [
             Expanded(
+                child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Shipper Detail',
+                    'Bill Detail',
                   ),
                   Text(
-                    'Shipper Name: Tantiya Colony, Gola Road, Flat No 232, Street No 423432',
+                    '${order.customerName}',
                   ),
                   Text(
-                    'Shipper Phone: +91-9888888888',
-                  ),
-                  Text('Shipper Email: Gitti Mitti.com')
-                ],
-              ),
-            ),
-            Expanded(
-                child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Bill To',
+                    '${order.billingAddress?.address1} ${order.billingAddress?.address2}',
                   ),
                   Text(
-                    'Biller Name: Tantiya Colony, Gola Road, Flat No 232, Street No 423432',
-                    textAlign: TextAlign.center,
+                    '${order.billingAddress?.city} ${order.billingAddress?.state}-${order.billingAddress?.zipcode}',
                   ),
                   Text(
-                    'Biller Phone: +91-9888888888',
+                    '${order.customerPhone}',
                   ),
-                  Text('Email: GittiMitti.com')
                 ],
               ),
             )),
@@ -156,14 +147,39 @@ class Invoice1 {
   }
 
   Widget _logo(Context context) {
-
-
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Image(
           _logoImage!,
           height: 80,
-        )
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              '${store.storeName}',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              '${store.address?.address1} ${store.address?.address2}',
+            ),
+            Text(
+              '${store.address?.city} ${store.address?.state}-${store.address?.zipcode}',
+            ),
+            Text(
+              'Phone: ${store.storeContact}',
+            ),
+            Text('Email:  ${store.storeEmail}'),
+            Text(
+              'GST: ${store.gst ?? ''}',
+            ),
+          ],
+        ),
       ]
     );
   }
@@ -191,6 +207,7 @@ class Invoice1 {
                 .map((li) => Column(children: [
                       _contentTableBody(context, li),
                       Divider(
+                         height: 3,
                           thickness: 0.1, color: PdfColor.fromHex('#696969')),
                     ]))
                 .toList()));
@@ -223,9 +240,11 @@ class Invoice1 {
                 flex: e.flex,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 1),
+                  margin: const EdgeInsets.all(0),
                   child: Text(
                     InvoiceConfig.getLineItemValue(e.key, lineItem),
                     textAlign: getColumnAlign(e.align),
+                    textScaleFactor: 0.8,
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
                     ),

@@ -2,16 +2,16 @@ import 'package:isar/isar.dart';
 part 'address.g.dart';
 @embedded
 class Address {
-  final String? building;
-  final String? street;
+  final String? address1;
+  final String? address2;
   final String? city;
   final String? state;
   final String? country;
   final String? zipcode;
 
   Address(
-      {this.building,
-      this.street,
+      {this.address1,
+      this.address2,
       this.city,
       this.state,
       this.country,
@@ -23,8 +23,8 @@ class Address {
       identical(this, other) ||
       other is Address &&
           runtimeType == other.runtimeType &&
-          building == other.building &&
-          street == other.street &&
+          address1 == other.address1 &&
+          address2 == other.address2 &&
           city == other.city &&
           state == other.state &&
           country == other.country &&
@@ -32,8 +32,8 @@ class Address {
 
   @override
   int get hashCode =>
-      building.hashCode ^
-      street.hashCode ^
+      address1.hashCode ^
+      address2.hashCode ^
       city.hashCode ^
       state.hashCode ^
       country.hashCode ^
@@ -41,21 +41,21 @@ class Address {
 
   @override
   String toString() {
-    return '$building, $street\n$city, $state\n$country, $zipcode';
+    return '$address1, $address2\n$city, $state\n$country, $zipcode';
   }
 
   Address.fromJson(Map<String, dynamic> json)
       : zipcode = json['zipcode'],
-        building = json['building'],
-        street = json['street'],
+        address1 = json['address1'],
+        address2 = json['address2'],
         city = json['city'],
         state = json['state'],
         country = json['country'];
 
   Map<String, dynamic> toJson() => {
         'zipcode': zipcode,
-        'building': building,
-        'street': street,
+        'address1': address1,
+        'address2': address2,
         'city': city,
         'state': state,
         'country': country,

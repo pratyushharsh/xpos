@@ -5,6 +5,7 @@ import 'package:printing/printing.dart';
 import '../../config/theme_settings.dart';
 import '../../repositories/mock/mock_transaction_repository.dart';
 import '../../widgets/my_loader.dart';
+import '../authentication/bloc/authentication_bloc.dart';
 import '../receipt_display/bloc/receipt_display_bloc.dart';
 import '../receipt_display/template/invoice.dart';
 import '../receipt_display/template/invoice_1.dart';
@@ -66,7 +67,7 @@ class MockInvoiceForm extends StatelessWidget {
               scrollViewDecoration: const BoxDecoration(
                 color: Colors.white,
               ),
-              build: (format) => generateInvoice(format, state.header!),
+              build: (format) => generateInvoice(format, state.header!, RepositoryProvider.of<AuthenticationBloc>(context).state.store!),
             ),
           );
         }

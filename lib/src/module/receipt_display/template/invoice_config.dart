@@ -9,6 +9,7 @@ class InvoiceConfig {
     InvoiceColumnConfig(key: 'hsn/sac', title: 'HSN/SAC', flex: 2),
     InvoiceColumnConfig(key: 'qtyuom', title: 'Qty/UOM', flex: 2, align: 'center'),
     InvoiceColumnConfig(key: 'rate', title: 'Unit Price', flex: 2, align: 'right'),
+    InvoiceColumnConfig(key: 'discountAmount', title: 'Discount', flex: 2, align: 'right'),
     InvoiceColumnConfig(key: 'tax', title: 'Tax Rate', flex: 2, align: 'right'),
     InvoiceColumnConfig(key: 'amount', title: 'Amount', flex: 2, align: 'right'),
   ];

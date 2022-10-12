@@ -15,6 +15,7 @@ import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
 
 import '../../entity/pos/entity.dart';
+import '../../widgets/desktop_pop_up.dart';
 import '../customer_search/customer_search_widget.dart';
 import '../line_item_modification/line_item_modification_view.dart';
 import '../mobile_dialog/mobile_dialog_view.dart';
@@ -140,18 +141,11 @@ class BuildLineItem extends StatelessWidget {
                   {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
               });
     } else {
-      showDialog(
-          context: context,
-          builder: (ctx) {
-            return Dialog(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.8,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: LineItemModificationView(
-                    lineItem: saleLine, productModel: product),
-              ),
-            );
-          }).then(
+      showDesktopPopUp(
+              context: context,
+              child: LineItemModificationView(
+                  lineItem: saleLine, productModel: product))
+          .then(
         (value) => {
           if (value != null && value is CreateNewReceiptEvent)
             {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
@@ -169,10 +163,12 @@ class BuildLineItem extends StatelessWidget {
           itemBuilder: (itemBuilder, idx) {
             if (idx < state.lineItem.length) {
               return InkWell(
-                onTap: !state.lineItem[idx].returnFlag ? () {
-                  onTap(context, state.lineItem[idx],
-                      state.productMap[state.lineItem[idx].itemId]);
-                } : () {},
+                onTap: !state.lineItem[idx].returnFlag
+                    ? () {
+                        onTap(context, state.lineItem[idx],
+                            state.productMap[state.lineItem[idx].itemId]);
+                      }
+                    : () {},
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(
@@ -613,7 +609,7 @@ class NewInvoiceButtonBar extends StatelessWidget {
                                         onTender: BlocProvider.of<
                                                 CreateNewReceiptBloc>(context)
                                             .add,
-                                    suggestedAmount: state.amountDue,
+                                        suggestedAmount: state.amountDue,
                                       )));
                             }
                           }
@@ -858,13 +854,17 @@ class CustomerWidget extends StatelessWidget {
                                   style: const TextStyle(
                                       fontSize: 18, color: AppColor.primary),
                                 ),
-                                if (state.isCustomerPresent && state.customer != null && state.customer!.phoneNumber != null)
+                                if (state.isCustomerPresent &&
+                                    state.customer != null &&
+                                    state.customer!.phoneNumber != null)
                                   Text(
                                     'Phone: ${state.customer!.phoneNumber!}',
                                     style: const TextStyle(
                                         fontSize: 16, color: AppColor.primary),
                                   ),
-                                if (state.isCustomerPresent && state.customer != null && state.customer!.email != null)
+                                if (state.isCustomerPresent &&
+                                    state.customer != null &&
+                                    state.customer!.email != null)
                                   Text(
                                     'Email: ${state.customer!.email!}',
                                     style: const TextStyle(

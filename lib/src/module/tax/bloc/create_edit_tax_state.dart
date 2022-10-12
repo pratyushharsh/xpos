@@ -32,4 +32,9 @@ class CreateEditTaxState {
       selectedTaxGroup: selectedTaxGroup ?? this.selectedTaxGroup,
     );
   }
+
+  @override
+  String toString() {
+    return 'CreateEditTaxState{selectedTaxGroup: $selectedTaxGroup, taxGroups: $taxGroups, status: $status}';
+  }
 }

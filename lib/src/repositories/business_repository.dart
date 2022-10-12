@@ -55,8 +55,8 @@ class BusinessRepository {
             storeNumber: '${resp.businessId}',
             storeContact: resp.phone,
             address: Address(
-              building: resp.address1,
-              street: resp.address2,
+              address1: resp.address1,
+              address2: resp.address2,
               city: resp.city,
               state: resp.state,
               zipcode: resp.postalCode,
@@ -132,8 +132,8 @@ class BusinessRepository {
             storeNumber: '${resp.businessId}',
             storeContact: resp.phone,
             address: Address(
-              building: resp.address1,
-              street: resp.address2,
+              address1: resp.address1,
+              address2: resp.address2,
               city: resp.city,
               state: resp.state,
               zipcode: resp.postalCode,

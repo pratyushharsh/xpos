@@ -18,8 +18,7 @@ class SelectTaxGroup extends CreateEditTaxEvent {
 }
 
 class DeleteTaxRule extends CreateEditTaxEvent {
-  final TaxGroupEntity taxGroup;
   final TaxRuleEntity taxRule;
 
-  DeleteTaxRule({required this.taxRule, required this.taxGroup});
+  DeleteTaxRule({required this.taxRule});
 }

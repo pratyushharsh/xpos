@@ -162,12 +162,12 @@ class MyApp extends StatelessWidget {
                   checkListHelper: RepositoryProvider.of(context),
                 authenticationBloc: BlocProvider.of(context),
               )..add(ValidateStoreSetup()))
-        ], child: MyAppView()));
+        ], child: const MyAppView()));
   }
 }
 
 class MyAppView extends StatefulWidget {
-  MyAppView({Key? key}) : super(key: key);
+  const MyAppView({Key? key}) : super(key: key);
 
   @override
   State<MyAppView> createState() => _MyAppViewState();
@@ -178,20 +178,20 @@ class _MyAppViewState extends State<MyAppView> {
 
   NavigatorState get _navigator => _navigatorKey.currentState!;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) {
-          BlocProvider.of<ErrorNotificationBloc>(context).add(PeriodicValidatorStartEvent());
-    });
-  }
-
-  @override
-  void dispose() {
-    BlocProvider.of<ErrorNotificationBloc>(context).add(PeriodicValidatorStopEvent());
-    super.dispose();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance
+  //       .addPostFrameCallback((_) {
+  //         BlocProvider.of<ErrorNotificationBloc>(context).add(PeriodicValidatorStartEvent());
+  //   });
+  // }
+  //
+  // @override
+  // void dispose() {
+  //   BlocProvider.of<ErrorNotificationBloc>(context).add(PeriodicValidatorStopEvent());
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

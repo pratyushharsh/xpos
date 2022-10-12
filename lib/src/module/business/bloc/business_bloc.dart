@@ -66,31 +66,32 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     emit(state.copyWith(status: BusinessStatus.loading));
     try {
       if (state.entity != null) {
-        // var entity = await repo.updateBusiness(
-        //     state.entity!.rtlLocId,
-        //     CreateBusinessRequest(
-        //       name: state.businessName,
-        //       address1: state.businessAddress?.building,
-        //       address2: state.businessAddress?.street,
-        //       city: state.businessAddress?.city,
-        //       state: state.businessAddress?.state,
-        //       postalCode: state.businessAddress?.zipcode,
-        //       email: state.businessEmail,
-        //       country: "India",
-        //       currency: "INR",
-        //       locale: "en_IN",
-        //       gst: state.businessGst,
-        //       pan: state.businessPan,
-        //       phone: state.businessContact,
-        //     ));
-        // emit(state.copyWith(status: BusinessStatus.success, entity: entity));
+        var entity = await repo.updateBusiness(
+            state.entity!.rtlLocId,
+            CreateBusinessRequest(
+              name: state.businessName,
+              address1: state.businessAddress?.address1,
+              address2: state.businessAddress?.address2,
+              city: state.businessAddress?.city,
+              state: state.businessAddress?.state,
+              postalCode: state.businessAddress?.zipcode,
+              email: state.businessEmail,
+              country: "India",
+              currency: "INR",
+              locale: "en_IN",
+              gst: state.businessGst,
+              pan: state.businessPan,
+              phone: state.businessContact,
+            ));
+        emit(state.copyWith(status: BusinessStatus.success, entity: entity));
 
-
-        emit(state.copyWith(status: BusinessStatus.uploadingImage));
-        var uploadUrl = await repo.getLogoUploadUrl(state.entity!.rtlLocId);
-        var data = await state.photo!.readAsBytes();
-        var response = await repo.uploadImage(uploadUrl, data);
-        emit(state.copyWith(status: BusinessStatus.modified));
+        if (state.photo != null) {
+          emit(state.copyWith(status: BusinessStatus.uploadingImage));
+          var uploadUrl = await repo.getLogoUploadUrl(state.entity!.rtlLocId);
+          var data = await state.photo!.readAsBytes();
+          var response = await repo.uploadImage(uploadUrl, data);
+          emit(state.copyWith(status: BusinessStatus.modified));
+        }
       }
     } catch (e) {
       log.severe(e);
@@ -107,8 +108,8 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     try {
       var resp = await repo.createNewBusiness(CreateBusinessRequest(
           name: state.businessName,
-          address1: state.businessAddress?.building,
-          address2: state.businessAddress?.street,
+          address1: state.businessAddress?.address1,
+          address2: state.businessAddress?.address2,
           city: state.businessAddress?.city,
           state: state.businessAddress?.state,
           postalCode: state.businessAddress?.zipcode,

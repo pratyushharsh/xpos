@@ -190,6 +190,14 @@ class _BusinessDetailState extends State<BusinessDetail> {
               },
             ),
             CustomTextField(
+              controller: _businessNameController,
+              label: "Legal Business Name",
+              onValueChange: (val) {
+                // BlocProvider.of<BusinessBloc>(context)
+                //     .add(OnBusinessNameChange(val));
+              },
+            ),
+            CustomTextField(
               controller: _businessContactController,
               label: "Business Contact",
               onValueChange: (val) {
@@ -400,8 +408,8 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                   onPressed: () {
                     Navigator.of(context).pop(Address(
                       zipcode: _zipcodeController.text,
-                      building: _buildingController.text,
-                      street: _streetController.text,
+                      address1: _buildingController.text,
+                      address2: _streetController.text,
                       city: _cityController.text,
                       state: _selectedState!.value,
                       country: _selectedCountry?.value ?? "",

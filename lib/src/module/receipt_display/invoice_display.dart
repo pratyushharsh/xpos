@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:printing/printing.dart';
 
+import '../authentication/bloc/authentication_bloc.dart';
 import 'bloc/receipt_display_bloc.dart';
 import 'template/invoice.dart';
 
@@ -29,7 +30,7 @@ class AppInvoiceDisplay extends StatelessWidget {
             if (state.status == ReceiptDisplayStatus.success) {
               return PdfPreview(
                 maxPageWidth: 700,
-                build: (format) => generateInvoice(format, state.header!),
+                build: (format) => generateInvoice(format, state.header!, RepositoryProvider.of<AuthenticationBloc>(context).state.store!),
               );
             }
             return Container();

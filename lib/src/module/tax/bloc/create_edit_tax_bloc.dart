@@ -29,13 +29,13 @@ class CreateEditTaxBloc extends Bloc<CreateEditTaxEvent, CreateEditTaxState> {
       var selectedTaxGroup = state.selectedTaxGroup;
       if (selectedTaxGroup != null) {
         for(TaxGroupEntity taxGroup in taxGroups) {
-          if(taxGroup.groupId == state.selectedTaxGroup!.groupId) {
+          if(taxGroup.groupId ==  selectedTaxGroup!.groupId) {
             selectedTaxGroup = taxGroup;
             break;
           }
         }
+        print('Selected Tax Group: ${selectedTaxGroup!.taxRules}');
       }
-
       emit(state.copyWith(status: CreateEditTaxStatus.success, taxGroups: taxGroups, selectedTaxGroup: selectedTaxGroup));
     } catch (e) {
       log.severe(e);
@@ -46,7 +46,7 @@ class CreateEditTaxBloc extends Bloc<CreateEditTaxEvent, CreateEditTaxState> {
   void _deleteTaxRuleEvent(DeleteTaxRule event, Emitter<CreateEditTaxState> emit) async {
     emit(state.copyWith(status: CreateEditTaxStatus.taxRuleDeleteLoading));
     try {
-      await taxRepository.deleteTaxRule(event.taxGroup, event.taxRule);
+      await taxRepository.deleteTaxRule(event.taxRule);
       emit(state.copyWith(status: CreateEditTaxStatus.success));
       add(FetchAllTaxGroup());
     } catch (e) {

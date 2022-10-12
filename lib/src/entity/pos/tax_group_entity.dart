@@ -13,13 +13,12 @@ class TaxGroupEntity {
   final String name;
   final String description;
 
-
-
-  final taxRules = IsarLinks<TaxRuleEntity>();
+  List<TaxRuleEntity> taxRules;
 
   TaxGroupEntity(
       {this.id,
       required this.groupId,
       required this.name,
-      required this.description,});
+      required this.description,
+      this.taxRules = const []});
 }
