@@ -1,23 +1,31 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/error_notification_bloc.dart';
 
 class ErrorNotification extends StatelessWidget {
-  const ErrorNotification({Key? key}) : super(key: key);
+  final Widget child;
+  const ErrorNotification({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ErrorNotificationBloc, ErrorNotificationState>(
-      builder: (context, state) {
-        return SingleChildScrollView(
-          child: Column(
-            children: state.errors
-                .map((e) => ErrorNotificationCard(error: e,))
-                .toList(),
+    return BlocListener<ErrorNotificationBloc, ErrorNotificationState>(
+      listener: (context, state) {
+        var snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+            title: 'On Snap!',
+            message: state.errors.join(","),
+            /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+            contentType: ContentType.failure,
           ),
         );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       },
+      child: child,
     );
   }
 }

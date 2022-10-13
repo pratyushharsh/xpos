@@ -7,7 +7,7 @@ part of 'tax_group_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetTaxGroupEntityCollection on Isar {
   IsarCollection<TaxGroupEntity> get taxGroupEntitys => this.collection();
@@ -40,12 +40,9 @@ const TaxGroupEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _taxGroupEntityEstimateSize,
-  serializeNative: _taxGroupEntitySerializeNative,
-  deserializeNative: _taxGroupEntityDeserializeNative,
-  deserializePropNative: _taxGroupEntityDeserializePropNative,
-  serializeWeb: _taxGroupEntitySerializeWeb,
-  deserializeWeb: _taxGroupEntityDeserializeWeb,
-  deserializePropWeb: _taxGroupEntityDeserializePropWeb,
+  serialize: _taxGroupEntitySerialize,
+  deserialize: _taxGroupEntityDeserialize,
+  deserializeProp: _taxGroupEntityDeserializeProp,
   idName: r'id',
   indexes: {
     r'groupId': IndexSchema(
@@ -67,7 +64,7 @@ const TaxGroupEntitySchema = CollectionSchema(
   getId: _taxGroupEntityGetId,
   getLinks: _taxGroupEntityGetLinks,
   attach: _taxGroupEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _taxGroupEntityEstimateSize(
@@ -91,9 +88,9 @@ int _taxGroupEntityEstimateSize(
   return bytesCount;
 }
 
-int _taxGroupEntitySerializeNative(
+void _taxGroupEntitySerialize(
   TaxGroupEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -103,15 +100,14 @@ int _taxGroupEntitySerializeNative(
   writer.writeObjectList<TaxRuleEntity>(
     offsets[3],
     allOffsets,
-    TaxRuleEntitySchema.serializeNative,
+    TaxRuleEntitySchema.serialize,
     object.taxRules,
   );
-  return writer.usedBytes;
 }
 
-TaxGroupEntity _taxGroupEntityDeserializeNative(
+TaxGroupEntity _taxGroupEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -122,7 +118,7 @@ TaxGroupEntity _taxGroupEntityDeserializeNative(
     name: reader.readString(offsets[2]),
     taxRules: reader.readObjectList<TaxRuleEntity>(
           offsets[3],
-          TaxRuleEntitySchema.deserializeNative,
+          TaxRuleEntitySchema.deserialize,
           allOffsets,
           TaxRuleEntity(),
         ) ??
@@ -131,8 +127,8 @@ TaxGroupEntity _taxGroupEntityDeserializeNative(
   return object;
 }
 
-P _taxGroupEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _taxGroupEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -147,32 +143,13 @@ P _taxGroupEntityDeserializePropNative<P>(
     case 3:
       return (reader.readObjectList<TaxRuleEntity>(
             offset,
-            TaxRuleEntitySchema.deserializeNative,
+            TaxRuleEntitySchema.deserialize,
             allOffsets,
             TaxRuleEntity(),
           ) ??
           const []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _taxGroupEntitySerializeWeb(
-    IsarCollection<TaxGroupEntity> collection, TaxGroupEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-TaxGroupEntity _taxGroupEntityDeserializeWeb(
-    IsarCollection<TaxGroupEntity> collection, Object jsObj) {
-  /*final object = TaxGroupEntity(description: IsarNative.jsObjectGet(jsObj, r'description') ?? '',groupId: IsarNative.jsObjectGet(jsObj, r'groupId') ?? '',id: IsarNative.jsObjectGet(jsObj, r'id') ,name: IsarNative.jsObjectGet(jsObj, r'name') ?? '',taxRules: (IsarNative.jsObjectGet(jsObj, r'taxRules') as List?)?.map((e) => e ?? TaxRuleEntity()).toList().cast<TaxRuleEntity>() ?? [],);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _taxGroupEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -224,19 +201,19 @@ extension TaxGroupEntityByIndex on IsarCollection<TaxGroupEntity> {
     return deleteAllByIndexSync(r'groupId', values);
   }
 
-  Future<int> putByGroupId(TaxGroupEntity object) {
+  Future<Id> putByGroupId(TaxGroupEntity object) {
     return putByIndex(r'groupId', object);
   }
 
-  int putByGroupIdSync(TaxGroupEntity object, {bool saveLinks = true}) {
+  Id putByGroupIdSync(TaxGroupEntity object, {bool saveLinks = true}) {
     return putByIndexSync(r'groupId', object, saveLinks: saveLinks);
   }
 
-  Future<List<int>> putAllByGroupId(List<TaxGroupEntity> objects) {
+  Future<List<Id>> putAllByGroupId(List<TaxGroupEntity> objects) {
     return putAllByIndex(r'groupId', objects);
   }
 
-  List<int> putAllByGroupIdSync(List<TaxGroupEntity> objects,
+  List<Id> putAllByGroupIdSync(List<TaxGroupEntity> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'groupId', objects, saveLinks: saveLinks);
   }
@@ -254,7 +231,7 @@ extension TaxGroupEntityQueryWhereSort
 extension TaxGroupEntityQueryWhere
     on QueryBuilder<TaxGroupEntity, TaxGroupEntity, QWhereClause> {
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -264,7 +241,7 @@ extension TaxGroupEntityQueryWhere
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idNotEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -287,7 +264,7 @@ extension TaxGroupEntityQueryWhere
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idGreaterThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -297,7 +274,7 @@ extension TaxGroupEntityQueryWhere
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idLessThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -307,8 +284,8 @@ extension TaxGroupEntityQueryWhere
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -661,7 +638,7 @@ extension TaxGroupEntityQueryFilter
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -672,7 +649,7 @@ extension TaxGroupEntityQueryFilter
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -686,7 +663,7 @@ extension TaxGroupEntityQueryFilter
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition>
       idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -699,8 +676,8 @@ extension TaxGroupEntityQueryFilter
   }
 
   QueryBuilder<TaxGroupEntity, TaxGroupEntity, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

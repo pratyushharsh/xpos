@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../config/theme_settings.dart';
-import '../../util/text_input_formatter/currency_text_input_formatter.dart';
 import '../../widgets/appbar_leading.dart';
 import '../return_order/return_order_view_mobile.dart';
 import 'bloc/create_new_receipt_bloc.dart';
@@ -40,7 +39,10 @@ class NewReceiptMobileView extends StatelessWidget {
                     Divider(),
                     Expanded(child: BuildLineItem()),
                     SearchAndAddItem(),
-                    Divider(),
+                    Divider(height: 0,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     NewReceiptSummaryWidget(),
                     Divider(),
                     // NewInvoiceButtonBar(),

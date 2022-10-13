@@ -18,8 +18,7 @@ class ErrorNotificationBloc extends Bloc<ErrorNotificationEvent, ErrorNotificati
 
   ErrorNotificationBloc({required this.checkListHelper, required this.authenticationBloc}) : super(const ErrorNotificationState()) {
     on<ValidateStoreSetup>(_onValidateStoreSetup);
-    on<PeriodicValidatorStartEvent>(_onPeriodicValidatorStartEvent);
-    on<PeriodicValidatorStopEvent>(_onPeriodicValidatorStopEvent);
+    on<ErrorEvent>(_onErrorEvent);
   }
 
   void _onValidateStoreSetup(ValidateStoreSetup event, Emitter<ErrorNotificationState> emit) {
@@ -30,15 +29,9 @@ class ErrorNotificationBloc extends Bloc<ErrorNotificationEvent, ErrorNotificati
     }
   }
 
-  void _onPeriodicValidatorStartEvent(PeriodicValidatorStartEvent event, Emitter<ErrorNotificationState> emit) {
-    // _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-    //   add(ValidateStoreSetup());
-    // });
+  void _onErrorEvent(ErrorEvent event, Emitter<ErrorNotificationState> emit) {
+    List<String> errors = [event.error];
+    emit(ErrorNotificationState(errors: errors));
   }
 
-  void _onPeriodicValidatorStopEvent(PeriodicValidatorStopEvent event, Emitter<ErrorNotificationState> emit) {
-    // if (_timer != null) {
-    //   _timer!.cancel();
-    // }
-  }
 }

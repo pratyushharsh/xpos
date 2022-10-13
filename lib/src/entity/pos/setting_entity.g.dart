@@ -7,7 +7,7 @@ part of 'setting_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetSettingEntityCollection on Isar {
   IsarCollection<SettingEntity> get settingEntitys => this.collection();
@@ -44,12 +44,9 @@ const SettingEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _settingEntityEstimateSize,
-  serializeNative: _settingEntitySerializeNative,
-  deserializeNative: _settingEntityDeserializeNative,
-  deserializePropNative: _settingEntityDeserializePropNative,
-  serializeWeb: _settingEntitySerializeWeb,
-  deserializeWeb: _settingEntityDeserializeWeb,
-  deserializePropWeb: _settingEntityDeserializePropWeb,
+  serialize: _settingEntitySerialize,
+  deserialize: _settingEntityDeserialize,
+  deserializeProp: _settingEntityDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
@@ -57,7 +54,7 @@ const SettingEntitySchema = CollectionSchema(
   getId: _settingEntityGetId,
   getLinks: _settingEntityGetLinks,
   attach: _settingEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _settingEntityEstimateSize(
@@ -72,9 +69,9 @@ int _settingEntityEstimateSize(
   return bytesCount;
 }
 
-int _settingEntitySerializeNative(
+void _settingEntitySerialize(
   SettingEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -83,12 +80,11 @@ int _settingEntitySerializeNative(
   writer.writeString(offsets[2], object.subCategory);
   writer.writeDateTime(offsets[3], object.updatedAt);
   writer.writeString(offsets[4], object.value);
-  return writer.usedBytes;
 }
 
-SettingEntity _settingEntityDeserializeNative(
+SettingEntity _settingEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -103,8 +99,8 @@ SettingEntity _settingEntityDeserializeNative(
   return object;
 }
 
-P _settingEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _settingEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -122,25 +118,6 @@ P _settingEntityDeserializePropNative<P>(
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _settingEntitySerializeWeb(
-    IsarCollection<SettingEntity> collection, SettingEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-SettingEntity _settingEntityDeserializeWeb(
-    IsarCollection<SettingEntity> collection, Object jsObj) {
-  /*final object = SettingEntity(category: IsarNative.jsObjectGet(jsObj, r'category') ?? '',createAt: IsarNative.jsObjectGet(jsObj, r'createAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createAt') as int, isUtc: true).toLocal() : null,id: IsarNative.jsObjectGet(jsObj, r'id') ,subCategory: IsarNative.jsObjectGet(jsObj, r'subCategory') ?? '',updatedAt: IsarNative.jsObjectGet(jsObj, r'updatedAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updatedAt') as int, isUtc: true).toLocal() : null,value: IsarNative.jsObjectGet(jsObj, r'value') ?? '',);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _settingEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -167,7 +144,7 @@ extension SettingEntityQueryWhereSort
 extension SettingEntityQueryWhere
     on QueryBuilder<SettingEntity, SettingEntity, QWhereClause> {
   QueryBuilder<SettingEntity, SettingEntity, QAfterWhereClause> idEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -177,7 +154,7 @@ extension SettingEntityQueryWhere
   }
 
   QueryBuilder<SettingEntity, SettingEntity, QAfterWhereClause> idNotEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -200,7 +177,7 @@ extension SettingEntityQueryWhere
   }
 
   QueryBuilder<SettingEntity, SettingEntity, QAfterWhereClause> idGreaterThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -210,7 +187,7 @@ extension SettingEntityQueryWhere
   }
 
   QueryBuilder<SettingEntity, SettingEntity, QAfterWhereClause> idLessThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -220,8 +197,8 @@ extension SettingEntityQueryWhere
   }
 
   QueryBuilder<SettingEntity, SettingEntity, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -466,7 +443,7 @@ extension SettingEntityQueryFilter
   }
 
   QueryBuilder<SettingEntity, SettingEntity, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -477,7 +454,7 @@ extension SettingEntityQueryFilter
 
   QueryBuilder<SettingEntity, SettingEntity, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -490,7 +467,7 @@ extension SettingEntityQueryFilter
   }
 
   QueryBuilder<SettingEntity, SettingEntity, QAfterFilterCondition> idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -503,8 +480,8 @@ extension SettingEntityQueryFilter
   }
 
   QueryBuilder<SettingEntity, SettingEntity, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

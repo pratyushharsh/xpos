@@ -7,7 +7,7 @@ part of 'business_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetRetailLocationEntityCollection on Isar {
   IsarCollection<RetailLocationEntity> get retailLocationEntitys =>
@@ -91,12 +91,9 @@ const RetailLocationEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _retailLocationEntityEstimateSize,
-  serializeNative: _retailLocationEntitySerializeNative,
-  deserializeNative: _retailLocationEntityDeserializeNative,
-  deserializePropNative: _retailLocationEntityDeserializePropNative,
-  serializeWeb: _retailLocationEntitySerializeWeb,
-  deserializeWeb: _retailLocationEntityDeserializeWeb,
-  deserializePropWeb: _retailLocationEntityDeserializePropWeb,
+  serialize: _retailLocationEntitySerialize,
+  deserialize: _retailLocationEntityDeserialize,
+  deserializeProp: _retailLocationEntityDeserializeProp,
   idName: r'rtlLocId',
   indexes: {},
   links: {},
@@ -104,7 +101,7 @@ const RetailLocationEntitySchema = CollectionSchema(
   getId: _retailLocationEntityGetId,
   getLinks: _retailLocationEntityGetLinks,
   attach: _retailLocationEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _retailLocationEntityEstimateSize(
@@ -183,16 +180,16 @@ int _retailLocationEntityEstimateSize(
   return bytesCount;
 }
 
-int _retailLocationEntitySerializeNative(
+void _retailLocationEntitySerialize(
   RetailLocationEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeObject<Address>(
     offsets[0],
     allOffsets,
-    AddressSchema.serializeNative,
+    AddressSchema.serialize,
     object.address,
   );
   writer.writeDateTime(offsets[1], object.createTime);
@@ -208,19 +205,18 @@ int _retailLocationEntitySerializeNative(
   writer.writeString(offsets[11], object.storeNumber);
   writer.writeDateTime(offsets[12], object.updateTime);
   writer.writeLong(offsets[13], object.version);
-  return writer.usedBytes;
 }
 
-RetailLocationEntity _retailLocationEntityDeserializeNative(
+RetailLocationEntity _retailLocationEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   final object = RetailLocationEntity(
     address: reader.readObjectOrNull<Address>(
       offsets[0],
-      AddressSchema.deserializeNative,
+      AddressSchema.deserialize,
       allOffsets,
     ),
     createTime: reader.readDateTime(offsets[1]),
@@ -241,8 +237,8 @@ RetailLocationEntity _retailLocationEntityDeserializeNative(
   return object;
 }
 
-P _retailLocationEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _retailLocationEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -251,7 +247,7 @@ P _retailLocationEntityDeserializePropNative<P>(
     case 0:
       return (reader.readObjectOrNull<Address>(
         offset,
-        AddressSchema.deserializeNative,
+        AddressSchema.deserialize,
         allOffsets,
       )) as P;
     case 1:
@@ -285,27 +281,6 @@ P _retailLocationEntityDeserializePropNative<P>(
   }
 }
 
-Object _retailLocationEntitySerializeWeb(
-    IsarCollection<RetailLocationEntity> collection,
-    RetailLocationEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-RetailLocationEntity _retailLocationEntityDeserializeWeb(
-    IsarCollection<RetailLocationEntity> collection, Object jsObj) {
-  /*final object = RetailLocationEntity(address: IsarNative.jsObjectGet(jsObj, r'address') ,createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),currencyId: IsarNative.jsObjectGet(jsObj, r'currencyId') ,gst: IsarNative.jsObjectGet(jsObj, r'gst') ,lastChangedAt: IsarNative.jsObjectGet(jsObj, r'lastChangedAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastChangedAt') as int, isUtc: true).toLocal() : null,locale: IsarNative.jsObjectGet(jsObj, r'locale') ,logo: (IsarNative.jsObjectGet(jsObj, r'logo') as List?)?.map((e) => e ?? '').toList().cast<String>() ,pan: IsarNative.jsObjectGet(jsObj, r'pan') ,rtlLocId: IsarNative.jsObjectGet(jsObj, r'rtlLocId') ?? (double.negativeInfinity as int),storeContact: IsarNative.jsObjectGet(jsObj, r'storeContact') ,storeEmail: IsarNative.jsObjectGet(jsObj, r'storeEmail') ,storeName: IsarNative.jsObjectGet(jsObj, r'storeName') ,storeNumber: IsarNative.jsObjectGet(jsObj, r'storeNumber') ,updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _retailLocationEntityDeserializePropWeb<P>(
-    Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
-  }
-}
-
 Id _retailLocationEntityGetId(RetailLocationEntity object) {
   return object.rtlLocId;
 }
@@ -331,7 +306,7 @@ extension RetailLocationEntityQueryWhereSort
 extension RetailLocationEntityQueryWhere
     on QueryBuilder<RetailLocationEntity, RetailLocationEntity, QWhereClause> {
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterWhereClause>
-      rtlLocIdEqualTo(int rtlLocId) {
+      rtlLocIdEqualTo(Id rtlLocId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: rtlLocId,
@@ -341,7 +316,7 @@ extension RetailLocationEntityQueryWhere
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterWhereClause>
-      rtlLocIdNotEqualTo(int rtlLocId) {
+      rtlLocIdNotEqualTo(Id rtlLocId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -364,7 +339,7 @@ extension RetailLocationEntityQueryWhere
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterWhereClause>
-      rtlLocIdGreaterThan(int rtlLocId, {bool include = false}) {
+      rtlLocIdGreaterThan(Id rtlLocId, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: rtlLocId, includeLower: include),
@@ -373,7 +348,7 @@ extension RetailLocationEntityQueryWhere
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterWhereClause>
-      rtlLocIdLessThan(int rtlLocId, {bool include = false}) {
+      rtlLocIdLessThan(Id rtlLocId, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: rtlLocId, includeUpper: include),
@@ -383,8 +358,8 @@ extension RetailLocationEntityQueryWhere
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterWhereClause>
       rtlLocIdBetween(
-    int lowerRtlLocId,
-    int upperRtlLocId, {
+    Id lowerRtlLocId,
+    Id upperRtlLocId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1419,7 +1394,7 @@ extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity,
-      QAfterFilterCondition> rtlLocIdEqualTo(int value) {
+      QAfterFilterCondition> rtlLocIdEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'rtlLocId',
@@ -1430,7 +1405,7 @@ extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity,
       QAfterFilterCondition> rtlLocIdGreaterThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1444,7 +1419,7 @@ extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity,
       QAfterFilterCondition> rtlLocIdLessThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1458,8 +1433,8 @@ extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity,
       QAfterFilterCondition> rtlLocIdBetween(
-    int lower,
-    int upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

@@ -11,6 +11,7 @@ import 'package:receipt_generator/src/widgets/loading.dart';
 import '../../entity/pos/contact_entity.dart';
 import '../../widgets/address_widget.dart';
 import '../../widgets/appbar_leading.dart';
+import '../../widgets/desktop_pop_up.dart';
 import '../../widgets/my_loader.dart';
 import '../business/business_view.dart';
 import '../list_all_receipt/list_all_receipt_view.dart';
@@ -367,17 +368,10 @@ class CreateCustomerForm extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (ctx) {
-                          return Dialog(
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              width: MediaQuery.of(context).size.width * 0.5,
-                              child: const AddressFormDialog(),
-                            ),
-                          );
-                        }).then((value) => {
+                    showTransitiveAppPopUp(
+                      context: context,
+                      child: const AddressFormDialog(),
+                    ).then((value) => {
                           if (value != null)
                             {
                               BlocProvider.of<CustomerFormBloc>(context).add(

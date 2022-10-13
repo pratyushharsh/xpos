@@ -7,7 +7,7 @@ part of 'trn_line_item_modifier.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_localså
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 const TransactionLineItemModifierEntitySchema = Schema(
   name: r'TransactionLineItemModifierEntity',
@@ -100,13 +100,9 @@ const TransactionLineItemModifierEntitySchema = Schema(
     )
   },
   estimateSize: _transactionLineItemModifierEntityEstimateSize,
-  serializeNative: _transactionLineItemModifierEntitySerializeNative,
-  deserializeNative: _transactionLineItemModifierEntityDeserializeNative,
-  deserializePropNative:
-      _transactionLineItemModifierEntityDeserializePropNative,
-  serializeWeb: _transactionLineItemModifierEntitySerializeWeb,
-  deserializeWeb: _transactionLineItemModifierEntityDeserializeWeb,
-  deserializePropWeb: _transactionLineItemModifierEntityDeserializePropWeb,
+  serialize: _transactionLineItemModifierEntitySerialize,
+  deserialize: _transactionLineItemModifierEntityDeserialize,
+  deserializeProp: _transactionLineItemModifierEntityDeserializeProp,
 );
 
 int _transactionLineItemModifierEntityEstimateSize(
@@ -166,9 +162,9 @@ int _transactionLineItemModifierEntityEstimateSize(
   return bytesCount;
 }
 
-int _transactionLineItemModifierEntitySerializeNative(
+void _transactionLineItemModifierEntitySerialize(
   TransactionLineItemModifierEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -189,13 +185,11 @@ int _transactionLineItemModifierEntitySerializeNative(
   writer.writeString(offsets[14], object.promotionId);
   writer.writeLong(offsets[15], object.storeId);
   writer.writeLong(offsets[16], object.transSeq);
-  return writer.usedBytes;
 }
 
-TransactionLineItemModifierEntity
-    _transactionLineItemModifierEntityDeserializeNative(
+TransactionLineItemModifierEntity _transactionLineItemModifierEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -221,8 +215,8 @@ TransactionLineItemModifierEntity
   return object;
 }
 
-P _transactionLineItemModifierEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _transactionLineItemModifierEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -264,29 +258,6 @@ P _transactionLineItemModifierEntityDeserializePropNative<P>(
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _transactionLineItemModifierEntitySerializeWeb(
-    IsarCollection<TransactionLineItemModifierEntity> collection,
-    TransactionLineItemModifierEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-TransactionLineItemModifierEntity
-    _transactionLineItemModifierEntityDeserializeWeb(
-        IsarCollection<TransactionLineItemModifierEntity> collection,
-        Object jsObj) {
-  /*final object = TransactionLineItemModifierEntity(amount: IsarNative.jsObjectGet(jsObj, r'amount') ?? double.negativeInfinity,businessDate: IsarNative.jsObjectGet(jsObj, r'businessDate') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'businessDate') as int, isUtc: true).toLocal() : null,dealId: IsarNative.jsObjectGet(jsObj, r'dealId') ,description: IsarNative.jsObjectGet(jsObj, r'description') ,discountCode: IsarNative.jsObjectGet(jsObj, r'discountCode') ,discountReasonCode: IsarNative.jsObjectGet(jsObj, r'discountReasonCode') ,extendedAmount: IsarNative.jsObjectGet(jsObj, r'extendedAmount') ?? double.negativeInfinity,groupDiscountId: IsarNative.jsObjectGet(jsObj, r'groupDiscountId') ,lineItemModSeq: IsarNative.jsObjectGet(jsObj, r'lineItemModSeq') ,lineItemSeq: IsarNative.jsObjectGet(jsObj, r'lineItemSeq') ,notes: IsarNative.jsObjectGet(jsObj, r'notes') ,percent: IsarNative.jsObjectGet(jsObj, r'percent') ,posId: IsarNative.jsObjectGet(jsObj, r'posId') ,priceModifierReasonCode: IsarNative.jsObjectGet(jsObj, r'priceModifierReasonCode') ,promotionId: IsarNative.jsObjectGet(jsObj, r'promotionId') ,storeId: IsarNative.jsObjectGet(jsObj, r'storeId') ,transSeq: IsarNative.jsObjectGet(jsObj, r'transSeq') ,);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _transactionLineItemModifierEntityDeserializePropWeb<P>(
-    Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 

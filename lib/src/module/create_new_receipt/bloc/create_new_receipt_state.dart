@@ -23,6 +23,20 @@ enum CustomerAction { remove, add }
 
 enum SaleStep { item, payment, customer, complete, printAndEmail, confirmed }
 
+class CustomerAddress {
+  final Address? shippingAddress;
+  final Address? billingAddress;
+
+  const CustomerAddress({this.shippingAddress, this.billingAddress});
+
+  CustomerAddress copyWith({Address? shippingAddress, Address? billingAddress}) {
+    return CustomerAddress(
+      shippingAddress: shippingAddress ?? this.shippingAddress,
+      billingAddress: billingAddress ?? this.billingAddress,
+    );
+  }
+}
+
 class CreateNewReceiptState extends Equatable {
   final int transSeq;
   final List<TransactionLineItemEntity> lineItem;
@@ -30,6 +44,7 @@ class CreateNewReceiptState extends Equatable {
   final Map<String, ProductEntity> productMap;
   final ContactEntity? customer;
   final CreateNewReceiptStatus status;
+  final CustomerAddress? customerAddress;
   final SaleStep step;
 
   const CreateNewReceiptState({
@@ -40,6 +55,7 @@ class CreateNewReceiptState extends Equatable {
     required this.status,
     this.step = SaleStep.item,
     this.customer,
+    this.customerAddress,
   });
 
   bool get isCustomerPresent {
@@ -95,6 +111,7 @@ class CreateNewReceiptState extends Equatable {
         step,
         tenderLine,
         customer,
+        customerAddress,
       ];
 
   CreateNewReceiptState copyWith({
@@ -106,6 +123,7 @@ class CreateNewReceiptState extends Equatable {
     CreateNewReceiptStatus? status,
     SaleStep? step,
     CustomerAction? customerAction,
+    CustomerAddress? customerAddress,
   }) {
     return CreateNewReceiptState(
       transSeq: transSeq ?? this.transSeq,
@@ -119,6 +137,7 @@ class CreateNewReceiptState extends Equatable {
           : (customer ?? this.customer),
       status: status ?? this.status,
       step: step ?? this.step,
+      customerAddress: customerAddress ?? this.customerAddress,
     );
   }
 }

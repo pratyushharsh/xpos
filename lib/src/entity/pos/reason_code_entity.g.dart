@@ -7,7 +7,7 @@ part of 'reason_code_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetReasonCodeEntityCollection on Isar {
   IsarCollection<ReasonCodeEntity> get reasonCodeEntitys => this.collection();
@@ -49,12 +49,9 @@ const ReasonCodeEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _reasonCodeEntityEstimateSize,
-  serializeNative: _reasonCodeEntitySerializeNative,
-  deserializeNative: _reasonCodeEntityDeserializeNative,
-  deserializePropNative: _reasonCodeEntityDeserializePropNative,
-  serializeWeb: _reasonCodeEntitySerializeWeb,
-  deserializeWeb: _reasonCodeEntityDeserializeWeb,
-  deserializePropWeb: _reasonCodeEntityDeserializePropWeb,
+  serialize: _reasonCodeEntitySerialize,
+  deserialize: _reasonCodeEntityDeserialize,
+  deserializeProp: _reasonCodeEntityDeserializeProp,
   idName: r'id',
   indexes: {
     r'reasonTypeCode_reasonCode': IndexSchema(
@@ -81,7 +78,7 @@ const ReasonCodeEntitySchema = CollectionSchema(
   getId: _reasonCodeEntityGetId,
   getLinks: _reasonCodeEntityGetLinks,
   attach: _reasonCodeEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _reasonCodeEntityEstimateSize(
@@ -102,9 +99,9 @@ int _reasonCodeEntityEstimateSize(
   return bytesCount;
 }
 
-int _reasonCodeEntitySerializeNative(
+void _reasonCodeEntitySerialize(
   ReasonCodeEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -114,12 +111,11 @@ int _reasonCodeEntitySerializeNative(
   writer.writeString(offsets[3], object.parentCode);
   writer.writeString(offsets[4], object.reasonCode);
   writer.writeString(offsets[5], object.reasonTypeCode);
-  return writer.usedBytes;
 }
 
-ReasonCodeEntity _reasonCodeEntityDeserializeNative(
+ReasonCodeEntity _reasonCodeEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -134,8 +130,8 @@ ReasonCodeEntity _reasonCodeEntityDeserializeNative(
   return object;
 }
 
-P _reasonCodeEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _reasonCodeEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -155,25 +151,6 @@ P _reasonCodeEntityDeserializePropNative<P>(
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _reasonCodeEntitySerializeWeb(
-    IsarCollection<ReasonCodeEntity> collection, ReasonCodeEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-ReasonCodeEntity _reasonCodeEntityDeserializeWeb(
-    IsarCollection<ReasonCodeEntity> collection, Object jsObj) {
-  /*final object = ReasonCodeEntity(commentRequired: IsarNative.jsObjectGet(jsObj, r'commentRequired') ?? false,description: IsarNative.jsObjectGet(jsObj, r'description') ?? '',id: IsarNative.jsObjectGet(jsObj, r'id') ,parentCode: IsarNative.jsObjectGet(jsObj, r'parentCode') ,reasonCode: IsarNative.jsObjectGet(jsObj, r'reasonCode') ?? '',reasonTypeCode: IsarNative.jsObjectGet(jsObj, r'reasonTypeCode') ?? '',);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _reasonCodeEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -200,7 +177,7 @@ extension ReasonCodeEntityQueryWhereSort
 extension ReasonCodeEntityQueryWhere
     on QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QWhereClause> {
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterWhereClause> idEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -210,7 +187,7 @@ extension ReasonCodeEntityQueryWhere
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterWhereClause>
-      idNotEqualTo(int id) {
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -233,7 +210,7 @@ extension ReasonCodeEntityQueryWhere
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterWhereClause>
-      idGreaterThan(int id, {bool include = false}) {
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -242,7 +219,7 @@ extension ReasonCodeEntityQueryWhere
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterWhereClause>
-      idLessThan(int id, {bool include = false}) {
+      idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -251,8 +228,8 @@ extension ReasonCodeEntityQueryWhere
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -582,7 +559,7 @@ extension ReasonCodeEntityQueryFilter
   }
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
-      idEqualTo(int? value) {
+      idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -593,7 +570,7 @@ extension ReasonCodeEntityQueryFilter
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -607,7 +584,7 @@ extension ReasonCodeEntityQueryFilter
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
       idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -621,8 +598,8 @@ extension ReasonCodeEntityQueryFilter
 
   QueryBuilder<ReasonCodeEntity, ReasonCodeEntity, QAfterFilterCondition>
       idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

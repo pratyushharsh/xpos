@@ -7,7 +7,7 @@ part of 'discount_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetDiscountEntityCollection on Isar {
   IsarCollection<DiscountEntity> get discountEntitys => this.collection();
@@ -54,12 +54,9 @@ const DiscountEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _discountEntityEstimateSize,
-  serializeNative: _discountEntitySerializeNative,
-  deserializeNative: _discountEntityDeserializeNative,
-  deserializePropNative: _discountEntityDeserializePropNative,
-  serializeWeb: _discountEntitySerializeWeb,
-  deserializeWeb: _discountEntityDeserializeWeb,
-  deserializePropWeb: _discountEntityDeserializePropWeb,
+  serialize: _discountEntitySerialize,
+  deserialize: _discountEntityDeserialize,
+  deserializeProp: _discountEntityDeserializeProp,
   idName: r'id',
   indexes: {
     r'discountId': IndexSchema(
@@ -81,7 +78,7 @@ const DiscountEntitySchema = CollectionSchema(
   getId: _discountEntityGetId,
   getLinks: _discountEntityGetLinks,
   attach: _discountEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _discountEntityEstimateSize(
@@ -103,9 +100,9 @@ int _discountEntityEstimateSize(
   return bytesCount;
 }
 
-int _discountEntitySerializeNative(
+void _discountEntitySerialize(
   DiscountEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -116,12 +113,11 @@ int _discountEntitySerializeNative(
   writer.writeString(offsets[4], object.discountId);
   writer.writeString(offsets[5], object.discountType);
   writer.writeDouble(offsets[6], object.percent);
-  return writer.usedBytes;
 }
 
-DiscountEntity _discountEntityDeserializeNative(
+DiscountEntity _discountEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -138,8 +134,8 @@ DiscountEntity _discountEntityDeserializeNative(
   return object;
 }
 
-P _discountEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _discountEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -161,25 +157,6 @@ P _discountEntityDeserializePropNative<P>(
       return (reader.readDoubleOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _discountEntitySerializeWeb(
-    IsarCollection<DiscountEntity> collection, DiscountEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-DiscountEntity _discountEntityDeserializeWeb(
-    IsarCollection<DiscountEntity> collection, Object jsObj) {
-  /*final object = DiscountEntity(amount: IsarNative.jsObjectGet(jsObj, r'amount') ,description: IsarNative.jsObjectGet(jsObj, r'description') ?? '',discountCode: IsarNative.jsObjectGet(jsObj, r'discountCode') ?? '',discountGroupCode: IsarNative.jsObjectGet(jsObj, r'discountGroupCode') ,discountId: IsarNative.jsObjectGet(jsObj, r'discountId') ?? '',discountType: IsarNative.jsObjectGet(jsObj, r'discountType') ?? '',id: IsarNative.jsObjectGet(jsObj, r'id') ,percent: IsarNative.jsObjectGet(jsObj, r'percent') ,);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _discountEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -232,19 +209,19 @@ extension DiscountEntityByIndex on IsarCollection<DiscountEntity> {
     return deleteAllByIndexSync(r'discountId', values);
   }
 
-  Future<int> putByDiscountId(DiscountEntity object) {
+  Future<Id> putByDiscountId(DiscountEntity object) {
     return putByIndex(r'discountId', object);
   }
 
-  int putByDiscountIdSync(DiscountEntity object, {bool saveLinks = true}) {
+  Id putByDiscountIdSync(DiscountEntity object, {bool saveLinks = true}) {
     return putByIndexSync(r'discountId', object, saveLinks: saveLinks);
   }
 
-  Future<List<int>> putAllByDiscountId(List<DiscountEntity> objects) {
+  Future<List<Id>> putAllByDiscountId(List<DiscountEntity> objects) {
     return putAllByIndex(r'discountId', objects);
   }
 
-  List<int> putAllByDiscountIdSync(List<DiscountEntity> objects,
+  List<Id> putAllByDiscountIdSync(List<DiscountEntity> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'discountId', objects, saveLinks: saveLinks);
   }
@@ -262,7 +239,7 @@ extension DiscountEntityQueryWhereSort
 extension DiscountEntityQueryWhere
     on QueryBuilder<DiscountEntity, DiscountEntity, QWhereClause> {
   QueryBuilder<DiscountEntity, DiscountEntity, QAfterWhereClause> idEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -272,7 +249,7 @@ extension DiscountEntityQueryWhere
   }
 
   QueryBuilder<DiscountEntity, DiscountEntity, QAfterWhereClause> idNotEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -295,7 +272,7 @@ extension DiscountEntityQueryWhere
   }
 
   QueryBuilder<DiscountEntity, DiscountEntity, QAfterWhereClause> idGreaterThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -305,7 +282,7 @@ extension DiscountEntityQueryWhere
   }
 
   QueryBuilder<DiscountEntity, DiscountEntity, QAfterWhereClause> idLessThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -315,8 +292,8 @@ extension DiscountEntityQueryWhere
   }
 
   QueryBuilder<DiscountEntity, DiscountEntity, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1179,7 +1156,7 @@ extension DiscountEntityQueryFilter
   }
 
   QueryBuilder<DiscountEntity, DiscountEntity, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -1190,7 +1167,7 @@ extension DiscountEntityQueryFilter
 
   QueryBuilder<DiscountEntity, DiscountEntity, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1204,7 +1181,7 @@ extension DiscountEntityQueryFilter
 
   QueryBuilder<DiscountEntity, DiscountEntity, QAfterFilterCondition>
       idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1217,8 +1194,8 @@ extension DiscountEntityQueryFilter
   }
 
   QueryBuilder<DiscountEntity, DiscountEntity, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

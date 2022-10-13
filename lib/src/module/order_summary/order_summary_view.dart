@@ -96,28 +96,29 @@ class CustomerAddress extends StatelessWidget {
       child: Column(
         children: [
           Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(AppFormatter.longDateFormatter
-                            .format(order.createTime)),
-                        Text('Invoice #' + order.transId.toString()),
-                        Text('Sales Associate : ${order.associateName}'),
-                        Text('Notes : ' + 'Yet to add this'),
-                      ]),
-                ),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(AppFormatter.longDateFormatter
+                          .format(order.createTime)),
+                      Text('Invoice #' + order.transId.toString()),
+                      Text('Sales Associate : ${order.associateName}'),
+                      Text('Notes : ' + 'Yet to add this'),
+                    ]),
+              ),
+              if (order.customerId != null)
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '${order.customerName}',
+                          order.customerName!,
                           style: const TextStyle(
                               fontWeight: FontWeight.w300, fontSize: 24),
                         ),
@@ -126,7 +127,8 @@ class CustomerAddress extends StatelessWidget {
                         Text('${order.customerPhone}'),
                       ]),
                 )
-              ]),
+            ],
+          ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -235,31 +237,36 @@ class OrderLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraint) {
+    return LayoutBuilder(builder: (context, constraint) {
       if (constraint.maxWidth < 800) {
         return Column(
-            children: order.lineItems
-            .map((e) => InkWell(
-            onTap: () {}, child: NewLineItem(saleLine: e, productModel: productMap[e.itemId],),)).toList(),);
+          children: order.lineItems
+              .map((e) => InkWell(
+                    onTap: () {},
+                    child: NewLineItem(
+                      saleLine: e,
+                      productModel: productMap[e.itemId],
+                    ),
+                  ))
+              .toList(),
+        );
       } else {
         return Column(
             children: order.lineItems
                 .map((e) => InkWell(
-              onTap: () {},
-              child: Column(
-                children: [
-                  const Divider(height: 0),
-                  OrderItemDetailDisplay(
-                      entity: e, product: productMap[e.itemId]),
-                  const Divider(height: 0),
-                ],
-              ),
-            ))
+                      onTap: () {},
+                      child: Column(
+                        children: [
+                          const Divider(height: 0),
+                          OrderItemDetailDisplay(
+                              entity: e, product: productMap[e.itemId]),
+                          const Divider(height: 0),
+                        ],
+                      ),
+                    ))
                 .toList());
       }
-      }
-    );
+    });
   }
 }
 
@@ -320,7 +327,9 @@ class OrderItemDetailDisplay extends StatelessWidget {
           ),
           Expanded(
             child: Column(
-              children: entity.taxModifiers.map((e) => Text(e.taxRuleName ?? "Tax Rule")).toList(),
+              children: entity.taxModifiers
+                  .map((e) => Text(e.taxRuleName ?? "Tax Rule"))
+                  .toList(),
             ),
           ),
           Expanded(
@@ -408,14 +417,16 @@ class OrderDetailSummary extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          constraints: BoxConstraints(maxWidth: min(400, MediaQuery.of(context).size.width)),
+          constraints: BoxConstraints(
+              maxWidth: min(400, MediaQuery.of(context).size.width)),
           child: Column(
             children: [
               const SizedBox(
                 height: 10,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -425,7 +436,8 @@ class OrderDetailSummary extends StatelessWidget {
               ),
               const Divider(),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -435,7 +447,8 @@ class OrderDetailSummary extends StatelessWidget {
               ),
               Divider(),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -445,7 +458,8 @@ class OrderDetailSummary extends StatelessWidget {
               ),
               Divider(),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

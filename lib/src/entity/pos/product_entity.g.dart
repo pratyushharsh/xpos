@@ -7,7 +7,7 @@ part of 'product_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetProductEntityCollection on Isar {
   IsarCollection<ProductEntity> get productEntitys => this.collection();
@@ -124,12 +124,9 @@ const ProductEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _productEntityEstimateSize,
-  serializeNative: _productEntitySerializeNative,
-  deserializeNative: _productEntityDeserializeNative,
-  deserializePropNative: _productEntityDeserializePropNative,
-  serializeWeb: _productEntitySerializeWeb,
-  deserializeWeb: _productEntityDeserializeWeb,
-  deserializePropWeb: _productEntityDeserializePropWeb,
+  serialize: _productEntitySerialize,
+  deserialize: _productEntityDeserialize,
+  deserializeProp: _productEntityDeserializeProp,
   idName: r'id',
   indexes: {
     r'productId': IndexSchema(
@@ -164,7 +161,7 @@ const ProductEntitySchema = CollectionSchema(
   getId: _productEntityGetId,
   getLinks: _productEntityGetLinks,
   attach: _productEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _productEntityEstimateSize(
@@ -228,9 +225,9 @@ int _productEntityEstimateSize(
   return bytesCount;
 }
 
-int _productEntitySerializeNative(
+void _productEntitySerialize(
   ProductEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -255,12 +252,11 @@ int _productEntitySerializeNative(
   writer.writeString(offsets[18], object.uom);
   writer.writeDateTime(offsets[19], object.updateTime);
   writer.writeLong(offsets[20], object.version);
-  return writer.usedBytes;
 }
 
-ProductEntity _productEntityDeserializeNative(
+ProductEntity _productEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -290,8 +286,8 @@ ProductEntity _productEntityDeserializeNative(
   return object;
 }
 
-P _productEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _productEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -341,25 +337,6 @@ P _productEntityDeserializePropNative<P>(
       return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _productEntitySerializeWeb(
-    IsarCollection<ProductEntity> collection, ProductEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-ProductEntity _productEntityDeserializeWeb(
-    IsarCollection<ProductEntity> collection, Object jsObj) {
-  /*final object = ProductEntity(brand: IsarNative.jsObjectGet(jsObj, r'brand') ,createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),description: IsarNative.jsObjectGet(jsObj, r'description') ,displayName: IsarNative.jsObjectGet(jsObj, r'displayName') ?? '',enable: IsarNative.jsObjectGet(jsObj, r'enable') ?? false,hsn: IsarNative.jsObjectGet(jsObj, r'hsn') ,id: IsarNative.jsObjectGet(jsObj, r'id') ,imageUrl: (IsarNative.jsObjectGet(jsObj, r'imageUrl') as List?)?.map((e) => e ?? '').toList().cast<String>() ?? [],lastSyncAt: IsarNative.jsObjectGet(jsObj, r'lastSyncAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastSyncAt') as int, isUtc: true).toLocal() : null,listPrice: IsarNative.jsObjectGet(jsObj, r'listPrice') ,productId: IsarNative.jsObjectGet(jsObj, r'productId') ,purchasePrice: IsarNative.jsObjectGet(jsObj, r'purchasePrice') ,salePrice: IsarNative.jsObjectGet(jsObj, r'salePrice') ,skuCode: IsarNative.jsObjectGet(jsObj, r'skuCode') ,storeId: IsarNative.jsObjectGet(jsObj, r'storeId') ?? (double.negativeInfinity as int),syncState: IsarNative.jsObjectGet(jsObj, r'syncState') ?? (double.negativeInfinity as int),tax: IsarNative.jsObjectGet(jsObj, r'tax') ,taxGroupId: IsarNative.jsObjectGet(jsObj, r'taxGroupId') ,uom: IsarNative.jsObjectGet(jsObj, r'uom') ?? '',updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _productEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -414,19 +391,19 @@ extension ProductEntityByIndex on IsarCollection<ProductEntity> {
     return deleteAllByIndexSync(r'productId', values);
   }
 
-  Future<int> putByProductId(ProductEntity object) {
+  Future<Id> putByProductId(ProductEntity object) {
     return putByIndex(r'productId', object);
   }
 
-  int putByProductIdSync(ProductEntity object, {bool saveLinks = true}) {
+  Id putByProductIdSync(ProductEntity object, {bool saveLinks = true}) {
     return putByIndexSync(r'productId', object, saveLinks: saveLinks);
   }
 
-  Future<List<int>> putAllByProductId(List<ProductEntity> objects) {
+  Future<List<Id>> putAllByProductId(List<ProductEntity> objects) {
     return putAllByIndex(r'productId', objects);
   }
 
-  List<int> putAllByProductIdSync(List<ProductEntity> objects,
+  List<Id> putAllByProductIdSync(List<ProductEntity> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'productId', objects, saveLinks: saveLinks);
   }
@@ -461,7 +438,7 @@ extension ProductEntityQueryWhereSort
 extension ProductEntityQueryWhere
     on QueryBuilder<ProductEntity, ProductEntity, QWhereClause> {
   QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause> idEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -471,7 +448,7 @@ extension ProductEntityQueryWhere
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause> idNotEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -494,7 +471,7 @@ extension ProductEntityQueryWhere
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause> idGreaterThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -504,7 +481,7 @@ extension ProductEntityQueryWhere
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause> idLessThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -514,8 +491,8 @@ extension ProductEntityQueryWhere
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1743,7 +1720,7 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -1754,7 +1731,7 @@ extension ProductEntityQueryFilter
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1767,7 +1744,7 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition> idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1780,8 +1757,8 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

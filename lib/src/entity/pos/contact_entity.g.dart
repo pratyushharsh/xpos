@@ -7,7 +7,7 @@ part of 'contact_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetContactEntityCollection on Isar {
   IsarCollection<ContactEntity> get contactEntitys => this.collection();
@@ -96,12 +96,9 @@ const ContactEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _contactEntityEstimateSize,
-  serializeNative: _contactEntitySerializeNative,
-  deserializeNative: _contactEntityDeserializeNative,
-  deserializePropNative: _contactEntityDeserializePropNative,
-  serializeWeb: _contactEntitySerializeWeb,
-  deserializeWeb: _contactEntityDeserializeWeb,
-  deserializePropWeb: _contactEntityDeserializePropWeb,
+  serialize: _contactEntitySerialize,
+  deserialize: _contactEntityDeserialize,
+  deserializeProp: _contactEntityDeserializeProp,
   idName: r'id',
   indexes: {
     r'contactId': IndexSchema(
@@ -162,7 +159,7 @@ const ContactEntitySchema = CollectionSchema(
   getId: _contactEntityGetId,
   getLinks: _contactEntityGetLinks,
   attach: _contactEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _contactEntityEstimateSize(
@@ -216,16 +213,16 @@ int _contactEntityEstimateSize(
   return bytesCount;
 }
 
-int _contactEntitySerializeNative(
+void _contactEntitySerialize(
   ContactEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeObject<Address>(
     offsets[0],
     allOffsets,
-    AddressSchema.serializeNative,
+    AddressSchema.serialize,
     object.billingAddress,
   );
   writer.writeString(offsets[1], object.contactId);
@@ -240,26 +237,25 @@ int _contactEntitySerializeNative(
   writer.writeObject<Address>(
     offsets[10],
     allOffsets,
-    AddressSchema.serializeNative,
+    AddressSchema.serialize,
     object.shippingAddress,
   );
   writer.writeString(offsets[11], object.storeId);
   writer.writeLong(offsets[12], object.syncState);
   writer.writeDateTime(offsets[13], object.updateTime);
   writer.writeLong(offsets[14], object.version);
-  return writer.usedBytes;
 }
 
-ContactEntity _contactEntityDeserializeNative(
+ContactEntity _contactEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   final object = ContactEntity(
     billingAddress: reader.readObjectOrNull<Address>(
       offsets[0],
-      AddressSchema.deserializeNative,
+      AddressSchema.deserialize,
       allOffsets,
     ),
     contactId: reader.readString(offsets[1]),
@@ -274,7 +270,7 @@ ContactEntity _contactEntityDeserializeNative(
     phoneNumber: reader.readStringOrNull(offsets[9]),
     shippingAddress: reader.readObjectOrNull<Address>(
       offsets[10],
-      AddressSchema.deserializeNative,
+      AddressSchema.deserialize,
       allOffsets,
     ),
     storeId: reader.readString(offsets[11]),
@@ -285,8 +281,8 @@ ContactEntity _contactEntityDeserializeNative(
   return object;
 }
 
-P _contactEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _contactEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -295,7 +291,7 @@ P _contactEntityDeserializePropNative<P>(
     case 0:
       return (reader.readObjectOrNull<Address>(
         offset,
-        AddressSchema.deserializeNative,
+        AddressSchema.deserialize,
         allOffsets,
       )) as P;
     case 1:
@@ -319,7 +315,7 @@ P _contactEntityDeserializePropNative<P>(
     case 10:
       return (reader.readObjectOrNull<Address>(
         offset,
-        AddressSchema.deserializeNative,
+        AddressSchema.deserialize,
         allOffsets,
       )) as P;
     case 11:
@@ -332,25 +328,6 @@ P _contactEntityDeserializePropNative<P>(
       return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _contactEntitySerializeWeb(
-    IsarCollection<ContactEntity> collection, ContactEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-ContactEntity _contactEntityDeserializeWeb(
-    IsarCollection<ContactEntity> collection, Object jsObj) {
-  /*final object = ContactEntity(billingAddress: IsarNative.jsObjectGet(jsObj, r'billingAddress') ,contactId: IsarNative.jsObjectGet(jsObj, r'contactId') ?? '',createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),email: IsarNative.jsObjectGet(jsObj, r'email') ,firstName: IsarNative.jsObjectGet(jsObj, r'firstName') ?? '',gstin: IsarNative.jsObjectGet(jsObj, r'gstin') ,id: IsarNative.jsObjectGet(jsObj, r'id') ,lastName: IsarNative.jsObjectGet(jsObj, r'lastName') ?? '',lastSyncAt: IsarNative.jsObjectGet(jsObj, r'lastSyncAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastSyncAt') as int, isUtc: true).toLocal() : null,panCard: IsarNative.jsObjectGet(jsObj, r'panCard') ,phoneNumber: IsarNative.jsObjectGet(jsObj, r'phoneNumber') ,shippingAddress: IsarNative.jsObjectGet(jsObj, r'shippingAddress') ,storeId: IsarNative.jsObjectGet(jsObj, r'storeId') ?? '',syncState: IsarNative.jsObjectGet(jsObj, r'syncState') ?? (double.negativeInfinity as int),updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _contactEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -402,19 +379,19 @@ extension ContactEntityByIndex on IsarCollection<ContactEntity> {
     return deleteAllByIndexSync(r'contactId', values);
   }
 
-  Future<int> putByContactId(ContactEntity object) {
+  Future<Id> putByContactId(ContactEntity object) {
     return putByIndex(r'contactId', object);
   }
 
-  int putByContactIdSync(ContactEntity object, {bool saveLinks = true}) {
+  Id putByContactIdSync(ContactEntity object, {bool saveLinks = true}) {
     return putByIndexSync(r'contactId', object, saveLinks: saveLinks);
   }
 
-  Future<List<int>> putAllByContactId(List<ContactEntity> objects) {
+  Future<List<Id>> putAllByContactId(List<ContactEntity> objects) {
     return putAllByIndex(r'contactId', objects);
   }
 
-  List<int> putAllByContactIdSync(List<ContactEntity> objects,
+  List<Id> putAllByContactIdSync(List<ContactEntity> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'contactId', objects, saveLinks: saveLinks);
   }
@@ -432,7 +409,7 @@ extension ContactEntityQueryWhereSort
 extension ContactEntityQueryWhere
     on QueryBuilder<ContactEntity, ContactEntity, QWhereClause> {
   QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause> idEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -442,7 +419,7 @@ extension ContactEntityQueryWhere
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause> idNotEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -465,7 +442,7 @@ extension ContactEntityQueryWhere
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause> idGreaterThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -475,7 +452,7 @@ extension ContactEntityQueryWhere
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause> idLessThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -485,8 +462,8 @@ extension ContactEntityQueryWhere
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1398,7 +1375,7 @@ extension ContactEntityQueryFilter
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -1409,7 +1386,7 @@ extension ContactEntityQueryFilter
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1422,7 +1399,7 @@ extension ContactEntityQueryFilter
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition> idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1435,8 +1412,8 @@ extension ContactEntityQueryFilter
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

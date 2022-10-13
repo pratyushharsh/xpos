@@ -40,6 +40,7 @@ class TransactionHeaderEntity {
 
   final String? associateId;
   final String? associateName;
+  final String? notes;
 
   List<TransactionLineItemEntity> lineItems;
   List<TransactionPaymentLineItemEntity> paymentLineItems;
@@ -67,6 +68,7 @@ class TransactionHeaderEntity {
       this.shippingAddress,
       this.billingAddress,
       this.customerName,
+      this.notes,
       required this.createTime,
       this.version = 1,
       this.lastChangedAt,

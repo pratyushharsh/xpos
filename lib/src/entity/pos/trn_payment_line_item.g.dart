@@ -7,7 +7,7 @@ part of 'trn_payment_line_item.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_localså
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 const TransactionPaymentLineItemEntitySchema = Schema(
   name: r'TransactionPaymentLineItemEntity',
@@ -60,12 +60,9 @@ const TransactionPaymentLineItemEntitySchema = Schema(
     )
   },
   estimateSize: _transactionPaymentLineItemEntityEstimateSize,
-  serializeNative: _transactionPaymentLineItemEntitySerializeNative,
-  deserializeNative: _transactionPaymentLineItemEntityDeserializeNative,
-  deserializePropNative: _transactionPaymentLineItemEntityDeserializePropNative,
-  serializeWeb: _transactionPaymentLineItemEntitySerializeWeb,
-  deserializeWeb: _transactionPaymentLineItemEntityDeserializeWeb,
-  deserializePropWeb: _transactionPaymentLineItemEntityDeserializePropWeb,
+  serialize: _transactionPaymentLineItemEntitySerialize,
+  deserialize: _transactionPaymentLineItemEntityDeserialize,
+  deserializeProp: _transactionPaymentLineItemEntityDeserializeProp,
 );
 
 int _transactionPaymentLineItemEntityEstimateSize(
@@ -101,9 +98,9 @@ int _transactionPaymentLineItemEntityEstimateSize(
   return bytesCount;
 }
 
-int _transactionPaymentLineItemEntitySerializeNative(
+void _transactionPaymentLineItemEntitySerialize(
   TransactionPaymentLineItemEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -116,13 +113,11 @@ int _transactionPaymentLineItemEntitySerializeNative(
   writer.writeString(offsets[6], object.tenderId);
   writer.writeString(offsets[7], object.tenderStatusCode);
   writer.writeLong(offsets[8], object.transId);
-  return writer.usedBytes;
 }
 
-TransactionPaymentLineItemEntity
-    _transactionPaymentLineItemEntityDeserializeNative(
+TransactionPaymentLineItemEntity _transactionPaymentLineItemEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -140,8 +135,8 @@ TransactionPaymentLineItemEntity
   return object;
 }
 
-P _transactionPaymentLineItemEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _transactionPaymentLineItemEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -167,29 +162,6 @@ P _transactionPaymentLineItemEntityDeserializePropNative<P>(
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _transactionPaymentLineItemEntitySerializeWeb(
-    IsarCollection<TransactionPaymentLineItemEntity> collection,
-    TransactionPaymentLineItemEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-TransactionPaymentLineItemEntity
-    _transactionPaymentLineItemEntityDeserializeWeb(
-        IsarCollection<TransactionPaymentLineItemEntity> collection,
-        Object jsObj) {
-  /*final object = TransactionPaymentLineItemEntity(amount: IsarNative.jsObjectGet(jsObj, r'amount') ,authCode: IsarNative.jsObjectGet(jsObj, r'authCode') ,beginDate: IsarNative.jsObjectGet(jsObj, r'beginDate') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'beginDate') as int, isUtc: true).toLocal() : null,currencyId: IsarNative.jsObjectGet(jsObj, r'currencyId') ,endDate: IsarNative.jsObjectGet(jsObj, r'endDate') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'endDate') as int, isUtc: true).toLocal() : null,paymentSeq: IsarNative.jsObjectGet(jsObj, r'paymentSeq') ,tenderId: IsarNative.jsObjectGet(jsObj, r'tenderId') ,tenderStatusCode: IsarNative.jsObjectGet(jsObj, r'tenderStatusCode') ,transId: IsarNative.jsObjectGet(jsObj, r'transId') ,);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _transactionPaymentLineItemEntityDeserializePropWeb<P>(
-    Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 

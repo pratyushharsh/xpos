@@ -7,7 +7,7 @@ part of 'sequence_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetSequenceEntityCollection on Isar {
   IsarCollection<SequenceEntity> get sequenceEntitys => this.collection();
@@ -29,12 +29,9 @@ const SequenceEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _sequenceEntityEstimateSize,
-  serializeNative: _sequenceEntitySerializeNative,
-  deserializeNative: _sequenceEntityDeserializeNative,
-  deserializePropNative: _sequenceEntityDeserializePropNative,
-  serializeWeb: _sequenceEntitySerializeWeb,
-  deserializeWeb: _sequenceEntityDeserializeWeb,
-  deserializePropWeb: _sequenceEntityDeserializePropWeb,
+  serialize: _sequenceEntitySerialize,
+  deserialize: _sequenceEntityDeserialize,
+  deserializeProp: _sequenceEntityDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
@@ -42,7 +39,7 @@ const SequenceEntitySchema = CollectionSchema(
   getId: _sequenceEntityGetId,
   getLinks: _sequenceEntityGetLinks,
   attach: _sequenceEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _sequenceEntityEstimateSize(
@@ -55,20 +52,19 @@ int _sequenceEntityEstimateSize(
   return bytesCount;
 }
 
-int _sequenceEntitySerializeNative(
+void _sequenceEntitySerialize(
   SequenceEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.name);
   writer.writeLong(offsets[1], object.nextSeq);
-  return writer.usedBytes;
 }
 
-SequenceEntity _sequenceEntityDeserializeNative(
+SequenceEntity _sequenceEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -80,8 +76,8 @@ SequenceEntity _sequenceEntityDeserializeNative(
   return object;
 }
 
-P _sequenceEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _sequenceEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -93,25 +89,6 @@ P _sequenceEntityDeserializePropNative<P>(
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _sequenceEntitySerializeWeb(
-    IsarCollection<SequenceEntity> collection, SequenceEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-SequenceEntity _sequenceEntityDeserializeWeb(
-    IsarCollection<SequenceEntity> collection, Object jsObj) {
-  /*final object = SequenceEntity(id: IsarNative.jsObjectGet(jsObj, r'id') ?? (double.negativeInfinity as int),name: IsarNative.jsObjectGet(jsObj, r'name') ?? '',nextSeq: IsarNative.jsObjectGet(jsObj, r'nextSeq') ?? (double.negativeInfinity as int),);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _sequenceEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -138,7 +115,7 @@ extension SequenceEntityQueryWhereSort
 extension SequenceEntityQueryWhere
     on QueryBuilder<SequenceEntity, SequenceEntity, QWhereClause> {
   QueryBuilder<SequenceEntity, SequenceEntity, QAfterWhereClause> idEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -148,7 +125,7 @@ extension SequenceEntityQueryWhere
   }
 
   QueryBuilder<SequenceEntity, SequenceEntity, QAfterWhereClause> idNotEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -171,7 +148,7 @@ extension SequenceEntityQueryWhere
   }
 
   QueryBuilder<SequenceEntity, SequenceEntity, QAfterWhereClause> idGreaterThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -181,7 +158,7 @@ extension SequenceEntityQueryWhere
   }
 
   QueryBuilder<SequenceEntity, SequenceEntity, QAfterWhereClause> idLessThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -191,8 +168,8 @@ extension SequenceEntityQueryWhere
   }
 
   QueryBuilder<SequenceEntity, SequenceEntity, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -210,7 +187,7 @@ extension SequenceEntityQueryWhere
 extension SequenceEntityQueryFilter
     on QueryBuilder<SequenceEntity, SequenceEntity, QFilterCondition> {
   QueryBuilder<SequenceEntity, SequenceEntity, QAfterFilterCondition> idEqualTo(
-      int value) {
+      Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -221,7 +198,7 @@ extension SequenceEntityQueryFilter
 
   QueryBuilder<SequenceEntity, SequenceEntity, QAfterFilterCondition>
       idGreaterThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -235,7 +212,7 @@ extension SequenceEntityQueryFilter
 
   QueryBuilder<SequenceEntity, SequenceEntity, QAfterFilterCondition>
       idLessThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -248,8 +225,8 @@ extension SequenceEntityQueryFilter
   }
 
   QueryBuilder<SequenceEntity, SequenceEntity, QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

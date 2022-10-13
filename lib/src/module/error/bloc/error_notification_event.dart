@@ -5,6 +5,12 @@ abstract class ErrorNotificationEvent {}
 
 class ValidateStoreSetup extends ErrorNotificationEvent {}
 
-class PeriodicValidatorStartEvent extends ErrorNotificationEvent {}
+// class PeriodicValidatorStartEvent extends ErrorNotificationEvent {}
+//
+// class PeriodicValidatorStopEvent extends ErrorNotificationEvent {}
 
-class PeriodicValidatorStopEvent extends ErrorNotificationEvent {}
+class ErrorEvent extends ErrorNotificationEvent {
+  final String error;
+
+  ErrorEvent(this.error);
+}

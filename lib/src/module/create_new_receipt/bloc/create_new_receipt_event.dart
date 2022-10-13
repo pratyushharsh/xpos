@@ -34,11 +34,6 @@ class OnCustomerPhoneChange extends CreateNewReceiptEvent {
   OnCustomerPhoneChange({this.phone});
 }
 
-class OnCustomerAddressChange extends CreateNewReceiptEvent {
-  final String? address;
-  OnCustomerAddressChange({this.address});
-}
-
 class OnCustomerSelect extends CreateNewReceiptEvent {
   final ContactEntity contact;
   OnCustomerSelect(this.contact);
@@ -93,3 +88,13 @@ class OnChangeLineItemTaxPercent extends CreateNewReceiptEvent {
 }
 
 class OnCustomerRemove extends CreateNewReceiptEvent {}
+
+class OnChangeCustomerBillingAddress extends CreateNewReceiptEvent {
+  final Address address;
+  OnChangeCustomerBillingAddress(this.address);
+}
+
+class OnChangeCustomerShippingAddress extends CreateNewReceiptEvent {
+  final Address address;
+  OnChangeCustomerShippingAddress(this.address);
+}

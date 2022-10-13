@@ -15,6 +15,7 @@ class TransactionLineItemEntity {
   String? category;
   String? itemId;
   String? itemDescription;
+  String? hsn;
   double? quantity; // Quantity of the item
   double?
       unitPrice; // Unit price of the item for the transaction it will be overridden in case of price override
@@ -80,6 +81,7 @@ class TransactionLineItemEntity {
     this.itemId,
     this.itemDescription,
     this.quantity,
+    this.hsn,
     this.unitPrice,
     this.unitCost,
     this.extendedAmount,

@@ -7,7 +7,7 @@ part of 'sync_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetSyncEntityCollection on Isar {
   IsarCollection<SyncEntity> get syncEntitys => this.collection();
@@ -44,12 +44,9 @@ const SyncEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _syncEntityEstimateSize,
-  serializeNative: _syncEntitySerializeNative,
-  deserializeNative: _syncEntityDeserializeNative,
-  deserializePropNative: _syncEntityDeserializePropNative,
-  serializeWeb: _syncEntitySerializeWeb,
-  deserializeWeb: _syncEntityDeserializeWeb,
-  deserializePropWeb: _syncEntityDeserializePropWeb,
+  serialize: _syncEntitySerialize,
+  deserialize: _syncEntityDeserialize,
+  deserializeProp: _syncEntityDeserializeProp,
   idName: r'id',
   indexes: {
     r'type': IndexSchema(
@@ -71,7 +68,7 @@ const SyncEntitySchema = CollectionSchema(
   getId: _syncEntityGetId,
   getLinks: _syncEntityGetLinks,
   attach: _syncEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _syncEntityEstimateSize(
@@ -84,9 +81,9 @@ int _syncEntityEstimateSize(
   return bytesCount;
 }
 
-int _syncEntitySerializeNative(
+void _syncEntitySerialize(
   SyncEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -95,12 +92,11 @@ int _syncEntitySerializeNative(
   writer.writeDateTime(offsets[2], object.syncEndTime);
   writer.writeDateTime(offsets[3], object.syncStartTime);
   writer.writeString(offsets[4], object.type);
-  return writer.usedBytes;
 }
 
-SyncEntity _syncEntityDeserializeNative(
+SyncEntity _syncEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -115,8 +111,8 @@ SyncEntity _syncEntityDeserializeNative(
   return object;
 }
 
-P _syncEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _syncEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -134,25 +130,6 @@ P _syncEntityDeserializePropNative<P>(
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _syncEntitySerializeWeb(
-    IsarCollection<SyncEntity> collection, SyncEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-SyncEntity _syncEntityDeserializeWeb(
-    IsarCollection<SyncEntity> collection, Object jsObj) {
-  /*final object = SyncEntity(id: IsarNative.jsObjectGet(jsObj, r'id') ,lastSyncAt: IsarNative.jsObjectGet(jsObj, r'lastSyncAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastSyncAt') as int, isUtc: true).toLocal() : null,status: IsarNative.jsObjectGet(jsObj, r'status') ?? (double.negativeInfinity as int),syncEndTime: IsarNative.jsObjectGet(jsObj, r'syncEndTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'syncEndTime') as int, isUtc: true).toLocal() : null,syncStartTime: IsarNative.jsObjectGet(jsObj, r'syncStartTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'syncStartTime') as int, isUtc: true).toLocal() : null,type: IsarNative.jsObjectGet(jsObj, r'type') ?? '',);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _syncEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -177,7 +154,7 @@ extension SyncEntityQueryWhereSort
 
 extension SyncEntityQueryWhere
     on QueryBuilder<SyncEntity, SyncEntity, QWhereClause> {
-  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> idEqualTo(int id) {
+  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -186,7 +163,7 @@ extension SyncEntityQueryWhere
     });
   }
 
-  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> idNotEqualTo(int id) {
+  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -208,7 +185,7 @@ extension SyncEntityQueryWhere
     });
   }
 
-  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> idGreaterThan(int id,
+  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -217,7 +194,7 @@ extension SyncEntityQueryWhere
     });
   }
 
-  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> idLessThan(int id,
+  QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -227,8 +204,8 @@ extension SyncEntityQueryWhere
   }
 
   QueryBuilder<SyncEntity, SyncEntity, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -307,7 +284,7 @@ extension SyncEntityQueryFilter
   }
 
   QueryBuilder<SyncEntity, SyncEntity, QAfterFilterCondition> idEqualTo(
-      int? value) {
+      Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -317,7 +294,7 @@ extension SyncEntityQueryFilter
   }
 
   QueryBuilder<SyncEntity, SyncEntity, QAfterFilterCondition> idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -330,7 +307,7 @@ extension SyncEntityQueryFilter
   }
 
   QueryBuilder<SyncEntity, SyncEntity, QAfterFilterCondition> idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -343,8 +320,8 @@ extension SyncEntityQueryFilter
   }
 
   QueryBuilder<SyncEntity, SyncEntity, QAfterFilterCondition> idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

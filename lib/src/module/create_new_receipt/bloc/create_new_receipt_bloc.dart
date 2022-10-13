@@ -10,12 +10,14 @@ import 'package:receipt_generator/src/module/authentication/bloc/authentication_
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 
+import '../../../entity/pos/address.dart';
 import '../../../pos/calculator/tax_calculator.dart';
 import '../../../pos/config/config.dart';
 import '../../../pos/helper/pos_helper.dart';
 import '../../../pos/helper/price_helper.dart';
 import '../../../repositories/customer_repository.dart';
 import '../../../repositories/product_repository.dart';
+import '../../error/bloc/error_notification_bloc.dart';
 import '../../return_order/bloc/return_order_bloc.dart';
 
 part 'create_new_receipt_event.dart';
@@ -29,6 +31,7 @@ class CreateNewReceiptBloc
   final TransactionRepository transactionRepository;
   final ProductRepository productRepository;
   final CustomerRepository customerRepository;
+  final ErrorNotificationBloc errorNotificationBloc;
   final TaxHelper taxHelper;
   final PriceHelper priceHelper;
   final DiscountHelper discountHelper;
@@ -43,6 +46,7 @@ class CreateNewReceiptBloc
       required this.priceHelper,
       required this.discountHelper,
       required this.sequenceRepository,
+      required this.errorNotificationBloc,
       required this.taxModifierCalculator})
       : super(const CreateNewReceiptState(
             status: CreateNewReceiptStatus.initial)) {
@@ -60,8 +64,9 @@ class CreateNewReceiptBloc
     on<OnAddNewTenderLine>(_onAddNewTenderLineItem);
     on<OnChangeSaleStep>(_onChangeSaleStep);
     on<_VerifyOrderAndEmitState>(_onVerifyOrderAndEmitStep);
-
     on<OnReturnLineItemEvent>(_onReturnLineItem);
+    on<OnChangeCustomerBillingAddress>(_onChangeCustomerBillingAddress);
+    on<OnChangeCustomerShippingAddress>(_onChangeCustomerShippingAddress);
   }
 
   void _onInitiateTransaction(OnInitiateNewTransaction event,
@@ -81,48 +86,54 @@ class CreateNewReceiptBloc
     // @TODO Change the entry method also
     // @TODO Fetch the price from pricing module for the item and add.
 
-    // Fetch the tax group for the item to add.
-    List<TaxRuleEntity> taxRules = event.product.taxGroupId != null
-        ? await taxHelper.getTaxRuleByGroupId(event.product.taxGroupId!)
-        : [];
-    double itemPrice = priceHelper.findPriceForItem(event.product);
+    try {
+      // Fetch the tax group for the item to add.
+      List<TaxRuleEntity> taxRules = event.product.taxGroupId != null
+          ? await taxHelper.getTaxRuleByGroupId(event.product.taxGroupId!)
+          : [];
+      double itemPrice = priceHelper.findPriceForItem(event.product);
 
-    TransactionLineItemEntity newLine = TransactionLineItemEntity(
-        storeId: authenticationBloc.state.store!.rtlLocId,
-        businessDate: DateTime.now(),
-        posId: 1,
-        transSeq: state.transSeq,
-        lineItemSeq: seq + 1,
-        itemId: event.product.productId!,
-        itemDescription: event.product.displayName,
-        quantity: 1,
-        uom: event.product.uom,
-        discountAmount: 0.0,
-        unitPrice: itemPrice,
-        baseUnitPrice: itemPrice,
-        itemIdEntryMethod: EntryMethod.keyboard,
-        priceEntryMethod: EntryMethod.keyboard,
-        netAmount: itemPrice * 1,
-        grossAmount: itemPrice,
-        taxAmount: 0.00,
-        extendedAmount: itemPrice * 1,
-        unitCost: 0.0);
+      TransactionLineItemEntity newLine = TransactionLineItemEntity(
+          storeId: authenticationBloc.state.store!.rtlLocId,
+          businessDate: DateTime.now(),
+          posId: 1,
+          transSeq: state.transSeq,
+          lineItemSeq: seq + 1,
+          itemId: event.product.productId!,
+          itemDescription: event.product.displayName,
+          quantity: 1,
+          uom: event.product.uom,
+          hsn: event.product.hsn,
+          discountAmount: 0.0,
+          unitPrice: itemPrice,
+          baseUnitPrice: itemPrice,
+          itemIdEntryMethod: EntryMethod.keyboard,
+          priceEntryMethod: EntryMethod.keyboard,
+          netAmount: itemPrice * 1,
+          grossAmount: itemPrice,
+          taxAmount: 0.00,
+          extendedAmount: itemPrice * 1,
+          unitCost: 0.0);
 
-    List<TransactionLineItemTaxModifier> taxModifiers =
-        taxHelper.createSaleTaxModifiers(newLine, taxRules);
-    newLine.taxModifiers = taxModifiers;
-    await taxModifierCalculator.handleLineItemEvent([newLine]);
-    double taxAmount = taxHelper.calculateTaxAmount(newLine);
-    newLine.taxAmount = taxAmount;
-    newLine.grossAmount = newLine.netAmount! + taxAmount;
-    newLine.unitCost = newLine.grossAmount! / newLine.quantity!;
+      List<TransactionLineItemTaxModifier> taxModifiers =
+          taxHelper.createSaleTaxModifiers(newLine, taxRules);
+      newLine.taxModifiers = taxModifiers;
+      await taxModifierCalculator.handleLineItemEvent([newLine]);
+      double taxAmount = taxHelper.calculateTaxAmount(newLine);
+      newLine.taxAmount = taxAmount;
+      newLine.grossAmount = newLine.netAmount! + taxAmount;
+      newLine.unitCost = newLine.grossAmount! / newLine.quantity!;
 
-    Map<String, ProductEntity> pm = Map.from(state.productMap);
-    pm.putIfAbsent(event.product.productId!, () => event.product);
-    List<TransactionLineItemEntity> newList = [...state.lineItem, newLine];
-    emit(
-        state.copyWith(lineItem: newList, step: SaleStep.item, productMap: pm));
-    add(_VerifyOrderAndEmitState());
+      Map<String, ProductEntity> pm = Map.from(state.productMap);
+      pm.putIfAbsent(event.product.productId!, () => event.product);
+      List<TransactionLineItemEntity> newList = [...state.lineItem, newLine];
+      emit(state.copyWith(
+          lineItem: newList, step: SaleStep.item, productMap: pm));
+      add(_VerifyOrderAndEmitState());
+    } catch (e) {
+      log.severe(e);
+      errorNotificationBloc.add(ErrorEvent(e.toString()));
+    }
   }
 
   // @TODO List different transaction status INITIATED, SALE_COMPLETED, SUSPENDED, CANCELLED, RETURNED, EXCHANGED
@@ -147,7 +158,8 @@ class CreateNewReceiptBloc
       customerId: state.customer?.contactId,
       customerName: '${state.customer?.firstName} ${state.customer?.lastName}',
       customerPhone: state.customer?.phoneNumber,
-      shippingAddress: state.customer?.shippingAddress,
+      shippingAddress: state.customerAddress?.shippingAddress,
+      billingAddress: state.customerAddress?.billingAddress,
       storeId: storeId,
       createTime: DateTime.now(),
       associateId: currentEmployee!.employeeId,
@@ -189,6 +201,9 @@ class CreateNewReceiptBloc
       OnCustomerSelect event, Emitter<CreateNewReceiptState> emit) async {
     emit(state.copyWith(
       customer: event.contact,
+      customerAddress: CustomerAddress(
+          billingAddress: event.contact.billingAddress,
+          shippingAddress: event.contact.shippingAddress),
     ));
   }
 
@@ -523,5 +538,19 @@ class CreateNewReceiptBloc
     emit(
         state.copyWith(lineItem: newList, step: SaleStep.item, productMap: pm));
     // add(_VerifyOrderAndEmitState());
+  }
+
+  void _onChangeCustomerBillingAddress(OnChangeCustomerBillingAddress event,
+      Emitter<CreateNewReceiptState> emit) async {
+    var custAddress = state.customerAddress ?? const CustomerAddress();
+    emit(state.copyWith(
+        customerAddress: custAddress.copyWith(billingAddress: event.address)));
+  }
+
+  void _onChangeCustomerShippingAddress(OnChangeCustomerShippingAddress event,
+      Emitter<CreateNewReceiptState> emit) async {
+    var custAddress = state.customerAddress ?? const CustomerAddress();
+    emit(state.copyWith(
+        customerAddress: custAddress.copyWith(shippingAddress: event.address)));
   }
 }

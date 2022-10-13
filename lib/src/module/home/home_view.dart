@@ -76,11 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   selectedIndex: selectedIndex,
                 ),
               ),
-              const Positioned(
-                top: 30,
-                right: 30,
-                child: ErrorNotification(),
-              )
             ],
           ),
         ),

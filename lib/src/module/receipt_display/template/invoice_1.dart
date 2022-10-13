@@ -46,8 +46,9 @@ class Invoice1 {
         footer: _buildFooter,
         build: (context) => [
           _contentTable(context),
-          SizedBox(height: 20),
-          Expanded(child: _buildLineItemSummary(context),),
+          Divider(),
+          _buildLineItemSummary(context),
+          Divider(),
         ],
       ),
     );
@@ -73,17 +74,17 @@ class Invoice1 {
     return Row(
       children: InvoiceConfig.columnConfig
           .map((e) => Expanded(
-        flex: e.flex,
-        child: Container(
-          child: Text(
-            InvoiceConfig.buildLineItemSummaryValue(e.key, order),
-            textAlign: getColumnAlign(e.align),
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ))
+                flex: e.flex,
+                child: Container(
+                  child: Text(
+                    InvoiceConfig.buildLineItemSummaryValue(e.key, order),
+                    textAlign: getColumnAlign(e.align),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ))
           .toList(),
     );
   }
@@ -148,40 +149,39 @@ class Invoice1 {
 
   Widget _logo(Context context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Image(
-          _logoImage!,
-          height: 80,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              '${store.storeName}',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image(
+            _logoImage!,
+            height: 80,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '${store.storeName}',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            Text(
-              '${store.address?.address1} ${store.address?.address2}',
-            ),
-            Text(
-              '${store.address?.city} ${store.address?.state}-${store.address?.zipcode}',
-            ),
-            Text(
-              'Phone: ${store.storeContact}',
-            ),
-            Text('Email:  ${store.storeEmail}'),
-            Text(
-              'GST: ${store.gst ?? ''}',
-            ),
-          ],
-        ),
-      ]
-    );
+              Text(
+                '${store.address?.address1} ${store.address?.address2}',
+              ),
+              Text(
+                '${store.address?.city} ${store.address?.state}-${store.address?.zipcode}',
+              ),
+              Text(
+                'Phone: ${store.storeContact}',
+              ),
+              Text('Email:  ${store.storeEmail}'),
+              Text(
+                'GST: ${store.gst ?? ''}',
+              ),
+            ],
+          ),
+        ]);
   }
 
   Widget _buildFooter(Context context) {
@@ -202,15 +202,22 @@ class Invoice1 {
     var lineItems = order.lineItems.toList();
     lineItems.sort((a, b) => a.lineItemSeq!.compareTo(b.lineItemSeq!));
     return Container(
-        child: Column(
-            children: lineItems
-                .map((li) => Column(children: [
-                      _contentTableBody(context, li),
-                      Divider(
-                         height: 3,
-                          thickness: 0.1, color: PdfColor.fromHex('#696969')),
-                    ]))
-                .toList()));
+      child: ListView.builder(
+          itemBuilder: (context, idx) {
+            return Column(
+              children: [
+                _contentTableBody(context, lineItems[idx]),
+                if (idx != lineItems.length - 1)
+                  Divider(
+                    height: 3,
+                    thickness: 0.1,
+                    color: PdfColor.fromHex('#696969'),
+                  ),
+              ],
+            );
+          },
+          itemCount: lineItems.length),
+    );
   }
 
   Widget _contentTableHeader(Context context) {

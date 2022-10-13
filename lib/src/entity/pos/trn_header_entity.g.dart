@@ -7,7 +7,7 @@ part of 'trn_header_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetTransactionHeaderEntityCollection on Isar {
   IsarCollection<TransactionHeaderEntity> get transactionHeaderEntitys =>
@@ -85,76 +85,78 @@ const TransactionHeaderEntitySchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'TransactionLineItemEntity',
     ),
-    r'paymentLineItems': PropertySchema(
+    r'notes': PropertySchema(
       id: 13,
+      name: r'notes',
+      type: IsarType.string,
+    ),
+    r'paymentLineItems': PropertySchema(
+      id: 14,
       name: r'paymentLineItems',
       type: IsarType.objectList,
       target: r'TransactionPaymentLineItemEntity',
     ),
     r'roundTotal': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'roundTotal',
       type: IsarType.double,
     ),
     r'shippingAddress': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'shippingAddress',
       type: IsarType.object,
       target: r'Address',
     ),
     r'status': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'status',
       type: IsarType.string,
     ),
     r'storeId': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'storeId',
       type: IsarType.long,
     ),
     r'subtotal': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'subtotal',
       type: IsarType.double,
     ),
     r'syncState': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'syncState',
       type: IsarType.long,
     ),
     r'taxTotal': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'taxTotal',
       type: IsarType.double,
     ),
     r'total': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'total',
       type: IsarType.double,
     ),
     r'transactionType': PropertySchema(
-      id: 22,
+      id: 23,
       name: r'transactionType',
       type: IsarType.string,
     ),
     r'updateTime': PropertySchema(
-      id: 23,
+      id: 24,
       name: r'updateTime',
       type: IsarType.dateTime,
     ),
     r'version': PropertySchema(
-      id: 24,
+      id: 25,
       name: r'version',
       type: IsarType.long,
     )
   },
   estimateSize: _transactionHeaderEntityEstimateSize,
-  serializeNative: _transactionHeaderEntitySerializeNative,
-  deserializeNative: _transactionHeaderEntityDeserializeNative,
-  deserializePropNative: _transactionHeaderEntityDeserializePropNative,
-  serializeWeb: _transactionHeaderEntitySerializeWeb,
-  deserializeWeb: _transactionHeaderEntityDeserializeWeb,
-  deserializePropWeb: _transactionHeaderEntityDeserializePropWeb,
+  serialize: _transactionHeaderEntitySerialize,
+  deserialize: _transactionHeaderEntityDeserialize,
+  deserializeProp: _transactionHeaderEntityDeserializeProp,
   idName: r'transId',
   indexes: {
     r'customerId': IndexSchema(
@@ -196,7 +198,7 @@ const TransactionHeaderEntitySchema = CollectionSchema(
   getId: _transactionHeaderEntityGetId,
   getLinks: _transactionHeaderEntityGetLinks,
   attach: _transactionHeaderEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _transactionHeaderEntityEstimateSize(
@@ -251,6 +253,12 @@ int _transactionHeaderEntityEstimateSize(
           value, offsets, allOffsets);
     }
   }
+  {
+    final value = object.notes;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.paymentLineItems.length * 3;
   {
     final offsets = allOffsets[TransactionPaymentLineItemEntity]!;
@@ -272,9 +280,9 @@ int _transactionHeaderEntityEstimateSize(
   return bytesCount;
 }
 
-int _transactionHeaderEntitySerializeNative(
+void _transactionHeaderEntitySerialize(
   TransactionHeaderEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -284,7 +292,7 @@ int _transactionHeaderEntitySerializeNative(
   writer.writeObject<Address>(
     offsets[3],
     allOffsets,
-    AddressSchema.serializeNative,
+    AddressSchema.serialize,
     object.billingAddress,
   );
   writer.writeDateTime(offsets[4], object.businessDate);
@@ -298,37 +306,37 @@ int _transactionHeaderEntitySerializeNative(
   writer.writeObjectList<TransactionLineItemEntity>(
     offsets[12],
     allOffsets,
-    TransactionLineItemEntitySchema.serializeNative,
+    TransactionLineItemEntitySchema.serialize,
     object.lineItems,
   );
+  writer.writeString(offsets[13], object.notes);
   writer.writeObjectList<TransactionPaymentLineItemEntity>(
-    offsets[13],
+    offsets[14],
     allOffsets,
-    TransactionPaymentLineItemEntitySchema.serializeNative,
+    TransactionPaymentLineItemEntitySchema.serialize,
     object.paymentLineItems,
   );
-  writer.writeDouble(offsets[14], object.roundTotal);
+  writer.writeDouble(offsets[15], object.roundTotal);
   writer.writeObject<Address>(
-    offsets[15],
+    offsets[16],
     allOffsets,
-    AddressSchema.serializeNative,
+    AddressSchema.serialize,
     object.shippingAddress,
   );
-  writer.writeString(offsets[16], object.status);
-  writer.writeLong(offsets[17], object.storeId);
-  writer.writeDouble(offsets[18], object.subtotal);
-  writer.writeLong(offsets[19], object.syncState);
-  writer.writeDouble(offsets[20], object.taxTotal);
-  writer.writeDouble(offsets[21], object.total);
-  writer.writeString(offsets[22], object.transactionType);
-  writer.writeDateTime(offsets[23], object.updateTime);
-  writer.writeLong(offsets[24], object.version);
-  return writer.usedBytes;
+  writer.writeString(offsets[17], object.status);
+  writer.writeLong(offsets[18], object.storeId);
+  writer.writeDouble(offsets[19], object.subtotal);
+  writer.writeLong(offsets[20], object.syncState);
+  writer.writeDouble(offsets[21], object.taxTotal);
+  writer.writeDouble(offsets[22], object.total);
+  writer.writeString(offsets[23], object.transactionType);
+  writer.writeDateTime(offsets[24], object.updateTime);
+  writer.writeLong(offsets[25], object.version);
 }
 
-TransactionHeaderEntity _transactionHeaderEntityDeserializeNative(
+TransactionHeaderEntity _transactionHeaderEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -338,7 +346,7 @@ TransactionHeaderEntity _transactionHeaderEntityDeserializeNative(
     beginDatetime: reader.readDateTime(offsets[2]),
     billingAddress: reader.readObjectOrNull<Address>(
       offsets[3],
-      AddressSchema.deserializeNative,
+      AddressSchema.deserialize,
       allOffsets,
     ),
     businessDate: reader.readDateTime(offsets[4]),
@@ -351,40 +359,41 @@ TransactionHeaderEntity _transactionHeaderEntityDeserializeNative(
     lastChangedAt: reader.readDateTimeOrNull(offsets[11]),
     lineItems: reader.readObjectList<TransactionLineItemEntity>(
           offsets[12],
-          TransactionLineItemEntitySchema.deserializeNative,
+          TransactionLineItemEntitySchema.deserialize,
           allOffsets,
           TransactionLineItemEntity(),
         ) ??
         const [],
+    notes: reader.readStringOrNull(offsets[13]),
     paymentLineItems: reader.readObjectList<TransactionPaymentLineItemEntity>(
-          offsets[13],
-          TransactionPaymentLineItemEntitySchema.deserializeNative,
+          offsets[14],
+          TransactionPaymentLineItemEntitySchema.deserialize,
           allOffsets,
           TransactionPaymentLineItemEntity(),
         ) ??
         const [],
-    roundTotal: reader.readDouble(offsets[14]),
+    roundTotal: reader.readDouble(offsets[15]),
     shippingAddress: reader.readObjectOrNull<Address>(
-      offsets[15],
-      AddressSchema.deserializeNative,
+      offsets[16],
+      AddressSchema.deserialize,
       allOffsets,
     ),
-    status: reader.readString(offsets[16]),
-    storeId: reader.readLong(offsets[17]),
-    subtotal: reader.readDouble(offsets[18]),
-    syncState: reader.readLongOrNull(offsets[19]) ?? 100,
-    taxTotal: reader.readDouble(offsets[20]),
-    total: reader.readDouble(offsets[21]),
+    status: reader.readString(offsets[17]),
+    storeId: reader.readLong(offsets[18]),
+    subtotal: reader.readDouble(offsets[19]),
+    syncState: reader.readLongOrNull(offsets[20]) ?? 100,
+    taxTotal: reader.readDouble(offsets[21]),
+    total: reader.readDouble(offsets[22]),
     transId: id,
-    transactionType: reader.readString(offsets[22]),
-    updateTime: reader.readDateTimeOrNull(offsets[23]),
-    version: reader.readLongOrNull(offsets[24]) ?? 1,
+    transactionType: reader.readString(offsets[23]),
+    updateTime: reader.readDateTimeOrNull(offsets[24]),
+    version: reader.readLongOrNull(offsets[25]) ?? 1,
   );
   return object;
 }
 
-P _transactionHeaderEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _transactionHeaderEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -399,7 +408,7 @@ P _transactionHeaderEntityDeserializePropNative<P>(
     case 3:
       return (reader.readObjectOrNull<Address>(
         offset,
-        AddressSchema.deserializeNative,
+        AddressSchema.deserialize,
         allOffsets,
       )) as P;
     case 4:
@@ -421,68 +430,49 @@ P _transactionHeaderEntityDeserializePropNative<P>(
     case 12:
       return (reader.readObjectList<TransactionLineItemEntity>(
             offset,
-            TransactionLineItemEntitySchema.deserializeNative,
+            TransactionLineItemEntitySchema.deserialize,
             allOffsets,
             TransactionLineItemEntity(),
           ) ??
           const []) as P;
     case 13:
+      return (reader.readStringOrNull(offset)) as P;
+    case 14:
       return (reader.readObjectList<TransactionPaymentLineItemEntity>(
             offset,
-            TransactionPaymentLineItemEntitySchema.deserializeNative,
+            TransactionPaymentLineItemEntitySchema.deserialize,
             allOffsets,
             TransactionPaymentLineItemEntity(),
           ) ??
           const []) as P;
-    case 14:
-      return (reader.readDouble(offset)) as P;
     case 15:
+      return (reader.readDouble(offset)) as P;
+    case 16:
       return (reader.readObjectOrNull<Address>(
         offset,
-        AddressSchema.deserializeNative,
+        AddressSchema.deserialize,
         allOffsets,
       )) as P;
-    case 16:
-      return (reader.readString(offset)) as P;
     case 17:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 18:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 19:
-      return (reader.readLongOrNull(offset) ?? 100) as P;
-    case 20:
       return (reader.readDouble(offset)) as P;
+    case 20:
+      return (reader.readLongOrNull(offset) ?? 100) as P;
     case 21:
       return (reader.readDouble(offset)) as P;
     case 22:
-      return (reader.readString(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 23:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 24:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 25:
       return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _transactionHeaderEntitySerializeWeb(
-    IsarCollection<TransactionHeaderEntity> collection,
-    TransactionHeaderEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-TransactionHeaderEntity _transactionHeaderEntityDeserializeWeb(
-    IsarCollection<TransactionHeaderEntity> collection, Object jsObj) {
-  /*final object = TransactionHeaderEntity(associateId: IsarNative.jsObjectGet(jsObj, r'associateId') ,associateName: IsarNative.jsObjectGet(jsObj, r'associateName') ,beginDatetime: IsarNative.jsObjectGet(jsObj, r'beginDatetime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'beginDatetime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),billingAddress: IsarNative.jsObjectGet(jsObj, r'billingAddress') ,businessDate: IsarNative.jsObjectGet(jsObj, r'businessDate') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'businessDate') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),createTime: IsarNative.jsObjectGet(jsObj, r'createTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'createTime') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0),customerId: IsarNative.jsObjectGet(jsObj, r'customerId') ,customerName: IsarNative.jsObjectGet(jsObj, r'customerName') ,customerPhone: IsarNative.jsObjectGet(jsObj, r'customerPhone') ,discountTotal: IsarNative.jsObjectGet(jsObj, r'discountTotal') ?? double.negativeInfinity,endDateTime: IsarNative.jsObjectGet(jsObj, r'endDateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'endDateTime') as int, isUtc: true).toLocal() : null,lastChangedAt: IsarNative.jsObjectGet(jsObj, r'lastChangedAt') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'lastChangedAt') as int, isUtc: true).toLocal() : null,lineItems: (IsarNative.jsObjectGet(jsObj, r'lineItems') as List?)?.map((e) => e ?? TransactionLineItemEntity()).toList().cast<TransactionLineItemEntity>() ?? [],paymentLineItems: (IsarNative.jsObjectGet(jsObj, r'paymentLineItems') as List?)?.map((e) => e ?? TransactionPaymentLineItemEntity()).toList().cast<TransactionPaymentLineItemEntity>() ?? [],roundTotal: IsarNative.jsObjectGet(jsObj, r'roundTotal') ?? double.negativeInfinity,shippingAddress: IsarNative.jsObjectGet(jsObj, r'shippingAddress') ,status: IsarNative.jsObjectGet(jsObj, r'status') ?? '',storeId: IsarNative.jsObjectGet(jsObj, r'storeId') ?? (double.negativeInfinity as int),subtotal: IsarNative.jsObjectGet(jsObj, r'subtotal') ?? double.negativeInfinity,syncState: IsarNative.jsObjectGet(jsObj, r'syncState') ?? (double.negativeInfinity as int),taxTotal: IsarNative.jsObjectGet(jsObj, r'taxTotal') ?? double.negativeInfinity,total: IsarNative.jsObjectGet(jsObj, r'total') ?? double.negativeInfinity,transId: IsarNative.jsObjectGet(jsObj, r'transId') ?? (double.negativeInfinity as int),transactionType: IsarNative.jsObjectGet(jsObj, r'transactionType') ?? '',updateTime: IsarNative.jsObjectGet(jsObj, r'updateTime') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updateTime') as int, isUtc: true).toLocal() : null,version: IsarNative.jsObjectGet(jsObj, r'version') ?? (double.negativeInfinity as int),);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _transactionHeaderEntityDeserializePropWeb<P>(
-    Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -511,7 +501,7 @@ extension TransactionHeaderEntityQueryWhereSort
 extension TransactionHeaderEntityQueryWhere on QueryBuilder<
     TransactionHeaderEntity, TransactionHeaderEntity, QWhereClause> {
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
-      QAfterWhereClause> transIdEqualTo(int transId) {
+      QAfterWhereClause> transIdEqualTo(Id transId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: transId,
@@ -521,7 +511,7 @@ extension TransactionHeaderEntityQueryWhere on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
-      QAfterWhereClause> transIdNotEqualTo(int transId) {
+      QAfterWhereClause> transIdNotEqualTo(Id transId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -545,7 +535,7 @@ extension TransactionHeaderEntityQueryWhere on QueryBuilder<
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
           QAfterWhereClause>
-      transIdGreaterThan(int transId, {bool include = false}) {
+      transIdGreaterThan(Id transId, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: transId, includeLower: include),
@@ -554,7 +544,7 @@ extension TransactionHeaderEntityQueryWhere on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
-      QAfterWhereClause> transIdLessThan(int transId, {bool include = false}) {
+      QAfterWhereClause> transIdLessThan(Id transId, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: transId, includeUpper: include),
@@ -564,8 +554,8 @@ extension TransactionHeaderEntityQueryWhere on QueryBuilder<
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterWhereClause> transIdBetween(
-    int lowerTransId,
-    int upperTransId, {
+    Id lowerTransId,
+    Id upperTransId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1986,6 +1976,162 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'notes',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'notes',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'notes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'notes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'notes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'notes',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'notes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'notes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      notesContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'notes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      notesMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'notes',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'notes',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> notesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'notes',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> paymentLineItemsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -2607,7 +2753,7 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
-      QAfterFilterCondition> transIdEqualTo(int value) {
+      QAfterFilterCondition> transIdEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'transId',
@@ -2618,7 +2764,7 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> transIdGreaterThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -2632,7 +2778,7 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> transIdLessThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -2646,8 +2792,8 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> transIdBetween(
-    int lower,
-    int upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -3124,6 +3270,20 @@ extension TransactionHeaderEntityQuerySortBy
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByNotes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByNotesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       sortByRoundTotal() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'roundTotal', Sort.asc);
@@ -3421,6 +3581,20 @@ extension TransactionHeaderEntityQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByNotes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByNotesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       thenByRoundTotal() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'roundTotal', Sort.asc);
@@ -3657,6 +3831,13 @@ extension TransactionHeaderEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
+      distinctByNotes({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'notes', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
       distinctByRoundTotal() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'roundTotal');
@@ -3825,6 +4006,13 @@ extension TransactionHeaderEntityQueryProperty on QueryBuilder<
       QQueryOperations> lineItemsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lineItems');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, String?, QQueryOperations>
+      notesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'notes');
     });
   }
 

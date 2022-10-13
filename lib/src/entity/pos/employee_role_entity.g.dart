@@ -7,7 +7,7 @@ part of 'employee_role_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetEmployeeRoleEntityCollection on Isar {
   IsarCollection<EmployeeRoleEntity> get employeeRoleEntitys =>
@@ -45,12 +45,9 @@ const EmployeeRoleEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _employeeRoleEntityEstimateSize,
-  serializeNative: _employeeRoleEntitySerializeNative,
-  deserializeNative: _employeeRoleEntityDeserializeNative,
-  deserializePropNative: _employeeRoleEntityDeserializePropNative,
-  serializeWeb: _employeeRoleEntitySerializeWeb,
-  deserializeWeb: _employeeRoleEntityDeserializeWeb,
-  deserializePropWeb: _employeeRoleEntityDeserializePropWeb,
+  serialize: _employeeRoleEntitySerialize,
+  deserialize: _employeeRoleEntityDeserialize,
+  deserializeProp: _employeeRoleEntityDeserializeProp,
   idName: r'id',
   indexes: {
     r'employeeId_storeId': IndexSchema(
@@ -77,7 +74,7 @@ const EmployeeRoleEntitySchema = CollectionSchema(
   getId: _employeeRoleEntityGetId,
   getLinks: _employeeRoleEntityGetLinks,
   attach: _employeeRoleEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _employeeRoleEntityEstimateSize(
@@ -94,9 +91,9 @@ int _employeeRoleEntityEstimateSize(
   return bytesCount;
 }
 
-int _employeeRoleEntitySerializeNative(
+void _employeeRoleEntitySerialize(
   EmployeeRoleEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -105,12 +102,11 @@ int _employeeRoleEntitySerializeNative(
   writer.writeString(offsets[2], object.locale);
   writer.writeString(offsets[3], object.role);
   writer.writeString(offsets[4], object.storeId);
-  return writer.usedBytes;
 }
 
-EmployeeRoleEntity _employeeRoleEntityDeserializeNative(
+EmployeeRoleEntity _employeeRoleEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -125,8 +121,8 @@ EmployeeRoleEntity _employeeRoleEntityDeserializeNative(
   return object;
 }
 
-P _employeeRoleEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _employeeRoleEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -144,25 +140,6 @@ P _employeeRoleEntityDeserializePropNative<P>(
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _employeeRoleEntitySerializeWeb(
-    IsarCollection<EmployeeRoleEntity> collection, EmployeeRoleEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-EmployeeRoleEntity _employeeRoleEntityDeserializeWeb(
-    IsarCollection<EmployeeRoleEntity> collection, Object jsObj) {
-  /*final object = EmployeeRoleEntity(createdBy: IsarNative.jsObjectGet(jsObj, r'createdBy') ?? '',employeeId: IsarNative.jsObjectGet(jsObj, r'employeeId') ?? '',locale: IsarNative.jsObjectGet(jsObj, r'locale') ?? '',role: IsarNative.jsObjectGet(jsObj, r'role') ?? '',storeId: IsarNative.jsObjectGet(jsObj, r'storeId') ?? '',);object.id = IsarNative.jsObjectGet(jsObj, r'id') ;*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _employeeRoleEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -251,21 +228,20 @@ extension EmployeeRoleEntityByIndex on IsarCollection<EmployeeRoleEntity> {
     return deleteAllByIndexSync(r'employeeId_storeId', values);
   }
 
-  Future<int> putByEmployeeIdStoreId(EmployeeRoleEntity object) {
+  Future<Id> putByEmployeeIdStoreId(EmployeeRoleEntity object) {
     return putByIndex(r'employeeId_storeId', object);
   }
 
-  int putByEmployeeIdStoreIdSync(EmployeeRoleEntity object,
+  Id putByEmployeeIdStoreIdSync(EmployeeRoleEntity object,
       {bool saveLinks = true}) {
     return putByIndexSync(r'employeeId_storeId', object, saveLinks: saveLinks);
   }
 
-  Future<List<int>> putAllByEmployeeIdStoreId(
-      List<EmployeeRoleEntity> objects) {
+  Future<List<Id>> putAllByEmployeeIdStoreId(List<EmployeeRoleEntity> objects) {
     return putAllByIndex(r'employeeId_storeId', objects);
   }
 
-  List<int> putAllByEmployeeIdStoreIdSync(List<EmployeeRoleEntity> objects,
+  List<Id> putAllByEmployeeIdStoreIdSync(List<EmployeeRoleEntity> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'employeeId_storeId', objects,
         saveLinks: saveLinks);
@@ -284,7 +260,7 @@ extension EmployeeRoleEntityQueryWhereSort
 extension EmployeeRoleEntityQueryWhere
     on QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QWhereClause> {
   QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QAfterWhereClause>
-      idEqualTo(int id) {
+      idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -294,7 +270,7 @@ extension EmployeeRoleEntityQueryWhere
   }
 
   QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QAfterWhereClause>
-      idNotEqualTo(int id) {
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -317,7 +293,7 @@ extension EmployeeRoleEntityQueryWhere
   }
 
   QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QAfterWhereClause>
-      idGreaterThan(int id, {bool include = false}) {
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -326,7 +302,7 @@ extension EmployeeRoleEntityQueryWhere
   }
 
   QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QAfterWhereClause>
-      idLessThan(int id, {bool include = false}) {
+      idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -336,8 +312,8 @@ extension EmployeeRoleEntityQueryWhere
 
   QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QAfterWhereClause>
       idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -735,7 +711,7 @@ extension EmployeeRoleEntityQueryFilter
   }
 
   QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QAfterFilterCondition>
-      idEqualTo(int? value) {
+      idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -746,7 +722,7 @@ extension EmployeeRoleEntityQueryFilter
 
   QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -760,7 +736,7 @@ extension EmployeeRoleEntityQueryFilter
 
   QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QAfterFilterCondition>
       idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -774,8 +750,8 @@ extension EmployeeRoleEntityQueryFilter
 
   QueryBuilder<EmployeeRoleEntity, EmployeeRoleEntity, QAfterFilterCondition>
       idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

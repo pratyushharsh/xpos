@@ -179,7 +179,7 @@ class NewTaxGroupTile extends StatelessWidget {
         // BlocProvider.of<CreateEditTaxBloc>(context).add(CreateNewTaxGroup(tg));
         if (Platform.isIOS || Platform.isAndroid) {
         } else {
-          showDesktopPopUp(
+          showTransitiveAppPopUp(
             context: context,
             child: const CreateNewTaxGroupDesktop(),
           ).then((value) => {
@@ -229,7 +229,7 @@ class NewTaxRuleTile extends StatelessWidget {
                   }
               });
             } else {
-              showDesktopPopUp(
+              showTransitiveAppPopUp(
                 context: context,
                 child:
                     CreateNewTaxRuleDesktop(taxGroup: state.selectedTaxGroup!),

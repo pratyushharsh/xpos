@@ -7,7 +7,7 @@ part of 'trn_line_item_tax.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_localså
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 const TransactionLineItemTaxModifierSchema = Schema(
   name: r'TransactionLineItemTaxModifier',
@@ -110,12 +110,9 @@ const TransactionLineItemTaxModifierSchema = Schema(
     )
   },
   estimateSize: _transactionLineItemTaxModifierEstimateSize,
-  serializeNative: _transactionLineItemTaxModifierSerializeNative,
-  deserializeNative: _transactionLineItemTaxModifierDeserializeNative,
-  deserializePropNative: _transactionLineItemTaxModifierDeserializePropNative,
-  serializeWeb: _transactionLineItemTaxModifierSerializeWeb,
-  deserializeWeb: _transactionLineItemTaxModifierDeserializeWeb,
-  deserializePropWeb: _transactionLineItemTaxModifierDeserializePropWeb,
+  serialize: _transactionLineItemTaxModifierSerialize,
+  deserialize: _transactionLineItemTaxModifierDeserialize,
+  deserializeProp: _transactionLineItemTaxModifierDeserializeProp,
 );
 
 int _transactionLineItemTaxModifierEstimateSize(
@@ -175,9 +172,9 @@ int _transactionLineItemTaxModifierEstimateSize(
   return bytesCount;
 }
 
-int _transactionLineItemTaxModifierSerializeNative(
+void _transactionLineItemTaxModifierSerialize(
   TransactionLineItemTaxModifier object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -200,12 +197,11 @@ int _transactionLineItemTaxModifierSerializeNative(
   writer.writeString(offsets[16], object.taxRuleName);
   writer.writeDouble(offsets[17], object.taxableAmount);
   writer.writeLong(offsets[18], object.transSeq);
-  return writer.usedBytes;
 }
 
-TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeNative(
+TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -233,8 +229,8 @@ TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeNative(
   return object;
 }
 
-P _transactionLineItemTaxModifierDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _transactionLineItemTaxModifierDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -280,27 +276,6 @@ P _transactionLineItemTaxModifierDeserializePropNative<P>(
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _transactionLineItemTaxModifierSerializeWeb(
-    IsarCollection<TransactionLineItemTaxModifier> collection,
-    TransactionLineItemTaxModifier object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-TransactionLineItemTaxModifier _transactionLineItemTaxModifierDeserializeWeb(
-    IsarCollection<TransactionLineItemTaxModifier> collection, Object jsObj) {
-  /*final object = TransactionLineItemTaxModifier(authorityId: IsarNative.jsObjectGet(jsObj, r'authorityId') ,authorityName: IsarNative.jsObjectGet(jsObj, r'authorityName') ,authorityType: IsarNative.jsObjectGet(jsObj, r'authorityType') ,lineItemSeq: IsarNative.jsObjectGet(jsObj, r'lineItemSeq') ,originalTaxableAmount: IsarNative.jsObjectGet(jsObj, r'originalTaxableAmount') ,rawTaxAmount: IsarNative.jsObjectGet(jsObj, r'rawTaxAmount') ,rawTaxPercentage: IsarNative.jsObjectGet(jsObj, r'rawTaxPercentage') ,taxAmount: IsarNative.jsObjectGet(jsObj, r'taxAmount') ,taxGroupId: IsarNative.jsObjectGet(jsObj, r'taxGroupId') ,taxLocationId: IsarNative.jsObjectGet(jsObj, r'taxLocationId') ,taxOverride: IsarNative.jsObjectGet(jsObj, r'taxOverride') ?? false,taxOverrideAmount: IsarNative.jsObjectGet(jsObj, r'taxOverrideAmount') ,taxOverridePercent: IsarNative.jsObjectGet(jsObj, r'taxOverridePercent') ,taxOverrideReasonCode: IsarNative.jsObjectGet(jsObj, r'taxOverrideReasonCode') ,taxPercent: IsarNative.jsObjectGet(jsObj, r'taxPercent') ,taxRuleId: IsarNative.jsObjectGet(jsObj, r'taxRuleId') ,taxRuleName: IsarNative.jsObjectGet(jsObj, r'taxRuleName') ,taxableAmount: IsarNative.jsObjectGet(jsObj, r'taxableAmount') ,transSeq: IsarNative.jsObjectGet(jsObj, r'transSeq') ,);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _transactionLineItemTaxModifierDeserializePropWeb<P>(
-    Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 

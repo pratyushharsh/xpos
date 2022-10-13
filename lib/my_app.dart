@@ -31,6 +31,7 @@ import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 import 'src/module/error/bloc/error_notification_bloc.dart';
+import 'src/module/error/error_notification.dart';
 import 'src/module/login/choose_create_business_view.dart';
 import 'src/repositories/checklist_helper.dart';
 import 'src/repositories/employee_repository.dart';
@@ -159,9 +160,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
               create: (context) => ErrorNotificationBloc(
-                  checkListHelper: RepositoryProvider.of(context),
-                authenticationBloc: BlocProvider.of(context),
-              )..add(ValidateStoreSetup()))
+                    checkListHelper: RepositoryProvider.of(context),
+                    authenticationBloc: BlocProvider.of(context),
+                  )..add(ValidateStoreSetup()))
         ], child: const MyAppView()));
   }
 }
@@ -205,44 +206,46 @@ class _MyAppViewState extends State<MyAppView> {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       builder: (context, child) {
-        return BlocListener<AuthenticationBloc, AuthenticationState>(
-          listenWhen: (previous, current) {
-            return true;
-          },
-          listener: (context, state) {
-            switch (state.status) {
-              case AuthenticationStatus.authenticated:
-                _navigator.pushAndRemoveUntil<void>(
-                  HomeScreen.route(),
-                  (route) => false,
-                );
-                break;
-              case AuthenticationStatus.unauthenticated:
-              case AuthenticationStatus.unknown:
-                _navigator.pushAndRemoveUntil<void>(
-                  LoginView.route(),
-                  (route) => false,
-                );
-                break;
-              case AuthenticationStatus.verifyUser:
-                _navigator.push(VerifyUserView.route());
-                break;
-              case AuthenticationStatus.newUser:
-                _navigator.push<void>(
-                  BusinessView.route(),
-                );
-                break;
-              case AuthenticationStatus.verifyUserDevice:
-                _navigator.push(VerifyUserDeviceView.route());
-                break;
-              case AuthenticationStatus.chooseBusiness:
-                _navigator.push(ChooseCreateBusinessView.route());
-                break;
-              default:
-                break;
-            }
-          },
-          child: child,
+        return ErrorNotification(
+          child: BlocListener<AuthenticationBloc, AuthenticationState>(
+            listenWhen: (previous, current) {
+              return true;
+            },
+            listener: (context, state) {
+              switch (state.status) {
+                case AuthenticationStatus.authenticated:
+                  _navigator.pushAndRemoveUntil<void>(
+                    HomeScreen.route(),
+                    (route) => false,
+                  );
+                  break;
+                case AuthenticationStatus.unauthenticated:
+                case AuthenticationStatus.unknown:
+                  _navigator.pushAndRemoveUntil<void>(
+                    LoginView.route(),
+                    (route) => false,
+                  );
+                  break;
+                case AuthenticationStatus.verifyUser:
+                  _navigator.push(VerifyUserView.route());
+                  break;
+                case AuthenticationStatus.newUser:
+                  _navigator.push<void>(
+                    BusinessView.route(),
+                  );
+                  break;
+                case AuthenticationStatus.verifyUserDevice:
+                  _navigator.push(VerifyUserDeviceView.route());
+                  break;
+                case AuthenticationStatus.chooseBusiness:
+                  _navigator.push(ChooseCreateBusinessView.route());
+                  break;
+                default:
+                  break;
+              }
+            },
+            child: child,
+          ),
         );
       },
       onGenerateRoute: RouteConfig.onGenerateRoute,

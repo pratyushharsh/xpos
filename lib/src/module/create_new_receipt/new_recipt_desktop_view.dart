@@ -152,7 +152,7 @@ class _SearchUserDisplayDesktopState extends State<SearchUserDisplayDesktop> {
             ),
             const Positioned(
               child: SearchItemProductsListDesktop(),
-              bottom: 70,
+              bottom: 90,
               left: 0,
               right: 0,
             ),
@@ -164,8 +164,12 @@ class _SearchUserDisplayDesktopState extends State<SearchUserDisplayDesktop> {
                   BlocProvider.of<ItemSearchBloc>(context)
                       .add(SearchItemByFilter(val));
                 },
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              bottom: 0,
+              bottom: -4,
               left: 0,
               right: 0,
             )

@@ -7,7 +7,7 @@ part of 'tax_rule_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_localså
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 const TaxRuleEntitySchema = Schema(
   name: r'TaxRuleEntity',
@@ -80,12 +80,9 @@ const TaxRuleEntitySchema = Schema(
     )
   },
   estimateSize: _taxRuleEntityEstimateSize,
-  serializeNative: _taxRuleEntitySerializeNative,
-  deserializeNative: _taxRuleEntityDeserializeNative,
-  deserializePropNative: _taxRuleEntityDeserializePropNative,
-  serializeWeb: _taxRuleEntitySerializeWeb,
-  deserializeWeb: _taxRuleEntityDeserializeWeb,
-  deserializePropWeb: _taxRuleEntityDeserializePropWeb,
+  serialize: _taxRuleEntitySerialize,
+  deserialize: _taxRuleEntityDeserialize,
+  deserializeProp: _taxRuleEntityDeserializeProp,
 );
 
 int _taxRuleEntityEstimateSize(
@@ -133,9 +130,9 @@ int _taxRuleEntityEstimateSize(
   return bytesCount;
 }
 
-int _taxRuleEntitySerializeNative(
+void _taxRuleEntitySerialize(
   TaxRuleEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -152,12 +149,11 @@ int _taxRuleEntitySerializeNative(
   writer.writeDouble(offsets[10], object.percent);
   writer.writeString(offsets[11], object.ruleName);
   writer.writeLong(offsets[12], object.ruleSequence);
-  return writer.usedBytes;
 }
 
-TaxRuleEntity _taxRuleEntityDeserializeNative(
+TaxRuleEntity _taxRuleEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -179,8 +175,8 @@ TaxRuleEntity _taxRuleEntityDeserializeNative(
   return object;
 }
 
-P _taxRuleEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _taxRuleEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -214,25 +210,6 @@ P _taxRuleEntityDeserializePropNative<P>(
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _taxRuleEntitySerializeWeb(
-    IsarCollection<TaxRuleEntity> collection, TaxRuleEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-TaxRuleEntity _taxRuleEntityDeserializeWeb(
-    IsarCollection<TaxRuleEntity> collection, Object jsObj) {
-  /*final object = TaxRuleEntity(amount: IsarNative.jsObjectGet(jsObj, r'amount') ,authorityId: IsarNative.jsObjectGet(jsObj, r'authorityId') ,authorityName: IsarNative.jsObjectGet(jsObj, r'authorityName') ,authorityType: IsarNative.jsObjectGet(jsObj, r'authorityType') ,effectiveDateTimeStamp: IsarNative.jsObjectGet(jsObj, r'effectiveDateTimeStamp') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'effectiveDateTimeStamp') as int, isUtc: true).toLocal() : null,expirationDateTimeStamp: IsarNative.jsObjectGet(jsObj, r'expirationDateTimeStamp') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'expirationDateTimeStamp') as int, isUtc: true).toLocal() : null,groupId: IsarNative.jsObjectGet(jsObj, r'groupId') ,locationId: IsarNative.jsObjectGet(jsObj, r'locationId') ,maximumTaxableAmount: IsarNative.jsObjectGet(jsObj, r'maximumTaxableAmount') ,minimumTaxableAmount: IsarNative.jsObjectGet(jsObj, r'minimumTaxableAmount') ,percent: IsarNative.jsObjectGet(jsObj, r'percent') ,ruleName: IsarNative.jsObjectGet(jsObj, r'ruleName') ,ruleSequence: IsarNative.jsObjectGet(jsObj, r'ruleSequence') ,);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _taxRuleEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 

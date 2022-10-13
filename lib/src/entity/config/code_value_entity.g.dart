@@ -7,7 +7,7 @@ part of 'code_value_entity.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetCodeValueEntityCollection on Isar {
   IsarCollection<CodeValueEntity> get codeValueEntitys => this.collection();
@@ -39,12 +39,9 @@ const CodeValueEntitySchema = CollectionSchema(
     )
   },
   estimateSize: _codeValueEntityEstimateSize,
-  serializeNative: _codeValueEntitySerializeNative,
-  deserializeNative: _codeValueEntityDeserializeNative,
-  deserializePropNative: _codeValueEntityDeserializePropNative,
-  serializeWeb: _codeValueEntitySerializeWeb,
-  deserializeWeb: _codeValueEntityDeserializeWeb,
-  deserializePropWeb: _codeValueEntityDeserializePropWeb,
+  serialize: _codeValueEntitySerialize,
+  deserialize: _codeValueEntityDeserialize,
+  deserializeProp: _codeValueEntityDeserializeProp,
   idName: r'id',
   indexes: {
     r'category': IndexSchema(
@@ -84,7 +81,7 @@ const CodeValueEntitySchema = CollectionSchema(
   getId: _codeValueEntityGetId,
   getLinks: _codeValueEntityGetLinks,
   attach: _codeValueEntityAttach,
-  version: '3.0.0-dev.14',
+  version: '3.0.2',
 );
 
 int _codeValueEntityEstimateSize(
@@ -105,9 +102,9 @@ int _codeValueEntityEstimateSize(
   return bytesCount;
 }
 
-int _codeValueEntitySerializeNative(
+void _codeValueEntitySerialize(
   CodeValueEntity object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -115,12 +112,11 @@ int _codeValueEntitySerializeNative(
   writer.writeString(offsets[1], object.code);
   writer.writeString(offsets[2], object.description);
   writer.writeString(offsets[3], object.value);
-  return writer.usedBytes;
 }
 
-CodeValueEntity _codeValueEntityDeserializeNative(
+CodeValueEntity _codeValueEntityDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -134,8 +130,8 @@ CodeValueEntity _codeValueEntityDeserializeNative(
   return object;
 }
 
-P _codeValueEntityDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _codeValueEntityDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -151,25 +147,6 @@ P _codeValueEntityDeserializePropNative<P>(
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _codeValueEntitySerializeWeb(
-    IsarCollection<CodeValueEntity> collection, CodeValueEntity object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-CodeValueEntity _codeValueEntityDeserializeWeb(
-    IsarCollection<CodeValueEntity> collection, Object jsObj) {
-  /*final object = CodeValueEntity(category: IsarNative.jsObjectGet(jsObj, r'category') ?? '',code: IsarNative.jsObjectGet(jsObj, r'code') ?? '',description: IsarNative.jsObjectGet(jsObj, r'description') ,id: IsarNative.jsObjectGet(jsObj, r'id') ,value: IsarNative.jsObjectGet(jsObj, r'value') ?? '',);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _codeValueEntityDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
@@ -253,19 +230,19 @@ extension CodeValueEntityByIndex on IsarCollection<CodeValueEntity> {
     return deleteAllByIndexSync(r'category_code', values);
   }
 
-  Future<int> putByCategoryCode(CodeValueEntity object) {
+  Future<Id> putByCategoryCode(CodeValueEntity object) {
     return putByIndex(r'category_code', object);
   }
 
-  int putByCategoryCodeSync(CodeValueEntity object, {bool saveLinks = true}) {
+  Id putByCategoryCodeSync(CodeValueEntity object, {bool saveLinks = true}) {
     return putByIndexSync(r'category_code', object, saveLinks: saveLinks);
   }
 
-  Future<List<int>> putAllByCategoryCode(List<CodeValueEntity> objects) {
+  Future<List<Id>> putAllByCategoryCode(List<CodeValueEntity> objects) {
     return putAllByIndex(r'category_code', objects);
   }
 
-  List<int> putAllByCategoryCodeSync(List<CodeValueEntity> objects,
+  List<Id> putAllByCategoryCodeSync(List<CodeValueEntity> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'category_code', objects, saveLinks: saveLinks);
   }
@@ -291,7 +268,7 @@ extension CodeValueEntityQueryWhereSort
 extension CodeValueEntityQueryWhere
     on QueryBuilder<CodeValueEntity, CodeValueEntity, QWhereClause> {
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause> idEqualTo(
-      int id) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -301,7 +278,7 @@ extension CodeValueEntityQueryWhere
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause>
-      idNotEqualTo(int id) {
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -324,7 +301,7 @@ extension CodeValueEntityQueryWhere
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause>
-      idGreaterThan(int id, {bool include = false}) {
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -333,7 +310,7 @@ extension CodeValueEntityQueryWhere
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause> idLessThan(
-      int id,
+      Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -343,8 +320,8 @@ extension CodeValueEntityQueryWhere
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1037,7 +1014,7 @@ extension CodeValueEntityQueryFilter
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      idEqualTo(int? value) {
+      idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -1048,7 +1025,7 @@ extension CodeValueEntityQueryFilter
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
       idGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1062,7 +1039,7 @@ extension CodeValueEntityQueryFilter
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
       idLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1076,8 +1053,8 @@ extension CodeValueEntityQueryFilter
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
       idBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

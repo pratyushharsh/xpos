@@ -14,8 +14,10 @@ import 'package:receipt_generator/src/module/customer_search/bloc/customer_searc
 import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
 
+import '../../entity/pos/address.dart';
 import '../../entity/pos/entity.dart';
 import '../../widgets/desktop_pop_up.dart';
+import '../business/business_view.dart';
 import '../customer_search/customer_search_widget.dart';
 import '../line_item_modification/line_item_modification_view.dart';
 import '../mobile_dialog/mobile_dialog_view.dart';
@@ -41,6 +43,7 @@ class NewReceiptView extends StatelessWidget {
             taxModifierCalculator: RepositoryProvider.of(ctx),
             priceHelper: RepositoryProvider.of(ctx),
             discountHelper: RepositoryProvider.of(ctx),
+            errorNotificationBloc: BlocProvider.of(ctx),
           )..add(OnInitiateNewTransaction()),
         ),
         BlocProvider(
@@ -141,7 +144,7 @@ class BuildLineItem extends StatelessWidget {
                   {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
               });
     } else {
-      showDesktopPopUp(
+      showTransitiveAppPopUp(
               context: context,
               child: LineItemModificationView(
                   lineItem: saleLine, productModel: product))
@@ -781,8 +784,23 @@ class SaleHeaderBlock extends StatelessWidget {
   }
 }
 
-class CustomerWidget extends StatelessWidget {
+class CustomerWidget extends StatefulWidget {
   const CustomerWidget({Key? key}) : super(key: key);
+
+  @override
+  State<CustomerWidget> createState() => _CustomerWidgetState();
+}
+
+class _CustomerWidgetState extends State<CustomerWidget> {
+  bool isAddressOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (Platform.isMacOS || Platform.isWindows) {
+      isAddressOpen = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -790,7 +808,7 @@ class CustomerWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(4),
       child: BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
         builder: (context, state) {
-          return InkWell(
+          return GestureDetector(
             onTap: !state.isCustomerPresent
                 ? () {
                     if (Platform.isMacOS || Platform.isWindows) {
@@ -828,75 +846,221 @@ class CustomerWidget extends StatelessWidget {
                               });
                     }
                   }
-                : null,
-            child: Container(
-                color: AppColor.headerBackground,
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
+                : () {
+                    setState(() {
+                      isAddressOpen = !isAddressOpen;
+                    });
+                  },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 2000),
+              child: Column(
+                children: [
+                  Container(
+                    color: AppColor.headerBackground,
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              const FaIcon(
+                                FontAwesomeIcons.circleUser,
+                                color: AppColor.primary,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      state.isCustomerPresent
+                                          ? state.customer!.firstName
+                                          : "Add Customer",
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          color: AppColor.primary),
+                                    ),
+                                    if (state.isCustomerPresent &&
+                                        state.customer != null &&
+                                        state.customer!.phoneNumber != null)
+                                      Text(
+                                        'Phone: ${state.customer!.phoneNumber!}',
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            color: AppColor.primary),
+                                      ),
+                                    if (state.isCustomerPresent &&
+                                        state.customer != null &&
+                                        state.customer!.email != null)
+                                      Text(
+                                        'Email: ${state.customer!.email!}',
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            color: AppColor.primary),
+                                      ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        if (!state.isCustomerPresent)
                           const FaIcon(
-                            FontAwesomeIcons.circleUser,
+                            FontAwesomeIcons.personCirclePlus,
                             color: AppColor.primary,
                           ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  state.isCustomerPresent
-                                      ? state.customer!.firstName
-                                      : "Add Customer",
-                                  style: const TextStyle(
-                                      fontSize: 18, color: AppColor.primary),
-                                ),
-                                if (state.isCustomerPresent &&
-                                    state.customer != null &&
-                                    state.customer!.phoneNumber != null)
-                                  Text(
-                                    'Phone: ${state.customer!.phoneNumber!}',
-                                    style: const TextStyle(
-                                        fontSize: 16, color: AppColor.primary),
-                                  ),
-                                if (state.isCustomerPresent &&
-                                    state.customer != null &&
-                                    state.customer!.email != null)
-                                  Text(
-                                    'Email: ${state.customer!.email!}',
-                                    style: const TextStyle(
-                                        fontSize: 16, color: AppColor.primary),
-                                  ),
-                              ],
+                        if (state.isCustomerPresent)
+                          InkWell(
+                            onTap: () {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnCustomerRemove());
+                            },
+                            child: const FaIcon(
+                              FontAwesomeIcons.circleXmark,
+                              color: AppColor.primary,
                             ),
-                          )
+                          ),
+                      ],
+                    ),
+                  ),
+                  if (isAddressOpen && state.isCustomerPresent)
+                    IntrinsicHeight(
+                      child: Row(
+                        children: const [
+                          Expanded(
+                            child: CustomerAddress(
+                              margin: EdgeInsets.only(top: 10, right: 5),
+                              type: AddressType.billing,
+                            ),
+                          ),
+                          Expanded(
+                            child: CustomerAddress(
+                              margin: EdgeInsets.only(top: 10, left: 5),
+                              type: AddressType.shipping,
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                    if (!state.isCustomerPresent)
-                      const FaIcon(
-                        FontAwesomeIcons.personCirclePlus,
-                        color: AppColor.primary,
-                      ),
-                    if (state.isCustomerPresent)
-                      InkWell(
-                        onTap: () {
-                          BlocProvider.of<CreateNewReceiptBloc>(context)
-                              .add(OnCustomerRemove());
-                        },
-                        child: const FaIcon(
-                          FontAwesomeIcons.circleXmark,
-                          color: AppColor.primary,
-                        ),
-                      ),
-                  ],
-                )),
+                    )
+                ],
+              ),
+            ),
           );
         },
       ),
+    );
+  }
+}
+
+enum AddressType {
+  billing,
+  shipping,
+}
+
+class CustomerAddress extends StatelessWidget {
+  final EdgeInsetsGeometry margin;
+  final AddressType type;
+  const CustomerAddress(
+      {Key? key, this.margin = const EdgeInsets.all(16), required this.type})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+      builder: (context, state) {
+        Address? address;
+
+        if (type == AddressType.billing) {
+          address = state.customerAddress?.billingAddress;
+        } else {
+          address = state.customerAddress?.shippingAddress;
+        }
+
+        return GestureDetector(
+          onTap: () {
+            showTransitiveAppPopUp(
+                    context: context, child: const AddressFormDialog())
+                .then((value) => {
+                      if (value != null && value is Address)
+                        {
+                          if (type == AddressType.billing)
+                            {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnChangeCustomerBillingAddress(value))
+                            }
+                          else if (type == AddressType.shipping)
+                            {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnChangeCustomerShippingAddress(value))
+                            }
+                        }
+                    });
+          },
+          child: Container(
+            margin: margin,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Container(
+                color: AppColor.headerBackground,
+                padding: const EdgeInsets.all(15),
+                child: address != null
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            type == AddressType.billing
+                                ? 'Billing Address:'
+                                : 'Shipping Address:',
+                            style: const TextStyle(
+                                fontSize: 18,
+                                color: AppColor.primary,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            '${address.address1} ${address.address2}',
+                            style: const TextStyle(
+                                fontSize: 16, color: AppColor.primary),
+                          ),
+                          Text(
+                            '${address.city}, ${address.state} ${address.zipcode}',
+                            style: const TextStyle(
+                                fontSize: 16, color: AppColor.primary),
+                          ),
+                          Text(
+                            '${address.country}',
+                            style: const TextStyle(
+                                fontSize: 16, color: AppColor.primary),
+                          ),
+                        ],
+                      )
+                    : Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.pin_drop_outlined,
+                              color: AppColor.primary,
+                              size: 40,
+                            ),
+                            Text(
+                              'Add ${type == AddressType.billing ? 'Billing' : 'Shipping'} Address',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: AppColor.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

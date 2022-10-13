@@ -50,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.9.0"
+  awesome_snackbar_content:
+    dependency: "direct main"
+    description:
+      name: awesome_snackbar_content
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.8"
   barcode:
     dependency: transitive
     description:
@@ -510,21 +517,21 @@ packages:
       name: isar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0-dev.14"
+    version: "3.0.2"
   isar_flutter_libs:
     dependency: "direct main"
     description:
       name: isar_flutter_libs
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0-dev.14"
+    version: "3.0.2"
   isar_generator:
     dependency: "direct dev"
     description:
       name: isar_generator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0-dev.14"
+    version: "3.0.2"
   js:
     dependency: transitive
     description:

@@ -74,18 +74,19 @@ class TaxRepository {
 
   Future<List<TaxRuleEntity>> getTaxRulesByGroupId(String groupId) async {
     var taxGroup = await db.taxGroupEntitys.getByGroupId(groupId);
-    if (taxGroup != null) {
+    if (taxGroup == null) {
       log.severe('Tax group $groupId is not found');
+      throw Exception('Tax group $groupId is not found');
     }
-    return taxGroup!.taxRules;
+    return taxGroup.taxRules;
   }
 
   Future<TaxRuleEntity?> getTaxRulesByGroupIdAndRuleName(String groupId, String ruleName) async {
     var taxGroup = await db.taxGroupEntitys.getByGroupId(groupId);
-    if (taxGroup != null) {
+    if (taxGroup == null) {
       log.severe('Tax group $groupId is not found');
       throw Exception('Tax group $groupId is not found');
     }
-    return taxGroup!.taxRules.firstWhere((element) => element.ruleName!.compareTo(ruleName) == 0);
+    return taxGroup.taxRules.firstWhere((element) => element.ruleName!.compareTo(ruleName) == 0);
   }
 }

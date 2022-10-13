@@ -6,6 +6,7 @@ class Address {
   final String? address2;
   final String? city;
   final String? state;
+  final String? stateCode;
   final String? country;
   final String? zipcode;
 
@@ -14,12 +15,13 @@ class Address {
       this.address2,
       this.city,
       this.state,
+        this.stateCode,
       this.country,
       this.zipcode});
 
 
   @override
-  bool operator ==(Object other) =>
+  bool operator == (Object other) =>
       identical(this, other) ||
       other is Address &&
           runtimeType == other.runtimeType &&
@@ -27,17 +29,9 @@ class Address {
           address2 == other.address2 &&
           city == other.city &&
           state == other.state &&
+          stateCode == other.stateCode &&
           country == other.country &&
           zipcode == other.zipcode;
-
-  @override
-  int get hashCode =>
-      address1.hashCode ^
-      address2.hashCode ^
-      city.hashCode ^
-      state.hashCode ^
-      country.hashCode ^
-      zipcode.hashCode;
 
   @override
   String toString() {
@@ -50,6 +44,7 @@ class Address {
         address2 = json['address2'],
         city = json['city'],
         state = json['state'],
+        stateCode = json['stateCode'],
         country = json['country'];
 
   Map<String, dynamic> toJson() => {
@@ -58,6 +53,7 @@ class Address {
         'address2': address2,
         'city': city,
         'state': state,
+        'stateCode': stateCode,
         'country': country,
   };
 }

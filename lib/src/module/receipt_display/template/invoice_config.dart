@@ -6,11 +6,11 @@ class InvoiceConfig {
   static  List<InvoiceColumnConfig> columnConfig = [
     InvoiceColumnConfig(key: 'sno', title: 'S. No', flex: 1,),
     InvoiceColumnConfig(key: 'desc', title: 'Description', flex: 5),
-    InvoiceColumnConfig(key: 'hsn/sac', title: 'HSN/SAC', flex: 2),
+    InvoiceColumnConfig(key: 'hsn/sac', title: 'HSN/SAC', flex: 2, align: 'right'),
     InvoiceColumnConfig(key: 'qtyuom', title: 'Qty/UOM', flex: 2, align: 'center'),
     InvoiceColumnConfig(key: 'rate', title: 'Unit Price', flex: 2, align: 'right'),
     InvoiceColumnConfig(key: 'discountAmount', title: 'Discount', flex: 2, align: 'right'),
-    InvoiceColumnConfig(key: 'tax', title: 'Tax Rate', flex: 2, align: 'right'),
+    InvoiceColumnConfig(key: 'tax', title: 'Tax Amount', flex: 2, align: 'right'),
     InvoiceColumnConfig(key: 'amount', title: 'Amount', flex: 2, align: 'right'),
   ];
 
@@ -25,17 +25,17 @@ class InvoiceConfig {
       case 'desc':
         return '${entity.itemDescription}\nSKU: ${entity.itemId}';
       case 'discountAmount':
-        return entity.discountAmount.toString();
+        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.discountAmount);
       case 'sno':
         return entity.lineItemSeq.toString();
       case 'hsn/sac':
-        return '';
+        return '${entity.hsn}';
       case 'qty':
         return '${entity.quantity}';
       case 'qtyuom':
         return '${entity.quantity}\n${entity.uom}';
       case 'tax':
-        return entity.taxAmount.toString();
+        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.taxAmount);
       case 'amount':
         return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.grossAmount);
       default:

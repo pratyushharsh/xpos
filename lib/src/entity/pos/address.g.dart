@@ -7,7 +7,7 @@ part of 'address.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_localså
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 const AddressSchema = Schema(
   name: r'Address',
@@ -50,12 +50,9 @@ const AddressSchema = Schema(
     )
   },
   estimateSize: _addressEstimateSize,
-  serializeNative: _addressSerializeNative,
-  deserializeNative: _addressDeserializeNative,
-  deserializePropNative: _addressDeserializePropNative,
-  serializeWeb: _addressSerializeWeb,
-  deserializeWeb: _addressDeserializeWeb,
-  deserializePropWeb: _addressDeserializePropWeb,
+  serialize: _addressSerialize,
+  deserialize: _addressDeserialize,
+  deserializeProp: _addressDeserializeProp,
 );
 
 int _addressEstimateSize(
@@ -103,9 +100,9 @@ int _addressEstimateSize(
   return bytesCount;
 }
 
-int _addressSerializeNative(
+void _addressSerialize(
   Address object,
-  IsarBinaryWriter writer,
+  IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -116,12 +113,11 @@ int _addressSerializeNative(
   writer.writeLong(offsets[4], object.hashCode);
   writer.writeString(offsets[5], object.state);
   writer.writeString(offsets[6], object.zipcode);
-  return writer.usedBytes;
 }
 
-Address _addressDeserializeNative(
+Address _addressDeserialize(
   Id id,
-  IsarBinaryReader reader,
+  IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -136,8 +132,8 @@ Address _addressDeserializeNative(
   return object;
 }
 
-P _addressDeserializePropNative<P>(
-  IsarBinaryReader reader,
+P _addressDeserializeProp<P>(
+  IsarReader reader,
   int propertyId,
   int offset,
   Map<Type, List<int>> allOffsets,
@@ -159,25 +155,6 @@ P _addressDeserializePropNative<P>(
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Object _addressSerializeWeb(
-    IsarCollection<Address> collection, Address object) {
-  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
-}
-
-Address _addressDeserializeWeb(
-    IsarCollection<Address> collection, Object jsObj) {
-  /*final object = Address(address1: IsarNative.jsObjectGet(jsObj, r'address1') ,address2: IsarNative.jsObjectGet(jsObj, r'address2') ,city: IsarNative.jsObjectGet(jsObj, r'city') ,country: IsarNative.jsObjectGet(jsObj, r'country') ,state: IsarNative.jsObjectGet(jsObj, r'state') ,zipcode: IsarNative.jsObjectGet(jsObj, r'zipcode') ,);*/
-  //return object;
-  throw UnimplementedError();
-}
-
-P _addressDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    default:
-      throw IsarError('Illegal propertyName');
   }
 }
 
