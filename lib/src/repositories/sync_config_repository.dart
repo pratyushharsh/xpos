@@ -68,9 +68,9 @@ class SyncConfigRepository {
       String filename, List<List<dynamic>> fields) async {
     String category = filename.replaceAll(".csv", "");
     var res = await db.writeTxn(() async {
-      for (int i = 0; i < fields.length; i++) {
+      for (int i = 1; i < fields.length; i++) {
         var c = fields[i];
-        db.codeValueEntitys.put(
+        db.codeValueEntitys.putByIndex('category_code',
             CodeValueEntity(
                 category: category,
                 code: c[0].toString(),

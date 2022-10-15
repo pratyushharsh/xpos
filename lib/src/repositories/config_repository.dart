@@ -10,4 +10,8 @@ class ConfigRepository {
   Future<List<CodeValueEntity>> getCodeByCategory(String category) {
     return db.codeValueEntitys.where().categoryEqualTo(category).findAll();
   }
+
+  CodeValueEntity? getCodeByCategoryAndCode(String category, String code) {
+    return db.codeValueEntitys.getByCategoryCodeSync(category, code);
+  }
 }

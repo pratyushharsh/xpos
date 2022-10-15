@@ -51,6 +51,18 @@ class OnChangePhoto extends BusinessEvent {
   OnChangePhoto(this.photo);
 }
 
+class OnChangeBusinessLocale extends BusinessEvent {
+  final String locale;
+
+  OnChangeBusinessLocale(this.locale);
+}
+
+class OnChangeBusinessCurrency extends BusinessEvent {
+  final String currency;
+
+  OnChangeBusinessCurrency(this.currency);
+}
+
 class OnCreateNewBusiness extends BusinessEvent {}
 
 class OnSaveBusiness extends BusinessEvent {}

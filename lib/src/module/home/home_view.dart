@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +11,7 @@ import 'package:receipt_generator/src/module/home/receipt_view.dart';
 import 'package:receipt_generator/src/module/home/settings_view.dart';
 import 'package:receipt_generator/src/module/load_customer_contact/bloc/load_customer_contact_bloc.dart';
 
+import '../../../locale_keys.dart';
 import '../../widgets/clipper/wave_clipper.dart';
 import '../error/error_notification.dart';
 
@@ -139,77 +141,118 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.stacked_bar_chart_rounded,
-                      color: widget.selectedIndex == 0
-                          ? AppColor.primary
-                          : AppColor.iconColor,
-                    ),
-                    onPressed: () {
+                  InkWell(
+                    onTap: () {
                       widget.letIndexChange(0);
                       setState(() {
                         _open = false;
                       });
                     },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.people_outline,
-                      color: widget.selectedIndex == 1
-                          ? AppColor.primary
-                          : AppColor.iconColor,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.stacked_bar_chart_rounded,
+                          color: widget.selectedIndex == 0
+                              ? AppColor.primary
+                              : AppColor.iconColor,
+                        ),
+                        const Text(
+                          LocaleKeys.home,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ).tr(),
+                      ],
                     ),
-                    onPressed: () {
+                  ),
+                  InkWell(
+                    onTap: () {
                       widget.letIndexChange(1);
                       setState(() {
                         _open = false;
                       });
                     },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.receipt_long_rounded,
-                      color: widget.selectedIndex == 2
-                          ? AppColor.primary
-                          : AppColor.iconColor,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.people_outline,
+                          color: widget.selectedIndex == 1
+                              ? AppColor.primary
+                              : AppColor.iconColor,
+                        ),
+                        const Text(LocaleKeys.customer,
+                                style: TextStyle(fontWeight: FontWeight.bold))
+                            .tr(),
+                      ],
                     ),
-                    onPressed: () {
+                  ),
+                  InkWell(
+                    onTap: () {
                       // widget.letIndexChange(2);
                       setState(() {
                         _open = !_open;
                       });
                     },
-                  ),
-                  IconButton(
-                    icon: FaIcon(
-                      FontAwesomeIcons.boxesStacked,
-                      color: widget.selectedIndex == 3
-                          ? AppColor.primary
-                          : AppColor.iconColor,
-                      size: 18,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.receipt_long_rounded,
+                          color: widget.selectedIndex == 2
+                              ? AppColor.primary
+                              : AppColor.iconColor,
+                        ),
+                        const Text(LocaleKeys.sale,
+                                style: TextStyle(fontWeight: FontWeight.bold))
+                            .tr(),
+                      ],
                     ),
-                    onPressed: () {
+                  ),
+                  InkWell(
+                    onTap: () {
                       widget.letIndexChange(3);
                       setState(() {
                         _open = false;
                       });
                     },
-                  ),
-                  IconButton(
-                    icon: FaIcon(
-                      FontAwesomeIcons.ellipsisH,
-                      color: widget.selectedIndex == 4
-                          ? AppColor.primary
-                          : AppColor.iconColor,
-                      size: 18,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.boxesStacked,
+                          color: widget.selectedIndex == 3
+                              ? AppColor.primary
+                              : AppColor.iconColor,
+                          size: 18,
+                        ),
+                        const Text(LocaleKeys.product,
+                                style: TextStyle(fontWeight: FontWeight.bold))
+                            .tr(),
+                      ],
                     ),
-                    onPressed: () {
+                  ),
+                  InkWell(
+                    onTap: () {
                       widget.letIndexChange(4);
                       setState(() {
                         _open = false;
                       });
                     },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.ellipsis,
+                          color: widget.selectedIndex == 4
+                              ? AppColor.primary
+                              : AppColor.iconColor,
+                          size: 18,
+                        ),
+                        const Text(LocaleKeys.more,
+                                style: TextStyle(fontWeight: FontWeight.bold))
+                            .tr(),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -268,7 +311,9 @@ class SaleOptions extends StatelessWidget {
                               .pushNamed(RouteConfig.createReceiptScreen);
                         },
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       SaleOptionButton(
                         icon: const Icon(
                           Icons.receipt,

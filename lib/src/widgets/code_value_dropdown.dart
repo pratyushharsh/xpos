@@ -51,7 +51,6 @@ class CodeValueDropDown extends StatelessWidget {
           filterFn: (user, filter) =>
               user.value.toLowerCase().contains(filter.toLowerCase()),
           asyncItems: (filter) async {
-            print("Searching for code: $filter");
             return await context
                 .read<ConfigRepository>()
                 .getCodeByCategory(category);

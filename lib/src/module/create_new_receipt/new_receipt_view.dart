@@ -13,6 +13,7 @@ import 'package:receipt_generator/src/module/create_new_receipt/new_recipt_deskt
 import 'package:receipt_generator/src/module/customer_search/bloc/customer_search_bloc.dart';
 import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
+import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 
 import '../../entity/pos/address.dart';
 import '../../entity/pos/entity.dart';
@@ -342,7 +343,15 @@ class TenderLineDisplay extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
       child: Row(
         children: [
-          const Expanded(child: Icon(Icons.currency_rupee)),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                '${tenderLine.currencyId}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
           Expanded(
               child: Align(
                   alignment: Alignment.centerRight,
@@ -351,7 +360,8 @@ class TenderLineDisplay extends StatelessWidget {
               child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    '${Currency.inr} ${tenderLine.amount!.toStringAsFixed(2)}',
+                    NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+                        .format(tenderLine.amount!),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ))),
         ],
@@ -438,8 +448,8 @@ class NewLineItem extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    NumberFormat.currency(locale: 'en_IN', symbol: '₹ ').format(
-                        saleLine.priceOverride
+                    NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+                        .format(saleLine.priceOverride
                             ? saleLine.unitPrice
                             : saleLine.baseUnitPrice),
                     style: NewLineItem.textStyle,
@@ -459,7 +469,8 @@ class NewLineItem extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    "${Currency.inr}${saleLine.netAmount!.toStringAsFixed(2)}",
+                    NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+                        .format(saleLine.netAmount),
                     style: NewLineItem.textStyle,
                   ),
                 ),
@@ -487,7 +498,9 @@ class NewLineItem extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 60),
                       child: Text(
-                        "-${Currency.inr}${e.amount.toStringAsFixed(2)}",
+                        NumberFormat.simpleCurrency(
+                                locale: getStoreLocale(context))
+                            .format(-e.amount),
                         style: NewLineItem.textStyle,
                       ),
                     ),
@@ -681,26 +694,31 @@ class NewReceiptSummaryWidget extends StatelessWidget {
           children: [
             RetailSummaryDetailRow(
               title: "Sub Total",
-              value: "${Currency.inr} ${state.subTotal.toStringAsFixed(2)}",
+              value: NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+                  .format(state.subTotal),
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Discount",
-              value: "${Currency.inr} ${state.discount.toStringAsFixed(2)}",
+              value: NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+            .format(state.discount),
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Tax",
-              value: "${Currency.inr} ${state.tax.toStringAsFixed(2)}",
+              value: NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+            .format(state.tax),
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             const Divider(),
             RetailSummaryDetailRow(
               title: "Amount Due",
-              value: "${Currency.inr} ${state.amountDue.toStringAsFixed(2)}",
+              value:
+                  NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+                      .format(state.amountDue),
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
@@ -732,11 +750,11 @@ class RetailSummaryDetailRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: mainAxisAlignment,
       children: [
-        Text(
+        SelectableText(
           title,
           style: textStyle,
         ),
-        Text(
+        SelectableText(
           value,
           style: textStyle,
         )

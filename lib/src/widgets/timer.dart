@@ -13,7 +13,7 @@ class TimerWidget extends StatefulWidget {
 class _TimerWidgetState extends State<TimerWidget> {
 
   late DateTime _startTime;
-  final DateFormat _format = DateFormat('hh:mm:ss');
+  final DateFormat _format = DateFormat.EEEE('en_US');
   late Timer _timer;
 
   @override
@@ -41,7 +41,7 @@ class _TimerWidgetState extends State<TimerWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18),
-      child: Text(_format.format(_startTime), style: TextStyle(color: Colors.white)),
+      child: Text(_format.format(_startTime), style: const TextStyle(color: Colors.white)),
     );
   }
 }

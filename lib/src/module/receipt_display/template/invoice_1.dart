@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:number_to_words/number_to_words.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
 import 'package:receipt_generator/src/module/receipt_display/template/invoice_config.dart';
+import 'package:receipt_generator/src/util/extension/string_extension.dart';
 
 import '../../../entity/pos/entity.dart';
 
@@ -46,9 +48,10 @@ class Invoice1 {
         footer: _buildFooter,
         build: (context) => [
           _contentTable(context),
-          Divider(),
+          Divider(thickness: 0.8),
           _buildLineItemSummary(context),
-          Divider(),
+          Divider(thickness: 0.8),
+          _contentAmountInWords(context),
           _contentTaxSummary(context)
         ],
       ),
@@ -95,7 +98,7 @@ class Invoice1 {
       child: Column(
         children: [
           _logo(context),
-          Divider(height: 6),
+          Divider(height: 6, thickness: 0.8),
           Row(children: [
             Expanded(
                 child: Container(
@@ -152,9 +155,9 @@ class Invoice1 {
               ),
             )
           ]),
-          Divider(height: 6),
+          Divider(height: 6, thickness: 0.8),
           _contentTableHeader(context),
-          Divider(height: 6),
+          Divider(height: 6, thickness: 0.8),
         ],
       ),
     );
@@ -201,11 +204,7 @@ class Invoice1 {
     return Container(
       child: Center(
         child: Text(
-          'Invoice Footer',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          'Made with ',
         ),
       ),
     );
@@ -303,7 +302,7 @@ class Invoice1 {
     return Column(
       children: [
         // Build header
-        Divider(height: 6),
+        Divider(height: 6, thickness: 0.8),
         Row(
           children: [
             Expanded(
@@ -342,7 +341,7 @@ class Invoice1 {
             )),
           ],
         ),
-        Divider(height: 6),
+        Divider(height: 6, thickness: 0.8),
         ...taxSummary.entries.map(
           (e) => Row(
             children: [
@@ -383,8 +382,45 @@ class Invoice1 {
             ],
           ),
         ),
-        Divider(height: 6),
+        Divider(height: 6, thickness: 0.8),
       ],
+    );
+  }
+
+  Widget _contentAmountInWords(Context context) {
+
+    var x = order.total.toInt();
+    var y = (order.total * 100 % 100).round();
+
+    String amountToWord =
+        "INR " + NumberToWord().convert('en-in', x).toTitleCase();
+    if (y > 0) {
+      amountToWord += " and ";
+      amountToWord +=
+          NumberToWord().convert('en-in', y).toTitleCase();
+      amountToWord += "paise Only";
+    }
+
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Amount in words:',
+            style: const TextStyle(
+              fontSize: 12,
+            ),
+          ),
+          Text(
+            amountToWord,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
     );
   }
 }

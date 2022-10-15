@@ -22,6 +22,8 @@ class BusinessState extends Equatable {
   final String businessName;
   final String businessContact;
   final String? businessEmail;
+  final String businessCurrency;
+  final String businessLocale;
   final Address? businessAddress;
   final String businessGst;
   final String businessPan;
@@ -37,6 +39,8 @@ class BusinessState extends Equatable {
     this.operation = BusinessOperation.create,
     this.businessName = '',
     this.businessContact = '',
+    this.businessCurrency = 'INR',
+    this.businessLocale = 'en_IN',
     this.businessEmail,
     this.businessAddress,
     this.businessGst = '',
@@ -52,6 +56,9 @@ class BusinessState extends Equatable {
         businessName,
         businessAddress,
         businessContact,
+        businessCurrency,
+        businessEmail,
+        businessLocale,
         businessGst,
         businessPan,
         businessEmail,
@@ -65,6 +72,8 @@ class BusinessState extends Equatable {
     String? businessName,
     String? businessContact,
     String? businessEmail,
+    String? businessCurrency,
+    String? businessLocale,
     Address? businessAddress,
     String? businessGst,
     String? businessPan,
@@ -77,15 +86,12 @@ class BusinessState extends Equatable {
       businessName: businessName ?? this.businessName,
       businessContact: businessContact ?? this.businessContact,
       businessEmail: businessEmail ?? this.businessEmail,
+      businessCurrency: businessCurrency ?? this.businessCurrency,
+      businessLocale: businessLocale ?? this.businessLocale,
       businessAddress: businessAddress ?? this.businessAddress,
       businessGst: businessGst ?? this.businessGst,
       businessPan: businessPan ?? this.businessPan,
       photo: photo ?? this.photo,
     );
-  }
-
-  @override
-  String toString() {
-    return 'BusinessState{status: $status, entity: $entity, operation: $operation, businessName: $businessName, businessContact: $businessContact, businessEmail: $businessEmail, businessAddress: $businessAddress, businessGst: $businessGst, businessPan: $businessPan}';
   }
 }

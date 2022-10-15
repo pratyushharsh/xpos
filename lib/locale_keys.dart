@@ -10,4 +10,12 @@ abstract class  LocaleKeys {
   static const settings = 'settings';
   static const locale = 'locale';
   static const taxConfiguration = 'taxConfiguration';
+
+
+  // BottomAppBar keys
+  static const home = 'home';
+  static const customer = 'customer';
+  static const sale = 'sale';
+  static const more = 'more';
+  static const product = 'product';
 }

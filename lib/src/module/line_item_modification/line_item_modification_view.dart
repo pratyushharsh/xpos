@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/bloc/create_new_receipt_bloc.dart';
 import 'package:receipt_generator/src/module/line_item_modification/bloc/line_item_modification_bloc.dart';
+import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 
 import '../../config/constants.dart';
 import '../../config/theme_settings.dart';
@@ -176,7 +177,7 @@ class ModifyLineItemViewCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
               ),
               Text(
-                "Sale Price: ${NumberFormat.simpleCurrency(locale: "en_IN").format(lineItem.unitPrice)}",
+                "Sale Price: ${NumberFormat.simpleCurrency(locale: getStoreLocale(context)).format(lineItem.unitPrice)}",
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
               )
             ]

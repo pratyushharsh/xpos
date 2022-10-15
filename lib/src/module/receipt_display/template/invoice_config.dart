@@ -6,7 +6,7 @@ class InvoiceConfig {
   static List<InvoiceColumnConfig> columnConfig = [
     InvoiceColumnConfig(
       key: 'sno',
-      title: 'S. No',
+      title: 'S.No',
       flex: 1,
     ),
     InvoiceColumnConfig(key: 'desc', title: 'Description', flex: 5),
@@ -17,11 +17,11 @@ class InvoiceConfig {
     InvoiceColumnConfig(
         key: 'rate', title: 'Unit Price', flex: 2, align: 'right'),
     InvoiceColumnConfig(
-        key: 'discountAmount', title: 'Discount', flex: 2, align: 'right'),
+        key: 'discountAmount', title: 'Discount', flex: 3, align: 'right'),
     InvoiceColumnConfig(
-        key: 'tax', title: 'Tax Amount', flex: 2, align: 'right'),
+        key: 'tax', title: 'Tax Amount', flex: 3, align: 'right'),
     InvoiceColumnConfig(
-        key: 'amount', title: 'Amount', flex: 2, align: 'right'),
+        key: 'amount', title: 'Amount', flex: 3, align: 'right'),
   ];
 
   static String getLineItemValue(String key, TransactionLineItemEntity entity) {

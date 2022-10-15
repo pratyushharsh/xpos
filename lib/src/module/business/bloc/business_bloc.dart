@@ -34,6 +34,8 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     on<OnSaveBusiness>(_onSaveBusinessDetail);
     on<OnCreateNewBusiness>(_onCreateNewBusiness);
     on<OnChangePhoto>(_onChangePhoto);
+    on<OnChangeBusinessLocale>(_onChangeBusinessLocale);
+    on<OnChangeBusinessCurrency>(_onChangeBusinessCurrency);
   }
 
   void _onLoadBusinessDetail(
@@ -53,7 +55,10 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
             businessPan: data.pan,
             businessEmail: data.storeEmail,
             businessAddress: data.address,
-            businessContact: data.storeContact),
+            businessContact: data.storeContact,
+            businessLocale: data.locale,
+            businessCurrency: data.currencyId
+        ),
       );
     } catch (e) {
       log.severe(e);
@@ -77,8 +82,8 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
               postalCode: state.businessAddress?.zipcode,
               email: state.businessEmail,
               country: "India",
-              currency: "INR",
-              locale: "en_IN",
+              currency: state.businessCurrency,
+              locale: state.businessLocale,
               gst: state.businessGst,
               pan: state.businessPan,
               phone: state.businessContact,
@@ -115,8 +120,8 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
           postalCode: state.businessAddress?.zipcode,
           email: state.businessEmail,
           country: "India",
-          currency: "INR",
-          locale: "en_IN",
+          currency: state.businessCurrency,
+          locale: state.businessLocale,
           gst: state.businessGst,
           pan: state.businessPan,
           phone: state.businessContact,
@@ -181,5 +186,13 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
 
   void _onChangePhoto(OnChangePhoto event, Emitter<BusinessState> emit) async {
     emit(state.copyWith(photo: event.photo, status: BusinessStatus.modified));
+  }
+
+  void _onChangeBusinessLocale(OnChangeBusinessLocale event, Emitter<BusinessState> emit) async {
+    emit(state.copyWith(businessLocale: event.locale, status: BusinessStatus.modified));
+  }
+
+  void _onChangeBusinessCurrency(OnChangeBusinessCurrency event, Emitter<BusinessState> emit) async {
+    emit(state.copyWith(businessCurrency: event.currency, status: BusinessStatus.modified));
   }
 }

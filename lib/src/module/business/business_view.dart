@@ -137,6 +137,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
   late TextEditingController _businessEmailController;
   late TextEditingController _businessGstController;
   late TextEditingController _businessPanController;
+  late CodeValueEntity? _selectedCurrency;
+  late CodeValueEntity? _selectedLocale;
 
   @override
   void initState() {
@@ -146,6 +148,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
     _businessEmailController = TextEditingController();
     _businessGstController = TextEditingController();
     _businessPanController = TextEditingController();
+    _selectedCurrency = null;
+    _selectedLocale = null;
   }
 
   @override
@@ -156,6 +160,26 @@ class _BusinessDetailState extends State<BusinessDetail> {
     _businessGstController.dispose();
     _businessPanController.dispose();
     super.dispose();
+  }
+
+  void _onSelectedCurrencyChanged(CodeValueEntity? value) {
+    setState(() {
+      _selectedCurrency = value;
+      if (value != null) {
+        BlocProvider.of<BusinessBloc>(context)
+            .add(OnChangeBusinessCurrency(value.code));
+      }
+    });
+  }
+
+  void _onSelectedLocaleChanged(CodeValueEntity? value) {
+    setState(() {
+      _selectedLocale = value;
+      if (value != null) {
+        BlocProvider.of<BusinessBloc>(context)
+            .add(OnChangeBusinessLocale(value.code));
+      }
+    });
   }
 
   @override
@@ -178,6 +202,9 @@ class _BusinessDetailState extends State<BusinessDetail> {
           _businessEmailController.text = state.businessEmail ?? "";
           _businessGstController.text = state.businessGst;
           _businessPanController.text = state.businessPan;
+
+          _selectedCurrency = RepositoryProvider.of<ConfigRepository>(context).getCodeByCategoryAndCode('CURRENCY', state.businessCurrency);
+          _selectedLocale = RepositoryProvider.of<ConfigRepository>(context).getCodeByCategoryAndCode('LOCALE', state.businessLocale);
         }
         return Column(
           children: [
@@ -197,6 +224,18 @@ class _BusinessDetailState extends State<BusinessDetail> {
                 //     .add(OnBusinessNameChange(val));
               },
             ),
+            CodeValueDropDown(
+              category: "CURRENCY",
+              onChanged: _onSelectedCurrencyChanged,
+              label: "Currency",
+              value: _selectedCurrency,
+            ),
+            CodeValueDropDown(
+              category: "LOCALE",
+              onChanged: _onSelectedLocaleChanged,
+              label: "Locale",
+              value: _selectedLocale,
+            ),
             CustomTextField(
               controller: _businessContactController,
               label: "Business Contact",
@@ -214,31 +253,6 @@ class _BusinessDetailState extends State<BusinessDetail> {
                     .add(OnBusinessEmailChange(val));
               },
             ),
-            // GestureDetector(
-            //   onTap: () {
-            //     showModalBottomSheet(
-            //       context: context,
-            //       backgroundColor: AppColor.background,
-            //       isScrollControlled: true,
-            //       shape: const RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.only(
-            //         topLeft: Radius.circular(20),
-            //         topRight: Radius.circular(20),
-            //       )),
-            //       builder: (context) => const AddressFormDialog(),
-            //     ).then((value) => {
-            //           if (value != null && value is Address)
-            //             {
-            //               BlocProvider.of<BusinessBloc>(context)
-            //                   .add(OnBusinessAddressChange(value))
-            //             }
-            //         });
-            //   },
-            //   child: TextFieldPlaceholderWidget(
-            //     label: "Business Address",
-            //     value: state.businessAddress?.toString() ?? "",
-            //   ),
-            // ),
             GestureDetector(
               onTap: () {
                 showDialog(
@@ -251,13 +265,15 @@ class _BusinessDetailState extends State<BusinessDetail> {
                           child: const AddressFormDialog(),
                         ),
                       );
-                    }).then((value) => {
-                      if (value != null && value is Address)
-                        {
-                          BlocProvider.of<BusinessBloc>(context)
-                              .add(OnBusinessAddressChange(value))
-                        }
-                    });
+                    }).then(
+                  (value) => {
+                    if (value != null && value is Address)
+                      {
+                        BlocProvider.of<BusinessBloc>(context)
+                            .add(OnBusinessAddressChange(value))
+                      }
+                  },
+                );
               },
               child: TextFieldPlaceholderWidget(
                 label: "Business Address",
@@ -369,14 +385,6 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                 label: "Country",
                 value: _selectedCountry,
               ),
-              // CustomDropDown<String>(
-              //   value: _country,
-              //   data: countryCode
-              //       .map((e) => DropDownData(key: e.code, value: e.value))
-              //       .toList(),
-              //   onChanged: _onCountryChange,
-              //   label: 'Country',
-              // ),
               CustomTextField(
                 label: "Pincode",
                 controller: _zipcodeController,

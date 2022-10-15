@@ -5,14 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:receipt_generator/src/module/create_new_receipt/sale_complete_dialog.dart';
+import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
 import '../../config/constants.dart';
-import '../../config/currency.dart';
 import '../../config/tender_config.dart';
 import '../../config/theme_settings.dart';
-import '../../util/text_input_formatter/currency_text_input_formatter.dart';
 import '../../util/text_input_formatter/money_editing_controller.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/keypad_overlay/keypad_overlay.dart';
@@ -36,7 +34,8 @@ class NewReceiptDesktopView extends StatelessWidget {
           backgroundColor: AppColor.background,
           body: BlocProvider(
             lazy: true,
-            create: (ctx) => ItemSearchBloc(productRepository: RepositoryProvider.of(ctx)),
+            create: (ctx) =>
+                ItemSearchBloc(productRepository: RepositoryProvider.of(ctx)),
             child: BlocConsumer<CreateNewReceiptBloc, CreateNewReceiptState>(
               listener: (context, state) {},
               builder: (context, state) {
@@ -64,7 +63,10 @@ class NewReceiptDesktopView extends StatelessWidget {
                                 const Expanded(
                                     child: SearchUserDisplayDesktop()),
                               if (SaleStep.payment == state.step)
-                                Expanded(child: TenderDisplayDesktop(suggestedAmount: state.amountDue,)),
+                                Expanded(
+                                    child: TenderDisplayDesktop(
+                                  suggestedAmount: state.amountDue,
+                                )),
                               const Expanded(child: SaleReturnDisplayDesktop()),
                             ],
                           ),
@@ -79,8 +81,14 @@ class NewReceiptDesktopView extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("${state.employee?.firstName} ${state.employee?.lastName}", style: const TextStyle(color: Colors.white),),
-                                  Text("${state.store?.storeName}", style: const TextStyle(color: Colors.white),),
+                                  Text(
+                                    "${state.employee?.firstName} ${state.employee?.lastName}",
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                  Text(
+                                    "${state.store?.storeName}",
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
                                   const TimerWidget()
                                 ],
                               );
@@ -290,7 +298,8 @@ class SaleReturnDisplayDesktop extends StatelessWidget {
 class TenderDisplayDesktop extends StatefulWidget {
   final Function? onTender;
   final double? suggestedAmount;
-  const TenderDisplayDesktop({Key? key, this.onTender, this.suggestedAmount}) : super(key: key);
+  const TenderDisplayDesktop({Key? key, this.onTender, this.suggestedAmount})
+      : super(key: key);
 
   @override
   State<TenderDisplayDesktop> createState() => _TenderDisplayDesktopState();
@@ -305,7 +314,7 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
   void initState() {
     super.initState();
     tenderController = MoneyEditingController(
-        formatter: NumberFormat.simpleCurrency(locale: "en_IN"));
+        formatter: NumberFormat.simpleCurrency(locale: getStoreLocale(context)));
     tenderFocusNode = FocusNode();
   }
 
@@ -347,7 +356,7 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
             top: 10,
             left: 10,
             child: Text(
-              "Tender Amount ${widget.suggestedAmount != null ? "| ${widget.suggestedAmount}" : ""}",
+              "Tender Amount ${widget.suggestedAmount != null ? "| ${NumberFormat.simpleCurrency(locale: getStoreLocale(context)).format(widget.suggestedAmount)}" : ""}",
               style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -543,7 +552,9 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
                     child: RetailSummaryDetailRow(
                       mainAxisAlignment: MainAxisAlignment.end,
                       title: "Tax:\t",
-                      value: "${Currency.inr} ${state.tax.toStringAsFixed(2)}",
+                      value: NumberFormat.simpleCurrency(
+                              locale: getStoreLocale(context))
+                          .format(state.tax),
                       textStyle: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.white),
                     ),
@@ -552,8 +563,9 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
                     child: RetailSummaryDetailRow(
                       mainAxisAlignment: MainAxisAlignment.end,
                       title: "Sub Total:\t",
-                      value:
-                          "${Currency.inr} ${state.subTotal.toStringAsFixed(2)}",
+                      value: NumberFormat.simpleCurrency(
+                              locale: getStoreLocale(context))
+                          .format(state.subTotal),
                       textStyle: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.white),
                     ),
@@ -563,7 +575,9 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
             ),
             RetailSummaryDetailRow(
               title: "Amount Due",
-              value: "${Currency.inr} ${state.amountDue.toStringAsFixed(2)}",
+              value:
+                  NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+                      .format(state.amountDue),
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
