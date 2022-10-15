@@ -68,13 +68,18 @@ const TaxRuleEntitySchema = Schema(
       name: r'percent',
       type: IsarType.double,
     ),
-    r'ruleName': PropertySchema(
+    r'ruleId': PropertySchema(
       id: 11,
+      name: r'ruleId',
+      type: IsarType.string,
+    ),
+    r'ruleName': PropertySchema(
+      id: 12,
       name: r'ruleName',
       type: IsarType.string,
     ),
     r'ruleSequence': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'ruleSequence',
       type: IsarType.long,
     )
@@ -122,6 +127,12 @@ int _taxRuleEntityEstimateSize(
     }
   }
   {
+    final value = object.ruleId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.ruleName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -147,8 +158,9 @@ void _taxRuleEntitySerialize(
   writer.writeDouble(offsets[8], object.maximumTaxableAmount);
   writer.writeDouble(offsets[9], object.minimumTaxableAmount);
   writer.writeDouble(offsets[10], object.percent);
-  writer.writeString(offsets[11], object.ruleName);
-  writer.writeLong(offsets[12], object.ruleSequence);
+  writer.writeString(offsets[11], object.ruleId);
+  writer.writeString(offsets[12], object.ruleName);
+  writer.writeLong(offsets[13], object.ruleSequence);
 }
 
 TaxRuleEntity _taxRuleEntityDeserialize(
@@ -169,8 +181,9 @@ TaxRuleEntity _taxRuleEntityDeserialize(
     maximumTaxableAmount: reader.readDoubleOrNull(offsets[8]),
     minimumTaxableAmount: reader.readDoubleOrNull(offsets[9]),
     percent: reader.readDoubleOrNull(offsets[10]),
-    ruleName: reader.readStringOrNull(offsets[11]),
-    ruleSequence: reader.readLongOrNull(offsets[12]),
+    ruleId: reader.readStringOrNull(offsets[11]),
+    ruleName: reader.readStringOrNull(offsets[12]),
+    ruleSequence: reader.readLongOrNull(offsets[13]),
   );
   return object;
 }
@@ -207,6 +220,8 @@ P _taxRuleEntityDeserializeProp<P>(
     case 11:
       return (reader.readStringOrNull(offset)) as P;
     case 12:
+      return (reader.readStringOrNull(offset)) as P;
+    case 13:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1465,6 +1480,160 @@ extension TaxRuleEntityQueryFilter
         upper: upper,
         includeUpper: includeUpper,
         epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'ruleId',
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'ruleId',
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'ruleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'ruleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'ruleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'ruleId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'ruleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'ruleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'ruleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'ruleId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'ruleId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TaxRuleEntity, TaxRuleEntity, QAfterFilterCondition>
+      ruleIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'ruleId',
+        value: '',
       ));
     });
   }

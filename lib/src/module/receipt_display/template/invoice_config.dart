@@ -3,15 +3,25 @@ import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:pdf/widgets.dart';
 
 class InvoiceConfig {
-  static  List<InvoiceColumnConfig> columnConfig = [
-    InvoiceColumnConfig(key: 'sno', title: 'S. No', flex: 1,),
+  static List<InvoiceColumnConfig> columnConfig = [
+    InvoiceColumnConfig(
+      key: 'sno',
+      title: 'S. No',
+      flex: 1,
+    ),
     InvoiceColumnConfig(key: 'desc', title: 'Description', flex: 5),
-    InvoiceColumnConfig(key: 'hsn/sac', title: 'HSN/SAC', flex: 2, align: 'right'),
-    InvoiceColumnConfig(key: 'qtyuom', title: 'Qty/UOM', flex: 2, align: 'center'),
-    InvoiceColumnConfig(key: 'rate', title: 'Unit Price', flex: 2, align: 'right'),
-    InvoiceColumnConfig(key: 'discountAmount', title: 'Discount', flex: 2, align: 'right'),
-    InvoiceColumnConfig(key: 'tax', title: 'Tax Amount', flex: 2, align: 'right'),
-    InvoiceColumnConfig(key: 'amount', title: 'Amount', flex: 2, align: 'right'),
+    InvoiceColumnConfig(
+        key: 'hsn/sac', title: 'HSN/SAC', flex: 2, align: 'right'),
+    InvoiceColumnConfig(
+        key: 'qtyuom', title: 'Qty/UOM', flex: 2, align: 'center'),
+    InvoiceColumnConfig(
+        key: 'rate', title: 'Unit Price', flex: 2, align: 'right'),
+    InvoiceColumnConfig(
+        key: 'discountAmount', title: 'Discount', flex: 2, align: 'right'),
+    InvoiceColumnConfig(
+        key: 'tax', title: 'Tax Amount', flex: 2, align: 'right'),
+    InvoiceColumnConfig(
+        key: 'amount', title: 'Amount', flex: 2, align: 'right'),
   ];
 
   static String getLineItemValue(String key, TransactionLineItemEntity entity) {
@@ -19,13 +29,15 @@ class InvoiceConfig {
       case 'quantity':
         return entity.quantity.toString();
       case 'rate':
-        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.unitPrice);
+        return NumberFormat.simpleCurrency(locale: 'en_IN')
+            .format(entity.unitPrice);
       case 'mrp':
         return entity.grossAmount.toString();
       case 'desc':
         return '${entity.itemDescription}\nSKU: ${entity.itemId}';
       case 'discountAmount':
-        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.discountAmount);
+        return NumberFormat.simpleCurrency(locale: 'en_IN')
+            .format(entity.discountAmount);
       case 'sno':
         return entity.lineItemSeq.toString();
       case 'hsn/sac':
@@ -35,28 +47,37 @@ class InvoiceConfig {
       case 'qtyuom':
         return '${entity.quantity}\n${entity.uom}';
       case 'tax':
-        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.taxAmount);
+        return NumberFormat.simpleCurrency(locale: 'en_IN')
+            .format(entity.taxAmount);
       case 'amount':
-        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.grossAmount);
+        return NumberFormat.simpleCurrency(locale: 'en_IN')
+            .format(entity.grossAmount);
       default:
         return '';
     }
   }
 
-  static String buildLineItemSummaryValue(String key, TransactionHeaderEntity entity) {
+  static String buildLineItemSummaryValue(
+      String key, TransactionHeaderEntity entity) {
     switch (key) {
       case 'qtyuom':
-        return entity.lineItems.fold<double>(0.00, (previousValue, element) => previousValue + element.quantity!).toString();
+        return entity.lineItems
+            .fold<double>(0.00,
+                (previousValue, element) => previousValue + element.quantity!)
+            .toString();
       case 'tax':
-        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.taxTotal);
+        return NumberFormat.simpleCurrency(locale: 'en_IN')
+            .format(entity.taxTotal);
       case 'amount':
-        return NumberFormat.simpleCurrency(locale: 'en_IN').format(entity.total);
+        return NumberFormat.simpleCurrency(locale: 'en_IN')
+            .format(entity.total);
       default:
         return '';
     }
   }
 
-  static Map<int, Alignment> cellAlignments(List<InvoiceColumnConfig> columnConfig) {
+  static Map<int, Alignment> cellAlignments(
+      List<InvoiceColumnConfig> columnConfig) {
     Map<int, Alignment> alignments = {};
     for (int i = 0; i < columnConfig.length; i++) {
       switch (columnConfig[i].align) {
@@ -73,12 +94,49 @@ class InvoiceConfig {
     return alignments;
   }
 
-  static Map<int, TableColumnWidth> columnWidths(List<InvoiceColumnConfig> columnConfig) {
+  static Map<int, TableColumnWidth> columnWidths(
+      List<InvoiceColumnConfig> columnConfig) {
     Map<int, TableColumnWidth> widths = {};
     for (int i = 0; i < columnConfig.length; i++) {
       widths[i] = FlexColumnWidth(columnConfig[i].flex.toDouble());
     }
     return widths;
+  }
+
+  static Map<String, TaxSummary> buildGstTaxSummary(
+      List<TransactionLineItemEntity> entity) {
+    Map<String, TaxSummary> gstTaxSummary = {};
+    for (var item in entity) {
+      if (item.taxAmount == 0 || item.hsn == null) {
+        continue;
+      }
+
+      if (!gstTaxSummary.containsKey(item.hsn!)) {
+        gstTaxSummary[item.hsn!] = TaxSummary(
+          hsnCode: item.hsn!,
+          tax: {}
+        );
+      }
+
+      gstTaxSummary[item.hsn!]!.taxableAmount += item.netAmount!;
+      gstTaxSummary[item.hsn!]!.totalAmount += item.grossAmount!;
+
+      for (var taxModifier in item.taxModifiers) {
+        if (taxModifier.taxRuleId != null) {
+          if (!gstTaxSummary[item.hsn!]!
+              .tax
+              .containsKey(taxModifier.taxRuleId)) {
+            gstTaxSummary[item.hsn!]!.tax[taxModifier.taxRuleId!] = 0.0;
+          }
+
+          gstTaxSummary[item.hsn!]!.tax[taxModifier.taxRuleId!] =
+              gstTaxSummary[item.hsn!]!.tax[taxModifier.taxRuleId!]! +
+                  taxModifier.taxAmount!;
+
+        }
+      }
+    }
+    return gstTaxSummary;
   }
 }
 
@@ -88,5 +146,23 @@ class InvoiceColumnConfig {
   final int flex;
   final String align;
 
-  InvoiceColumnConfig({required this.key, required this.title, required this.flex, this.align = "left"});
+  InvoiceColumnConfig(
+      {required this.key,
+      required this.title,
+      required this.flex,
+      this.align = "left"});
+}
+
+class TaxSummary {
+  String hsnCode;
+  double taxableAmount;
+  Map<String, double> tax;
+  double totalAmount;
+
+  TaxSummary({
+    required this.hsnCode,
+    this.taxableAmount = 0.00,
+    required this.tax,
+    this.totalAmount = 0.00,
+  });
 }

@@ -44,6 +44,8 @@ void initRootLogger() {
         break;
     }
 
-    print('$start${record.loggerName} : ${record.level} : ${record.time} : ${record.message}$end');
+    if (kDebugMode) {
+      print('$start${record.loggerName} : ${record.level} : ${record.time} : ${record.message}$end');
+    }
   });
 }

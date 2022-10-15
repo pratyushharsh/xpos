@@ -164,7 +164,7 @@ class SyncConfigRepository {
                   ? double.parse(e[3].toString())
                   : 9999999.00,
               salePrice: e[4].toString().isNotEmpty
-                  ? double.parse(e[3].toString())
+                  ? double.parse(e[4].toString())
                   : 9999999.00,
               uom: e[5].toString(),
               brand: e[6].toString(),

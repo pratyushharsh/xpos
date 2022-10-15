@@ -49,6 +49,7 @@ class Invoice1 {
           Divider(),
           _buildLineItemSummary(context),
           Divider(),
+          _contentTaxSummary(context)
         ],
       ),
     );
@@ -94,16 +95,20 @@ class Invoice1 {
       child: Column(
         children: [
           _logo(context),
-          Divider(),
+          Divider(height: 6),
           Row(children: [
             Expanded(
                 child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.only(right: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Bill Detail',
+                    'Billing Detail',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
                     '${order.customerName}',
@@ -115,7 +120,7 @@ class Invoice1 {
                     '${order.billingAddress?.city} ${order.billingAddress?.state}-${order.billingAddress?.zipcode}',
                   ),
                   Text(
-                    '${order.customerPhone}',
+                    'Ph: ${order.customerPhone}',
                   ),
                 ],
               ),
@@ -125,23 +130,31 @@ class Invoice1 {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    'Ship To',
+                    'Shipping Detail',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
-                    'Biller Name: Tantiya Colony, Gola Road, Flat No 232, Street No 423432',
-                    textAlign: TextAlign.right,
+                    '${order.customerName}',
                   ),
                   Text(
-                    'Biller Phone: +91-9888888888',
+                    '${order.shippingAddress?.address1} ${order.shippingAddress?.address2}',
                   ),
-                  Text('Email: GittiMitti.com')
+                  Text(
+                    '${order.shippingAddress?.city} ${order.shippingAddress?.state}-${order.shippingAddress?.zipcode}',
+                  ),
+                  Text(
+                    'Ph: ${order.customerPhone}',
+                  ),
                 ],
               ),
             )
           ]),
-          Divider(),
+          Divider(height: 6),
           _contentTableHeader(context),
-          Divider(),
+          Divider(height: 6),
         ],
       ),
     );
@@ -259,6 +272,119 @@ class Invoice1 {
                 ),
               ))
           .toList(),
+    );
+  }
+
+  Widget _contentTaxSummary(Context context) {
+    // Build header rows for
+    // 1. HSN Code
+    // 2. Taxable Value
+    // ... Different Taxes
+    // 3. Total Tax
+    var taxSummary = InvoiceConfig.buildGstTaxSummary(order.lineItems);
+    List<String> rows = [];
+    rows.add("HSN Code");
+    rows.add("Taxable Value");
+
+    // Get all the unique tax values from the tax summary
+    Set<String> taxNames = {};
+    for (var taxRule in taxSummary.values) {
+      taxNames.addAll(taxRule.tax.keys);
+    }
+
+    // Add the tax names to the rows
+    rows.addAll(taxNames);
+    rows.add("Total Tax");
+
+    List<String> taxColumns = taxNames.toList();
+
+    // Build the table
+
+    return Column(
+      children: [
+        // Build header
+        Divider(height: 6),
+        Row(
+          children: [
+            Expanded(
+                child: Text(
+              'HSN/SAC',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            )),
+            Expanded(
+                child: Text(
+              'Taxable Amount',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            )),
+            ...taxColumns.map((e) => Expanded(
+                    child: Text(
+                  e,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ))),
+            Expanded(
+                child: Text(
+              'Total',
+                  textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            )),
+          ],
+        ),
+        Divider(height: 6),
+        ...taxSummary.entries.map(
+          (e) => Row(
+            children: [
+              Expanded(
+                  child: Text(
+                e.key,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                ),
+              )),
+              Expanded(
+                  child: Text(
+                e.value.taxableAmount.toString(),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                ),
+              )),
+              ...taxColumns.map((taxName) => Expanded(
+                      child: Text(
+                    e.value.tax[taxName]?.toString() ?? '',
+                        textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ))),
+              Expanded(
+                  child: Text(
+                e.value.totalAmount.toString(),
+                    textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                ),
+              )),
+            ],
+          ),
+        ),
+        Divider(height: 6),
+      ],
     );
   }
 }

@@ -17,6 +17,7 @@ class NewTaxRuleBloc extends Bloc<NewTaxRuleEvent, NewTaxRuleState> {
   NewTaxRuleBloc({required this.taxRepository, required this.taxGroup})
       : super(const NewTaxRuleState()) {
     on<OnRuleNameChangeEvent>(_onRuleNameChangeEvent);
+    on<OnRuleIdChangeEvent>(_onRuleIdChangeEvent);
     on<OnAmountChangeEvent>(_onAmountChangeEvent);
     on<OnPercentChangeEvent>(_onPercentChangeEvent);
     on<OnEffectiveDateChangeEvent>(_onEffectiveDateChangeEvent);
@@ -31,6 +32,7 @@ class NewTaxRuleBloc extends Bloc<NewTaxRuleEvent, NewTaxRuleState> {
     emit(state.copyWith(status: NewTaxRuleStatus.loading));
     try {
       TaxRuleEntity taxRule = TaxRuleEntity(
+        ruleId: state.ruleId,
         ruleName: state.ruleName,
         amount: state.amount,
         percent: state.percent,
@@ -50,6 +52,11 @@ class NewTaxRuleBloc extends Bloc<NewTaxRuleEvent, NewTaxRuleState> {
     } catch (e) {
       emit(state.copyWith(status: NewTaxRuleStatus.error));
     }
+  }
+
+  void _onRuleIdChangeEvent(
+      OnRuleIdChangeEvent event, Emitter<NewTaxRuleState> emit) {
+    emit(state.copyWith(ruleId: event.ruleId));
   }
 
   void _onRuleNameChangeEvent(

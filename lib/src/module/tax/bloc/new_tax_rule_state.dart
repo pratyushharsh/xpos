@@ -10,6 +10,7 @@ enum NewTaxRuleStatus {
 
 class NewTaxRuleState extends Equatable {
   final String ruleName;
+  final String ruleId;
   final double? amount;
   final double? percent;
   final DateTime? effectiveDateTimeStamp;
@@ -19,12 +20,13 @@ class NewTaxRuleState extends Equatable {
   final NewTaxRuleStatus status;
 
   bool get isValid {
-    return ruleName.isNotEmpty &&
+    return ruleId.isNotEmpty && ruleName.isNotEmpty &&
         ((amount != null && amount! > 0) || (percent != null && percent! > 0)) &&
         ((minimumTaxableAmount != null && maximumTaxableAmount != null) ? (minimumTaxableAmount! <= maximumTaxableAmount!) : true);
   }
 
   const NewTaxRuleState({
+    this.ruleId = '',
     this.ruleName = '',
     this.amount,
     this.percent,
@@ -36,6 +38,7 @@ class NewTaxRuleState extends Equatable {
   });
 
   NewTaxRuleState copyWith({
+    String? ruleId,
     String? ruleName,
     double? amount,
     double? percent,
@@ -46,6 +49,7 @@ class NewTaxRuleState extends Equatable {
     NewTaxRuleStatus? status,
   }) {
     return NewTaxRuleState(
+      ruleId: ruleId ?? this.ruleId,
       ruleName: ruleName ?? this.ruleName,
       amount: amount ?? this.amount,
       percent: percent ?? this.percent,
@@ -61,6 +65,7 @@ class NewTaxRuleState extends Equatable {
 
   @override
   List<Object?> get props => [
+        ruleId,
         ruleName,
         amount,
         percent,

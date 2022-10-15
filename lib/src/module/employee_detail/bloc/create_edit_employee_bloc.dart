@@ -113,7 +113,7 @@ class CreateEditEmployeeBloc
               businessId: authenticationBloc.state.store!.rtlLocId.toString(),
               phone: phone,
               createdUserId: authenticationBloc.state.employee!.phone,
-              locale: state.locale ?? 'en_US'));
+              locale: state.locale));
       emit(state.copyWith(status: CreateEditEmployeeStatus.newUserCreated));
     } catch (e) {
       emit(state.copyWith(
@@ -132,7 +132,7 @@ class CreateEditEmployeeBloc
             middleName: state.middleName,
             lastName: state.lastName,
             email: state.email,
-            locale: state.locale ?? 'en_US',
+            locale: state.locale,
           ),
           state.employeeId!);
       emit(state.copyWith(status: CreateEditEmployeeStatus.userUpdated));

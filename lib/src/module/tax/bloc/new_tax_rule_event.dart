@@ -9,6 +9,12 @@ class OnRuleNameChangeEvent extends NewTaxRuleEvent {
   OnRuleNameChangeEvent(this.ruleName);
 }
 
+class OnRuleIdChangeEvent extends NewTaxRuleEvent {
+  final String ruleId;
+
+  OnRuleIdChangeEvent(this.ruleId);
+}
+
 class OnAmountChangeEvent extends NewTaxRuleEvent {
   final double amount;
 

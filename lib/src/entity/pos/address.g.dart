@@ -33,14 +33,14 @@ const AddressSchema = Schema(
       name: r'country',
       type: IsarType.string,
     ),
-    r'hashCode': PropertySchema(
-      id: 4,
-      name: r'hashCode',
-      type: IsarType.long,
-    ),
     r'state': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'state',
+      type: IsarType.string,
+    ),
+    r'stateCode': PropertySchema(
+      id: 5,
+      name: r'stateCode',
       type: IsarType.string,
     ),
     r'zipcode': PropertySchema(
@@ -92,6 +92,12 @@ int _addressEstimateSize(
     }
   }
   {
+    final value = object.stateCode;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.zipcode;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -110,8 +116,8 @@ void _addressSerialize(
   writer.writeString(offsets[1], object.address2);
   writer.writeString(offsets[2], object.city);
   writer.writeString(offsets[3], object.country);
-  writer.writeLong(offsets[4], object.hashCode);
-  writer.writeString(offsets[5], object.state);
+  writer.writeString(offsets[4], object.state);
+  writer.writeString(offsets[5], object.stateCode);
   writer.writeString(offsets[6], object.zipcode);
 }
 
@@ -126,7 +132,8 @@ Address _addressDeserialize(
     address2: reader.readStringOrNull(offsets[1]),
     city: reader.readStringOrNull(offsets[2]),
     country: reader.readStringOrNull(offsets[3]),
-    state: reader.readStringOrNull(offsets[5]),
+    state: reader.readStringOrNull(offsets[4]),
+    stateCode: reader.readStringOrNull(offsets[5]),
     zipcode: reader.readStringOrNull(offsets[6]),
   );
   return object;
@@ -148,7 +155,7 @@ P _addressDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
@@ -744,59 +751,6 @@ extension AddressQueryFilter
     });
   }
 
-  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'hashCode',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'hashCode',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'hashCode',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'hashCode',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<Address, Address, QAfterFilterCondition> stateIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -938,6 +892,152 @@ extension AddressQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'state',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'stateCode',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'stateCode',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'stateCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'stateCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'stateCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'stateCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'stateCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'stateCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'stateCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'stateCode',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'stateCode',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> stateCodeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'stateCode',
         value: '',
       ));
     });

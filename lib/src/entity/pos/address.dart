@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 part 'address.g.dart';
+
 @embedded
 class Address {
   final String? address1;
@@ -15,13 +16,12 @@ class Address {
       this.address2,
       this.city,
       this.state,
-        this.stateCode,
+      this.stateCode,
       this.country,
       this.zipcode});
 
-
   @override
-  bool operator == (Object other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       other is Address &&
           runtimeType == other.runtimeType &&
@@ -32,6 +32,16 @@ class Address {
           stateCode == other.stateCode &&
           country == other.country &&
           zipcode == other.zipcode;
+
+  @override
+  int get hashCode =>
+      address1.hashCode ^
+      address2.hashCode ^
+      city.hashCode ^
+      state.hashCode ^
+      stateCode.hashCode ^
+      country.hashCode ^
+      zipcode.hashCode;
 
   @override
   String toString() {
@@ -55,5 +65,5 @@ class Address {
         'state': state,
         'stateCode': stateCode,
         'country': country,
-  };
+      };
 }

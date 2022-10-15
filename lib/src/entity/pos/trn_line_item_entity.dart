@@ -1,8 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
-import 'trn_line_item_tax.dart';
-
 part 'trn_line_item_entity.g.dart';
 
 @embedded

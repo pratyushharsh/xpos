@@ -56,6 +56,13 @@ class CreateNewTaxRuleForm extends StatelessWidget {
               ),
               const Divider(),
               CustomTextField(
+                label: 'Rule Id',
+                initialValue: state.ruleId,
+                onValueChange: (value) =>
+                    BlocProvider.of<NewTaxRuleBloc>(context)
+                        .add(OnRuleIdChangeEvent(value)),
+              ),
+              CustomTextField(
                 label: 'Rule Name',
                 initialValue: state.ruleName,
                 onValueChange: (value) =>
