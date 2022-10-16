@@ -58,6 +58,7 @@ class AuthenticationBloc
 
   void _onInitialAuth(
       InitialAuthEvent event, Emitter<AuthenticationState> emit) async {
+    _loadConfigDataIfNotPresent();
     try {
       var user = await userPool.getCurrentUser();
       if (user != null && user.getUsername() != null) {
@@ -135,5 +136,9 @@ class AuthenticationBloc
       var business = await businessRepository.getBusinessById(state.store!.rtlLocId);
       emit(state.copyWith(store: business));
     }
+  }
+
+  Future<void> _loadConfigDataIfNotPresent() async {
+    sync.add(SyncAllConfigDataEvent());
   }
 }

@@ -46,6 +46,14 @@ class SyncConfigRepository {
         await _loadReasonCode(fields);
       }
     }
+
+    SyncEntity syncEntity = SyncEntity(
+        type: "CODE_CONFIG",
+        lastSyncAt: DateTime.now(),
+        status: 1);
+    await db.writeTxn(() async {
+      await db.syncEntitys.putByIndex('type', syncEntity);
+    });
   }
 
   Future<void> _loadReasonCode(List<List<dynamic>> fields) async {
@@ -80,9 +88,27 @@ class SyncConfigRepository {
     });
   }
 
-  Future<void> getSyncConfigDetails() async {
+  Future<void> getSyncConfigDetails({bool forceSync = false }) async {
     log.info("Isolate will be spawned");
-    await getDataFromServer();
+    // Check of data is present in the database then sync it.
+    try {
+      var entity = await db.syncEntitys.where().typeEqualTo('CODE_CONFIG').findFirst();
+      if (entity == null || forceSync) {
+        log.info("Syncing data from server");
+        try {
+          await getDataFromServer();
+        } catch (e) {
+          log.warning("Error in syncConfigDetails");
+          log.warning(e);
+        }
+      } else {
+        log.info("Data is already present in the database");
+      }
+    } catch (e) {
+      log.info(e);
+      log.info('No data present in the database. Syncing data from server');
+    }
+
     // ReceivePort receivePort = ReceivePort();
     // Isolate.spawn(spawnIsolate, receivePort.sendPort);
     //

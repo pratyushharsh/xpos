@@ -12,6 +12,10 @@ class StopSyncEvent extends BackgroundSyncEvent {}
 
 class SyncAllDataEvent extends BackgroundSyncEvent {}
 
-class SyncAllConfigDataEvent extends BackgroundSyncEvent {}
+class SyncAllConfigDataEvent extends BackgroundSyncEvent {
+  final bool forceSync;
+
+  SyncAllConfigDataEvent({this.forceSync = false});
+}
 
 class LoadSampleData extends BackgroundSyncEvent {}

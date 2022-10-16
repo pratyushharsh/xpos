@@ -19,7 +19,7 @@ void initRootLogger() {
   hierarchicalLoggingEnabled = true;
 
   // specify the levels for lower level loggers, if desired
-  // Logger('SiteInfoService').level = Level.ALL;
+  Logger('InvoicingBlocObserver').level = Level.WARNING;
 
   Logger.root.onRecord.listen((record) {
     if (!kDebugMode) {
