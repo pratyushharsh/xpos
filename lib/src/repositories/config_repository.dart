@@ -12,6 +12,9 @@ class ConfigRepository {
   }
 
   CodeValueEntity? getCodeByCategoryAndCode(String category, String code) {
+    if (category.isEmpty || code.isEmpty) {
+      return null;
+    }
     return db.codeValueEntitys.getByCategoryCodeSync(category, code);
   }
 }

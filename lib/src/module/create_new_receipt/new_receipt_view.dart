@@ -132,30 +132,16 @@ class BuildLineItem extends StatelessWidget {
 
   void onTap(BuildContext context, TransactionLineItemEntity saleLine,
       ProductEntity? product) {
-    if (Platform.isIOS || Platform.isAndroid) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(
-            builder: (_) => MobileDialogView(
-              child: LineItemModificationView(
-                  lineItem: saleLine, productModel: product),
-            ),
-          ))
-          .then((value) => {
-                if (value != null && value is CreateNewReceiptEvent)
-                  {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
-              });
-    } else {
-      showTransitiveAppPopUp(
-              context: context,
-              child: LineItemModificationView(
-                  lineItem: saleLine, productModel: product))
-          .then(
-        (value) => {
-          if (value != null && value is CreateNewReceiptEvent)
-            {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
-        },
-      );
-    }
+    showTransitiveAppPopUp(
+            context: context,
+            child: LineItemModificationView(
+                lineItem: saleLine, productModel: product))
+        .then(
+      (value) => {
+        if (value != null && value is CreateNewReceiptEvent)
+          {BlocProvider.of<CreateNewReceiptBloc>(context).add(value)}
+      },
+    );
   }
 
   @override
@@ -360,8 +346,7 @@ class TenderLineDisplay extends StatelessWidget {
               child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    getCurrencyFormatter(context)
-                        .format(tenderLine.amount!),
+                    getCurrencyFormatter(context).format(tenderLine.amount!),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ))),
         ],
@@ -448,10 +433,9 @@ class NewLineItem extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    getCurrencyFormatter(context)
-                        .format(saleLine.priceOverride
-                            ? saleLine.unitPrice
-                            : saleLine.baseUnitPrice),
+                    getCurrencyFormatter(context).format(saleLine.priceOverride
+                        ? saleLine.unitPrice
+                        : saleLine.baseUnitPrice),
                     style: NewLineItem.textStyle,
                   ),
                 ),
@@ -469,8 +453,7 @@ class NewLineItem extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    getCurrencyFormatter(context)
-                        .format(saleLine.netAmount),
+                    getCurrencyFormatter(context).format(saleLine.netAmount),
                     style: NewLineItem.textStyle,
                   ),
                 ),
@@ -498,8 +481,7 @@ class NewLineItem extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 60),
                       child: Text(
-                        getCurrencyFormatter(context)
-                            .format(-e.amount),
+                        getCurrencyFormatter(context).format(-e.amount),
                         style: NewLineItem.textStyle,
                       ),
                     ),
@@ -516,35 +498,6 @@ class NewLineItem extends StatelessWidget {
 class NewInvoiceButtonBar extends StatelessWidget {
   const NewInvoiceButtonBar({Key? key}) : super(key: key);
 
-  showAlertDialog(BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = ElevatedButton(
-      child: const Text("Cancel"),
-      onPressed: () {},
-    );
-    Widget continueButton = ElevatedButton(
-      child: const Text("Continue"),
-      onPressed: () {},
-    );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: const Text("AlertDialog"),
-      content: const Text(
-          "Would you like to continue learning how to use Flutter alerts?"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CreateNewReceiptBloc, CreateNewReceiptState>(
@@ -558,7 +511,7 @@ class NewInvoiceButtonBar extends StatelessWidget {
       },
       builder: (context, state) {
         return Container(
-          margin: const EdgeInsets.symmetric(vertical: 8),
+          margin: const EdgeInsets.only(top: 0, bottom: 8),
           child: Row(
             children: [
               Expanded(
@@ -693,31 +646,26 @@ class NewReceiptSummaryWidget extends StatelessWidget {
           children: [
             RetailSummaryDetailRow(
               title: "Sub Total",
-              value: getCurrencyFormatter(context)
-                  .format(state.subTotal),
+              value: getCurrencyFormatter(context).format(state.subTotal),
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Discount",
-              value: getCurrencyFormatter(context)
-            .format(state.discount),
+              value: getCurrencyFormatter(context).format(state.discount),
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Tax",
-              value: getCurrencyFormatter(context)
-            .format(state.tax),
+              value: getCurrencyFormatter(context).format(state.tax),
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             const Divider(),
             RetailSummaryDetailRow(
               title: "Amount Due",
-              value:
-              getCurrencyFormatter(context)
-                      .format(state.amountDue),
+              value: getCurrencyFormatter(context).format(state.amountDue),
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,

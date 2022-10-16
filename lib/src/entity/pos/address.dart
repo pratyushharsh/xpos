@@ -9,6 +9,7 @@ class Address {
   final String? state;
   final String? stateCode;
   final String? country;
+  final String? countryCode;
   final String? zipcode;
 
   Address(
@@ -18,7 +19,9 @@ class Address {
       this.state,
       this.stateCode,
       this.country,
+      this.countryCode,
       this.zipcode});
+
 
   @override
   bool operator ==(Object other) =>
@@ -31,6 +34,7 @@ class Address {
           state == other.state &&
           stateCode == other.stateCode &&
           country == other.country &&
+          countryCode == other.countryCode &&
           zipcode == other.zipcode;
 
   @override
@@ -41,29 +45,11 @@ class Address {
       state.hashCode ^
       stateCode.hashCode ^
       country.hashCode ^
+      countryCode.hashCode ^
       zipcode.hashCode;
 
   @override
   String toString() {
     return '$address1, $address2\n$city, $state\n$country, $zipcode';
   }
-
-  Address.fromJson(Map<String, dynamic> json)
-      : zipcode = json['zipcode'],
-        address1 = json['address1'],
-        address2 = json['address2'],
-        city = json['city'],
-        state = json['state'],
-        stateCode = json['stateCode'],
-        country = json['country'];
-
-  Map<String, dynamic> toJson() => {
-        'zipcode': zipcode,
-        'address1': address1,
-        'address2': address2,
-        'city': city,
-        'state': state,
-        'stateCode': stateCode,
-        'country': country,
-      };
 }

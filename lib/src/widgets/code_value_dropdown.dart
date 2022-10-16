@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../entity/config/code_value_entity.dart';
 import '../repositories/config_repository.dart';
 
+typedef CodeValueDropDownBuilder = String Function(CodeValueEntity value);
+
 class CodeValueDropDown extends StatelessWidget {
   final ValueChanged<CodeValueEntity?>? onChanged;
   final String category;
@@ -14,6 +16,7 @@ class CodeValueDropDown extends StatelessWidget {
   final String? errorText;
   final FormFieldValidator<CodeValueEntity>? validator;
   final CodeValueEntity? value;
+  final CodeValueDropDownBuilder builder;
   const CodeValueDropDown({
     Key? key,
     required this.onChanged,
@@ -24,7 +27,12 @@ class CodeValueDropDown extends StatelessWidget {
     this.errorText,
     this.validator,
     this.value,
+    this.builder = defaultBuilder,
   }) : super(key: key);
+
+  static String defaultBuilder(CodeValueEntity u) {
+    return u.description ?? u.value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +56,15 @@ class CodeValueDropDown extends StatelessWidget {
         DropdownSearch<CodeValueEntity>(
           selectedItem: value,
           validator: validator,
-          filterFn: (user, filter) =>
-              user.value.toLowerCase().contains(filter.toLowerCase()),
+          filterFn: (user, filter) => user.code.toLowerCase().contains(filter.toLowerCase()) ||
+              user.value.toLowerCase().contains(filter.toLowerCase()) ||
+              user.description!.toLowerCase().contains(filter.toLowerCase()),
           asyncItems: (filter) async {
             return await context
                 .read<ConfigRepository>()
                 .getCodeByCategory(category);
           },
-          itemAsString: (CodeValueEntity u) => u.description ?? u.value,
+          itemAsString: builder,
           onChanged: onChanged,
           popupProps: const PopupProps.menu(
             showSearchBox: true,

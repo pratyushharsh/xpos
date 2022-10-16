@@ -1,9 +1,9 @@
 import 'package:validators/validators.dart';
 
+import '../../config/regex.dart';
+
 
 class NewEmployeeFieldValidator {
-
-  static RegExp phoneRegExp = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
 
   static String? validateEmployeeEmail(String? value) {
     if (value != null && value.isNotEmpty) {

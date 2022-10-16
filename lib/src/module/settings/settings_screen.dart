@@ -186,6 +186,11 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state) {
+
+        if (state.store == null) {
+          return const SizedBox();
+        }
+
         return Column(
           children: [
             InkWell(

@@ -33,23 +33,28 @@ const AddressSchema = Schema(
       name: r'country',
       type: IsarType.string,
     ),
-    r'hashCode': PropertySchema(
+    r'countryCode': PropertySchema(
       id: 4,
+      name: r'countryCode',
+      type: IsarType.string,
+    ),
+    r'hashCode': PropertySchema(
+      id: 5,
       name: r'hashCode',
       type: IsarType.long,
     ),
     r'state': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'state',
       type: IsarType.string,
     ),
     r'stateCode': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'stateCode',
       type: IsarType.string,
     ),
     r'zipcode': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'zipcode',
       type: IsarType.string,
     )
@@ -91,6 +96,12 @@ int _addressEstimateSize(
     }
   }
   {
+    final value = object.countryCode;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.state;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -121,10 +132,11 @@ void _addressSerialize(
   writer.writeString(offsets[1], object.address2);
   writer.writeString(offsets[2], object.city);
   writer.writeString(offsets[3], object.country);
-  writer.writeLong(offsets[4], object.hashCode);
-  writer.writeString(offsets[5], object.state);
-  writer.writeString(offsets[6], object.stateCode);
-  writer.writeString(offsets[7], object.zipcode);
+  writer.writeString(offsets[4], object.countryCode);
+  writer.writeLong(offsets[5], object.hashCode);
+  writer.writeString(offsets[6], object.state);
+  writer.writeString(offsets[7], object.stateCode);
+  writer.writeString(offsets[8], object.zipcode);
 }
 
 Address _addressDeserialize(
@@ -138,9 +150,10 @@ Address _addressDeserialize(
     address2: reader.readStringOrNull(offsets[1]),
     city: reader.readStringOrNull(offsets[2]),
     country: reader.readStringOrNull(offsets[3]),
-    state: reader.readStringOrNull(offsets[5]),
-    stateCode: reader.readStringOrNull(offsets[6]),
-    zipcode: reader.readStringOrNull(offsets[7]),
+    countryCode: reader.readStringOrNull(offsets[4]),
+    state: reader.readStringOrNull(offsets[6]),
+    stateCode: reader.readStringOrNull(offsets[7]),
+    zipcode: reader.readStringOrNull(offsets[8]),
   );
   return object;
 }
@@ -161,12 +174,14 @@ P _addressDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readLong(offset)) as P;
-    case 5:
       return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readLong(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
+      return (reader.readStringOrNull(offset)) as P;
+    case 8:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -754,6 +769,153 @@ extension AddressQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'country',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'countryCode',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'countryCode',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'countryCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'countryCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'countryCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'countryCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'countryCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'countryCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'countryCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'countryCode',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> countryCodeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'countryCode',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition>
+      countryCodeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'countryCode',
         value: '',
       ));
     });

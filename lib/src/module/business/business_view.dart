@@ -14,7 +14,9 @@ import '../../entity/config/code_value_entity.dart';
 import '../../entity/pos/business_entity.dart';
 import '../../widgets/appbar_leading.dart';
 import '../../widgets/code_value_dropdown.dart';
+import '../../widgets/desktop_pop_up.dart';
 import 'bloc/business_bloc.dart';
+import 'business_validator.dart';
 
 class BusinessView extends StatelessWidget {
   final BusinessOperation operation;
@@ -104,9 +106,9 @@ class BusinessView extends StatelessWidget {
                           ),
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
+                            backgroundColor: AppColor.color8,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 14, horizontal: 10),
-                            primary: AppColor.color8,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0)),
                           ),
@@ -134,6 +136,7 @@ class BusinessDetail extends StatefulWidget {
 
 class _BusinessDetailState extends State<BusinessDetail> {
   late TextEditingController _businessNameController;
+  late TextEditingController _legalBusinessNameController;
   late TextEditingController _businessContactController;
   late TextEditingController _businessEmailController;
   late TextEditingController _businessGstController;
@@ -145,6 +148,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
   void initState() {
     super.initState();
     _businessNameController = TextEditingController();
+    _legalBusinessNameController = TextEditingController();
     _businessContactController = TextEditingController();
     _businessEmailController = TextEditingController();
     _businessGstController = TextEditingController();
@@ -156,6 +160,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
   @override
   void dispose() {
     _businessNameController.dispose();
+    _legalBusinessNameController.dispose();
     _businessContactController.dispose();
     _businessEmailController.dispose();
     _businessGstController.dispose();
@@ -204,8 +209,10 @@ class _BusinessDetailState extends State<BusinessDetail> {
           _businessGstController.text = state.businessGst;
           _businessPanController.text = state.businessPan;
 
-          _selectedCurrency = RepositoryProvider.of<ConfigRepository>(context).getCodeByCategoryAndCode('CURRENCY', state.businessCurrency);
-          _selectedLocale = RepositoryProvider.of<ConfigRepository>(context).getCodeByCategoryAndCode('LOCALE', state.businessLocale);
+          _selectedCurrency = RepositoryProvider.of<ConfigRepository>(context)
+              .getCodeByCategoryAndCode('CURRENCY', state.businessCurrency);
+          _selectedLocale = RepositoryProvider.of<ConfigRepository>(context)
+              .getCodeByCategoryAndCode('LOCALE', state.businessLocale);
         }
         return Column(
           children: [
@@ -216,26 +223,33 @@ class _BusinessDetailState extends State<BusinessDetail> {
                 BlocProvider.of<BusinessBloc>(context)
                     .add(OnBusinessNameChange(val));
               },
+              validator: BusinessValidator.businessName,
             ),
             CustomTextField(
-              controller: _businessNameController,
+              controller: _legalBusinessNameController,
               label: "Legal Business Name",
               onValueChange: (val) {
                 // BlocProvider.of<BusinessBloc>(context)
                 //     .add(OnBusinessNameChange(val));
               },
+              validator: BusinessValidator.legalBusinessName,
             ),
             CodeValueDropDown(
               category: "CURRENCY",
               onChanged: _onSelectedCurrencyChanged,
               label: "Currency",
               value: _selectedCurrency,
+              builder: (code) {
+                return '${code.code} - ${code.value}';
+              },
+              validator: BusinessValidator.businessCurrency,
             ),
             CodeValueDropDown(
               category: "LOCALE",
               onChanged: _onSelectedLocaleChanged,
               label: "Locale",
               value: _selectedLocale,
+              validator: BusinessValidator.businessLocale,
             ),
             CustomTextField(
               controller: _businessContactController,
@@ -244,6 +258,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
                 BlocProvider.of<BusinessBloc>(context)
                     .add(OnBusinessContactChange(val));
               },
+              textInputType: TextInputType.phone,
+              validator: BusinessValidator.businessContact,
             ),
             CustomTextField(
               controller: _businessEmailController,
@@ -253,20 +269,14 @@ class _BusinessDetailState extends State<BusinessDetail> {
                 BlocProvider.of<BusinessBloc>(context)
                     .add(OnBusinessEmailChange(val));
               },
+              validator: BusinessValidator.businessEmail,
             ),
             GestureDetector(
               onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (ctx) {
-                      return Dialog(
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          child: const AddressFormDialog(),
-                        ),
-                      );
-                    }).then(
+                showTransitiveAppPopUp(
+                  context: context,
+                  child: AddressFormDialog(address: state.businessAddress),
+                ).then(
                   (value) => {
                     if (value != null && value is Address)
                       {
@@ -276,9 +286,10 @@ class _BusinessDetailState extends State<BusinessDetail> {
                   },
                 );
               },
-              child: TextFieldPlaceholderWidget(
+              child: TextFieldPlaceholderWidget<Address>(
                 label: "Business Address",
-                value: state.businessAddress?.toString() ?? "",
+                value: state.businessAddress,
+                validator: BusinessValidator.businessAddress,
               ),
             ),
             CustomTextField(
@@ -299,6 +310,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
                     .add(OnBusinessPanChange(val.toUpperCase()));
               },
             ),
+            const SizedBox(height: 100,)
           ],
         );
       },
@@ -307,7 +319,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
 }
 
 class AddressFormDialog extends StatefulWidget {
-  const AddressFormDialog({Key? key}) : super(key: key);
+  final Address? address;
+  const AddressFormDialog({Key? key, this.address}) : super(key: key);
 
   @override
   State<AddressFormDialog> createState() => _AddressFormDialogState();
@@ -318,13 +331,10 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
   late TextEditingController _buildingController;
   late TextEditingController _streetController;
   late TextEditingController _cityController;
-  late TextEditingController _stateController;
   // late String? _country;
   late CodeValueEntity? _selectedCountry;
   late CodeValueEntity? _selectedState;
 
-  List<CodeValueEntity> countryCode = [];
-  List<CodeValueEntity> stateCode = [];
 
   @override
   void initState() {
@@ -333,10 +343,19 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
     _buildingController = TextEditingController();
     _streetController = TextEditingController();
     _cityController = TextEditingController();
-    _stateController = TextEditingController();
     _selectedCountry = null;
     _selectedState = null;
-    _fetchData();
+    // _fetchData();
+    if (widget.address != null) {
+      _zipcodeController.text = widget.address!.zipcode ?? '';
+      _buildingController.text = widget.address!.address1 ?? '';
+      _streetController.text = widget.address!.address2 ?? '';
+      _cityController.text = widget.address!.city ?? '';
+      _selectedCountry = RepositoryProvider.of<ConfigRepository>(context)
+          .getCodeByCategoryAndCode('COUNTRY_CODE', widget.address!.countryCode!);
+      _selectedState = RepositoryProvider.of<ConfigRepository>(context)
+          .getCodeByCategoryAndCode('IN_STATE', widget.address!.stateCode!);
+    }
   }
 
   @override
@@ -348,15 +367,15 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
     super.dispose();
   }
 
-  void _fetchData() async {
-    var repo = RepositoryProvider.of<ConfigRepository>(context);
-    var countryCode = await repo.getCodeByCategory("COUNTRY_CODE");
-    var stateCode = await repo.getCodeByCategory("IN_STATE");
-    setState(() {
-      this.countryCode = countryCode;
-      this.stateCode = stateCode;
-    });
-  }
+  // void _fetchData() async {
+  //   var repo = RepositoryProvider.of<ConfigRepository>(context);
+  //   var countryCode = await repo.getCodeByCategory("COUNTRY_CODE");
+  //   var stateCode = await repo.getCodeByCategory("IN_STATE");
+  //   setState(() {
+  //     this.countryCode = countryCode;
+  //     this.stateCode = stateCode;
+  //   });
+  // }
 
   void _onSelectedCountryChange(CodeValueEntity? value) {
     setState(() {
@@ -421,7 +440,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                       address2: _streetController.text,
                       city: _cityController.text,
                       state: _selectedState!.value,
-                      country: _selectedCountry?.value ?? "",
+                      stateCode: _selectedState!.code,
+                      country: _selectedCountry?.value,
+                      countryCode: _selectedCountry?.code,
                     ));
                   },
                 ),

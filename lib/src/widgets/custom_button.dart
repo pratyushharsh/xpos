@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../config/theme_settings.dart';
@@ -15,6 +17,14 @@ class AcceptButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late EdgeInsetsGeometry padding;
+
+    if (Platform.isIOS || Platform.isAndroid) {
+      padding = const EdgeInsets.symmetric(vertical: 16);
+    } else {
+      padding = const EdgeInsets.symmetric(vertical: 20);
+    }
+
     return ElevatedButton(
       // onPressed: null,
       onPressed: onPressed,
@@ -23,9 +33,8 @@ class AcceptButton extends StatelessWidget {
         style: const TextStyle(color: AppColor.textColorSecondary),
       ),
       style: ElevatedButton.styleFrom(
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        primary: AppColor.primary,
+        elevation: 0, backgroundColor: AppColor.primary,
+        padding: padding,
         shape: RoundedRectangleBorder(
             borderRadius: borderRadius ?? BorderRadius.circular(5.0)),
       ),
@@ -41,6 +50,15 @@ class RejectButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    late EdgeInsetsGeometry padding;
+
+    if (Platform.isIOS || Platform.isAndroid) {
+      padding = const EdgeInsets.symmetric(vertical: 16);
+    } else {
+      padding = const EdgeInsets.symmetric(vertical: 20);
+    }
+
     return ElevatedButton(
       onPressed: onPressed,
       child: Text(
@@ -48,9 +66,8 @@ class RejectButton extends StatelessWidget {
         style: const TextStyle(color: AppColor.primary),
       ),
       style: ElevatedButton.styleFrom(
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        primary: AppColor.color8,
+        elevation: 0, backgroundColor: AppColor.color8,
+        padding: padding,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
