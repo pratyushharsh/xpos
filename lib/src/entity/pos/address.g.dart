@@ -33,18 +33,23 @@ const AddressSchema = Schema(
       name: r'country',
       type: IsarType.string,
     ),
-    r'state': PropertySchema(
+    r'hashCode': PropertySchema(
       id: 4,
+      name: r'hashCode',
+      type: IsarType.long,
+    ),
+    r'state': PropertySchema(
+      id: 5,
       name: r'state',
       type: IsarType.string,
     ),
     r'stateCode': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'stateCode',
       type: IsarType.string,
     ),
     r'zipcode': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'zipcode',
       type: IsarType.string,
     )
@@ -116,9 +121,10 @@ void _addressSerialize(
   writer.writeString(offsets[1], object.address2);
   writer.writeString(offsets[2], object.city);
   writer.writeString(offsets[3], object.country);
-  writer.writeString(offsets[4], object.state);
-  writer.writeString(offsets[5], object.stateCode);
-  writer.writeString(offsets[6], object.zipcode);
+  writer.writeLong(offsets[4], object.hashCode);
+  writer.writeString(offsets[5], object.state);
+  writer.writeString(offsets[6], object.stateCode);
+  writer.writeString(offsets[7], object.zipcode);
 }
 
 Address _addressDeserialize(
@@ -132,9 +138,9 @@ Address _addressDeserialize(
     address2: reader.readStringOrNull(offsets[1]),
     city: reader.readStringOrNull(offsets[2]),
     country: reader.readStringOrNull(offsets[3]),
-    state: reader.readStringOrNull(offsets[4]),
-    stateCode: reader.readStringOrNull(offsets[5]),
-    zipcode: reader.readStringOrNull(offsets[6]),
+    state: reader.readStringOrNull(offsets[5]),
+    stateCode: reader.readStringOrNull(offsets[6]),
+    zipcode: reader.readStringOrNull(offsets[7]),
   );
   return object;
 }
@@ -155,10 +161,12 @@ P _addressDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -747,6 +755,59 @@ extension AddressQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'country',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hashCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }

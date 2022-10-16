@@ -112,43 +112,53 @@ const TransactionHeaderEntitySchema = CollectionSchema(
       name: r'status',
       type: IsarType.string,
     ),
-    r'storeId': PropertySchema(
+    r'storeCurrency': PropertySchema(
       id: 18,
+      name: r'storeCurrency',
+      type: IsarType.string,
+    ),
+    r'storeId': PropertySchema(
+      id: 19,
       name: r'storeId',
       type: IsarType.long,
     ),
+    r'storeLocale': PropertySchema(
+      id: 20,
+      name: r'storeLocale',
+      type: IsarType.string,
+    ),
     r'subtotal': PropertySchema(
-      id: 19,
+      id: 21,
       name: r'subtotal',
       type: IsarType.double,
     ),
     r'syncState': PropertySchema(
-      id: 20,
+      id: 22,
       name: r'syncState',
       type: IsarType.long,
     ),
     r'taxTotal': PropertySchema(
-      id: 21,
+      id: 23,
       name: r'taxTotal',
       type: IsarType.double,
     ),
     r'total': PropertySchema(
-      id: 22,
+      id: 24,
       name: r'total',
       type: IsarType.double,
     ),
     r'transactionType': PropertySchema(
-      id: 23,
+      id: 25,
       name: r'transactionType',
       type: IsarType.string,
     ),
     r'updateTime': PropertySchema(
-      id: 24,
+      id: 26,
       name: r'updateTime',
       type: IsarType.dateTime,
     ),
     r'version': PropertySchema(
-      id: 25,
+      id: 27,
       name: r'version',
       type: IsarType.long,
     )
@@ -276,6 +286,8 @@ int _transactionHeaderEntityEstimateSize(
     }
   }
   bytesCount += 3 + object.status.length * 3;
+  bytesCount += 3 + object.storeCurrency.length * 3;
+  bytesCount += 3 + object.storeLocale.length * 3;
   bytesCount += 3 + object.transactionType.length * 3;
   return bytesCount;
 }
@@ -324,14 +336,16 @@ void _transactionHeaderEntitySerialize(
     object.shippingAddress,
   );
   writer.writeString(offsets[17], object.status);
-  writer.writeLong(offsets[18], object.storeId);
-  writer.writeDouble(offsets[19], object.subtotal);
-  writer.writeLong(offsets[20], object.syncState);
-  writer.writeDouble(offsets[21], object.taxTotal);
-  writer.writeDouble(offsets[22], object.total);
-  writer.writeString(offsets[23], object.transactionType);
-  writer.writeDateTime(offsets[24], object.updateTime);
-  writer.writeLong(offsets[25], object.version);
+  writer.writeString(offsets[18], object.storeCurrency);
+  writer.writeLong(offsets[19], object.storeId);
+  writer.writeString(offsets[20], object.storeLocale);
+  writer.writeDouble(offsets[21], object.subtotal);
+  writer.writeLong(offsets[22], object.syncState);
+  writer.writeDouble(offsets[23], object.taxTotal);
+  writer.writeDouble(offsets[24], object.total);
+  writer.writeString(offsets[25], object.transactionType);
+  writer.writeDateTime(offsets[26], object.updateTime);
+  writer.writeLong(offsets[27], object.version);
 }
 
 TransactionHeaderEntity _transactionHeaderEntityDeserialize(
@@ -379,15 +393,17 @@ TransactionHeaderEntity _transactionHeaderEntityDeserialize(
       allOffsets,
     ),
     status: reader.readString(offsets[17]),
-    storeId: reader.readLong(offsets[18]),
-    subtotal: reader.readDouble(offsets[19]),
-    syncState: reader.readLongOrNull(offsets[20]) ?? 100,
-    taxTotal: reader.readDouble(offsets[21]),
-    total: reader.readDouble(offsets[22]),
+    storeCurrency: reader.readString(offsets[18]),
+    storeId: reader.readLong(offsets[19]),
+    storeLocale: reader.readString(offsets[20]),
+    subtotal: reader.readDouble(offsets[21]),
+    syncState: reader.readLongOrNull(offsets[22]) ?? 100,
+    taxTotal: reader.readDouble(offsets[23]),
+    total: reader.readDouble(offsets[24]),
     transId: id,
-    transactionType: reader.readString(offsets[23]),
-    updateTime: reader.readDateTimeOrNull(offsets[24]),
-    version: reader.readLongOrNull(offsets[25]) ?? 1,
+    transactionType: reader.readString(offsets[25]),
+    updateTime: reader.readDateTimeOrNull(offsets[26]),
+    version: reader.readLongOrNull(offsets[27]) ?? 1,
   );
   return object;
 }
@@ -456,20 +472,24 @@ P _transactionHeaderEntityDeserializeProp<P>(
     case 17:
       return (reader.readString(offset)) as P;
     case 18:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 19:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 20:
-      return (reader.readLongOrNull(offset) ?? 100) as P;
+      return (reader.readString(offset)) as P;
     case 21:
       return (reader.readDouble(offset)) as P;
     case 22:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 100) as P;
     case 23:
-      return (reader.readString(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 24:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 25:
+      return (reader.readString(offset)) as P;
+    case 26:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 27:
       return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2443,6 +2463,144 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeCurrencyEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'storeCurrency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeCurrencyGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'storeCurrency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeCurrencyLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'storeCurrency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeCurrencyBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'storeCurrency',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeCurrencyStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'storeCurrency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeCurrencyEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'storeCurrency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      storeCurrencyContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'storeCurrency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      storeCurrencyMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'storeCurrency',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeCurrencyIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'storeCurrency',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeCurrencyIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'storeCurrency',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> storeIdEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2494,6 +2652,144 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeLocaleEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'storeLocale',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeLocaleGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'storeLocale',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeLocaleLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'storeLocale',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeLocaleBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'storeLocale',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeLocaleStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'storeLocale',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeLocaleEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'storeLocale',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      storeLocaleContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'storeLocale',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+          QAfterFilterCondition>
+      storeLocaleMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'storeLocale',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeLocaleIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'storeLocale',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> storeLocaleIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'storeLocale',
+        value: '',
       ));
     });
   }
@@ -3312,6 +3608,20 @@ extension TransactionHeaderEntityQuerySortBy
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByStoreCurrency() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'storeCurrency', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByStoreCurrencyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'storeCurrency', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       sortByStoreId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'storeId', Sort.asc);
@@ -3322,6 +3632,20 @@ extension TransactionHeaderEntityQuerySortBy
       sortByStoreIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'storeId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByStoreLocale() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'storeLocale', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByStoreLocaleDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'storeLocale', Sort.desc);
     });
   }
 
@@ -3623,6 +3947,20 @@ extension TransactionHeaderEntityQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByStoreCurrency() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'storeCurrency', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByStoreCurrencyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'storeCurrency', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       thenByStoreId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'storeId', Sort.asc);
@@ -3633,6 +3971,20 @@ extension TransactionHeaderEntityQuerySortThenBy on QueryBuilder<
       thenByStoreIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'storeId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByStoreLocale() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'storeLocale', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByStoreLocaleDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'storeLocale', Sort.desc);
     });
   }
 
@@ -3852,9 +4204,24 @@ extension TransactionHeaderEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
+      distinctByStoreCurrency({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'storeCurrency',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
       distinctByStoreId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'storeId');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
+      distinctByStoreLocale({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'storeLocale', caseSensitive: caseSensitive);
     });
   }
 
@@ -4044,10 +4411,24 @@ extension TransactionHeaderEntityQueryProperty on QueryBuilder<
     });
   }
 
+  QueryBuilder<TransactionHeaderEntity, String, QQueryOperations>
+      storeCurrencyProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'storeCurrency');
+    });
+  }
+
   QueryBuilder<TransactionHeaderEntity, int, QQueryOperations>
       storeIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'storeId');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, String, QQueryOperations>
+      storeLocaleProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'storeLocale');
     });
   }
 

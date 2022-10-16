@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:number_to_words/number_to_words.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
@@ -261,7 +262,8 @@ class Invoice1 {
                   padding: const EdgeInsets.symmetric(vertical: 1),
                   margin: const EdgeInsets.all(0),
                   child: Text(
-                    InvoiceConfig.getLineItemValue(e.key, lineItem),
+                    InvoiceConfig.getLineItemValue(e.key, lineItem,
+                        locale: order.storeLocale),
                     textAlign: getColumnAlign(e.align),
                     textScaleFactor: 0.8,
                     style: TextStyle(
@@ -333,7 +335,7 @@ class Invoice1 {
             Expanded(
                 child: Text(
               'Total',
-                  textAlign: TextAlign.right,
+              textAlign: TextAlign.right,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -355,7 +357,9 @@ class Invoice1 {
               )),
               Expanded(
                   child: Text(
-                e.value.taxableAmount.toString(),
+                NumberFormat.simpleCurrency(
+                        locale: order.storeLocale, name: order.storeCurrency)
+                    .format(e.value.taxableAmount),
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.normal,
@@ -363,8 +367,11 @@ class Invoice1 {
               )),
               ...taxColumns.map((taxName) => Expanded(
                       child: Text(
-                    e.value.tax[taxName]?.toString() ?? '',
-                        textAlign: TextAlign.right,
+                    NumberFormat.simpleCurrency(
+                            locale: order.storeLocale,
+                            name: order.storeCurrency)
+                        .format(e.value.tax[taxName] ?? 0.00),
+                    textAlign: TextAlign.right,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.normal,
@@ -372,8 +379,10 @@ class Invoice1 {
                   ))),
               Expanded(
                   child: Text(
-                e.value.totalAmount.toString(),
-                    textAlign: TextAlign.right,
+                NumberFormat.simpleCurrency(
+                        locale: order.storeLocale, name: order.storeCurrency)
+                    .format(e.value.totalAmount),
+                textAlign: TextAlign.right,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.normal,
@@ -388,16 +397,14 @@ class Invoice1 {
   }
 
   Widget _contentAmountInWords(Context context) {
-
     var x = order.total.toInt();
     var y = (order.total * 100 % 100).round();
 
     String amountToWord =
-        "INR " + NumberToWord().convert('en-in', x).toTitleCase();
+        "${order.storeCurrency} " + NumberToWord().convert('en-in', x).toTitleCase();
     if (y > 0) {
       amountToWord += " and ";
-      amountToWord +=
-          NumberToWord().convert('en-in', y).toTitleCase();
+      amountToWord += NumberToWord().convert('en-in', y).toTitleCase();
       amountToWord += "paise Only";
     }
 

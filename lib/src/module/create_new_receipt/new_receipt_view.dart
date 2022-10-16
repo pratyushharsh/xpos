@@ -360,7 +360,7 @@ class TenderLineDisplay extends StatelessWidget {
               child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+                    getCurrencyFormatter(context)
                         .format(tenderLine.amount!),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ))),
@@ -448,7 +448,7 @@ class NewLineItem extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+                    getCurrencyFormatter(context)
                         .format(saleLine.priceOverride
                             ? saleLine.unitPrice
                             : saleLine.baseUnitPrice),
@@ -469,7 +469,7 @@ class NewLineItem extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+                    getCurrencyFormatter(context)
                         .format(saleLine.netAmount),
                     style: NewLineItem.textStyle,
                   ),
@@ -498,8 +498,7 @@ class NewLineItem extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 60),
                       child: Text(
-                        NumberFormat.simpleCurrency(
-                                locale: getStoreLocale(context))
+                        getCurrencyFormatter(context)
                             .format(-e.amount),
                         style: NewLineItem.textStyle,
                       ),
@@ -694,21 +693,21 @@ class NewReceiptSummaryWidget extends StatelessWidget {
           children: [
             RetailSummaryDetailRow(
               title: "Sub Total",
-              value: NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+              value: getCurrencyFormatter(context)
                   .format(state.subTotal),
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Discount",
-              value: NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+              value: getCurrencyFormatter(context)
             .format(state.discount),
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
             ),
             RetailSummaryDetailRow(
               title: "Tax",
-              value: NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+              value: getCurrencyFormatter(context)
             .format(state.tax),
               textStyle: const TextStyle(
                   fontWeight: FontWeight.w600, color: Colors.black54),
@@ -717,7 +716,7 @@ class NewReceiptSummaryWidget extends StatelessWidget {
             RetailSummaryDetailRow(
               title: "Amount Due",
               value:
-                  NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+              getCurrencyFormatter(context)
                       .format(state.amountDue),
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,

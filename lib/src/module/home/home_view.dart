@@ -157,9 +157,14 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
                               ? AppColor.primary
                               : AppColor.iconColor,
                         ),
-                        const Text(
+                        Text(
                           LocaleKeys.home,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: widget.selectedIndex == 0
+                                ? AppColor.primary
+                                : AppColor.iconColor,
+                          ),
                         ).tr(),
                       ],
                     ),
@@ -180,9 +185,13 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
                               ? AppColor.primary
                               : AppColor.iconColor,
                         ),
-                        const Text(LocaleKeys.customer,
-                                style: TextStyle(fontWeight: FontWeight.bold))
-                            .tr(),
+                        Text(LocaleKeys.customer,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: widget.selectedIndex == 1
+                                  ? AppColor.primary
+                                  : AppColor.iconColor,
+                            )).tr(),
                       ],
                     ),
                   ),
@@ -202,9 +211,13 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
                               ? AppColor.primary
                               : AppColor.iconColor,
                         ),
-                        const Text(LocaleKeys.sale,
-                                style: TextStyle(fontWeight: FontWeight.bold))
-                            .tr(),
+                        Text(LocaleKeys.sale,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: widget.selectedIndex == 2
+                                  ? AppColor.primary
+                                  : AppColor.iconColor,
+                            )).tr(),
                       ],
                     ),
                   ),
@@ -225,9 +238,13 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
                               : AppColor.iconColor,
                           size: 18,
                         ),
-                        const Text(LocaleKeys.product,
-                                style: TextStyle(fontWeight: FontWeight.bold))
-                            .tr(),
+                        Text(LocaleKeys.product,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: widget.selectedIndex == 3
+                                  ? AppColor.primary
+                                  : AppColor.iconColor,
+                            )).tr(),
                       ],
                     ),
                   ),
@@ -248,9 +265,13 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
                               : AppColor.iconColor,
                           size: 18,
                         ),
-                        const Text(LocaleKeys.more,
-                                style: TextStyle(fontWeight: FontWeight.bold))
-                            .tr(),
+                        Text(LocaleKeys.more,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: widget.selectedIndex == 4
+                                  ? AppColor.primary
+                                  : AppColor.iconColor,
+                            )).tr(),
                       ],
                     ),
                   ),

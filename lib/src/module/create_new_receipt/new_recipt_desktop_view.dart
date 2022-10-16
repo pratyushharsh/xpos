@@ -314,7 +314,7 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
   void initState() {
     super.initState();
     tenderController = MoneyEditingController(
-        formatter: NumberFormat.simpleCurrency(locale: getStoreLocale(context)));
+        formatter: getCurrencyFormatter(context));
     tenderFocusNode = FocusNode();
   }
 
@@ -356,7 +356,7 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
             top: 10,
             left: 10,
             child: Text(
-              "Tender Amount ${widget.suggestedAmount != null ? "| ${NumberFormat.simpleCurrency(locale: getStoreLocale(context)).format(widget.suggestedAmount)}" : ""}",
+              "Tender Amount ${widget.suggestedAmount != null ? "| ${getCurrencyFormatter(context).format(widget.suggestedAmount)}" : ""}",
               style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -552,8 +552,7 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
                     child: RetailSummaryDetailRow(
                       mainAxisAlignment: MainAxisAlignment.end,
                       title: "Tax:\t",
-                      value: NumberFormat.simpleCurrency(
-                              locale: getStoreLocale(context))
+                      value: getCurrencyFormatter(context)
                           .format(state.tax),
                       textStyle: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.white),
@@ -563,8 +562,7 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
                     child: RetailSummaryDetailRow(
                       mainAxisAlignment: MainAxisAlignment.end,
                       title: "Sub Total:\t",
-                      value: NumberFormat.simpleCurrency(
-                              locale: getStoreLocale(context))
+                      value: getCurrencyFormatter(context)
                           .format(state.subTotal),
                       textStyle: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.white),
@@ -576,7 +574,7 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
             RetailSummaryDetailRow(
               title: "Amount Due",
               value:
-                  NumberFormat.simpleCurrency(locale: getStoreLocale(context))
+              getCurrencyFormatter(context)
                       .format(state.amountDue),
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,

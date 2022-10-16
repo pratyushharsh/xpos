@@ -10,6 +10,8 @@ class TransactionHeaderEntity {
   final Id transId;
 
   final int storeId;
+  final String storeLocale;
+  final String storeCurrency;
   final String transactionType;
   final DateTime businessDate;
   final DateTime beginDatetime;
@@ -51,6 +53,8 @@ class TransactionHeaderEntity {
   TransactionHeaderEntity(
       {required this.transId,
       required this.storeId,
+      required this.storeLocale,
+      required this.storeCurrency,
       required this.businessDate,
       required this.beginDatetime,
       required this.transactionType,

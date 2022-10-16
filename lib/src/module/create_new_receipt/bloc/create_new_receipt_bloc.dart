@@ -81,6 +81,9 @@ class CreateNewReceiptBloc
     assert(event.product.productId != null);
     int seq = state.lineItem.length;
 
+    RetailLocationEntity? store = authenticationBloc.state.store;
+    if (store == null) throw Exception("Store Not Found");
+
     // @TODO Change the business date from DateTime.now() to actual business date.
     // @TODO Change the pos id also
     // @TODO Change the entry method also
@@ -97,6 +100,7 @@ class CreateNewReceiptBloc
           storeId: authenticationBloc.state.store!.rtlLocId,
           businessDate: DateTime.now(),
           posId: 1,
+          currency: store.currencyId,
           transSeq: state.transSeq,
           lineItemSeq: seq + 1,
           itemId: event.product.productId!,
@@ -139,8 +143,8 @@ class CreateNewReceiptBloc
   // @TODO List different transaction status INITIATED, SALE_COMPLETED, SUSPENDED, CANCELLED, RETURNED, EXCHANGED
   void _onCreateNewTransaction(
       OnCreateNewTransaction event, Emitter<CreateNewReceiptState> emit) async {
-    int? storeId = authenticationBloc.state.store?.rtlLocId;
-    if (storeId == null) throw Exception("Store Not Found");
+    RetailLocationEntity? store = authenticationBloc.state.store;
+    if (store == null) throw Exception("Store Not Found");
 
     var currentEmployee = authenticationBloc.state.employee;
 
@@ -148,6 +152,9 @@ class CreateNewReceiptBloc
       transId: state.transSeq,
       businessDate: DateTime.now(),
       beginDatetime: DateTime.now(),
+      storeCurrency: store.currencyId ?? 'INR',
+      storeLocale: store.locale ?? 'en_IN',
+      storeId: store.rtlLocId,
       transactionType: TransactionType.cashSale,
       total: state.total,
       taxTotal: state.tax,
@@ -160,7 +167,6 @@ class CreateNewReceiptBloc
       customerPhone: state.customer?.phoneNumber,
       shippingAddress: state.customerAddress?.shippingAddress,
       billingAddress: state.customerAddress?.billingAddress,
-      storeId: storeId,
       createTime: DateTime.now(),
       associateId: currentEmployee!.employeeId,
       associateName: '${currentEmployee.firstName} ${currentEmployee.lastName}',
@@ -411,11 +417,14 @@ class CreateNewReceiptBloc
       OnAddNewTenderLine event, Emitter<CreateNewReceiptState> emit) async {
     int seq = state.tenderLine.length;
 
+    RetailLocationEntity? store = authenticationBloc.state.store;
+    if (store == null) throw Exception("Store Not Found");
+
     TransactionPaymentLineItemEntity newLine = TransactionPaymentLineItemEntity(
         transId: state.transSeq,
         amount: event.amount,
         beginDate: DateTime.now(),
-        currencyId: "INR",
+        currencyId: store.currencyId,
         paymentSeq: seq + 1,
         tenderId: event.tenderType,
         tenderStatusCode: "CNF",
@@ -485,6 +494,8 @@ class CreateNewReceiptBloc
         uom: line.uom,
         shippingWeight: line.shippingWeight,
         category: line.category,
+        currency: line.currency,
+        hsn: line.hsn,
         // @TODO Add Returned Comment
         returnFlag: true,
         returnReasonCode: returnData!.reasonCode,

@@ -177,7 +177,7 @@ class ModifyLineItemViewCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
               ),
               Text(
-                "Sale Price: ${NumberFormat.simpleCurrency(locale: getStoreLocale(context)).format(lineItem.unitPrice)}",
+                "Sale Price: ${getCurrencyFormatter(context).format(lineItem.unitPrice)}",
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
               )
             ]

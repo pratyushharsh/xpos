@@ -24,19 +24,19 @@ class InvoiceConfig {
         key: 'amount', title: 'Amount', flex: 3, align: 'right'),
   ];
 
-  static String getLineItemValue(String key, TransactionLineItemEntity entity) {
+  static String getLineItemValue(String key, TransactionLineItemEntity entity, {String locale = 'en_US'}) {
     switch (key) {
       case 'quantity':
         return entity.quantity.toString();
       case 'rate':
-        return NumberFormat.simpleCurrency(locale: 'en_IN')
+        return NumberFormat.simpleCurrency(locale: locale, name: entity.currency)
             .format(entity.unitPrice);
       case 'mrp':
         return entity.grossAmount.toString();
       case 'desc':
         return '${entity.itemDescription}\nSKU: ${entity.itemId}';
       case 'discountAmount':
-        return NumberFormat.simpleCurrency(locale: 'en_IN')
+        return NumberFormat.simpleCurrency(locale: locale, name: entity.currency)
             .format(entity.discountAmount);
       case 'sno':
         return entity.lineItemSeq.toString();
@@ -47,10 +47,10 @@ class InvoiceConfig {
       case 'qtyuom':
         return '${entity.quantity}\n${entity.uom}';
       case 'tax':
-        return NumberFormat.simpleCurrency(locale: 'en_IN')
+        return NumberFormat.simpleCurrency(locale: locale, name: entity.currency)
             .format(entity.taxAmount);
       case 'amount':
-        return NumberFormat.simpleCurrency(locale: 'en_IN')
+        return NumberFormat.simpleCurrency(locale: locale, name: entity.currency)
             .format(entity.grossAmount);
       default:
         return '';
@@ -66,10 +66,10 @@ class InvoiceConfig {
                 (previousValue, element) => previousValue + element.quantity!)
             .toString();
       case 'tax':
-        return NumberFormat.simpleCurrency(locale: 'en_IN')
+        return NumberFormat.simpleCurrency(locale: entity.storeLocale, name: entity.storeCurrency)
             .format(entity.taxTotal);
       case 'amount':
-        return NumberFormat.simpleCurrency(locale: 'en_IN')
+        return NumberFormat.simpleCurrency(locale: entity.storeLocale, name: entity.storeCurrency)
             .format(entity.total);
       default:
         return '';

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/config/formatter.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
@@ -259,7 +260,7 @@ class OrderLine extends StatelessWidget {
                         children: [
                           const Divider(height: 0),
                           OrderItemDetailDisplay(
-                              entity: e, product: productMap[e.itemId]),
+                              entity: e, product: productMap[e.itemId], orderLocale: order.storeLocale),
                           const Divider(height: 0),
                         ],
                       ),
@@ -273,7 +274,8 @@ class OrderLine extends StatelessWidget {
 class OrderItemDetailDisplay extends StatelessWidget {
   final TransactionLineItemEntity entity;
   final ProductEntity? product;
-  const OrderItemDetailDisplay({Key? key, required this.entity, this.product})
+  final String orderLocale;
+  const OrderItemDetailDisplay({Key? key, required this.entity, this.product, required this.orderLocale})
       : super(key: key);
 
   @override
@@ -336,7 +338,7 @@ class OrderItemDetailDisplay extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text("\$${entity.unitPrice} * ${entity.quantity}PCS"),
+                Text("${NumberFormat.simpleCurrency(locale: orderLocale, name: entity.currency!).format(entity.unitPrice)} * ${entity.quantity}PCS"),
                 ...entity.lineModifiers
                     .map((e) =>
                         Text(e.description ?? e.discountCode ?? "Discount"))
@@ -349,9 +351,9 @@ class OrderItemDetailDisplay extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: Column(
                 children: [
-                  Text("\$${entity.grossAmount}"),
+                  Text(NumberFormat.simpleCurrency(locale: orderLocale, name: entity.currency!).format(entity.grossAmount)),
                   ...entity.lineModifiers
-                      .map((e) => Text(e.amount.toStringAsFixed(2)))
+                      .map((e) => Text(NumberFormat.simpleCurrency(locale: orderLocale, name: entity.currency!).format(e.amount)))
                       .toList(),
                 ],
               ),
@@ -431,7 +433,7 @@ class OrderDetailSummary extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Sub Total"),
-                      Text("\$${order.subtotal}"),
+                      Text(NumberFormat.simpleCurrency(locale: order.storeLocale, name: order.storeCurrency).format(order.subtotal)),
                     ]),
               ),
               const Divider(),
@@ -442,7 +444,7 @@ class OrderDetailSummary extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Tax Total"),
-                      Text("\$${order.taxTotal}"),
+                      Text(NumberFormat.simpleCurrency(locale: order.storeLocale, name: order.storeCurrency).format(order.taxTotal)),
                     ]),
               ),
               Divider(),
@@ -453,7 +455,7 @@ class OrderDetailSummary extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Discount Total"),
-                      Text("\$ ${order.discountTotal}"),
+                      Text(NumberFormat.simpleCurrency(locale: order.storeLocale, name: order.storeCurrency).format(order.discountTotal)),
                     ]),
               ),
               Divider(),
@@ -464,10 +466,10 @@ class OrderDetailSummary extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Grand Total"),
-                      Text("\$${order.total}"),
+                      Text(NumberFormat.simpleCurrency(locale: order.storeLocale, name: order.storeCurrency).format(order.total)),
                     ]),
               ),
-              Divider(),
+              const Divider(),
             ],
           ),
         ),

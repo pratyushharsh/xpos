@@ -82,6 +82,8 @@ class MockTransactionRepository extends TransactionRepository {
     TransactionHeaderEntity header = TransactionHeaderEntity(
       transId: 1000,
       storeId: 99999,
+      storeCurrency: 'INR',
+      storeLocale: 'en_IN',
       businessDate: DateTime.now(),
       beginDatetime: DateTime.now(),
       transactionType: 'SALE',

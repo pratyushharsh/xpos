@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/formatter.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
@@ -22,7 +23,9 @@ class ListAllReceiptView extends StatelessWidget {
       child: BlocBuilder<ListAllReceiptBloc, ListAllReceiptState>(
         builder: (context, state) {
           if (state.status == ListAllReceiptStatus.loading) {
-            return const MyLoader(color: AppColor.color6,);
+            return const MyLoader(
+              color: AppColor.color6,
+            );
           }
           return RefreshIndicator(
             onRefresh: () async {
@@ -69,7 +72,10 @@ class ReceiptHeaderCard extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    '${Currency.inr}${receipt.total.toStringAsFixed(2)}',
+                    NumberFormat.simpleCurrency(
+                            locale: receipt.storeLocale,
+                            name: receipt.storeCurrency)
+                        .format(receipt.total),
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 20),
                   )
@@ -105,8 +111,7 @@ class ReceiptHeaderCard extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Text(AppFormatter.dateFormatter.format(
-                      receipt.businessDate))
+                  Text(AppFormatter.dateFormatter.format(receipt.businessDate))
                 ],
               )
             ],

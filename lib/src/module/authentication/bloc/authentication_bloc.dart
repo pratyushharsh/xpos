@@ -131,6 +131,9 @@ class AuthenticationBloc
 
   void _refreshBusinessEvent(
       RefreshBusinessEvent event, Emitter<AuthenticationState> emit) async {
-    log.info("Business Data will be refreshed");
+    if (state.store != null) {
+      var business = await businessRepository.getBusinessById(state.store!.rtlLocId);
+      emit(state.copyWith(store: business));
+    }
   }
 }

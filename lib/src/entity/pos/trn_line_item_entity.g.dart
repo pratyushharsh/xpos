@@ -28,195 +28,200 @@ const TransactionLineItemEntitySchema = Schema(
       name: r'category',
       type: IsarType.string,
     ),
-    r'discountAmount': PropertySchema(
+    r'currency': PropertySchema(
       id: 3,
+      name: r'currency',
+      type: IsarType.string,
+    ),
+    r'discountAmount': PropertySchema(
+      id: 4,
       name: r'discountAmount',
       type: IsarType.double,
     ),
     r'extendedAmount': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'extendedAmount',
       type: IsarType.double,
     ),
     r'grossAmount': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'grossAmount',
       type: IsarType.double,
     ),
     r'hsn': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'hsn',
       type: IsarType.string,
     ),
     r'isVoid': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'isVoid',
       type: IsarType.bool,
     ),
     r'itemDescription': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'itemDescription',
       type: IsarType.string,
     ),
     r'itemId': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'itemId',
       type: IsarType.string,
     ),
     r'itemIdEntryMethod': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'itemIdEntryMethod',
       type: IsarType.string,
     ),
     r'lineItemSeq': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'lineItemSeq',
       type: IsarType.long,
     ),
     r'lineModifiers': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'lineModifiers',
       type: IsarType.objectList,
       target: r'TransactionLineItemModifierEntity',
     ),
     r'netAmount': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'netAmount',
       type: IsarType.double,
     ),
     r'nonExchangeableFlag': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'nonExchangeableFlag',
       type: IsarType.bool,
     ),
     r'nonReturnableFlag': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'nonReturnableFlag',
       type: IsarType.bool,
     ),
     r'originalBusinessDate': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'originalBusinessDate',
       type: IsarType.dateTime,
     ),
     r'originalLineItemSeq': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'originalLineItemSeq',
       type: IsarType.long,
     ),
     r'originalPosId': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'originalPosId',
       type: IsarType.long,
     ),
     r'originalTransSeq': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'originalTransSeq',
       type: IsarType.long,
     ),
     r'posId': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'posId',
       type: IsarType.long,
     ),
     r'priceEntryMethod': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'priceEntryMethod',
       type: IsarType.string,
     ),
     r'priceOverride': PropertySchema(
-      id: 22,
+      id: 23,
       name: r'priceOverride',
       type: IsarType.bool,
     ),
     r'priceOverrideAmount': PropertySchema(
-      id: 23,
+      id: 24,
       name: r'priceOverrideAmount',
       type: IsarType.double,
     ),
     r'priceOverrideReason': PropertySchema(
-      id: 24,
+      id: 25,
       name: r'priceOverrideReason',
       type: IsarType.string,
     ),
     r'quantity': PropertySchema(
-      id: 25,
+      id: 26,
       name: r'quantity',
       type: IsarType.double,
     ),
     r'returnComment': PropertySchema(
-      id: 26,
+      id: 27,
       name: r'returnComment',
       type: IsarType.string,
     ),
     r'returnFlag': PropertySchema(
-      id: 27,
+      id: 28,
       name: r'returnFlag',
       type: IsarType.bool,
     ),
     r'returnReasonCode': PropertySchema(
-      id: 28,
+      id: 29,
       name: r'returnReasonCode',
       type: IsarType.string,
     ),
     r'returnTypeCode': PropertySchema(
-      id: 29,
+      id: 30,
       name: r'returnTypeCode',
       type: IsarType.string,
     ),
     r'returnedQuantity': PropertySchema(
-      id: 30,
+      id: 31,
       name: r'returnedQuantity',
       type: IsarType.double,
     ),
     r'serialNumber': PropertySchema(
-      id: 31,
+      id: 32,
       name: r'serialNumber',
       type: IsarType.string,
     ),
     r'shippingWeight': PropertySchema(
-      id: 32,
+      id: 33,
       name: r'shippingWeight',
       type: IsarType.double,
     ),
     r'storeId': PropertySchema(
-      id: 33,
+      id: 34,
       name: r'storeId',
       type: IsarType.long,
     ),
     r'taxAmount': PropertySchema(
-      id: 34,
+      id: 35,
       name: r'taxAmount',
       type: IsarType.double,
     ),
     r'taxModifiers': PropertySchema(
-      id: 35,
+      id: 36,
       name: r'taxModifiers',
       type: IsarType.objectList,
       target: r'TransactionLineItemTaxModifier',
     ),
     r'transSeq': PropertySchema(
-      id: 36,
+      id: 37,
       name: r'transSeq',
       type: IsarType.long,
     ),
     r'unitCost': PropertySchema(
-      id: 37,
+      id: 38,
       name: r'unitCost',
       type: IsarType.double,
     ),
     r'unitPrice': PropertySchema(
-      id: 38,
+      id: 39,
       name: r'unitPrice',
       type: IsarType.double,
     ),
     r'uom': PropertySchema(
-      id: 39,
+      id: 40,
       name: r'uom',
       type: IsarType.string,
     ),
     r'vendorId': PropertySchema(
-      id: 40,
+      id: 41,
       name: r'vendorId',
       type: IsarType.string,
     )
@@ -235,6 +240,12 @@ int _transactionLineItemEntityEstimateSize(
   var bytesCount = offsets.last;
   {
     final value = object.category;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.currency;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -341,54 +352,55 @@ void _transactionLineItemEntitySerialize(
   writer.writeDouble(offsets[0], object.baseUnitPrice);
   writer.writeDateTime(offsets[1], object.businessDate);
   writer.writeString(offsets[2], object.category);
-  writer.writeDouble(offsets[3], object.discountAmount);
-  writer.writeDouble(offsets[4], object.extendedAmount);
-  writer.writeDouble(offsets[5], object.grossAmount);
-  writer.writeString(offsets[6], object.hsn);
-  writer.writeBool(offsets[7], object.isVoid);
-  writer.writeString(offsets[8], object.itemDescription);
-  writer.writeString(offsets[9], object.itemId);
-  writer.writeString(offsets[10], object.itemIdEntryMethod);
-  writer.writeLong(offsets[11], object.lineItemSeq);
+  writer.writeString(offsets[3], object.currency);
+  writer.writeDouble(offsets[4], object.discountAmount);
+  writer.writeDouble(offsets[5], object.extendedAmount);
+  writer.writeDouble(offsets[6], object.grossAmount);
+  writer.writeString(offsets[7], object.hsn);
+  writer.writeBool(offsets[8], object.isVoid);
+  writer.writeString(offsets[9], object.itemDescription);
+  writer.writeString(offsets[10], object.itemId);
+  writer.writeString(offsets[11], object.itemIdEntryMethod);
+  writer.writeLong(offsets[12], object.lineItemSeq);
   writer.writeObjectList<TransactionLineItemModifierEntity>(
-    offsets[12],
+    offsets[13],
     allOffsets,
     TransactionLineItemModifierEntitySchema.serialize,
     object.lineModifiers,
   );
-  writer.writeDouble(offsets[13], object.netAmount);
-  writer.writeBool(offsets[14], object.nonExchangeableFlag);
-  writer.writeBool(offsets[15], object.nonReturnableFlag);
-  writer.writeDateTime(offsets[16], object.originalBusinessDate);
-  writer.writeLong(offsets[17], object.originalLineItemSeq);
-  writer.writeLong(offsets[18], object.originalPosId);
-  writer.writeLong(offsets[19], object.originalTransSeq);
-  writer.writeLong(offsets[20], object.posId);
-  writer.writeString(offsets[21], object.priceEntryMethod);
-  writer.writeBool(offsets[22], object.priceOverride);
-  writer.writeDouble(offsets[23], object.priceOverrideAmount);
-  writer.writeString(offsets[24], object.priceOverrideReason);
-  writer.writeDouble(offsets[25], object.quantity);
-  writer.writeString(offsets[26], object.returnComment);
-  writer.writeBool(offsets[27], object.returnFlag);
-  writer.writeString(offsets[28], object.returnReasonCode);
-  writer.writeString(offsets[29], object.returnTypeCode);
-  writer.writeDouble(offsets[30], object.returnedQuantity);
-  writer.writeString(offsets[31], object.serialNumber);
-  writer.writeDouble(offsets[32], object.shippingWeight);
-  writer.writeLong(offsets[33], object.storeId);
-  writer.writeDouble(offsets[34], object.taxAmount);
+  writer.writeDouble(offsets[14], object.netAmount);
+  writer.writeBool(offsets[15], object.nonExchangeableFlag);
+  writer.writeBool(offsets[16], object.nonReturnableFlag);
+  writer.writeDateTime(offsets[17], object.originalBusinessDate);
+  writer.writeLong(offsets[18], object.originalLineItemSeq);
+  writer.writeLong(offsets[19], object.originalPosId);
+  writer.writeLong(offsets[20], object.originalTransSeq);
+  writer.writeLong(offsets[21], object.posId);
+  writer.writeString(offsets[22], object.priceEntryMethod);
+  writer.writeBool(offsets[23], object.priceOverride);
+  writer.writeDouble(offsets[24], object.priceOverrideAmount);
+  writer.writeString(offsets[25], object.priceOverrideReason);
+  writer.writeDouble(offsets[26], object.quantity);
+  writer.writeString(offsets[27], object.returnComment);
+  writer.writeBool(offsets[28], object.returnFlag);
+  writer.writeString(offsets[29], object.returnReasonCode);
+  writer.writeString(offsets[30], object.returnTypeCode);
+  writer.writeDouble(offsets[31], object.returnedQuantity);
+  writer.writeString(offsets[32], object.serialNumber);
+  writer.writeDouble(offsets[33], object.shippingWeight);
+  writer.writeLong(offsets[34], object.storeId);
+  writer.writeDouble(offsets[35], object.taxAmount);
   writer.writeObjectList<TransactionLineItemTaxModifier>(
-    offsets[35],
+    offsets[36],
     allOffsets,
     TransactionLineItemTaxModifierSchema.serialize,
     object.taxModifiers,
   );
-  writer.writeLong(offsets[36], object.transSeq);
-  writer.writeDouble(offsets[37], object.unitCost);
-  writer.writeDouble(offsets[38], object.unitPrice);
-  writer.writeString(offsets[39], object.uom);
-  writer.writeString(offsets[40], object.vendorId);
+  writer.writeLong(offsets[37], object.transSeq);
+  writer.writeDouble(offsets[38], object.unitCost);
+  writer.writeDouble(offsets[39], object.unitPrice);
+  writer.writeString(offsets[40], object.uom);
+  writer.writeString(offsets[41], object.vendorId);
 }
 
 TransactionLineItemEntity _transactionLineItemEntityDeserialize(
@@ -401,56 +413,57 @@ TransactionLineItemEntity _transactionLineItemEntityDeserialize(
     baseUnitPrice: reader.readDoubleOrNull(offsets[0]),
     businessDate: reader.readDateTimeOrNull(offsets[1]),
     category: reader.readStringOrNull(offsets[2]),
-    discountAmount: reader.readDoubleOrNull(offsets[3]),
-    extendedAmount: reader.readDoubleOrNull(offsets[4]),
-    grossAmount: reader.readDoubleOrNull(offsets[5]),
-    hsn: reader.readStringOrNull(offsets[6]),
-    isVoid: reader.readBoolOrNull(offsets[7]) ?? false,
-    itemDescription: reader.readStringOrNull(offsets[8]),
-    itemId: reader.readStringOrNull(offsets[9]),
-    itemIdEntryMethod: reader.readStringOrNull(offsets[10]),
-    lineItemSeq: reader.readLongOrNull(offsets[11]),
+    currency: reader.readStringOrNull(offsets[3]),
+    discountAmount: reader.readDoubleOrNull(offsets[4]),
+    extendedAmount: reader.readDoubleOrNull(offsets[5]),
+    grossAmount: reader.readDoubleOrNull(offsets[6]),
+    hsn: reader.readStringOrNull(offsets[7]),
+    isVoid: reader.readBoolOrNull(offsets[8]) ?? false,
+    itemDescription: reader.readStringOrNull(offsets[9]),
+    itemId: reader.readStringOrNull(offsets[10]),
+    itemIdEntryMethod: reader.readStringOrNull(offsets[11]),
+    lineItemSeq: reader.readLongOrNull(offsets[12]),
     lineModifiers: reader.readObjectList<TransactionLineItemModifierEntity>(
-          offsets[12],
+          offsets[13],
           TransactionLineItemModifierEntitySchema.deserialize,
           allOffsets,
           TransactionLineItemModifierEntity(),
         ) ??
         const [],
-    netAmount: reader.readDoubleOrNull(offsets[13]),
-    nonExchangeableFlag: reader.readBoolOrNull(offsets[14]) ?? false,
-    nonReturnableFlag: reader.readBoolOrNull(offsets[15]) ?? false,
-    originalBusinessDate: reader.readDateTimeOrNull(offsets[16]),
-    originalLineItemSeq: reader.readLongOrNull(offsets[17]),
-    originalPosId: reader.readLongOrNull(offsets[18]),
-    originalTransSeq: reader.readLongOrNull(offsets[19]),
-    posId: reader.readLongOrNull(offsets[20]),
-    priceEntryMethod: reader.readStringOrNull(offsets[21]),
-    priceOverride: reader.readBoolOrNull(offsets[22]) ?? false,
-    priceOverrideAmount: reader.readDoubleOrNull(offsets[23]),
-    priceOverrideReason: reader.readStringOrNull(offsets[24]),
-    quantity: reader.readDoubleOrNull(offsets[25]),
-    returnComment: reader.readStringOrNull(offsets[26]),
-    returnFlag: reader.readBoolOrNull(offsets[27]) ?? false,
-    returnReasonCode: reader.readStringOrNull(offsets[28]),
-    returnTypeCode: reader.readStringOrNull(offsets[29]),
-    returnedQuantity: reader.readDoubleOrNull(offsets[30]),
-    serialNumber: reader.readStringOrNull(offsets[31]),
-    shippingWeight: reader.readDoubleOrNull(offsets[32]),
-    storeId: reader.readLongOrNull(offsets[33]),
-    taxAmount: reader.readDoubleOrNull(offsets[34]),
+    netAmount: reader.readDoubleOrNull(offsets[14]),
+    nonExchangeableFlag: reader.readBoolOrNull(offsets[15]) ?? false,
+    nonReturnableFlag: reader.readBoolOrNull(offsets[16]) ?? false,
+    originalBusinessDate: reader.readDateTimeOrNull(offsets[17]),
+    originalLineItemSeq: reader.readLongOrNull(offsets[18]),
+    originalPosId: reader.readLongOrNull(offsets[19]),
+    originalTransSeq: reader.readLongOrNull(offsets[20]),
+    posId: reader.readLongOrNull(offsets[21]),
+    priceEntryMethod: reader.readStringOrNull(offsets[22]),
+    priceOverride: reader.readBoolOrNull(offsets[23]) ?? false,
+    priceOverrideAmount: reader.readDoubleOrNull(offsets[24]),
+    priceOverrideReason: reader.readStringOrNull(offsets[25]),
+    quantity: reader.readDoubleOrNull(offsets[26]),
+    returnComment: reader.readStringOrNull(offsets[27]),
+    returnFlag: reader.readBoolOrNull(offsets[28]) ?? false,
+    returnReasonCode: reader.readStringOrNull(offsets[29]),
+    returnTypeCode: reader.readStringOrNull(offsets[30]),
+    returnedQuantity: reader.readDoubleOrNull(offsets[31]),
+    serialNumber: reader.readStringOrNull(offsets[32]),
+    shippingWeight: reader.readDoubleOrNull(offsets[33]),
+    storeId: reader.readLongOrNull(offsets[34]),
+    taxAmount: reader.readDoubleOrNull(offsets[35]),
     taxModifiers: reader.readObjectList<TransactionLineItemTaxModifier>(
-          offsets[35],
+          offsets[36],
           TransactionLineItemTaxModifierSchema.deserialize,
           allOffsets,
           TransactionLineItemTaxModifier(),
         ) ??
         const [],
-    transSeq: reader.readLongOrNull(offsets[36]),
-    unitCost: reader.readDoubleOrNull(offsets[37]),
-    unitPrice: reader.readDoubleOrNull(offsets[38]),
-    uom: reader.readStringOrNull(offsets[39]),
-    vendorId: reader.readStringOrNull(offsets[40]),
+    transSeq: reader.readLongOrNull(offsets[37]),
+    unitCost: reader.readDoubleOrNull(offsets[38]),
+    unitPrice: reader.readDoubleOrNull(offsets[39]),
+    uom: reader.readStringOrNull(offsets[40]),
+    vendorId: reader.readStringOrNull(offsets[41]),
   );
   return object;
 }
@@ -469,24 +482,26 @@ P _transactionLineItemEntityDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readDoubleOrNull(offset)) as P;
     case 5:
       return (reader.readDoubleOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 7:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 8:
       return (reader.readStringOrNull(offset)) as P;
+    case 8:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 9:
       return (reader.readStringOrNull(offset)) as P;
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 12:
+      return (reader.readLongOrNull(offset)) as P;
+    case 13:
       return (reader.readObjectList<TransactionLineItemModifierEntity>(
             offset,
             TransactionLineItemModifierEntitySchema.deserialize,
@@ -494,16 +509,14 @@ P _transactionLineItemEntityDeserializeProp<P>(
             TransactionLineItemModifierEntity(),
           ) ??
           const []) as P;
-    case 13:
-      return (reader.readDoubleOrNull(offset)) as P;
     case 14:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 15:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 16:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 17:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 18:
       return (reader.readLongOrNull(offset)) as P;
     case 19:
@@ -511,34 +524,36 @@ P _transactionLineItemEntityDeserializeProp<P>(
     case 20:
       return (reader.readLongOrNull(offset)) as P;
     case 21:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 22:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 23:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 24:
-      return (reader.readStringOrNull(offset)) as P;
-    case 25:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 26:
-      return (reader.readStringOrNull(offset)) as P;
-    case 27:
       return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 28:
+    case 24:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 25:
       return (reader.readStringOrNull(offset)) as P;
+    case 26:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 27:
+      return (reader.readStringOrNull(offset)) as P;
+    case 28:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 29:
       return (reader.readStringOrNull(offset)) as P;
     case 30:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 31:
       return (reader.readStringOrNull(offset)) as P;
+    case 31:
+      return (reader.readDoubleOrNull(offset)) as P;
     case 32:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 33:
-      return (reader.readLongOrNull(offset)) as P;
-    case 34:
       return (reader.readDoubleOrNull(offset)) as P;
+    case 34:
+      return (reader.readLongOrNull(offset)) as P;
     case 35:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 36:
       return (reader.readObjectList<TransactionLineItemTaxModifier>(
             offset,
             TransactionLineItemTaxModifierSchema.deserialize,
@@ -546,15 +561,15 @@ P _transactionLineItemEntityDeserializeProp<P>(
             TransactionLineItemTaxModifier(),
           ) ??
           const []) as P;
-    case 36:
-      return (reader.readLongOrNull(offset)) as P;
     case 37:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 38:
       return (reader.readDoubleOrNull(offset)) as P;
     case 39:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 40:
+      return (reader.readStringOrNull(offset)) as P;
+    case 41:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -872,6 +887,162 @@ extension TransactionLineItemEntityQueryFilter on QueryBuilder<
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'category',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'currency',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'currency',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'currency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'currency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'currency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'currency',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'currency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'currency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      currencyContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'currency',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+          QAfterFilterCondition>
+      currencyMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'currency',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'currency',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemEntity, TransactionLineItemEntity,
+      QAfterFilterCondition> currencyIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'currency',
         value: '',
       ));
     });

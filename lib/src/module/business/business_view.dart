@@ -34,6 +34,7 @@ class BusinessView extends StatelessWidget {
       create: (context) => BusinessBloc(
           userPool: RepositoryProvider.of(context),
           repo: RepositoryProvider.of(context),
+          authBloc: BlocProvider.of(context),
           operation: operation)
         ..add(LoadBusinessDetail(businessId)),
       child: Container(

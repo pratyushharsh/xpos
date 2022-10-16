@@ -10,6 +10,8 @@ import 'package:receipt_generator/src/entity/pos/address.dart';
 import 'package:receipt_generator/src/model/api/api.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 
+import '../../authentication/bloc/authentication_bloc.dart';
+
 part 'business_event.dart';
 part 'business_state.dart';
 
@@ -18,11 +20,12 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
   final BusinessRepository repo;
   final BusinessOperation operation;
   final CognitoUserPool userPool;
+  final AuthenticationBloc authBloc;
 
   BusinessBloc(
       {required this.repo,
       this.operation = BusinessOperation.create,
-      required this.userPool})
+      required this.userPool, required this.authBloc})
       : super(BusinessState(operation: operation)) {
     on<LoadBusinessDetail>(_onLoadBusinessDetail);
     on<OnBusinessNameChange>(_onBusinessNameChange);
@@ -97,6 +100,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
           var response = await repo.uploadImage(uploadUrl, data);
           emit(state.copyWith(status: BusinessStatus.modified));
         }
+        authBloc.add(RefreshBusinessEvent());
       }
     } catch (e) {
       log.severe(e);

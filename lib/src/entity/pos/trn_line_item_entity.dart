@@ -29,6 +29,7 @@ class TransactionLineItemEntity {
   double? taxAmount; // Tax amount of the item
   double? discountAmount; // Discount amount on the item
   String? uom;
+  String? currency;
 
   /// Price Override Reason
   bool priceOverride;
@@ -92,6 +93,7 @@ class TransactionLineItemEntity {
     this.serialNumber,
     this.taxAmount,
     this.uom,
+    this.currency,
     this.returnedQuantity,
     this.originalPosId,
     this.originalTransSeq,
