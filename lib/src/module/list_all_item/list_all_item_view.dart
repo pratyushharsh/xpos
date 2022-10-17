@@ -13,6 +13,30 @@ import '../../config/constants.dart';
 import '../../entity/pos/entity.dart';
 import '../create_new_item/add_new_item_view.dart';
 
+class WidgetNoItems extends StatelessWidget {
+  const WidgetNoItems({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.dashboard_customize_outlined,
+                size: 100, color: AppColor.iconColor),
+            Text("Add your items to proceed with sale.",
+                style: TextStyle(
+                    color: AppColor.iconColor, fontStyle: FontStyle.italic)),
+            SizedBox(height: 50),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class AllProductsList extends StatelessWidget {
   const AllProductsList({Key? key}) : super(key: key);
 
@@ -29,17 +53,30 @@ class AllProductsList extends StatelessWidget {
               onRefresh: () async {
                 BlocProvider.of<ListAllItemBloc>(context).add(LoadAllItems());
               },
-              child: ListView.builder(
-                  itemCount: state.products.length + 1,
-                  itemBuilder: (ctx, idx) {
-                    if (idx == state.products.length) {
-                      if (!state.end && state.status != ListAllItemStatus.loadingNextProducts) {
-                        BlocProvider.of<ListAllItemBloc>(context).add(LoadNextProduct());
-                      }
-                      return SizedBox(height: 200, child: ListAllItemStatus.loadingNextProducts == state.status ? const MyLoader(color: AppColor.color6,) : Container(),);
-                    }
-                    return ItemCard(product: state.products[idx]);
-                  }),
+              child: state.products.isEmpty
+                  ? const WidgetNoItems()
+                  : ListView.builder(
+                      itemCount: state.products.length + 1,
+                      itemBuilder: (ctx, idx) {
+                        if (idx == state.products.length) {
+                          if (!state.end &&
+                              state.status !=
+                                  ListAllItemStatus.loadingNextProducts) {
+                            BlocProvider.of<ListAllItemBloc>(context)
+                                .add(LoadNextProduct());
+                          }
+                          return SizedBox(
+                            height: 200,
+                            child: ListAllItemStatus.loadingNextProducts ==
+                                    state.status
+                                ? const MyLoader(
+                                    color: AppColor.color6,
+                                  )
+                                : Container(),
+                          );
+                        }
+                        return ItemCard(product: state.products[idx]);
+                      }),
             );
           },
         ),
@@ -100,7 +137,8 @@ class ItemCard extends StatelessWidget {
                 width: 100,
                 child: product.imageUrl.isNotEmpty
                     ? Image.file(
-                        File('${Constants.baseImagePath}/${product.imageUrl[0]}'),
+                        File(
+                            '${Constants.baseImagePath}/${product.imageUrl[0]}'),
                         cacheHeight: 200,
                         cacheWidth: 200,
                       )
@@ -125,7 +163,9 @@ class ItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   if (product.salePrice != null && product.salePrice! > 0)
-                    Text(getCurrencyFormatter(context).format(product.salePrice!),
+                    Text(
+                        getCurrencyFormatter(context)
+                            .format(product.salePrice!),
                         style: const TextStyle(fontWeight: FontWeight.w600)),
                   if (product.listPrice != null)
                     Text(

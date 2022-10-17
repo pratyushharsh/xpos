@@ -6,6 +6,27 @@ import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/module/all_customer/bloc/all_customer_bloc.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
+class WidgetNoCustomer extends StatelessWidget {
+  const WidgetNoCustomer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.person_pin_outlined, size: 100, color: AppColor.iconColor),
+            Text("Create new customer to add it to the sale.", style: TextStyle(color: AppColor.iconColor, fontStyle: FontStyle.italic)),
+            SizedBox(height: 50),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class AllCustomerView extends StatelessWidget {
   const AllCustomerView({Key? key}) : super(key: key);
 
@@ -24,7 +45,7 @@ class AllCustomerView extends StatelessWidget {
             onRefresh: () async {
               BlocProvider.of<AllCustomerBloc>(context).add(LoadAllCustomer());
             },
-            child: ListView.builder(
+            child: state.customers.isEmpty ? const WidgetNoCustomer() : ListView.builder(
                 itemCount: state.customers.length,
                 itemBuilder: (ctx, idx) {
                   return CustomerViewCard(contact: state.customers[idx]);

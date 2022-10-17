@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/formatter.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/sale_status_codes.dart';
@@ -9,6 +8,28 @@ import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/module/list_all_receipt/bloc/list_all_receipt_bloc.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
+
+class WidgetNoReceipt extends StatelessWidget {
+  const WidgetNoReceipt({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            // Icon(Icons.person_pin_outlined, size: 100, color: Colors.grey),
+            Icon(Icons.receipt_long_outlined, size: 100, color: AppColor.iconColor),
+            Text("Create a Sale/Return to view receipts.", style: TextStyle(color: AppColor.iconColor, fontStyle: FontStyle.italic)),
+            SizedBox(height: 50),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class ListAllReceiptView extends StatelessWidget {
   const ListAllReceiptView({Key? key}) : super(key: key);
@@ -32,7 +53,7 @@ class ListAllReceiptView extends StatelessWidget {
               BlocProvider.of<ListAllReceiptBloc>(context)
                   .add(LoadAllReceipt());
             },
-            child: ListView.builder(
+            child: state.receipts.isEmpty ? const WidgetNoReceipt(): ListView.builder(
                 itemCount: state.receipts.length,
                 itemBuilder: (ctx, idx) {
                   return ReceiptHeaderCard(receipt: state.receipts[idx]);
