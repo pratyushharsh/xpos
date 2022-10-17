@@ -82,7 +82,7 @@ class RestApiClient {
     log.info(restOptions);
     final response =
     await http.post(_url, headers: header, body: restOptions.body);
-    log.info("Post Response: ${response.statusCode}");
+    log.info("Post Response: ${response.statusCode} | ${response.headers}");
     log.info(response.body);
     return response;
   }
@@ -100,7 +100,7 @@ class RestApiClient {
     log.info(restOptions);
     final response =
         await http.put(_url, headers: header, body: restOptions.body);
-    log.info("Put Response: ${response.statusCode}");
+    log.info("Put Response: ${response.statusCode} | ${response.headers}");
     log.info(response.body);
     return response;
   }
@@ -115,7 +115,7 @@ class RestApiClient {
     log.info(restOptions);
     final response =
     await http.put(_url, headers: restOptions.headers, body: restOptions.body);
-    log.info("RawPut Response: ${response.statusCode}");
+    log.info("RawPut Response: ${response.statusCode} | ${response.headers}");
     log.info(response.body);
     return response;
   }

@@ -1,5 +1,6 @@
 class CreateBusinessRequest {
   String name;
+  String legalName;
   String? email;
   String? address1;
   String? address2;
@@ -16,6 +17,7 @@ class CreateBusinessRequest {
 
   CreateBusinessRequest(
       {required this.name,
+      required this.legalName,
         this.email,
       this.address1,
       this.address2,
@@ -33,6 +35,7 @@ class CreateBusinessRequest {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'legal_name': legalName,
       'email': email,
       'address1': address1,
       'address2': address2,
@@ -52,6 +55,7 @@ class CreateBusinessRequest {
   factory CreateBusinessRequest.fromMap(Map<String, dynamic> map) {
     return CreateBusinessRequest(
       name: map['name'] as String,
+      legalName: map['legal_name'] as String,
       email: map['email'] as String?,
       address1: map['address1'] as String?,
       address2: map['address2'] as String?,

@@ -44,48 +44,53 @@ const RetailLocationEntitySchema = CollectionSchema(
       name: r'lastChangedAt',
       type: IsarType.dateTime,
     ),
-    r'locale': PropertySchema(
+    r'legalBusiness': PropertySchema(
       id: 5,
+      name: r'legalBusiness',
+      type: IsarType.string,
+    ),
+    r'locale': PropertySchema(
+      id: 6,
       name: r'locale',
       type: IsarType.string,
     ),
     r'logo': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'logo',
       type: IsarType.stringList,
     ),
     r'pan': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'pan',
       type: IsarType.string,
     ),
     r'storeContact': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'storeContact',
       type: IsarType.string,
     ),
     r'storeEmail': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'storeEmail',
       type: IsarType.string,
     ),
     r'storeName': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'storeName',
       type: IsarType.string,
     ),
     r'storeNumber': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'storeNumber',
       type: IsarType.string,
     ),
     r'updateTime': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'updateTime',
       type: IsarType.dateTime,
     ),
     r'version': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'version',
       type: IsarType.long,
     )
@@ -125,6 +130,12 @@ int _retailLocationEntityEstimateSize(
   }
   {
     final value = object.gst;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.legalBusiness;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -196,15 +207,16 @@ void _retailLocationEntitySerialize(
   writer.writeString(offsets[2], object.currencyId);
   writer.writeString(offsets[3], object.gst);
   writer.writeDateTime(offsets[4], object.lastChangedAt);
-  writer.writeString(offsets[5], object.locale);
-  writer.writeStringList(offsets[6], object.logo);
-  writer.writeString(offsets[7], object.pan);
-  writer.writeString(offsets[8], object.storeContact);
-  writer.writeString(offsets[9], object.storeEmail);
-  writer.writeString(offsets[10], object.storeName);
-  writer.writeString(offsets[11], object.storeNumber);
-  writer.writeDateTime(offsets[12], object.updateTime);
-  writer.writeLong(offsets[13], object.version);
+  writer.writeString(offsets[5], object.legalBusiness);
+  writer.writeString(offsets[6], object.locale);
+  writer.writeStringList(offsets[7], object.logo);
+  writer.writeString(offsets[8], object.pan);
+  writer.writeString(offsets[9], object.storeContact);
+  writer.writeString(offsets[10], object.storeEmail);
+  writer.writeString(offsets[11], object.storeName);
+  writer.writeString(offsets[12], object.storeNumber);
+  writer.writeDateTime(offsets[13], object.updateTime);
+  writer.writeLong(offsets[14], object.version);
 }
 
 RetailLocationEntity _retailLocationEntityDeserialize(
@@ -223,16 +235,17 @@ RetailLocationEntity _retailLocationEntityDeserialize(
     currencyId: reader.readStringOrNull(offsets[2]),
     gst: reader.readStringOrNull(offsets[3]),
     lastChangedAt: reader.readDateTimeOrNull(offsets[4]),
-    locale: reader.readStringOrNull(offsets[5]),
-    logo: reader.readStringList(offsets[6]),
-    pan: reader.readStringOrNull(offsets[7]),
+    legalBusiness: reader.readStringOrNull(offsets[5]),
+    locale: reader.readStringOrNull(offsets[6]),
+    logo: reader.readStringList(offsets[7]),
+    pan: reader.readStringOrNull(offsets[8]),
     rtlLocId: id,
-    storeContact: reader.readStringOrNull(offsets[8]),
-    storeEmail: reader.readStringOrNull(offsets[9]),
-    storeName: reader.readStringOrNull(offsets[10]),
-    storeNumber: reader.readStringOrNull(offsets[11]),
-    updateTime: reader.readDateTimeOrNull(offsets[12]),
-    version: reader.readLongOrNull(offsets[13]) ?? 1,
+    storeContact: reader.readStringOrNull(offsets[9]),
+    storeEmail: reader.readStringOrNull(offsets[10]),
+    storeName: reader.readStringOrNull(offsets[11]),
+    storeNumber: reader.readStringOrNull(offsets[12]),
+    updateTime: reader.readDateTimeOrNull(offsets[13]),
+    version: reader.readLongOrNull(offsets[14]) ?? 1,
   );
   return object;
 }
@@ -261,9 +274,9 @@ P _retailLocationEntityDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readStringList(offset)) as P;
-    case 7:
       return (reader.readStringOrNull(offset)) as P;
+    case 7:
+      return (reader.readStringList(offset)) as P;
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
@@ -273,8 +286,10 @@ P _retailLocationEntityDeserializeProp<P>(
     case 11:
       return (reader.readStringOrNull(offset)) as P;
     case 12:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 13:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 14:
       return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -832,6 +847,162 @@ extension RetailLocationEntityQueryFilter on QueryBuilder<RetailLocationEntity,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'legalBusiness',
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'legalBusiness',
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'legalBusiness',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'legalBusiness',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'legalBusiness',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'legalBusiness',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'legalBusiness',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'legalBusiness',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+          QAfterFilterCondition>
+      legalBusinessContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'legalBusiness',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+          QAfterFilterCondition>
+      legalBusinessMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'legalBusiness',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'legalBusiness',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity,
+      QAfterFilterCondition> legalBusinessIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'legalBusiness',
+        value: '',
       ));
     });
   }
@@ -2276,6 +2447,20 @@ extension RetailLocationEntityQuerySortBy
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
+      sortByLegalBusiness() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'legalBusiness', Sort.asc);
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
+      sortByLegalBusinessDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'legalBusiness', Sort.desc);
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
       sortByLocale() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'locale', Sort.asc);
@@ -2447,6 +2632,20 @@ extension RetailLocationEntityQuerySortThenBy
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
+      thenByLegalBusiness() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'legalBusiness', Sort.asc);
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
+      thenByLegalBusinessDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'legalBusiness', Sort.desc);
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QAfterSortBy>
       thenByLocale() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'locale', Sort.asc);
@@ -2604,6 +2803,14 @@ extension RetailLocationEntityQueryWhereDistinct
   }
 
   QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
+      distinctByLegalBusiness({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'legalBusiness',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, RetailLocationEntity, QDistinct>
       distinctByLocale({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'locale', caseSensitive: caseSensitive);
@@ -2706,6 +2913,13 @@ extension RetailLocationEntityQueryProperty on QueryBuilder<
       lastChangedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastChangedAt');
+    });
+  }
+
+  QueryBuilder<RetailLocationEntity, String?, QQueryOperations>
+      legalBusinessProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'legalBusiness');
     });
   }
 

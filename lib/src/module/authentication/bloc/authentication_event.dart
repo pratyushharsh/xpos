@@ -33,3 +33,8 @@ class ChooseBusinessEvent extends AuthenticationEvent {
 }
 
 class RefreshBusinessEvent extends AuthenticationEvent {}
+
+class ChangeBusinessAccount extends AuthenticationEvent {
+  final String rtlLocId;
+  ChangeBusinessAccount(this.rtlLocId);
+}

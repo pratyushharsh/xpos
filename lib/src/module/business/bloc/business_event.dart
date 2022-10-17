@@ -15,6 +15,12 @@ class OnBusinessNameChange extends BusinessEvent {
   OnBusinessNameChange(this.name);
 }
 
+class OnLegalBusinessNameChange extends BusinessEvent {
+  final String name;
+
+  OnLegalBusinessNameChange(this.name);
+}
+
 class OnBusinessContactChange extends BusinessEvent {
   final String contact;
 

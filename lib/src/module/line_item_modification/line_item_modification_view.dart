@@ -69,59 +69,49 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
             lineItem: widget.lineItem,
             productModel: widget.productModel,
           ),
-          SizedBox(
-            height: 90,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    child:
-                        ListView(scrollDirection: Axis.horizontal, children: [
-                      DialogButton(
-                        label: "Price",
-                        onClick: () {
-                          setState(() {
-                            selectedType = LineItemModificationType.price;
-                          });
-                        },
-                        selected:
-                            selectedType == LineItemModificationType.price,
-                      ),
-                      DialogButton(
-                        label: "Quantity",
-                        onClick: () {
-                          setState(() {
-                            selectedType = LineItemModificationType.quantity;
-                          });
-                        },
-                        selected:
-                            selectedType == LineItemModificationType.quantity,
-                      ),
-                      DialogButton(
-                        label: "Discount",
-                        onClick: () {
-                          setState(() {
-                            selectedType = LineItemModificationType.discount;
-                          });
-                        },
-                        selected:
-                            selectedType == LineItemModificationType.discount,
-                      ),
-                      DialogButton(
-                        label: "Tax",
-                        onClick: () {
-                          setState(() {
-                            selectedType = LineItemModificationType.tax;
-                          });
-                        },
-                        selected: selectedType == LineItemModificationType.tax,
-                      ),
-                    ]),
-                  ),
-                ),
-              ],
-            ),
+          Wrap(
+            children: [
+              DialogButton(
+                label: "Price",
+                onClick: () {
+                  setState(() {
+                    selectedType = LineItemModificationType.price;
+                  });
+                },
+                selected:
+                selectedType == LineItemModificationType.price,
+              ),
+              DialogButton(
+                label: "Quantity",
+                onClick: () {
+                  setState(() {
+                    selectedType = LineItemModificationType.quantity;
+                  });
+                },
+                selected:
+                selectedType == LineItemModificationType.quantity,
+              ),
+              DialogButton(
+                label: "Discount",
+                onClick: () {
+                  setState(() {
+                    selectedType = LineItemModificationType.discount;
+                  });
+                },
+                selected:
+                selectedType == LineItemModificationType.discount,
+              ),
+              DialogButton(
+                label: "Tax",
+                onClick: () {
+                  setState(() {
+                    selectedType = LineItemModificationType.tax;
+                  });
+                },
+                selected:
+                selectedType == LineItemModificationType.tax,
+              ),
+            ],
           ),
           const SizedBox(height: 20),
           Expanded(child: _getCorrespondingData())
@@ -134,60 +124,58 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
 class ModifyLineItemViewCard extends StatelessWidget {
   final TransactionLineItemEntity lineItem;
   final ProductEntity? productModel;
-  const ModifyLineItemViewCard({Key? key, required this.lineItem, this.productModel}) : super(key: key);
+  const ModifyLineItemViewCard(
+      {Key? key, required this.lineItem, this.productModel})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        (productModel != null && productModel!.imageUrl.isNotEmpty) ?
-        Image.file(
-            File(Constants.baseImagePath + productModel!.imageUrl[0]),
-            fit: BoxFit.cover,
-            height: 100,
-            width: 100, errorBuilder: (context, obj, trace) {
-          return const SizedBox(
-            height: 100,
-            width: 100,
-          );
-        }) : Image.network(
-          "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
-          fit: BoxFit.cover,
-          height: 100,
-          width: 100,
-          errorBuilder: (context, obj, trace) {
-            return const SizedBox(
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      (productModel != null && productModel!.imageUrl.isNotEmpty)
+          ? Image.file(
+              File(Constants.baseImagePath + productModel!.imageUrl[0]),
+              fit: BoxFit.cover,
+              height: 100,
+              width: 100, errorBuilder: (context, obj, trace) {
+              return const SizedBox(
+                height: 100,
+                width: 100,
+              );
+            })
+          : Image.network(
+              "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
+              fit: BoxFit.cover,
               height: 100,
               width: 100,
-            );
-          },
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                productModel?.displayName ?? "",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                "SKU Code: ${productModel?.skuCode ?? ""}",
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
-              ),
-              Text(
-                "Sale Price: ${getCurrencyFormatter(context).format(lineItem.unitPrice)}",
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
-              )
-            ]
+              errorBuilder: (context, obj, trace) {
+                return const SizedBox(
+                  height: 100,
+                  width: 100,
+                );
+              },
+            ),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            productModel?.displayName ?? "",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            overflow: TextOverflow.ellipsis,
           ),
-        )
-      ]
-    );
+          Text(
+            "SKU Code: ${productModel?.skuCode ?? ""}",
+            style: const TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
+          ),
+          Text(
+            "Sale Price: ${getCurrencyFormatter(context).format(lineItem.unitPrice)}",
+            style: const TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
+          )
+        ]),
+      )
+    ]);
   }
 }
-
 
 class LineItemPriceModifyView extends StatefulWidget {
   const LineItemPriceModifyView({Key? key}) : super(key: key);

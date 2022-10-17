@@ -33,6 +33,7 @@ import 'package:receipt_generator/src/util/helper/rest_api.dart';
 import 'src/module/error/bloc/error_notification_bloc.dart';
 import 'src/module/error/error_notification.dart';
 import 'src/module/login/choose_create_business_view.dart';
+import 'src/module/settings/bloc/settings_bloc.dart';
 import 'src/repositories/checklist_helper.dart';
 import 'src/repositories/employee_repository.dart';
 import 'src/repositories/product_repository.dart';
@@ -162,7 +163,13 @@ class MyApp extends StatelessWidget {
               create: (context) => ErrorNotificationBloc(
                     checkListHelper: RepositoryProvider.of(context),
                     authenticationBloc: BlocProvider.of(context),
-                  )..add(ValidateStoreSetup()))
+                  )..add(ValidateStoreSetup())),
+          BlocProvider(
+            create: (context) => SettingsBloc(
+              employeeRepository: RepositoryProvider.of(context),
+              authenticationBloc: BlocProvider.of(context)
+            ),
+          ),
         ], child: const MyAppView()));
   }
 }

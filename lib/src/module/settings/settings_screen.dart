@@ -9,6 +9,9 @@ import 'package:receipt_generator/src/module/sync/bloc/background_sync_bloc.dart
 import '../../../locale_keys.dart';
 import '../../repositories/business_repository.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/my_loader.dart';
+import '../business/business_view.dart';
+import 'bloc/settings_bloc.dart';
 
 const String dummyImage =
     'https://images.unsplash.com/photo-1541569863345-f97c6484a917?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80';
@@ -48,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
                   return AccountWidget(
                     name:
                         "${state.employee?.firstName ?? ""} ${state.employee?.middleName ?? ""} ${state.employee?.lastName ?? ""}",
-                    role: "Kachre Wala",
+                    role: "Store User",
                     data: Detail(
                       title: LocaleKeys.settingsAccount.tr(),
                       subtitle: LocaleKeys.settingsAccountDescription.tr(),
@@ -159,6 +162,10 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(
                 height: 50,
               ),
+              const SwitchBusinessAccountWidget(),
+              const SizedBox(
+                height: 50,
+              ),
               SizedBox(
                 width: double.infinity,
                 child: RejectButton(
@@ -186,7 +193,6 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state) {
-
         if (state.store == null) {
           return const SizedBox();
         }
@@ -322,6 +328,180 @@ class SectionWidget extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class SwitchBusinessAccountWidget extends StatefulWidget {
+  const SwitchBusinessAccountWidget({Key? key}) : super(key: key);
+
+  @override
+  State<SwitchBusinessAccountWidget> createState() =>
+      _SwitchBusinessAccountWidgetState();
+}
+
+class _SwitchBusinessAccountWidgetState
+    extends State<SwitchBusinessAccountWidget>
+    with SingleTickerProviderStateMixin {
+  double turns = 0;
+  bool open = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // _controller = AnimationController(
+    //   vsync: this,
+    //   duration: const Duration(milliseconds: 800),
+    // );
+  }
+
+  @override
+  void dispose() {
+    // _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildInvalidUser() {
+    return const Text(
+      "You are not a valid user",
+      style: TextStyle(
+          color: AppColor.subtitleColorPrimary,
+          fontWeight: FontWeight.w500,
+          fontSize: 15),
+    );
+  }
+
+  Widget _buildNewBusinessButton() {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(BusinessView.route());
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        child: Row(
+          children: const [
+            Icon(Icons.add),
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              "Add New Business",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    AuthenticationState state =
+        BlocProvider.of<AuthenticationBloc>(context).state;
+    String rtlLocId = '${state.store!.rtlLocId ?? ''}';
+
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, state) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(17),
+          child: Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+            elevation: 0,
+            margin: const EdgeInsets.all(0),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 400),
+              child: Column(children: [
+                InkWell(
+                  onTap: () {
+                    if (open) {
+                      setState(() {
+                        turns -= 1 / 4;
+                      });
+                    } else {
+                      BlocProvider.of<SettingsBloc>(context).add(FetchUserBusiness());
+                      setState(() {
+                        turns += 1 / 4;
+                      });
+                    }
+                    open = !open;
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Switch Business Account',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                        AnimatedRotation(
+                          turns: turns,
+                          duration: const Duration(milliseconds: 800),
+                          child: const Icon(Icons.chevron_right),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const Divider(height: 0),
+                if (open && state.status == SettingsStatus.loadingBusiness)
+                  const MyLoader(color: AppColor.primary),
+                if (open &&
+                    !(state.status == SettingsStatus.loadingBusiness ||
+                        state.status == SettingsStatus.loadingBusinessFailure))
+                  ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: state.business.length + 1,
+                      itemBuilder: (ctx, idx) {
+                        if (idx == state.business.length) {
+                          return _buildNewBusinessButton();
+                        }
+
+                        return Column(
+                          children: [
+                            InkWell(
+                              onTap: () {},
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                    top: 4, bottom: 4, left:16, right: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      state.business[idx].storeId ??
+                                          'Invalid Store',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15),
+                                    ),
+                                    Radio<String>(
+                                      value: state.business[idx].storeId!,
+                                      groupValue: rtlLocId,
+                                      onChanged: (value) {
+                                        if (value != null && value != rtlLocId) {
+                                          BlocProvider.of<AuthenticationBloc>(context)
+                                              .add(ChangeBusinessAccount(value));
+                                        }
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Divider(height: 0)
+                          ],
+                        );
+                      })
+              ]),
+            ),
+          ),
+        );
+      },
     );
   }
 }

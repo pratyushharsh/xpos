@@ -50,20 +50,21 @@ class BusinessView extends StatelessWidget {
               children: [
                 SingleChildScrollView(
                   child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 16),
-                      child: Column(
-                        children: const [
-                          SizedBox(
-                            height: 70,
-                          ),
-                          BusinessLogo(),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          BusinessDetail()
-                        ],
-                      )),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Column(
+                      children: const [
+                        SizedBox(
+                          height: 70,
+                        ),
+                        BusinessLogo(),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        BusinessDetail()
+                      ],
+                    ),
+                  ),
                 ),
                 Positioned(
                   top: 20,
@@ -84,7 +85,7 @@ class BusinessView extends StatelessWidget {
                 ),
                 BlocBuilder<BusinessBloc, BusinessState>(
                   builder: (context, state) {
-                    if (BusinessStatus.modified == state.status) {
+                    if (BusinessStatus.modified == state.status && state.error) {
                       return Positioned(
                         top: 20,
                         right: 16,
@@ -96,8 +97,6 @@ class BusinessView extends StatelessWidget {
                             } else {
                               BlocProvider.of<BusinessBloc>(context)
                                   .add(OnSaveBusiness());
-                              // BlocProvider.of<BusinessBloc>(context)
-                              //     .add(OnSaveBusiness());
                             }
                           },
                           child: const Text(
@@ -108,9 +107,12 @@ class BusinessView extends StatelessWidget {
                             elevation: 0,
                             backgroundColor: AppColor.color8,
                             padding: const EdgeInsets.symmetric(
-                                vertical: 14, horizontal: 10),
+                              vertical: 14,
+                              horizontal: 10,
+                            ),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0)),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
                           ),
                         ),
                       );
@@ -229,8 +231,8 @@ class _BusinessDetailState extends State<BusinessDetail> {
               controller: _legalBusinessNameController,
               label: "Legal Business Name",
               onValueChange: (val) {
-                // BlocProvider.of<BusinessBloc>(context)
-                //     .add(OnBusinessNameChange(val));
+                BlocProvider.of<BusinessBloc>(context)
+                    .add(OnLegalBusinessNameChange(val));
               },
               validator: BusinessValidator.legalBusinessName,
             ),
@@ -310,7 +312,9 @@ class _BusinessDetailState extends State<BusinessDetail> {
                     .add(OnBusinessPanChange(val.toUpperCase()));
               },
             ),
-            const SizedBox(height: 100,)
+            const SizedBox(
+              height: 100,
+            )
           ],
         );
       },
@@ -335,7 +339,6 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
   late CodeValueEntity? _selectedCountry;
   late CodeValueEntity? _selectedState;
 
-
   @override
   void initState() {
     super.initState();
@@ -352,7 +355,8 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
       _streetController.text = widget.address!.address2 ?? '';
       _cityController.text = widget.address!.city ?? '';
       _selectedCountry = RepositoryProvider.of<ConfigRepository>(context)
-          .getCodeByCategoryAndCode('COUNTRY_CODE', widget.address!.countryCode!);
+          .getCodeByCategoryAndCode(
+              'COUNTRY_CODE', widget.address!.countryCode!);
       _selectedState = RepositoryProvider.of<ConfigRepository>(context)
           .getCodeByCategoryAndCode('IN_STATE', widget.address!.stateCode!);
     }

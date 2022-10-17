@@ -9,6 +9,7 @@ class RetailLocationEntity {
 
   final Id rtlLocId;
   final String? storeName;
+  final String? legalBusiness;
   final String? storeEmail;
   final String? storeContact;
   final String? storeNumber;
@@ -26,6 +27,7 @@ class RetailLocationEntity {
   RetailLocationEntity(
       {required this.rtlLocId,
       this.storeName,
+      this.legalBusiness,
       this.storeEmail,
       this.storeContact,
       this.storeNumber,
@@ -42,6 +44,7 @@ class RetailLocationEntity {
   RetailLocationEntity copyWith(
       {Id? rtlLocId,
       String? storeName,
+      String? legalBusiness,
       String? storeEmail,
       String? storeContact,
       String? storeNumber,
@@ -58,6 +61,7 @@ class RetailLocationEntity {
     return RetailLocationEntity(
       rtlLocId: rtlLocId ?? this.rtlLocId,
       storeName: storeName ?? this.storeName,
+      legalBusiness: legalBusiness ?? this.legalBusiness,
       storeEmail: storeEmail ?? this.storeEmail,
       storeContact: storeContact ?? this.storeContact,
       storeNumber: storeNumber ?? this.storeNumber,

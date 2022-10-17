@@ -38,6 +38,7 @@ class AuthenticationBloc
     on<LogOutUserEvent>(_logOutUser);
     on<ChooseBusinessEvent>(_chooseBusinessEvent);
     on<RefreshBusinessEvent>(_refreshBusinessEvent);
+    on<ChangeBusinessAccount>(_changeBusinessAccount);
   }
   // signInIfSessionAvailable() async {
   //   log.info('Getting if user already present');
@@ -140,5 +141,13 @@ class AuthenticationBloc
 
   Future<void> _loadConfigDataIfNotPresent() async {
     sync.add(SyncAllConfigDataEvent());
+  }
+
+  void _changeBusinessAccount(ChangeBusinessAccount event, Emitter<AuthenticationState> emit) async {
+    var user = await userPool.getCurrentUser();
+    await user!.storage.setItem("CURRENT_STORE", event.rtlLocId);
+    var business = await businessRepository.getBusinessById(int.parse(event.rtlLocId));
+    var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(event.rtlLocId, user.getUsername()!);
+    emit(AuthenticationState.authenticated(user, business, userDetail!));
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/module/list_all_item/bloc/list_all_item_bloc.dart';
+import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
 import '../../config/constants.dart';
@@ -124,11 +125,11 @@ class ItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   if (product.salePrice != null && product.salePrice! > 0)
-                    Text('₹ ${product.salePrice!.toStringAsFixed(2)}',
+                    Text(getCurrencyFormatter(context).format(product.salePrice!),
                         style: const TextStyle(fontWeight: FontWeight.w600)),
                   if (product.listPrice != null)
                     Text(
-                      '₹ ${product.listPrice!.toStringAsFixed(2)}',
+                      getCurrencyFormatter(context).format(product.listPrice!),
                       style:
                           (product.salePrice != null && product.salePrice! > 0)
                               ? const TextStyle(

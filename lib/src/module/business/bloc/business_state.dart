@@ -20,6 +20,7 @@ class BusinessState extends Equatable {
   final RetailLocationEntity? entity;
   final BusinessOperation operation;
   final String businessName;
+  final String legalBusinessName;
   final String businessContact;
   final String? businessEmail;
   final String businessCurrency;
@@ -30,7 +31,12 @@ class BusinessState extends Equatable {
   final File? photo;
 
   bool get error {
-    return businessName.isNotEmpty;
+    return businessName.isNotEmpty &&
+        legalBusinessName.isNotEmpty &&
+        businessContact.isNotEmpty &&
+        businessCurrency.isNotEmpty &&
+        businessLocale.isNotEmpty &&
+        businessAddress != null;
   }
 
   const BusinessState({
@@ -38,6 +44,7 @@ class BusinessState extends Equatable {
     this.entity,
     this.operation = BusinessOperation.create,
     this.businessName = '',
+    this.legalBusinessName = '',
     this.businessContact = '',
     this.businessCurrency = 'INR',
     this.businessLocale = 'en_IN',
@@ -54,6 +61,7 @@ class BusinessState extends Equatable {
         entity,
         operation,
         businessName,
+        legalBusinessName,
         businessAddress,
         businessContact,
         businessCurrency,
@@ -70,6 +78,7 @@ class BusinessState extends Equatable {
     RetailLocationEntity? entity,
     BusinessOperation? operation,
     String? businessName,
+    String? legalBusinessName,
     String? businessContact,
     String? businessEmail,
     String? businessCurrency,
@@ -84,6 +93,7 @@ class BusinessState extends Equatable {
       entity: entity ?? this.entity,
       operation: operation ?? this.operation,
       businessName: businessName ?? this.businessName,
+      legalBusinessName: legalBusinessName ?? this.legalBusinessName,
       businessContact: businessContact ?? this.businessContact,
       businessEmail: businessEmail ?? this.businessEmail,
       businessCurrency: businessCurrency ?? this.businessCurrency,

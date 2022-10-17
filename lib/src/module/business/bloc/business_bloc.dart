@@ -25,10 +25,12 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
   BusinessBloc(
       {required this.repo,
       this.operation = BusinessOperation.create,
-      required this.userPool, required this.authBloc})
+      required this.userPool,
+      required this.authBloc})
       : super(BusinessState(operation: operation)) {
     on<LoadBusinessDetail>(_onLoadBusinessDetail);
     on<OnBusinessNameChange>(_onBusinessNameChange);
+    on<OnLegalBusinessNameChange>(_onLegalBusinessNameChange);
     on<OnBusinessContactChange>(_onBusinessContactChange);
     on<OnBusinessEmailChange>(_onBusinessEmailChange);
     on<OnBusinessAddressChange>(_onBusinessAddressChange);
@@ -51,16 +53,17 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
       var data = await repo.getBusinessById(event.businessId!);
       emit(
         state.copyWith(
-            status: BusinessStatus.success,
-            entity: data,
-            businessName: data.storeName,
-            businessGst: data.gst,
-            businessPan: data.pan,
-            businessEmail: data.storeEmail,
-            businessAddress: data.address,
-            businessContact: data.storeContact,
-            businessLocale: data.locale,
-            businessCurrency: data.currencyId
+          status: BusinessStatus.success,
+          entity: data,
+          businessName: data.storeName,
+          legalBusinessName: data.legalBusiness,
+          businessGst: data.gst,
+          businessPan: data.pan,
+          businessEmail: data.storeEmail,
+          businessAddress: data.address,
+          businessContact: data.storeContact,
+          businessLocale: data.locale,
+          businessCurrency: data.currencyId,
         ),
       );
     } catch (e) {
@@ -75,22 +78,24 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     try {
       if (state.entity != null) {
         var entity = await repo.updateBusiness(
-            state.entity!.rtlLocId,
-            CreateBusinessRequest(
-              name: state.businessName,
-              address1: state.businessAddress?.address1,
-              address2: state.businessAddress?.address2,
-              city: state.businessAddress?.city,
-              state: state.businessAddress?.state,
-              postalCode: state.businessAddress?.zipcode,
-              email: state.businessEmail,
-              country: "India",
-              currency: state.businessCurrency,
-              locale: state.businessLocale,
-              gst: state.businessGst,
-              pan: state.businessPan,
-              phone: state.businessContact,
-            ));
+          state.entity!.rtlLocId,
+          CreateBusinessRequest(
+            name: state.businessName,
+            legalName: state.legalBusinessName,
+            address1: state.businessAddress?.address1,
+            address2: state.businessAddress?.address2,
+            city: state.businessAddress?.city,
+            state: state.businessAddress?.state,
+            postalCode: state.businessAddress?.zipcode,
+            email: state.businessEmail,
+            country: state.businessAddress?.country,
+            currency: state.businessCurrency,
+            locale: state.businessLocale,
+            gst: state.businessGst,
+            pan: state.businessPan,
+            phone: state.businessContact,
+          ),
+        );
         emit(state.copyWith(status: BusinessStatus.success, entity: entity));
 
         if (state.photo != null) {
@@ -115,21 +120,25 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     var user = await userPool.getCurrentUser();
 
     try {
-      var resp = await repo.createNewBusiness(CreateBusinessRequest(
+      var resp = await repo.createNewBusiness(
+        CreateBusinessRequest(
           name: state.businessName,
+          legalName: state.legalBusinessName,
           address1: state.businessAddress?.address1,
           address2: state.businessAddress?.address2,
           city: state.businessAddress?.city,
           state: state.businessAddress?.state,
           postalCode: state.businessAddress?.zipcode,
           email: state.businessEmail,
-          country: "India",
+          country: state.businessAddress?.country,
           currency: state.businessCurrency,
           locale: state.businessLocale,
           gst: state.businessGst,
           pan: state.businessPan,
           phone: state.businessContact,
-          createdBy: user?.getUsername()));
+          createdBy: user?.getUsername(),
+        ),
+      );
       log.info(resp);
 
       // Save in the shared preferences
@@ -166,6 +175,14 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     );
   }
 
+  void _onLegalBusinessNameChange(
+      OnLegalBusinessNameChange event, Emitter<BusinessState> emit) async {
+    emit(
+      state.copyWith(
+          legalBusinessName: event.name, status: BusinessStatus.modified),
+    );
+  }
+
   void _onBusinessAddressChange(
       OnBusinessAddressChange event, Emitter<BusinessState> emit) async {
     emit(
@@ -192,11 +209,15 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     emit(state.copyWith(photo: event.photo, status: BusinessStatus.modified));
   }
 
-  void _onChangeBusinessLocale(OnChangeBusinessLocale event, Emitter<BusinessState> emit) async {
-    emit(state.copyWith(businessLocale: event.locale, status: BusinessStatus.modified));
+  void _onChangeBusinessLocale(
+      OnChangeBusinessLocale event, Emitter<BusinessState> emit) async {
+    emit(state.copyWith(
+        businessLocale: event.locale, status: BusinessStatus.modified));
   }
 
-  void _onChangeBusinessCurrency(OnChangeBusinessCurrency event, Emitter<BusinessState> emit) async {
-    emit(state.copyWith(businessCurrency: event.currency, status: BusinessStatus.modified));
+  void _onChangeBusinessCurrency(
+      OnChangeBusinessCurrency event, Emitter<BusinessState> emit) async {
+    emit(state.copyWith(
+        businessCurrency: event.currency, status: BusinessStatus.modified));
   }
 }
