@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../config/theme_settings.dart';
 import '../../entity/pos/tax_group_entity.dart';
 import '../../entity/pos/tax_rule_entity.dart';
-import '../mobile_dialog/mobile_dialog_view.dart';
+import '../../widgets/desktop_pop_up.dart';
 import 'bloc/create_edit_tax_bloc.dart';
 import 'create_edit_tax.dart';
 import 'create_new_tax_group.dart';
@@ -46,30 +46,32 @@ class NewTaxGroupButtonMobile extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (Platform.isIOS || Platform.isAndroid) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => const MobileDialogView(
-              child: CreateNewTaxGroupDesktop(),
-            ),
-          )).then((value) => {
-            if (value != null && value)
-              {
-                BlocProvider.of<CreateEditTaxBloc>(context)
-                    .add(FetchAllTaxGroup())
-              }
-          });
+          showTransitiveAppPopUp(
+            context: context,
+            child: const CreateNewTaxGroupView(),
+            title: 'Create Tax Group'
+          ).then((value) => {
+                if (value != null && value)
+                  {
+                    BlocProvider.of<CreateEditTaxBloc>(context)
+                        .add(FetchAllTaxGroup())
+                  }
+              });
         }
       },
       child: Container(
-          padding: const EdgeInsets.all(16),
-          margin: const EdgeInsets.symmetric(vertical: 4),
-          decoration: BoxDecoration(
-            color: AppColor.color8,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Center(
-              child: Column(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+          color: AppColor.color8,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: Column(
             children: const [Icon(Icons.add), Text("Add New Tax Group")],
-          ))),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -116,16 +118,17 @@ class TaxRuleList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: taxRules.map((taxRule) => Column(
-        children: [
-          const Divider(height: 0),
-          TaxRuleCard(taxRule: taxRule),
-        ],
-      )).toList(),
+      children: taxRules
+          .map((taxRule) => Column(
+                children: [
+                  const Divider(height: 0),
+                  TaxRuleCard(taxRule: taxRule),
+                ],
+              ))
+          .toList(),
     );
   }
 }
-
 
 class TaxRuleCard extends StatelessWidget {
   final TaxRuleEntity taxRule;

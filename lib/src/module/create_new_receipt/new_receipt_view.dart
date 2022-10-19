@@ -21,7 +21,6 @@ import '../../widgets/desktop_pop_up.dart';
 import '../business/business_view.dart';
 import '../customer_search/customer_search_widget.dart';
 import '../line_item_modification/line_item_modification_view.dart';
-import '../mobile_dialog/mobile_dialog_view.dart';
 import 'bloc/create_new_receipt_bloc.dart';
 import 'sale_complete_dialog.dart';
 

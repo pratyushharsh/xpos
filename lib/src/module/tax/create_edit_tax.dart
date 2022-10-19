@@ -10,7 +10,6 @@ import '../../entity/pos/tax_group_entity.dart';
 import '../../entity/pos/tax_rule_entity.dart';
 import '../../widgets/appbar_leading.dart';
 import '../../widgets/desktop_pop_up.dart';
-import '../mobile_dialog/mobile_dialog_view.dart';
 import 'bloc/create_edit_tax_bloc.dart';
 import 'create_new_tax_group.dart';
 import 'create_new_tax_rule.dart';
@@ -175,13 +174,12 @@ class NewTaxGroupTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // TaxGroupEntity tg = TaxGroupEntity(groupId: "GROUP1", name: "Group Name", description: "Group Description");
-        // BlocProvider.of<CreateEditTaxBloc>(context).add(CreateNewTaxGroup(tg));
         if (Platform.isIOS || Platform.isAndroid) {
         } else {
           showTransitiveAppPopUp(
             context: context,
-            child: const CreateNewTaxGroupDesktop(),
+            title: 'New Tax Group',
+            child: const CreateNewTaxGroupView(),
           ).then((value) => {
                 if (value != null && value)
                   {
