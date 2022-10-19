@@ -66,15 +66,13 @@ class TaxConfigView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        if (Platform.isIOS || Platform.isAndroid) {
-          return const TaxConfigMobileView();
-        } else {
-          return const TaxConfigDesktopView();
-        }
+    return Builder(builder: (context) {
+      if (Platform.isIOS || Platform.isAndroid) {
+        return const TaxConfigMobileView();
+      } else {
+        return const TaxConfigDesktopView();
       }
-    );
+    });
   }
 }
 
@@ -206,39 +204,37 @@ class NewTaxGroupTile extends StatelessWidget {
 class NewTaxRuleTile extends StatelessWidget {
   final TaxGroupEntity? selectedTaxGroup;
   final EdgeInsetsGeometry? padding;
-  const NewTaxRuleTile({Key? key, this.selectedTaxGroup, this.padding = const EdgeInsets.all(16)}) : super(key: key);
+  const NewTaxRuleTile(
+      {Key? key,
+      this.selectedTaxGroup,
+      this.padding = const EdgeInsets.all(16)})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateEditTaxBloc, CreateEditTaxState>(
       builder: (context, state) {
+        late TaxGroupEntity taxGroup;
+
+        if (Platform.isIOS || Platform.isAndroid) {
+          taxGroup = selectedTaxGroup!;
+        } else {
+          taxGroup = state.selectedTaxGroup!;
+        }
+
         return InkWell(
           onTap: () {
-            if (Platform.isIOS || Platform.isAndroid) {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => MobileDialogView(
-                  child: CreateNewTaxRuleDesktop(taxGroup: selectedTaxGroup!),
-                ),
-              )).then((value) => {
-                if (value != null && value)
-                  {
-                    BlocProvider.of<CreateEditTaxBloc>(context)
-                        .add(FetchAllTaxGroup())
-                  }
-              });
-            } else {
-              showTransitiveAppPopUp(
-                context: context,
-                child:
-                    CreateNewTaxRuleDesktop(taxGroup: state.selectedTaxGroup!),
-              ).then((value) => {
-                    if (value != null && value)
-                      {
-                        BlocProvider.of<CreateEditTaxBloc>(context)
-                            .add(FetchAllTaxGroup())
-                      }
-                  });
-            }
+            showTransitiveAppPopUp(
+                    context: context,
+                    child: CreateNewTaxRuleView(taxGroup: taxGroup),
+                    title: 'Create Tax Rule')
+                .then((value) => {
+                      if (value != null && value)
+                        {
+                          BlocProvider.of<CreateEditTaxBloc>(context)
+                              .add(FetchAllTaxGroup())
+                        }
+                    });
           },
           child: Container(
             padding: padding,
@@ -274,7 +270,8 @@ class TaxRuleList extends StatelessWidget {
           children: [
             ...state.selectedTaxGroup!.taxRules.map((taxRule) => Column(
                   children: [
-                    TaxRuleTile(taxRule: taxRule, taxGroup: state.selectedTaxGroup!),
+                    TaxRuleTile(
+                        taxRule: taxRule, taxGroup: state.selectedTaxGroup!),
                     const Divider(height: 0)
                   ],
                 )),

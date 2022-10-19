@@ -12,14 +12,13 @@ import '../../widgets/custom_text_field.dart';
 import 'bloc/new_tax_group_bloc.dart';
 import 'bloc/new_tax_rule_bloc.dart';
 
-class CreateNewTaxRuleDesktop extends StatelessWidget {
+class CreateNewTaxRuleView extends StatelessWidget {
   final TaxGroupEntity taxGroup;
-  const CreateNewTaxRuleDesktop({Key? key, required this.taxGroup})
+  const CreateNewTaxRuleView({Key? key, required this.taxGroup})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print("taxGroup: $taxGroup");
     return BlocProvider(
       create: (context) => NewTaxRuleBloc(
           taxRepository: RepositoryProvider.of(context), taxGroup: taxGroup),
@@ -40,177 +39,183 @@ class CreateNewTaxRuleForm extends StatelessWidget {
         }
       },
       builder: (context, state) {
-
         if (state.status == NewTaxRuleStatus.loading) {
-          return const Center(child: MyLoader(color: AppColor.color6,));
+          return const Center(
+              child: MyLoader(
+            color: AppColor.color6,
+          ));
         }
 
-        return SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                const Text(
-                  "Tax Rate Rule",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-                const Divider(),
-                CustomTextField(
-                  label: 'Rule Id',
-                  initialValue: state.ruleId,
-                  onValueChange: (value) =>
-                      BlocProvider.of<NewTaxRuleBloc>(context)
-                          .add(OnRuleIdChangeEvent(value)),
-                ),
-                CustomTextField(
-                  label: 'Rule Name',
-                  initialValue: state.ruleName,
-                  onValueChange: (value) =>
-                      BlocProvider.of<NewTaxRuleBloc>(context)
-                          .add(OnRuleNameChangeEvent(value)),
-                ),
-                Row(
+        return Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
                   children: [
-                    Expanded(
-                      child: CustomTextField(
-                        label: 'Percent',
-                        initialValue: state.percent?.toString(),
-                        inputFormatters: [
-                          CustomInputTextFormatter.positiveNumber
-                        ],
-                        onValueChange: (value) =>
-                            BlocProvider.of<NewTaxRuleBloc>(context).add(
-                          OnPercentChangeEvent(
-                            double.parse(value),
+                    CustomTextField(
+                      label: 'Rule Id',
+                      initialValue: state.ruleId,
+                      onValueChange: (value) =>
+                          BlocProvider.of<NewTaxRuleBloc>(context)
+                              .add(OnRuleIdChangeEvent(value)),
+                    ),
+                    CustomTextField(
+                      label: 'Rule Name',
+                      initialValue: state.ruleName,
+                      onValueChange: (value) =>
+                          BlocProvider.of<NewTaxRuleBloc>(context)
+                              .add(OnRuleNameChangeEvent(value)),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            label: 'Percent',
+                            initialValue: state.percent?.toString(),
+                            inputFormatters: [
+                              CustomInputTextFormatter.positiveNumber
+                            ],
+                            onValueChange: (value) =>
+                                BlocProvider.of<NewTaxRuleBloc>(context).add(
+                              OnPercentChangeEvent(
+                                double.parse(value),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: CustomTextField(
+                            label: 'Amount',
+                            initialValue: state.amount?.toString(),
+                            inputFormatters: [
+                              CustomInputTextFormatter.positiveNumber
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: CustomTextField(
-                        label: 'Amount',
-                        initialValue: state.amount?.toString(),
-                        inputFormatters: [
-                          CustomInputTextFormatter.positiveNumber
-                        ],
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            label: 'Minimum Taxable Amount',
+                            initialValue:
+                                state.minimumTaxableAmount?.toString(),
+                            inputFormatters: [
+                              CustomInputTextFormatter.positiveNumber
+                            ],
+                            onValueChange: (value) =>
+                                BlocProvider.of<NewTaxRuleBloc>(context).add(
+                              OnMinimumTaxableAmountChangeEvent(
+                                double.parse(value),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: CustomTextField(
+                            label: 'Maximum Taxable Amount',
+                            initialValue:
+                                state.maximumTaxableAmount?.toString(),
+                            inputFormatters: [
+                              CustomInputTextFormatter.positiveNumber
+                            ],
+                            onValueChange: (value) =>
+                                BlocProvider.of<NewTaxRuleBloc>(context).add(
+                              OnMaximumTaxableAmountChangeEvent(
+                                double.parse(value),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFieldPlaceholderWidget(
+                            onTap: () {
+                              showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2200))
+                                  .then((value) => {
+                                        if (value != null)
+                                          {
+                                            BlocProvider.of<NewTaxRuleBloc>(
+                                                    context)
+                                                .add(
+                                              OnEffectiveDateChangeEvent(value),
+                                            ),
+                                          }
+                                      });
+                            },
+                            minHeight: 16,
+                            value:
+                                state.effectiveDateTimeStamp?.toString() ?? '',
+                            label: 'Effective Date',
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextFieldPlaceholderWidget(
+                            onTap: () {
+                              showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime.now(),
+                                      lastDate: DateTime(2200))
+                                  .then((value) => {
+                                        if (value != null)
+                                          {
+                                            BlocProvider.of<NewTaxRuleBloc>(
+                                                    context)
+                                                .add(
+                                              OnExpirationDateChangeEvent(
+                                                  value),
+                                            ),
+                                          }
+                                      });
+                            },
+                            minHeight: 16,
+                            value:
+                                state.expirationDateTimeStamp?.toString() ?? '',
+                            label: 'Expiration Date',
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        label: 'Minimum Taxable Amount',
-                        initialValue: state.minimumTaxableAmount?.toString(),
-                        inputFormatters: [
-                          CustomInputTextFormatter.positiveNumber
-                        ],
-                        onValueChange: (value) =>
-                            BlocProvider.of<NewTaxRuleBloc>(context).add(
-                          OnMinimumTaxableAmountChangeEvent(
-                            double.parse(value),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: CustomTextField(
-                        label: 'Maximum Taxable Amount',
-                        initialValue: state.maximumTaxableAmount?.toString(),
-                        inputFormatters: [
-                          CustomInputTextFormatter.positiveNumber
-                        ],
-                        onValueChange: (value) =>
-                            BlocProvider.of<NewTaxRuleBloc>(context).add(
-                          OnMaximumTaxableAmountChangeEvent(
-                            double.parse(value),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFieldPlaceholderWidget(
-                        onTap: () {
-                          showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2200))
-                              .then((value) => {
-                                    if (value != null)
-                                      {
-                                        BlocProvider.of<NewTaxRuleBloc>(context)
-                                            .add(
-                                          OnEffectiveDateChangeEvent(value),
-                                        ),
-                                      }
-                                  });
-                        },
-                        minHeight: 16,
-                        value: state.effectiveDateTimeStamp?.toString() ?? '',
-                        label: 'Effective Date',
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TextFieldPlaceholderWidget(
-                        onTap: () {
-                          showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime.now(),
-                                  lastDate: DateTime(2200))
-                              .then((value) => {
-                                    if (value != null)
-                                      {
-                                        BlocProvider.of<NewTaxRuleBloc>(context)
-                                            .add(
-                                          OnExpirationDateChangeEvent(value),
-                                        ),
-                                      }
-                                  });
-                        },
-                        minHeight: 16,
-                        value: state.expirationDateTimeStamp?.toString() ?? '',
-                        label: 'Expiration Date',
-                      ),
-                    ),
-                  ],
-                ),
-                Row(children: [
-                  Expanded(
-                    child: RejectButton(
-                      label: "Cancel",
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: AcceptButton(
-                      label: "Create New Rule",
-                      onPressed: state.isValid
-                          ? () {
-                              // Generate Tax Group
-                              BlocProvider.of<NewTaxRuleBloc>(context)
-                                  .add(CreateNewTaxRule());
-                            }
-                          : null,
-                    ),
-                  ),
-                ])
-              ],
+              ),
             ),
-          ),
+            Row(children: [
+              Expanded(
+                child: RejectButton(
+                  label: "Cancel",
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: AcceptButton(
+                  label: "Create New Rule",
+                  onPressed: state.isValid
+                      ? () {
+                          // Generate Tax Group
+                          BlocProvider.of<NewTaxRuleBloc>(context)
+                              .add(CreateNewTaxRule());
+                        }
+                      : null,
+                ),
+              ),
+            ])
+          ],
         );
       },
     );
