@@ -8,7 +8,8 @@ class SearchBar extends StatefulWidget {
   final String label;
   final String? hintText;
   final ValueChanged<String>? onChanged;
-  const SearchBar({Key? key, required this.label, this.onChanged, this.hintText})
+  const SearchBar(
+      {Key? key, required this.label, this.onChanged, this.hintText})
       : super(key: key);
 
   @override
@@ -56,7 +57,8 @@ class _SearchBarState extends State<SearchBar> {
                               children: [
                                 Text(
                                   e,
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 const Divider(
                                   height: 0,
@@ -127,7 +129,7 @@ class _SearchBarState extends State<SearchBar> {
               borderRadius: BorderRadius.circular(4),
             ),
           ),
-          filterWidget: const ProductSearchFilterWidget(),
+          filterWidget: Container(),
         ),
         const SizedBox(
           width: 6,
@@ -143,141 +145,217 @@ class _SearchBarState extends State<SearchBar> {
   }
 }
 
-class FilterButton extends StatefulWidget {
+class FilterList extends StatelessWidget {
+  const FilterList({Key? key}) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      width: MediaQuery.of(context).size.width / 2,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: const [
+              Text('Sort by'),
+              Spacer(),
+              Icon(Icons.close),
+            ],
+          ),
+          Row(
+            children: const [
+              Text('Sort by'),
+              Spacer(),
+              Icon(Icons.close),
+            ],
+          ),
+          Row(
+            children: const [
+              Text('Sort by'),
+              Spacer(),
+              Icon(Icons.close),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FilterButton extends StatefulWidget {
   final Widget? child;
   final Widget? filterWidget;
 
-  const FilterButton({Key? key, this.child, this.filterWidget}) : super(key: key);
+  const FilterButton({Key? key, this.child, this.filterWidget})
+      : super(key: key);
 
   @override
   State<FilterButton> createState() => _FilterButtonState();
 }
-
 class _FilterButtonState extends State<FilterButton> {
-  late bool _mouseIsConnected;
-  OverlayEntry? _entry;
+  RelativeRect _position(RenderBox popupButtonObject, RenderBox overlay) {
+    // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
 
-  @override
-  void initState() {
-    super.initState();
-    _mouseIsConnected = RendererBinding.instance.mouseTracker.mouseIsConnected;
-
-    // Listen to see when a mouse is added.
-    RendererBinding.instance.mouseTracker.addListener(_handleMouseTrackerChange);
-  }
-
-  @override
-  void dispose() {
-    RendererBinding.instance.mouseTracker.removeListener(_handleMouseTrackerChange);
-    _removeEntry();
-    super.dispose();
-  }
-
-  // Forces a rebuild if a mouse has been added or removed.
-  void _handleMouseTrackerChange() {
-    if (!mounted) {
-      return;
-    }
-    final bool mouseIsConnected = RendererBinding.instance.mouseTracker.mouseIsConnected;
-    if (mouseIsConnected != _mouseIsConnected) {
-      setState(() {
-        _mouseIsConnected = mouseIsConnected;
-      });
-    }
-  }
-
-  void _createNewEntry() {
-    if (_entry != null) {
-      _removeEntry();
-      return;
-    }
-
-    print('_createNewEntry');
-    final OverlayState overlayState = Overlay.of(
-      context,
-      debugRequiredFor: widget,
-    )!;
-
-    Size screenSize = MediaQuery.of(context).size;
-    final RenderBox box = context.findRenderObject()! as RenderBox;
-    final Offset position = box.localToGlobal(Offset.zero);
-
-    Widget overlay = Material(
-      child: widget.filterWidget,
-    );
-
-    _entry = OverlayEntry(
-      builder: (context) => Positioned(
-        right: screenSize.width - position.dx - box.size.width,
-        top: position.dy + box.size.height,
-        child: overlay,
+    return RelativeRect.fromSize(
+      Rect.fromPoints(
+        popupButtonObject.localToGlobal(
+            popupButtonObject.size.bottomLeft(Offset.zero),
+            ancestor: overlay),
+        popupButtonObject.localToGlobal(
+            popupButtonObject.size.bottomRight(Offset.zero),
+            ancestor: overlay),
       ),
+      Size(overlay.size.width, overlay.size.height),
     );
-    overlayState.insert(_entry!);
   }
 
-  void _removeEntry() {
-    if (_entry!= null) {
-      _entry!.remove();
-      _entry = null;
-    }
+  Future _openMenu() {
+    // Here we get the render object of our physical button, later to get its size & position
+    final popupButtonObject = context.findRenderObject() as RenderBox;
+    // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
+    var overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+
+    return showPopupMenu(
+      context: context,
+      position: _position(
+        popupButtonObject,
+        overlay,
+      ),
+      parentWidgetSize: popupButtonObject.size,
+      child: const FilterList(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    assert(Overlay.of(context, debugRequiredFor: widget) != null);
-    return GestureDetector(
+    return InkWell(
       onTap: () {
-        if (_mouseIsConnected) {
-          _createNewEntry();
-        }
+        _openMenu();
       },
       child: widget.child,
     );
   }
 }
 
-class ProductSearchFilterWidget extends StatelessWidget {
-  const ProductSearchFilterWidget({Key? key}) : super(key: key);
+Future<T?> showPopupMenu<T>(
+    {required BuildContext context,
+    required Widget child,
+    required RelativeRect position,
+    required Size parentWidgetSize}) {
+  final NavigatorState navigator = Navigator.of(context);
+  return navigator.push(
+    _FilterPopUpRoute<T>(
+        context: context,
+        child: child,
+        position: position,
+        capturedThemes: InheritedTheme.capture(
+          from: context,
+          to: navigator.context,
+        ),
+        parentWidgetSize: parentWidgetSize),
+  );
+}
+
+class _FilterPopUpRouteLayout extends SingleChildLayoutDelegate {
+  // Rectangle of underlying button, relative to the overlay's dimensions.
+  final RelativeRect position;
+  final BuildContext context;
+  final Size parentWidgetSize;
+
+  _FilterPopUpRouteLayout(
+    this.context,
+    this.position,
+    this.parentWidgetSize,
+  );
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Checkbox(
-                  value: true,
-                  onChanged: (bool? value) {
-
-                  },
-                ),
-                Text("Men")
-              ]
-            ),
-            Row(
-                children: [
-                  Checkbox(
-                    value: true,
-                    onChanged: (bool? value) {
-
-                    },
-                  ),
-                  Text("Women")
-                ]
-            )
-          ],
-        ),
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+    final parentRenderBox = context.findRenderObject() as RenderBox;
+    //keyBoardHeight is height of keyboard if showing
+    double keyBoardHeight = MediaQuery.of(context).viewInsets.bottom;
+    double safeAreaTop = MediaQuery.of(context).padding.top;
+    double safeAreaBottom = MediaQuery.of(context).padding.bottom;
+    double totalSafeArea = safeAreaTop + safeAreaBottom;
+    double maxHeight = constraints.minHeight - keyBoardHeight - totalSafeArea;
+    return BoxConstraints.loose(
+      Size(
+        parentRenderBox.size.width,
+        maxHeight,
       ),
     );
   }
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) {
+    // size: The size of the overlay.
+    // childSize: The size of the menu, when fully open, as determined by
+    // getConstraintsForChild.
+
+    //keyBoardHeight is height of keyboard if showing
+    double keyBoardHeight = MediaQuery.of(context).viewInsets.bottom;
+
+    // @TODO Use dynamic programming to find the best fir size for the widget based on the size of the screen
+    double x = position.left + parentWidgetSize.width - childSize.width;
+
+    // Find the ideal vertical position.
+    double y = position.top + 6;
+    // check if we are in the bottom
+    if (y + childSize.height > size.height - keyBoardHeight) {
+      y = size.height - childSize.height - keyBoardHeight;
+    }
+
+    return Offset(x, y);
+  }
+
+  @override
+  bool shouldRelayout(covariant SingleChildLayoutDelegate oldDelegate) {
+    return true;
+  }
+}
+
+class _FilterPopUpRoute<T> extends PopupRoute<T> {
+  final Widget child;
+  final BuildContext context;
+  final RelativeRect position;
+  final CapturedThemes capturedThemes;
+  final Size parentWidgetSize;
+
+  _FilterPopUpRoute({
+    required this.context,
+    required this.child,
+    required this.position,
+    required this.capturedThemes,
+    required this.parentWidgetSize,
+  });
+
+  @override
+  Color? get barrierColor => Colors.transparent;
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  String? get barrierLabel => 'Custom Barrier Label';
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
+    final menu = Material(
+      shape: popupMenuTheme.shape,
+      color: popupMenuTheme.color,
+      type: MaterialType.card,
+      elevation: popupMenuTheme.elevation ?? 8.0,
+      child: child,
+    );
+
+    return CustomSingleChildLayout(
+      delegate: _FilterPopUpRouteLayout(context, position, parentWidgetSize),
+      child: capturedThemes.wrap(menu),
+    );
+  }
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 200);
 }

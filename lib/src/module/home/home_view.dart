@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
             clipBehavior: Clip.none,
             children: [
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 100),
+                duration: const Duration(milliseconds: 250),
                 // transitionBuilder:
                 //     (Widget child, Animation<double> animation) =>
                 //         ScaleTransition(

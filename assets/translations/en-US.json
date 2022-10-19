@@ -18,5 +18,8 @@
     "customer": "Customer",
     "sale": "Sale",
     "product": "Product",
-    "more": "More"
+    "more": "More",
+    "loginHeader": "Enter your mobile number",
+    "loginHeaderDescription": "We will send you a confirmation code",
+    "termsOfService": "Terms of Service"
 }

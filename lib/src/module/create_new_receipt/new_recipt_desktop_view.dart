@@ -439,19 +439,6 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
               ],
             ),
           )
-          // Positioned(
-          //   child: CustomTextField(
-          //     controller: tenderController,
-          //     enabled: selectedTender.isNotEmpty,
-          //     label: "Enter Tender Amount",
-          //     onFieldSubmitted: (val) {
-
-          //     },
-          //   ),
-          //   bottom: 0,
-          //   left: 0,
-          //   right: 0,
-          // )
         ],
       ),
     );

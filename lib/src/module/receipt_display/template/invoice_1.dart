@@ -32,7 +32,7 @@ class Invoice1 {
   Future<Uint8List> buildPdf(PdfPageFormat pageFormat) async {
     // Create a PDF document.
     final doc = Document();
-    if (store.logo != null) {
+    if (store.logo != null && store.logo!.isNotEmpty) {
       _logoImage = await networkImage(store.logo![1]);
     }
     // _logoImage = await networkImage('https://cdn.freebiesupply.com/images/large/2x/google-logo-transparent.png');
@@ -169,10 +169,12 @@ class Invoice1 {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image(
-            _logoImage!,
-            height: 80,
-          ),
+          _logoImage != null
+              ? Image(
+                  _logoImage!,
+                  height: 80,
+                )
+              : SizedBox(height: 80),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -400,8 +402,8 @@ class Invoice1 {
     var x = order.total.toInt();
     var y = (order.total * 100 % 100).round();
 
-    String amountToWord =
-        "${order.storeCurrency} " + NumberToWord().convert('en-in', x).toTitleCase();
+    String amountToWord = "${order.storeCurrency} " +
+        NumberToWord().convert('en-in', x).toTitleCase();
     if (y > 0) {
       amountToWord += " and ";
       amountToWord += NumberToWord().convert('en-in', y).toTitleCase();

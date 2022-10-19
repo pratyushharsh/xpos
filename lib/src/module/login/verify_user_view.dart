@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
+import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
 
 import '../../config/theme_settings.dart';
@@ -26,19 +27,27 @@ class VerifyUserView extends StatelessWidget {
         child: Scaffold(
           backgroundColor: AppColor.background,
           body: Stack(
+            fit: StackFit.expand,
             children: [
-              Positioned(
-                child: Align(
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxWidth:
-                          min(MediaQuery.of(context).size.width, 600),
-                      maxHeight:
-                          min(MediaQuery.of(context).size.height, 600),
-                    ),
-                    child: const VerifyOtpForm(),
-                  ),
-                ),
+              // Positioned(
+              //   child: Align(
+              //     child: Container(
+              //       constraints: BoxConstraints(
+              //         maxWidth:
+              //             min(MediaQuery.of(context).size.width, 600),
+              //         maxHeight:
+              //             min(MediaQuery.of(context).size.height, 600),
+              //       ),
+              //       child: const VerifyOtpForm(),
+              //     ),
+              //   ),
+              // ),
+              const Positioned(
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: VerifyOtpForm(),
               ),
               Positioned(
                 top: 20,
@@ -89,7 +98,7 @@ class _VerifyOtpFormState extends State<VerifyOtpForm> {
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 20),
                 const Text(
@@ -113,14 +122,24 @@ class _VerifyOtpFormState extends State<VerifyOtpForm> {
                 OTPTextField(
                   controller: otpController,
                   length: 6,
-                  width: MediaQuery.of(context).size.width,
-                  textFieldAlignment: MainAxisAlignment.spaceBetween,
-                  // fieldWidth: 55,
-                  fieldStyle: FieldStyle.underline,
+                  spaceBetween: 15,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                  textFieldAlignment: MainAxisAlignment.center,
+                  width: min(MediaQuery.of(context).size.width, 500),
+                  fieldStyle: FieldStyle.box,
+                  otpFieldStyle: OtpFieldStyle(
+                    backgroundColor: AppColor.background,
+                    borderColor: AppColor.primary,
+                    focusBorderColor: AppColor.color5,
+                    disabledBorderColor: AppColor.color5,
+                    enabledBorderColor: AppColor.color5,
+                    errorBorderColor: AppColor.color5,
+                  ),
+                  fieldWidth: 40,
                   inputFormatter: [
                     FilteringTextInputFormatter.allow(RegExp(r'\d')),
                   ],
-                  outlineBorderRadius: 15,
+                  outlineBorderRadius: 4,
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
                   onChanged: (pin) {},
