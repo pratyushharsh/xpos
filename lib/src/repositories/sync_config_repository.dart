@@ -149,7 +149,7 @@ class SyncConfigRepository {
     try {
       log.info("Loading sample product image data");
       final response =
-          await http.get(Uri.parse(UrlConstants.sampleProductsImagesUrl));
+          await http.get(Uri.parse(url));
       final archive = ZipDecoder().decodeBytes(response.bodyBytes);
       // Write the file to the disk
       for (var file in archive.files) {

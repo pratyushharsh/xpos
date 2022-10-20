@@ -164,6 +164,9 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     SettingsItem(text: "FAQ and Videos", onTap: () {}),
                     SettingsItem(text: "Contact us", onTap: () {}),
+                    SettingsItem(text: "About", onTap: () {
+                      Navigator.of(context).pushNamed(RouteConfig.aboutScreen);
+                    }),
                   ],
                 ),
               ),

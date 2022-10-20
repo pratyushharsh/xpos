@@ -22,6 +22,7 @@ import 'src/entity/pos/reason_code_entity.dart';
 
 final log = Logger('Main');
 
+
 Future<void> main() {
   return BlocOverrides.runZoned(() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -30,9 +31,7 @@ Future<void> main() {
 
     // Database Configuration
     final dir = await getApplicationSupportDirectory();
-    final appDoc = await getApplicationDocumentsDirectory();
     await Constants.getImageBasePath();
-    log.info('App Documents Directory:  $appDoc');
     log.info('App Support Directory:  $dir');
     final isar = await Isar.open(
       [

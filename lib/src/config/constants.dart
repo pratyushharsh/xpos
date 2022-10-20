@@ -7,7 +7,7 @@ class Constants {
   static String baseImagePath = "";
 
   static Future<String> getImageBasePath() async {
-    final appDoc = await getApplicationDocumentsDirectory();
+    final appDoc = await getApplicationSupportDirectory();
     baseImagePath = appDoc.path + "/images/";
     return baseImagePath;
   }

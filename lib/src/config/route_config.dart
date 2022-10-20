@@ -19,6 +19,7 @@ import 'package:receipt_generator/src/module/splash_screen/splash_screen_view.da
 import 'package:receipt_generator/src/module/tax/create_edit_tax.dart';
 
 import '../entity/pos/employee_entity.dart';
+import '../module/about/about_view.dart';
 import '../module/create_edit_customer/create_edit_customer_view.dart';
 import '../module/create_new_item/modify_line_item_screen.dart';
 import '../module/employee/employee_list_view.dart';
@@ -28,6 +29,7 @@ import '../module/receipt_setting/invoice_setting_view.dart';
 class RouteConfig {
 
   static const String splashScreen = "/";
+  static const String aboutScreen = "/about";
   static const String homeScreen = "/home";
   static const String editItemScreen = "/edit-item";
   static const String editSaleLineItemScreen = "/edit-sale-line-item";
@@ -56,6 +58,8 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case homeScreen:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
+      case aboutScreen:
+        return MaterialPageRoute(builder: (_) => const AboutScreen());
       case editItemScreen:
         var pId = settings.arguments;
         if (pId is String) {
