@@ -277,6 +277,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
               onTap: () {
                 showTransitiveAppPopUp(
                   context: context,
+                  title: "Business Address",
                   child: AddressFormDialog(address: state.businessAddress),
                 ).then(
                   (value) => {
@@ -356,9 +357,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
       _cityController.text = widget.address!.city ?? '';
       _selectedCountry = RepositoryProvider.of<ConfigRepository>(context)
           .getCodeByCategoryAndCode(
-              'COUNTRY_CODE', widget.address!.countryCode!);
+              'COUNTRY_CODE', widget.address!.countryCode);
       _selectedState = RepositoryProvider.of<ConfigRepository>(context)
-          .getCodeByCategoryAndCode('IN_STATE', widget.address!.stateCode!);
+          .getCodeByCategoryAndCode('IN_STATE', widget.address!.stateCode);
     }
   }
 
@@ -395,66 +396,68 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: Container(
-          padding: const EdgeInsets.all(14.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CodeValueDropDown(
-                category: "COUNTRY_CODE",
-                onChanged: _onSelectedCountryChange,
-                label: "Country",
-                value: _selectedCountry,
-              ),
-              CustomTextField(
-                label: "Pincode",
-                controller: _zipcodeController,
-                textInputType: TextInputType.number,
-              ),
-              CustomTextField(
-                label: "Building, Company, Apartment",
-                controller: _buildingController,
-              ),
-              CustomTextField(
-                label: "Area, Street",
-                controller: _streetController,
-              ),
-              CustomTextField(
-                label: "Town/City",
-                controller: _cityController,
-              ),
-              CodeValueDropDown(
-                category: "IN_STATE",
-                onChanged: _onStateChange,
-                label: "State",
-                value: _selectedState,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: AcceptButton(
-                  label: "Save",
-                  borderRadius: BorderRadius.circular(5.0),
-                  onPressed: () {
-                    Navigator.of(context).pop(Address(
-                      zipcode: _zipcodeController.text,
-                      address1: _buildingController.text,
-                      address2: _streetController.text,
-                      city: _cityController.text,
-                      state: _selectedState!.value,
-                      stateCode: _selectedState!.code,
-                      country: _selectedCountry?.value,
-                      countryCode: _selectedCountry?.code,
-                    ));
-                  },
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                CodeValueDropDown(
+                  category: "COUNTRY_CODE",
+                  onChanged: _onSelectedCountryChange,
+                  label: "Country",
+                  value: _selectedCountry,
                 ),
-              )
-            ],
+                CustomTextField(
+                  label: "Pincode",
+                  controller: _zipcodeController,
+                  textInputType: TextInputType.number,
+                ),
+                CustomTextField(
+                  label: "Building, Company, Apartment",
+                  controller: _buildingController,
+                ),
+                CustomTextField(
+                  label: "Area, Street",
+                  controller: _streetController,
+                ),
+                CustomTextField(
+                  label: "Town/City",
+                  controller: _cityController,
+                ),
+                CodeValueDropDown(
+                  category: "IN_STATE",
+                  onChanged: _onStateChange,
+                  label: "State",
+                  value: _selectedState,
+                ),
+                const SizedBox(
+                  height: 100,
+                )
+              ],
+            ),
           ),
         ),
-      ),
+        SizedBox(
+          width: double.infinity,
+          child: AcceptButton(
+            label: "Save",
+            borderRadius: BorderRadius.circular(5.0),
+            onPressed: () {
+              Navigator.of(context).pop(Address(
+                zipcode: _zipcodeController.text,
+                address1: _buildingController.text,
+                address2: _streetController.text,
+                city: _cityController.text,
+                state: _selectedState!.value,
+                stateCode: _selectedState!.code,
+                country: _selectedCountry?.value,
+                countryCode: _selectedCountry?.code,
+              ));
+            },
+          ),
+        )
+      ],
     );
   }
 }

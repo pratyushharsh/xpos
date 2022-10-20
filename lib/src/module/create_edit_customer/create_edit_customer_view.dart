@@ -153,8 +153,11 @@ class _CreateNewCustomerFormState extends State<CreateNewCustomerForm> {
                     child: Row(
                       children: [
                         Expanded(
-                          child:
-                              RejectButton(label: "Cancel", onPressed: () {}),
+                          child: RejectButton(
+                              label: "Cancel",
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }),
                         ),
                         const SizedBox(
                           width: 12,
@@ -370,6 +373,7 @@ class CreateCustomerForm extends StatelessWidget {
                   onTap: () {
                     showTransitiveAppPopUp(
                       context: context,
+                      title: "Billing Address",
                       child: const AddressFormDialog(),
                     ).then((value) => {
                           if (value != null)
@@ -388,18 +392,11 @@ class CreateCustomerForm extends StatelessWidget {
                 if (!state.sameAddress)
                   GestureDetector(
                     onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (ctx) {
-                            return Dialog(
-                              child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                child: const AddressFormDialog(),
-                              ),
-                            );
-                          }).then((value) => {
+                      showTransitiveAppPopUp(
+                        context: context,
+                        title: "Shipping Address",
+                        child: const AddressFormDialog(),
+                      ).then((value) => {
                             if (value != null)
                               {
                                 BlocProvider.of<CustomerFormBloc>(context).add(

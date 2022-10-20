@@ -11,8 +11,8 @@ class ConfigRepository {
     return db.codeValueEntitys.where().categoryEqualTo(category).findAll();
   }
 
-  CodeValueEntity? getCodeByCategoryAndCode(String category, String code) {
-    if (category.isEmpty || code.isEmpty) {
+  CodeValueEntity? getCodeByCategoryAndCode(String category, String? code) {
+    if (category.isEmpty || (code == null || code.isEmpty)) {
       return null;
     }
     return db.codeValueEntitys.getByCategoryCodeSync(category, code);
