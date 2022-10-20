@@ -36,6 +36,55 @@ class CodeValueDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return CustomDropDown<CodeValueEntity>(
+      label: label,
+      helperText: helperText,
+      errorText: errorText,
+      validator: validator,
+      value: value,
+      onChanged: onChanged,
+      itemAsString: builder,
+      crossAxisAlignment: crossAxisAlignment,
+      filterFn: (user, filter) =>
+          user.code.toLowerCase().contains(filter.toLowerCase()) ||
+          user.value.toLowerCase().contains(filter.toLowerCase()) ||
+          user.description!.toLowerCase().contains(filter.toLowerCase()),
+      asyncItems: (filter) async {
+        return await context
+            .read<ConfigRepository>()
+            .getCodeByCategory(category);
+      },
+    );
+  }
+}
+
+class CustomDropDown<T> extends StatelessWidget {
+  final ValueChanged<T?>? onChanged;
+  final CrossAxisAlignment crossAxisAlignment;
+  final String label;
+  final String? helperText;
+  final String? errorText;
+  final FormFieldValidator<T>? validator;
+  final DropdownSearchOnFind<T>? asyncItems;
+  final T? value;
+  final DropdownSearchFilterFn<T>? filterFn;
+  final DropdownSearchItemAsString<T>? itemAsString;
+  const CustomDropDown({
+    Key? key,
+    required this.onChanged,
+    this.crossAxisAlignment = CrossAxisAlignment.start,
+    required this.label,
+    this.helperText,
+    this.errorText,
+    this.validator,
+    this.value,
+    this.filterFn,
+    this.asyncItems,
+    this.itemAsString,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: crossAxisAlignment,
       children: [
@@ -53,18 +102,12 @@ class CodeValueDropDown extends StatelessWidget {
         const SizedBox(
           height: 1,
         ),
-        DropdownSearch<CodeValueEntity>(
+        DropdownSearch<T>(
           selectedItem: value,
           validator: validator,
-          filterFn: (user, filter) => user.code.toLowerCase().contains(filter.toLowerCase()) ||
-              user.value.toLowerCase().contains(filter.toLowerCase()) ||
-              user.description!.toLowerCase().contains(filter.toLowerCase()),
-          asyncItems: (filter) async {
-            return await context
-                .read<ConfigRepository>()
-                .getCodeByCategory(category);
-          },
-          itemAsString: builder,
+          filterFn: filterFn,
+          asyncItems: asyncItems,
+          itemAsString: itemAsString,
           onChanged: onChanged,
           popupProps: const PopupProps.menu(
             showSearchBox: true,
@@ -96,6 +139,7 @@ class CodeValueDropDown extends StatelessWidget {
           ),
           dropdownButtonProps: const DropdownButtonProps(
             splashRadius: 1.0,
+
           ),
         ),
         const SizedBox(

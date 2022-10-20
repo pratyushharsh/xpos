@@ -1,5 +1,7 @@
 import 'package:validators/validators.dart';
 
+import '../../entity/pos/tax_group_entity.dart';
+
 
 class NewProductFieldValidator {
   static String? validateProductName(String? value) {
@@ -43,13 +45,9 @@ class NewProductFieldValidator {
     return null;
   }
 
-  static String? validateTaxRate(String? value) {
-    if (value != null && value.isNotEmpty) {
-      if (!isFloat(value)) {
-        return 'Not a valid number';
-      } else if (double.parse(value) < 0 || double.parse(value) > 100) {
-        return 'Should be between 0 and 100';
-      }
+  static String? validateTaxGroup(TaxGroupEntity? value) {
+    if (value == null || value.groupId.isEmpty) {
+      return 'Tax group is required';
     }
     return null;
   }

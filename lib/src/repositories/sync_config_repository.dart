@@ -225,7 +225,7 @@ class SyncConfigRepository {
               createTime: DateTime.now(),
               id: seq,
             );
-            await db.productEntitys.putByIndex('productId', entity);
+            await db.productEntitys.put(entity);
           }
         });
       }

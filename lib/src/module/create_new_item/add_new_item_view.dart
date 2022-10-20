@@ -9,7 +9,6 @@ import 'package:receipt_generator/src/module/item/bloc/item_bloc.dart';
 import 'package:receipt_generator/src/widgets/appbar_leading.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/custom_checkbox.dart';
-import 'package:receipt_generator/src/widgets/custom_dropdown.dart';
 import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 import 'package:receipt_generator/src/widgets/loading.dart';
 import 'package:validators/sanitizers.dart';
@@ -55,7 +54,7 @@ class AddNewItemForm extends StatefulWidget {
 
 class _AddNewItemFormState extends State<AddNewItemForm> {
   CodeValueEntity? _uom;
-  String? _taxGroup;
+  TaxGroupEntity? _taxGroup;
   bool _formValid = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -71,8 +70,6 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   late String? _productId;
   late bool _priceIncludeTax;
   late List<String> _imageUrls;
-  List<CodeValueEntity> uom = [];
-  List<TaxGroupEntity> taxGroups = [];
 
   @override
   void initState() {
@@ -94,11 +91,11 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   }
 
   void _fetchData() async {
-    var taxRepo = RepositoryProvider.of<TaxRepository>(context);
-    var _taxGroup = await taxRepo.getAllTaxGroups();
-    setState(() {
-      taxGroups = _taxGroup;
-    });
+    // var taxRepo = RepositoryProvider.of<TaxRepository>(context);
+    // var _taxGroup = await taxRepo.getAllTaxGroups();
+    // setState(() {
+    //   taxGroups = _taxGroup;
+    // });
   }
 
   @override
@@ -114,14 +111,6 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   }
 
   void _onSubmit() {
-    // var prod = Product(
-    //   productId: _productId,
-    //   description: _productName,
-    //   listPrice: double.parse(_listPrice),
-    //   salePrice: double.parse(_salePrice),
-    //   brand: _brand,
-    // );
-    // BlocProvider.of<ItemBloc>(context).add(AddItem(prod));
     if (_formKey.currentState!.validate()) {
       var prod = ProductModel(
           productId: _productId,
@@ -152,7 +141,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     });
   }
 
-  void _onTaxGroupChange(String? value) {
+  void _onTaxGroupChange(TaxGroupEntity? value) {
     setState(() {
       _taxGroup = value;
     });
@@ -187,7 +176,8 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                 code: state.existingProduct!.uom,
                 value: state.existingProduct!.uom,
                 description: state.existingProduct!.uom);
-            _taxGroup = state.existingProduct!.taxGroupId;
+            // @TODO
+            _taxGroup = RepositoryProvider.of<TaxRepository>(context).getTaxGroupId(state.existingProduct!.taxGroupId);
             _productId = state.existingProduct!.skuCode ??
                 state.existingProduct!.productId;
             _productNameController.text = state.existingProduct!.displayName;
@@ -265,19 +255,6 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                                   const SizedBox(
                                     width: 8,
                                   ),
-                                  // Expanded(
-                                  //   child: CustomDropDown<String>(
-                                  //     value: _uom,
-                                  //     data: uom
-                                  //         .map((e) => DropDownData(
-                                  //             key: e.code, value: e.value))
-                                  //         .toList(),
-                                  //     label: 'UOM',
-                                  //     onChanged: _onUomChange,
-                                  //     validator:
-                                  //         NewProductFieldValidator.validateUOM,
-                                  //   ),
-                                  // ),
                                   Expanded(
                                       child: CodeValueDropDown(
                                     label: "UOM",
@@ -368,17 +345,17 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                                     width: 8,
                                   ),
                                   Expanded(
-                                    child: CustomDropDown<String>(
+                                    child: CustomDropDown<TaxGroupEntity>(
                                       value: _taxGroup,
-                                      data: taxGroups
-                                          .map((e) => DropDownData(
-                                              key: e.groupId,
-                                              value: e.description))
-                                          .toList(),
                                       label: 'Tax Group',
+                                      itemAsString: (TaxGroupEntity? value) =>
+                                          value?.name ?? "",
+                                      asyncItems: (filter) async {
+                                        return await RepositoryProvider.of<TaxRepository>(context).getAllTaxGroups();
+                                      },
                                       onChanged: _onTaxGroupChange,
-                                      validator:
-                                          NewProductFieldValidator.validateUOM,
+                                      validator: NewProductFieldValidator
+                                          .validateTaxGroup,
                                     ),
                                   ),
                                 ],

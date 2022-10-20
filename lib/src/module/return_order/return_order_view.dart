@@ -8,6 +8,7 @@ import 'package:receipt_generator/src/widgets/widgets.dart';
 import '../../entity/pos/reason_code_entity.dart';
 import '../../repositories/reason_code_repository.dart';
 import '../../util/text_input_formatter/custom_formatter.dart';
+import '../../widgets/code_value_dropdown.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_dropdown.dart';
 import 'bloc/return_order_bloc.dart';
@@ -319,25 +320,25 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: CustomDropDown<ReasonCodeEntity>(
-                        value: _reasonCode,
-                        data:
-                            RepositoryProvider.of<ReasonCodeRepository>(context)
-                                .getReasonCodeByTypeCode("RETURN")
-                                .map((e) => DropDownData<ReasonCodeEntity>(
-                                    key: e, value: e.description))
-                                .toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _reasonCode = val;
-                            isValid = _isValid() != null;
-                          });
-                        },
-                        label: 'Reason',
-                        validator: ReturnFormValidator.validateReasonCode,
-                      ),
-                    ),
+                    // Expanded(
+                    //   child: CustomDropDown<ReasonCodeEntity>(
+                    //     value: _reasonCode,
+                    //     data:
+                    //         RepositoryProvider.of<ReasonCodeRepository>(context)
+                    //             .getReasonCodeByTypeCode("RETURN")
+                    //             .map((e) => DropDownData<ReasonCodeEntity>(
+                    //                 key: e, value: e.description))
+                    //             .toList(),
+                    //     onChanged: (val) {
+                    //       setState(() {
+                    //         _reasonCode = val;
+                    //         isValid = _isValid() != null;
+                    //       });
+                    //     },
+                    //     label: 'Reason',
+                    //     validator: ReturnFormValidator.validateReasonCode,
+                    //   ),
+                    // ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: CustomTextField(
@@ -460,23 +461,23 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                     )
                   ],
                 ),
-              if (_checked)
-                CustomDropDown<ReasonCodeEntity>(
-                  value: _reasonCode,
-                  data: RepositoryProvider.of<ReasonCodeRepository>(context)
-                      .getReasonCodeByTypeCode("RETURN")
-                      .map((e) => DropDownData<ReasonCodeEntity>(
-                          key: e, value: e.description))
-                      .toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      _reasonCode = val;
-                      isValid = _isValid() != null;
-                    });
-                  },
-                  label: 'Reason',
-                  validator: ReturnFormValidator.validateReasonCode,
-                ),
+              // if (_checked)
+              //   CustomDropDown<ReasonCodeEntity>(
+              //     value: _reasonCode,
+              //     data: RepositoryProvider.of<ReasonCodeRepository>(context)
+              //         .getReasonCodeByTypeCode("RETURN")
+              //         .map((e) => DropDownData<ReasonCodeEntity>(
+              //             key: e, value: e.description))
+              //         .toList(),
+              //     onChanged: (val) {
+              //       setState(() {
+              //         _reasonCode = val;
+              //         isValid = _isValid() != null;
+              //       });
+              //     },
+              //     label: 'Reason',
+              //     validator: ReturnFormValidator.validateReasonCode,
+              //   ),
               if (_checked)
                 CustomTextField(
                   label: 'Comment',
