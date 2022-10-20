@@ -133,6 +133,7 @@ class BuildLineItem extends StatelessWidget {
       ProductEntity? product) {
     showTransitiveAppPopUp(
             context: context,
+            title: "Modify Line Item",
             child: LineItemModificationView(
                 lineItem: saleLine, productModel: product))
         .then(

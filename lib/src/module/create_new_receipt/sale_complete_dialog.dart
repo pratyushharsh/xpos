@@ -1,3 +1,6 @@
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/constants.dart';
 
@@ -81,6 +84,17 @@ class DialogButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    late double height, width;
+
+    if (Platform.isIOS || Platform.isAndroid) {
+      height = 60;
+      width = 100;
+    } else {
+      height = 80;
+      width = 120;
+    }
+
     return Card(
       // shadowColor: Colors.green,
       elevation: 4,
@@ -92,8 +106,8 @@ class DialogButton extends StatelessWidget {
         onTap: onClick,
         child: Container(
           padding: const EdgeInsets.all(12),
-          height: 80,
-          width: 120,
+          height: height,
+          width: width,
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,

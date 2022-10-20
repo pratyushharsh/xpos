@@ -59,12 +59,6 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
       create: (context) => LineItemModificationBloc(lineItem: widget.lineItem),
       child: Column(
         children: [
-          const SizedBox(height: 10),
-          const Text(
-            "Modify line item",
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-          const Divider(),
           ModifyLineItemViewCard(
             lineItem: widget.lineItem,
             productModel: widget.productModel,
@@ -203,56 +197,53 @@ class _LineItemPriceModifyViewState extends State<LineItemPriceModifyView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          CustomTextField(
-            label: "Enter New Price",
-            textInputType: TextInputType.number,
-            controller: _controller,
-            onValueChange: (val) {
-              setState(() {
-                unitPrice = double.tryParse(val) ?? 0;
-              });
-            },
-            inputFormatters: [CustomInputTextFormatter.positiveNumber],
-          ),
-          Expanded(child: Container()),
-          Row(
-            children: [
-              Expanded(
-                child: RejectButton(
-                  label: "Cancel",
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CustomTextField(
+          label: "Enter New Price",
+          textInputType: TextInputType.number,
+          controller: _controller,
+          onValueChange: (val) {
+            setState(() {
+              unitPrice = double.tryParse(val) ?? 0;
+            });
+          },
+          inputFormatters: [CustomInputTextFormatter.positiveNumber],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: RejectButton(
+                label: "Cancel",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: AcceptButton(
-                  label: "Change Price",
-                  onPressed: unitPrice >= 0
-                      ? () {
-                          Navigator.pop(
-                            context,
-                            OnUnitPriceUpdate(
-                                saleLine:
-                                    BlocProvider.of<LineItemModificationBloc>(
-                                            context)
-                                        .lineItem,
-                                unitPrice: unitPrice,
-                                reason: "Quantity Changed"),
-                          );
-                        }
-                      : null,
-                ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: AcceptButton(
+                label: "Change Price",
+                onPressed: unitPrice >= 0
+                    ? () {
+                        Navigator.pop(
+                          context,
+                          OnUnitPriceUpdate(
+                              saleLine:
+                                  BlocProvider.of<LineItemModificationBloc>(
+                                          context)
+                                      .lineItem,
+                              unitPrice: unitPrice,
+                              reason: "Quantity Changed"),
+                        );
+                      }
+                    : null,
               ),
-            ],
-          )
-        ],
-      ),
+            ),
+          ],
+        )
+      ],
     );
   }
 }
@@ -284,56 +275,53 @@ class _LineItemQuantityModifyViewState
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          CustomTextField(
-            label: "Enter Quantity",
-            controller: _controller,
-            textInputType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onValueChange: (val) {
-              setState(() {
-                quantity = double.tryParse(val) ?? 0;
-              });
-            },
-          ),
-          Expanded(child: Container()),
-          Row(
-            children: [
-              Expanded(
-                child: RejectButton(
-                  label: "Cancel",
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CustomTextField(
+          label: "Enter Quantity",
+          controller: _controller,
+          textInputType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          onValueChange: (val) {
+            setState(() {
+              quantity = double.tryParse(val) ?? 0;
+            });
+          },
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: RejectButton(
+                label: "Cancel",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: AcceptButton(
-                  label: "Change Quantity",
-                  onPressed: quantity > 0
-                      ? () {
-                          Navigator.pop(
-                            context,
-                            OnQuantityUpdate(
-                                saleLine:
-                                    BlocProvider.of<LineItemModificationBloc>(
-                                            context)
-                                        .lineItem,
-                                quantity: double.parse(_controller.text),
-                                reason: "Quantity Changed"),
-                          );
-                        }
-                      : null,
-                ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: AcceptButton(
+                label: "Change Quantity",
+                onPressed: quantity > 0
+                    ? () {
+                        Navigator.pop(
+                          context,
+                          OnQuantityUpdate(
+                              saleLine:
+                                  BlocProvider.of<LineItemModificationBloc>(
+                                          context)
+                                      .lineItem,
+                              quantity: double.parse(_controller.text),
+                              reason: "Quantity Changed"),
+                        );
+                      }
+                    : null,
               ),
-            ],
-          )
-        ],
-      ),
+            ),
+          ],
+        )
+      ],
     );
   }
 }
@@ -369,134 +357,131 @@ class _LineItemDiscountModifyViewState
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          Row(children: [
-            Expanded(
-              child: ListTile(
-                title: const Text('Amount Off'),
-                leading: Radio<DiscountCalculationMethod>(
-                  fillColor: MaterialStateColor.resolveWith(
-                      (states) => AppColor.primary),
-                  focusColor: MaterialStateColor.resolveWith(
-                      (states) => AppColor.primary),
-                  value: DiscountCalculationMethod.amount,
-                  groupValue: method,
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        method = value;
-                      });
-                    }
-                  },
-                ),
+    return Column(
+      children: [
+        Row(children: [
+          Expanded(
+            child: ListTile(
+              title: const Text('Amount Off'),
+              leading: Radio<DiscountCalculationMethod>(
+                fillColor: MaterialStateColor.resolveWith(
+                    (states) => AppColor.primary),
+                focusColor: MaterialStateColor.resolveWith(
+                    (states) => AppColor.primary),
+                value: DiscountCalculationMethod.amount,
+                groupValue: method,
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      method = value;
+                    });
+                  }
+                },
               ),
             ),
-            Expanded(
-              child: ListTile(
-                title: const Text('Percentage Off'),
-                leading: Radio<DiscountCalculationMethod>(
-                  fillColor: MaterialStateColor.resolveWith(
-                      (states) => AppColor.primary),
-                  focusColor: MaterialStateColor.resolveWith(
-                      (states) => AppColor.primary),
-                  value: DiscountCalculationMethod.percentage,
-                  groupValue: method,
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        method = value;
-                      });
-                    }
-                  },
-                ),
+          ),
+          Expanded(
+            child: ListTile(
+              title: const Text('Percentage Off'),
+              leading: Radio<DiscountCalculationMethod>(
+                fillColor: MaterialStateColor.resolveWith(
+                    (states) => AppColor.primary),
+                focusColor: MaterialStateColor.resolveWith(
+                    (states) => AppColor.primary),
+                value: DiscountCalculationMethod.percentage,
+                groupValue: method,
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      method = value;
+                    });
+                  }
+                },
               ),
             ),
-          ]),
-          if (method == DiscountCalculationMethod.amount)
-            CustomTextField(
-              label: "Enter Discount Amount",
-              controller: _discountAmountController,
-              textInputType: TextInputType.number,
-              inputFormatters: [CustomInputTextFormatter.positiveNumber],
-              onValueChange: (val) {
-                setState(() {
-                  discountAmount = double.tryParse(val) ?? 0;
-                });
-              },
+          ),
+        ]),
+        if (method == DiscountCalculationMethod.amount)
+          CustomTextField(
+            label: "Enter Discount Amount",
+            controller: _discountAmountController,
+            textInputType: TextInputType.number,
+            inputFormatters: [CustomInputTextFormatter.positiveNumber],
+            onValueChange: (val) {
+              setState(() {
+                discountAmount = double.tryParse(val) ?? 0;
+              });
+            },
+          ),
+        if (method == DiscountCalculationMethod.percentage)
+          CustomTextField(
+            label: "Enter Discount Percentage",
+            controller: _discountPercentageController,
+            textInputType: TextInputType.number,
+            inputFormatters: [CustomInputTextFormatter.positiveNumber],
+            onValueChange: (val) {
+              setState(() {
+                discountPercentage = double.tryParse(val) ?? 0;
+              });
+            },
+          ),
+        const Spacer(),
+        Row(
+          children: [
+            Expanded(
+              child: RejectButton(
+                label: "Cancel",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
-          if (method == DiscountCalculationMethod.percentage)
-            CustomTextField(
-              label: "Enter Discount Percentage",
-              controller: _discountPercentageController,
-              textInputType: TextInputType.number,
-              inputFormatters: [CustomInputTextFormatter.positiveNumber],
-              onValueChange: (val) {
-                setState(() {
-                  discountPercentage = double.tryParse(val) ?? 0;
-                });
-              },
-            ),
-          Expanded(child: Container()),
-          Row(
-            children: [
+            const SizedBox(width: 10),
+            if (method == DiscountCalculationMethod.amount)
               Expanded(
-                child: RejectButton(
-                  label: "Cancel",
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              const SizedBox(width: 10),
-              if (method == DiscountCalculationMethod.amount)
-                Expanded(
-                  child: AcceptButton(
-                    label: "Apply Discount",
-                    onPressed: discountAmount >= 0
-                        ? () {
-                            Navigator.pop(
-                              context,
-                              OnApplyLineItemDiscountAmount(
-                                  saleLine:
-                                      BlocProvider.of<LineItemModificationBloc>(
-                                              context)
-                                          .lineItem,
-                                  discountAmount: discountAmount,
-                                  reason: "Discount Amount Changed"),
-                            );
-                          }
-                        : null,
-                  ),
-                ),
-              if (method == DiscountCalculationMethod.percentage)
-                Expanded(
-                  child: AcceptButton(
-                    label: "Apply Discount Percentage",
-                    onPressed: discountPercentage >= 0 &&
-                            discountPercentage <= 100
-                        ? () {
-                            Navigator.pop(
-                              context,
-                              OnApplyLineItemDiscountPercent(
+                child: AcceptButton(
+                  label: "Apply Discount",
+                  onPressed: discountAmount >= 0
+                      ? () {
+                          Navigator.pop(
+                            context,
+                            OnApplyLineItemDiscountAmount(
                                 saleLine:
                                     BlocProvider.of<LineItemModificationBloc>(
                                             context)
                                         .lineItem,
-                                discountPercent: discountPercentage,
-                                reason: "Discount Percentage Changed",
-                              ),
-                            );
-                          }
-                        : null,
-                  ),
+                                discountAmount: discountAmount,
+                                reason: "Discount Amount Changed"),
+                          );
+                        }
+                      : null,
                 ),
-            ],
-          )
-        ],
-      ),
+              ),
+            if (method == DiscountCalculationMethod.percentage)
+              Expanded(
+                child: AcceptButton(
+                  label: "Apply Discount Percentage",
+                  onPressed: discountPercentage >= 0 &&
+                          discountPercentage <= 100
+                      ? () {
+                          Navigator.pop(
+                            context,
+                            OnApplyLineItemDiscountPercent(
+                              saleLine:
+                                  BlocProvider.of<LineItemModificationBloc>(
+                                          context)
+                                      .lineItem,
+                              discountPercent: discountPercentage,
+                              reason: "Discount Percentage Changed",
+                            ),
+                          );
+                        }
+                      : null,
+                ),
+              ),
+          ],
+        )
+      ],
     );
   }
 }
