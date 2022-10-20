@@ -100,7 +100,7 @@ class AboutScreenComponentList extends StatelessWidget {
             ),
             AboutScreenCard(
               child: InfoWidget(
-                label: 'Verison',
+                label: 'Version',
                 future: getApplicationVersion,
               ),
             ),
@@ -112,7 +112,7 @@ class AboutScreenComponentList extends StatelessWidget {
             ),
             AboutScreenCard(
               child: InfoWidget(
-                label: 'Database Size',
+                label: 'Size',
                 future: calculateSizeOfDirectory,
               ),
             ),

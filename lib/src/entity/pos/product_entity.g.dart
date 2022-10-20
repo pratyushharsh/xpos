@@ -129,11 +129,11 @@ const ProductEntitySchema = CollectionSchema(
   deserializeProp: _productEntityDeserializeProp,
   idName: r'id',
   indexes: {
-    r'productId': IndexSchema(
-      id: 5580769080710688203,
-      name: r'productId',
+    r'product': IndexSchema(
+      id: -3276861346049008575,
+      name: r'product',
       unique: true,
-      replace: false,
+      replace: true,
       properties: [
         IndexPropertySchema(
           name: r'productId',
@@ -368,57 +368,57 @@ void _productEntityAttach(
 
 extension ProductEntityByIndex on IsarCollection<ProductEntity> {
   Future<ProductEntity?> getByProductId(String? productId) {
-    return getByIndex(r'productId', [productId]);
+    return getByIndex(r'product', [productId]);
   }
 
   ProductEntity? getByProductIdSync(String? productId) {
-    return getByIndexSync(r'productId', [productId]);
+    return getByIndexSync(r'product', [productId]);
   }
 
   Future<bool> deleteByProductId(String? productId) {
-    return deleteByIndex(r'productId', [productId]);
+    return deleteByIndex(r'product', [productId]);
   }
 
   bool deleteByProductIdSync(String? productId) {
-    return deleteByIndexSync(r'productId', [productId]);
+    return deleteByIndexSync(r'product', [productId]);
   }
 
   Future<List<ProductEntity?>> getAllByProductId(
       List<String?> productIdValues) {
     final values = productIdValues.map((e) => [e]).toList();
-    return getAllByIndex(r'productId', values);
+    return getAllByIndex(r'product', values);
   }
 
   List<ProductEntity?> getAllByProductIdSync(List<String?> productIdValues) {
     final values = productIdValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'productId', values);
+    return getAllByIndexSync(r'product', values);
   }
 
   Future<int> deleteAllByProductId(List<String?> productIdValues) {
     final values = productIdValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'productId', values);
+    return deleteAllByIndex(r'product', values);
   }
 
   int deleteAllByProductIdSync(List<String?> productIdValues) {
     final values = productIdValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'productId', values);
+    return deleteAllByIndexSync(r'product', values);
   }
 
   Future<Id> putByProductId(ProductEntity object) {
-    return putByIndex(r'productId', object);
+    return putByIndex(r'product', object);
   }
 
   Id putByProductIdSync(ProductEntity object, {bool saveLinks = true}) {
-    return putByIndexSync(r'productId', object, saveLinks: saveLinks);
+    return putByIndexSync(r'product', object, saveLinks: saveLinks);
   }
 
   Future<List<Id>> putAllByProductId(List<ProductEntity> objects) {
-    return putAllByIndex(r'productId', objects);
+    return putAllByIndex(r'product', objects);
   }
 
   List<Id> putAllByProductIdSync(List<ProductEntity> objects,
       {bool saveLinks = true}) {
-    return putAllByIndexSync(r'productId', objects, saveLinks: saveLinks);
+    return putAllByIndexSync(r'product', objects, saveLinks: saveLinks);
   }
 }
 
@@ -433,7 +433,7 @@ extension ProductEntityQueryWhereSort
   QueryBuilder<ProductEntity, ProductEntity, QAfterWhere> anyProductId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'productId'),
+        const IndexWhereClause.any(indexName: r'product'),
       );
     });
   }
@@ -523,7 +523,7 @@ extension ProductEntityQueryWhere
       productIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'productId',
+        indexName: r'product',
         value: [null],
       ));
     });
@@ -533,7 +533,7 @@ extension ProductEntityQueryWhere
       productIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'productId',
+        indexName: r'product',
         lower: [null],
         includeLower: false,
         upper: [],
@@ -545,7 +545,7 @@ extension ProductEntityQueryWhere
       productIdEqualTo(String? productId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'productId',
+        indexName: r'product',
         value: [productId],
       ));
     });
@@ -557,13 +557,13 @@ extension ProductEntityQueryWhere
       if (query.whereSort == Sort.asc) {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'productId',
+              indexName: r'product',
               lower: [],
               upper: [productId],
               includeUpper: false,
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'productId',
+              indexName: r'product',
               lower: [productId],
               includeLower: false,
               upper: [],
@@ -571,13 +571,13 @@ extension ProductEntityQueryWhere
       } else {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'productId',
+              indexName: r'product',
               lower: [productId],
               includeLower: false,
               upper: [],
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'productId',
+              indexName: r'product',
               lower: [],
               upper: [productId],
               includeUpper: false,
@@ -593,7 +593,7 @@ extension ProductEntityQueryWhere
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'productId',
+        indexName: r'product',
         lower: [productId],
         includeLower: include,
         upper: [],
@@ -608,7 +608,7 @@ extension ProductEntityQueryWhere
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'productId',
+        indexName: r'product',
         lower: [],
         upper: [productId],
         includeUpper: include,
@@ -625,7 +625,7 @@ extension ProductEntityQueryWhere
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'productId',
+        indexName: r'product',
         lower: [lowerProductId],
         includeLower: includeLower,
         upper: [upperProductId],
@@ -638,7 +638,7 @@ extension ProductEntityQueryWhere
       productIdStartsWith(String ProductIdPrefix) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'productId',
+        indexName: r'product',
         lower: [ProductIdPrefix],
         upper: ['$ProductIdPrefix\u{FFFFF}'],
       ));
@@ -649,7 +649,7 @@ extension ProductEntityQueryWhere
       productIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'productId',
+        indexName: r'product',
         value: [''],
       ));
     });
@@ -661,21 +661,21 @@ extension ProductEntityQueryWhere
       if (query.whereSort == Sort.asc) {
         return query
             .addWhereClause(IndexWhereClause.lessThan(
-              indexName: r'productId',
+              indexName: r'product',
               upper: [''],
             ))
             .addWhereClause(IndexWhereClause.greaterThan(
-              indexName: r'productId',
+              indexName: r'product',
               lower: [''],
             ));
       } else {
         return query
             .addWhereClause(IndexWhereClause.greaterThan(
-              indexName: r'productId',
+              indexName: r'product',
               lower: [''],
             ))
             .addWhereClause(IndexWhereClause.lessThan(
-              indexName: r'productId',
+              indexName: r'product',
               upper: [''],
             ));
       }

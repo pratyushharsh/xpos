@@ -11,7 +11,7 @@ part 'product_entity.g.dart';
 class ProductEntity {
   Id? id;
 
-  @Index(unique: true, type: IndexType.value)
+  @Index(unique: true, type: IndexType.value, replace: true, name: 'product')
   String? productId;
   String? skuId;
   int storeId;
