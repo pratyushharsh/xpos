@@ -6,7 +6,7 @@ part 'employee_entity.g.dart';
 class EmployeeEntity {
   Id? id;
 
-  @Index(unique: true, type: IndexType.value)
+  @Index(unique: true, type: IndexType.value, replace: true)
   String? employeeId;
 
   String? firstName;

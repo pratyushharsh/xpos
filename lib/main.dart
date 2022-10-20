@@ -8,6 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:receipt_generator/src/config/constants.dart';
 import 'package:receipt_generator/src/entity/config/code_value_entity.dart';
+import 'package:receipt_generator/src/entity/pos/collection.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/entity/pos/tax_group_entity.dart';
 import 'package:receipt_generator/src/repositories/custom_storage.dart';
@@ -40,6 +41,7 @@ Future<void> main() {
         EmployeeEntitySchema,
         EmployeeRoleEntitySchema,
         ProductEntitySchema,
+        CollectionEntitySchema,
         SequenceEntitySchema,
         SettingEntitySchema,
         SyncEntitySchema,
@@ -50,6 +52,7 @@ Future<void> main() {
       ],
       inspector: true,
       directory: dir.path,
+      name: 'xpos'
     );
 
     await _initAmplifyFlutter();

@@ -129,14 +129,21 @@ class SyncConfigRepository {
     sPort.send("Hello");
   }
 
-  Future<void> loadSampleProductAndImages() async {
-    await loadSampleProductData();
-    await loadSampleProductImageData();
+  Future<void> loadSampleProductAndImages({bool fullImport = false}) async {
+    await loadSampleProductData(fullImport: fullImport);
+    await loadSampleProductImageData(fullImport: fullImport);
   }
 
-  Future<void> loadSampleProductImageData() async {
+  Future<void> loadSampleProductImageData({bool fullImport = false}) async {
     if (Constants.baseImagePath.isEmpty) {
       await Constants.getImageBasePath();
+    }
+
+    late String url;
+    if (fullImport) {
+      url = UrlConstants.fullProductsImagesUrl;
+    } else {
+      url = UrlConstants.sampleProductsImagesUrl;
     }
 
     try {
@@ -161,11 +168,19 @@ class SyncConfigRepository {
     }
   }
 
-  Future<void> loadSampleProductData() async {
+  Future<void> loadSampleProductData({bool fullImport = false}) async {
     try {
       log.info("Loading sample product data");
+
+      late String url;
+      if (fullImport) {
+        url = UrlConstants.fullProductDataUrl;
+      } else {
+        url = UrlConstants.sampleProductDataUrl;
+      }
+
       final response =
-          await http.get(Uri.parse(UrlConstants.sampleProductDataUrl));
+          await http.get(Uri.parse(url));
       // Decode the Zip file
       final archive = ZipDecoder().decodeBytes(response.bodyBytes);
       for (final file in archive) {

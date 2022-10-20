@@ -16,4 +16,6 @@ class Constants {
 class UrlConstants {
   static const sampleProductDataUrl = "https://xpos-user-dev.s3.ap-south-1.amazonaws.com/feed_data/product_min.zip";
   static const sampleProductsImagesUrl = "https://xpos-user-dev.s3.ap-south-1.amazonaws.com/feed_data/parchi_image_min.zip";
+  static const fullProductDataUrl = "https://xpos-user-dev.s3.ap-south-1.amazonaws.com/feed_data/products_full_load.zip";
+  static const fullProductsImagesUrl = "https://xpos-user-dev.s3.ap-south-1.amazonaws.com/feed_data/parchi_image.zip";
 }

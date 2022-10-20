@@ -259,7 +259,6 @@ class TaxRuleList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateEditTaxBloc, CreateEditTaxState>(
       builder: (context, state) {
-        print('Rebuilding');
         if (state.selectedTaxGroup == null) {
           return const Center(
             child: Text("Select a Tax Group"),

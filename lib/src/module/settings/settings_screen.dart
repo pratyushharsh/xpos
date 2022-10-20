@@ -149,11 +149,19 @@ class SettingsScreen extends StatelessWidget {
                   icon: Icons.mail_rounded,
                   children: [
                     SettingsItem(
-                        text: "Load Sample Data",
-                        onTap: () {
-                          BlocProvider.of<BackgroundSyncBloc>(context)
-                              .add(LoadSampleData());
-                        }),
+                      text: "Load Sample Data",
+                      onTap: () {
+                        BlocProvider.of<BackgroundSyncBloc>(context)
+                            .add(LoadSampleData());
+                      },
+                    ),
+                    SettingsItem(
+                      text: "Load Full Data",
+                      onTap: () {
+                        BlocProvider.of<BackgroundSyncBloc>(context)
+                            .add(LoadSampleData(fullImport: true));
+                      },
+                    ),
                     SettingsItem(text: "FAQ and Videos", onTap: () {}),
                     SettingsItem(text: "Contact us", onTap: () {}),
                   ],
@@ -419,7 +427,8 @@ class _SwitchBusinessAccountWidgetState
                         turns -= 1 / 4;
                       });
                     } else {
-                      BlocProvider.of<SettingsBloc>(context).add(FetchUserBusiness());
+                      BlocProvider.of<SettingsBloc>(context)
+                          .add(FetchUserBusiness());
                       setState(() {
                         turns += 1 / 4;
                       });
@@ -467,7 +476,7 @@ class _SwitchBusinessAccountWidgetState
                               onTap: () {},
                               child: Container(
                                 padding: const EdgeInsets.only(
-                                    top: 4, bottom: 4, left:16, right: 10),
+                                    top: 4, bottom: 4, left: 16, right: 10),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -483,9 +492,12 @@ class _SwitchBusinessAccountWidgetState
                                       value: state.business[idx].storeId!,
                                       groupValue: rtlLocId,
                                       onChanged: (value) {
-                                        if (value != null && value != rtlLocId) {
-                                          BlocProvider.of<AuthenticationBloc>(context)
-                                              .add(ChangeBusinessAccount(value));
+                                        if (value != null &&
+                                            value != rtlLocId) {
+                                          BlocProvider.of<AuthenticationBloc>(
+                                                  context)
+                                              .add(
+                                                  ChangeBusinessAccount(value));
                                         }
                                       },
                                     )

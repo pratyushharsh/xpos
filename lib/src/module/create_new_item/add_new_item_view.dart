@@ -6,7 +6,6 @@ import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/model/product.dart';
 import 'package:receipt_generator/src/module/create_new_item/product_field_validator.dart';
 import 'package:receipt_generator/src/module/item/bloc/item_bloc.dart';
-import 'package:receipt_generator/src/repositories/config_repository.dart';
 import 'package:receipt_generator/src/widgets/appbar_leading.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/custom_checkbox.dart';
@@ -67,7 +66,6 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   late TextEditingController _purchasePriceController;
   late TextEditingController _brandController;
   late TextEditingController _hsnController;
-  late TextEditingController _taxRateController;
   late TextEditingController _skuController;
   late bool _inEditMode;
   late String? _productId;
@@ -86,7 +84,6 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     _purchasePriceController = TextEditingController();
     _brandController = TextEditingController();
     _hsnController = TextEditingController();
-    _taxRateController = TextEditingController();
     _skuController = TextEditingController();
     _inEditMode = false;
     _productId = null;
@@ -113,7 +110,6 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     _purchasePriceController.dispose();
     _brandController.dispose();
     _hsnController.dispose();
-    _taxRateController.dispose();
     super.dispose();
   }
 
@@ -144,9 +140,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           brand:
               _brandController.text.isNotEmpty ? _brandController.text : null,
           hsn: _hsnController.text.isNotEmpty ? _hsnController.text : null,
-          tax: _taxRateController.text.isNotEmpty
-              ? toFloat(_taxRateController.text)
-              : null,
+          tax: 0.0,
           skuCode: _skuController.text.isNotEmpty ? _skuController.text : null);
       BlocProvider.of<ItemBloc>(context).add(AddItem(prod));
     }
@@ -201,12 +195,8 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                 state.existingProduct!.salePrice!.toString();
             _listPriceController.text =
                 state.existingProduct!.listPrice?.toString() ?? "";
-            _purchasePriceController.text =
-                state.existingProduct!.purchasePrice?.toString() ?? "";
             _brandController.text = state.existingProduct?.brand ?? "";
             _hsnController.text = state.existingProduct?.hsn ?? "";
-            _taxRateController.text =
-                state.existingProduct!.tax?.toString() ?? "";
             _skuController.text = state.existingProduct!.skuCode ?? "";
             _formKey.currentState!.validate();
             _imageUrls = state.existingProduct!.imageUrl;

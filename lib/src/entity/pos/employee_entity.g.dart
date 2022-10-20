@@ -88,7 +88,7 @@ const EmployeeEntitySchema = CollectionSchema(
       id: 1283453093523034672,
       name: r'employeeId',
       unique: true,
-      replace: false,
+      replace: true,
       properties: [
         IndexPropertySchema(
           name: r'employeeId',

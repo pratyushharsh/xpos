@@ -68,8 +68,6 @@ class ProductModel {
         skuCode: skuCode,
         imageUrl: imageUrl,
         hsn: hsn,
-        purchasePrice: purchasePrice,
-        tax: tax,
         uom: uom, createTime: DateTime.now(), storeId: 000);
   }
 

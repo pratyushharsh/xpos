@@ -13,20 +13,20 @@ class ProductEntity {
 
   @Index(unique: true, type: IndexType.value)
   String? productId;
+  String? skuId;
   int storeId;
 
   final String displayName;
   final String? description;
   final double? listPrice;
   final double? salePrice;
-  final double? purchasePrice;
   final String uom;
   final bool enable;
   final String? brand;
   final String? skuCode;
   final String? hsn;
-  final double? tax;
   final String? taxGroupId;
+  final List<String> category;
   final List<String> imageUrl;
   final int syncState;
   late DateTime createTime;
@@ -45,14 +45,13 @@ class ProductEntity {
       this.description,
       required this.listPrice,
       required this.salePrice,
-      this.purchasePrice,
       required this.uom,
       required this.enable,
       this.brand,
       this.skuCode,
       this.hsn,
-      this.tax,
       this.taxGroupId,
+      this.category = const [],
       this.imageUrl = const [],
       required this.createTime,
       this.version = 1,

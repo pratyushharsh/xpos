@@ -18,4 +18,8 @@ class SyncAllConfigDataEvent extends BackgroundSyncEvent {
   SyncAllConfigDataEvent({this.forceSync = false});
 }
 
-class LoadSampleData extends BackgroundSyncEvent {}
+class LoadSampleData extends BackgroundSyncEvent {
+  final bool fullImport;
+
+  LoadSampleData({this.fullImport = false});
+}
