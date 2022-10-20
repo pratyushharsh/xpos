@@ -29,12 +29,6 @@ class ReturnOrderView extends StatelessWidget {
           transactionRepository: RepositoryProvider.of(context)),
       child: Column(
         children: [
-          const SizedBox(height: 10),
-          const Text(
-            "Return Order",
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-          const Divider(),
           BlocBuilder<ReturnOrderBloc, ReturnOrderState>(
             builder: (context, state) {
               if (state.status == ReturnOrderExistStatus.loading) {
@@ -76,33 +70,30 @@ class SearchReturnOrderForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          CustomTextField(
-            label: "Order No",
-            textInputType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onFieldSubmitted: (value) {
-              if (int.tryParse(value) != null) {
-                BlocProvider.of<ReturnOrderBloc>(context)
-                    .add(SearchOrderToReturn(orderId: int.parse(value)));
-              }
-            },
-          ),
-          BlocBuilder<ReturnOrderBloc, ReturnOrderState>(
-              builder: (context, state) {
-            if (state.status == ReturnOrderExistStatus.notFound) {
-              return Center(
-                child: Text(state.errorMessage ?? "Order Not Found"),
-              );
+    return Column(
+      children: [
+        CustomTextField(
+          label: "Order No",
+          textInputType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          onFieldSubmitted: (value) {
+            if (int.tryParse(value) != null) {
+              BlocProvider.of<ReturnOrderBloc>(context)
+                  .add(SearchOrderToReturn(orderId: int.parse(value)));
             }
+          },
+        ),
+        BlocBuilder<ReturnOrderBloc, ReturnOrderState>(
+            builder: (context, state) {
+          if (state.status == ReturnOrderExistStatus.notFound) {
+            return Center(
+              child: Text(state.errorMessage ?? "Order Not Found"),
+            );
+          }
 
-            return Container();
-          })
-        ],
-      ),
+          return Container();
+        })
+      ],
     );
   }
 }
@@ -143,31 +134,28 @@ class ReturnOrderSuccessView extends StatelessWidget {
                       .toList()),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(children: [
-              Expanded(
-                child: RejectButton(
-                  label: "Cancel",
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
+          Row(children: [
+            Expanded(
+              child: RejectButton(
+                label: "Cancel",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: AcceptButton(
-                  label: "Proceed To Return",
-                  onPressed: () {
-                    Navigator.of(context).pop(
-                        BlocProvider.of<ReturnOrderBloc>(context)
-                            .state
-                            .returnMap);
-                  },
-                ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: AcceptButton(
+                label: "Proceed To Return",
+                onPressed: () {
+                  Navigator.of(context).pop(
+                      BlocProvider.of<ReturnOrderBloc>(context)
+                          .state
+                          .returnMap);
+                },
               ),
-            ]),
-          )
+            ),
+          ])
         ],
       ),
     );
@@ -216,7 +204,7 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
     return Card(
       margin: const EdgeInsets.all(0),
       elevation: 0,
-      child: InkWell(
+      child: GestureDetector(
         onTap: () {
           setState(() {
             if (_checked) {
@@ -320,25 +308,27 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Expanded(
-                    //   child: CustomDropDown<ReasonCodeEntity>(
-                    //     value: _reasonCode,
-                    //     data:
-                    //         RepositoryProvider.of<ReasonCodeRepository>(context)
-                    //             .getReasonCodeByTypeCode("RETURN")
-                    //             .map((e) => DropDownData<ReasonCodeEntity>(
-                    //                 key: e, value: e.description))
-                    //             .toList(),
-                    //     onChanged: (val) {
-                    //       setState(() {
-                    //         _reasonCode = val;
-                    //         isValid = _isValid() != null;
-                    //       });
-                    //     },
-                    //     label: 'Reason',
-                    //     validator: ReturnFormValidator.validateReasonCode,
-                    //   ),
-                    // ),
+                    Expanded(
+                      child: CustomDropDown<ReasonCodeEntity>(
+                        value: _reasonCode,
+                        label: 'Reason',
+                        itemAsString: (ReasonCodeEntity? value) =>
+                        value?.description ?? "",
+                        asyncItems: (filter) async {
+                          return await RepositoryProvider.of<ReasonCodeRepository>(context)
+                                      .getReasonCodeByTypeCode("RETURN");
+                        },
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _reasonCode = value;
+                              isValid = _isValid() != null;
+                            });
+                          }
+                        },
+                        validator: ReturnFormValidator.validateReasonCode,
+                      ),
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: CustomTextField(
@@ -363,7 +353,7 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
     return Card(
       margin: const EdgeInsets.all(0),
       elevation: 0,
-      child: InkWell(
+      child: GestureDetector(
         onTap: () {
           setState(() {
             if (_checked) {
@@ -461,23 +451,26 @@ class _ReturnOrderLineItemState extends State<ReturnOrderLineItem> {
                     )
                   ],
                 ),
-              // if (_checked)
-              //   CustomDropDown<ReasonCodeEntity>(
-              //     value: _reasonCode,
-              //     data: RepositoryProvider.of<ReasonCodeRepository>(context)
-              //         .getReasonCodeByTypeCode("RETURN")
-              //         .map((e) => DropDownData<ReasonCodeEntity>(
-              //             key: e, value: e.description))
-              //         .toList(),
-              //     onChanged: (val) {
-              //       setState(() {
-              //         _reasonCode = val;
-              //         isValid = _isValid() != null;
-              //       });
-              //     },
-              //     label: 'Reason',
-              //     validator: ReturnFormValidator.validateReasonCode,
-              //   ),
+              if (_checked)
+                CustomDropDown<ReasonCodeEntity>(
+                    value: _reasonCode,
+                    label: 'Reason',
+                    itemAsString: (ReasonCodeEntity? value) =>
+                    value?.description ?? "",
+                    asyncItems: (filter) async {
+                      return await RepositoryProvider.of<ReasonCodeRepository>(context)
+                          .getReasonCodeByTypeCode("RETURN");
+                    },
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _reasonCode = value;
+                          isValid = _isValid() != null;
+                        });
+                      }
+                    },
+                    validator: ReturnFormValidator.validateReasonCode,
+                ),
               if (_checked)
                 CustomTextField(
                   label: 'Comment',

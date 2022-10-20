@@ -13,6 +13,7 @@ import '../../config/tender_config.dart';
 import '../../config/theme_settings.dart';
 import '../../util/text_input_formatter/money_editing_controller.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/desktop_pop_up.dart';
 import '../../widgets/keypad_overlay/keypad_overlay.dart';
 import '../../widgets/timer.dart';
 import '../authentication/bloc/authentication_bloc.dart';
@@ -662,21 +663,14 @@ class ActionButtonBar extends StatelessWidget {
             child: IconButton(
               icon: const Icon(Icons.assignment_return_outlined),
               onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (ctx) {
-                      return Dialog(
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          child: ReturnOrderView(
-                              currentOrderLineItem:
-                                  BlocProvider.of<CreateNewReceiptBloc>(context)
-                                      .state
-                                      .lineItem),
-                        ),
-                      );
-                    }).then((value) => {
+
+                showTransitiveAppPopUp(
+                  title: "Return Order",
+                  child: ReturnOrderView(
+                    currentOrderLineItem: BlocProvider.of<CreateNewReceiptBloc>(context).state.lineItem,
+                  ),
+                  context: context,
+                ).then((value) => {
                       if (value != null)
                         {
                           BlocProvider.of<CreateNewReceiptBloc>(context)

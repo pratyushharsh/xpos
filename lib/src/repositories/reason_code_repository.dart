@@ -12,13 +12,13 @@ class ReasonCodeRepository {
 
   ReasonCodeRepository({required this.db, required this.restClient});
 
-  List<ReasonCodeEntity> getReasonCodeByTypeCode(String reasonTypeCode) {
+  Future<List<ReasonCodeEntity>> getReasonCodeByTypeCode(String reasonTypeCode) {
     try {
-      var data = db.reasonCodeEntitys.where().findAllSync();
+      var data = db.reasonCodeEntitys.where().findAll();
       return data;
     }catch (e) {
       log.severe(e);
     }
-    return [];
+    return Future.value(List<ReasonCodeEntity>.empty());
   }
 }

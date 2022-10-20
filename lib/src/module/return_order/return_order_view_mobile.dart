@@ -7,21 +7,21 @@ import '../../entity/pos/entity.dart';
 // ReturnOrderView(currentOrderLineItem: BlocProvider.of<CreateNewReceiptBloc>(context).state.lineItem)
 
 
-class ReturnOrderViewMobile extends StatelessWidget {
-  final List<TransactionLineItemEntity> currentOrderLineItem;
-  const ReturnOrderViewMobile({Key? key, required this.currentOrderLineItem}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: SafeArea(
-        child: Scaffold(
-          body: Stack(children: [
-            ReturnOrderView(currentOrderLineItem: currentOrderLineItem)
-          ])
-        ),
-      ),
-    );
-  }
-}
+// class ReturnOrderViewMobile extends StatelessWidget {
+//   final List<TransactionLineItemEntity> currentOrderLineItem;
+//   const ReturnOrderViewMobile({Key? key, required this.currentOrderLineItem}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       color: Colors.white,
+//       child: SafeArea(
+//         child: Scaffold(
+//           body: Stack(children: [
+//             ReturnOrderView(currentOrderLineItem: currentOrderLineItem)
+//           ])
+//         ),
+//       ),
+//     );
+//   }
+// }

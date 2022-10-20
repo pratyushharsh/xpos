@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../config/theme_settings.dart';
 import '../../widgets/appbar_leading.dart';
+import '../../widgets/desktop_pop_up.dart';
+import '../return_order/return_order_view.dart';
 import '../return_order/return_order_view_mobile.dart';
 import 'bloc/create_new_receipt_bloc.dart';
 import 'new_receipt_view.dart';
@@ -71,16 +73,12 @@ class NewReceiptMobileView extends StatelessWidget {
                       right: 16,
                       child: InkWell(
                         onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (ctx) =>
-                                  ReturnOrderViewMobile(
-                                      currentOrderLineItem:
-                                      BlocProvider
-                                          .of<CreateNewReceiptBloc>(context)
-                                          .state
-                                          .lineItem),
+                          showTransitiveAppPopUp(
+                            title: "Return Order",
+                            child: ReturnOrderView(
+                              currentOrderLineItem: BlocProvider.of<CreateNewReceiptBloc>(context).state.lineItem,
                             ),
+                            context: context,
                           ).then((value) => {
                             if (value != null) {
                               BlocProvider.of<CreateNewReceiptBloc>(context)
