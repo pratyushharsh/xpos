@@ -221,7 +221,7 @@ class CreateNewReceiptBloc
   }
 
   // @TODO List different transaction status INITIATED, SALE_COMPLETED, SUSPENDED, CANCELLED, RETURNED, EXCHANGED
-  Future<void> _manageOrder(String status) async {
+  Future<TransactionHeaderEntity> _manageOrder(String status) async {
     TransactionHeaderEntity transaction = state.transactionHeader!;
 
     transaction.total = state.total;
@@ -272,7 +272,7 @@ class CreateNewReceiptBloc
     }
 
     try {
-      await transactionRepository.createNewSale(transaction);
+      return await transactionRepository.createNewSale(transaction);
     } catch (e) {
       log.severe(e);
       throw Exception("Error creating Transaction");
@@ -283,8 +283,9 @@ class CreateNewReceiptBloc
   void _onCreateNewTransaction(
       OnCreateNewTransaction event, Emitter<CreateNewReceiptState> emit) async {
     try {
-      await _manageOrder(TransactionStatus.completed);
+      var txn = await _manageOrder(TransactionStatus.completed);
       emit(state.copyWith(
+          transactionHeader: txn,
           status: CreateNewReceiptStatus.saleComplete,
           step: SaleStep.printAndEmail));
     } catch (e) {
@@ -296,10 +297,11 @@ class CreateNewReceiptBloc
   void _onSuspendTransaction(
       OnSuspendTransaction event, Emitter<CreateNewReceiptState> emit) async {
     try {
-      await _manageOrder(TransactionStatus.suspended);
+      var txn = await _manageOrder(TransactionStatus.suspended);
       emit(state.copyWith(
+          transactionHeader: txn,
           status: CreateNewReceiptStatus.saleComplete,
-          step: SaleStep.printAndEmail));
+          step: SaleStep.confirmed));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: CreateNewReceiptStatus.error));
@@ -309,10 +311,11 @@ class CreateNewReceiptBloc
   void _onCancelTransaction(
       OnCancelTransaction event, Emitter<CreateNewReceiptState> emit) async {
     try {
-      await _manageOrder(TransactionStatus.cancelled);
+      var txn = await _manageOrder(TransactionStatus.cancelled);
       emit(state.copyWith(
+          transactionHeader: txn,
           status: CreateNewReceiptStatus.saleComplete,
-          step: SaleStep.printAndEmail));
+          step: SaleStep.confirmed));
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: CreateNewReceiptStatus.error));

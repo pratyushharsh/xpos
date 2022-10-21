@@ -2,7 +2,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:receipt_generator/src/config/constants.dart';
 
 import '../../config/theme_settings.dart';
 import '../../widgets/custom_button.dart';

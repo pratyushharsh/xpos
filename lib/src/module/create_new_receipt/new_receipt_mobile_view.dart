@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/theme_settings.dart';
 import '../../widgets/appbar_leading.dart';
+import '../../widgets/custom_button.dart';
 import '../../widgets/desktop_pop_up.dart';
 import '../return_order/return_order_view.dart';
 import '../return_order/return_order_view_mobile.dart';
@@ -64,7 +65,51 @@ class NewReceiptMobileView extends StatelessWidget {
                       "Receipt #${state.transSeq > 0 ? state.transSeq : ""}",
                       icon: Icons.arrow_back,
                       onTap: () {
-                        Navigator.of(context).pop();
+                        if (state.transactionHeader == null) {
+                          Navigator.of(context).pop();
+                          return;
+                        }
+                        if (state.step == SaleStep.payment) {
+                          BlocProvider.of<CreateNewReceiptBloc>(context)
+                              .add(OnChangeSaleStep(SaleStep.item));
+                          return;
+                        }
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Confirmation"),
+                              content: const Text(
+                                  "Would you like to cancel the sale transaction?"),
+                              actions: [
+                                SizedBox(
+                                  width: 100,
+                                  child: RejectButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    label: 'Cancel',
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 100,
+                                  child: AcceptButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                    label: 'OK',
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ).then((value) => {
+                          if (value != null && value)
+                            {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnCancelTransaction())
+                            }
+                        });
                       },
                     ),
                   );
