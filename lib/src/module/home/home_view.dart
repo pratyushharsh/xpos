@@ -48,11 +48,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(colors: [
-          AppColor.background,
-          Colors.white,
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+      decoration: BoxDecoration(
+        gradient: selectedIndex != 4
+            ? const LinearGradient(colors: [
+                AppColor.primary,
+                AppColor.primary,
+                AppColor.background,
+                Colors.white,
+              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)
+            : const LinearGradient(colors: [
+                AppColor.background,
+                Colors.white,
+              ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
       ),
       child: SafeArea(
         child: Scaffold(

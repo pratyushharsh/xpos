@@ -283,43 +283,84 @@ class LineItemHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
-        Expanded(
-          flex: 2,
-          child: Text(
-            "Product Description",
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "UnitCost",
-              style: TextStyle(fontWeight: FontWeight.w600),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 800) {
+          return Row(
+            children: const [
+              Expanded(
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "UnitCost",
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "Qty",
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "Amount",
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
+        return Row(
+          children: const [
+            Expanded(
+              flex: 2,
+              child: Text(
+                "Product Description",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
             ),
-          ),
-        ),
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "Qty",
-              style: TextStyle(fontWeight: FontWeight.w600),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "UnitCost",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
             ),
-          ),
-        ),
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "Amount",
-              style: TextStyle(fontWeight: FontWeight.w600),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "Qty",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "Amount",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+          ],
+        );
+      }
     );
   }
 }
@@ -428,43 +469,88 @@ class NewLineItem extends StatelessWidget {
               )
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: Container(),
-                flex: 2,
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    getCurrencyFormatter(context).format(saleLine.priceOverride
-                        ? saleLine.unitPrice
-                        : saleLine.baseUnitPrice),
-                    style: NewLineItem.textStyle,
+          LayoutBuilder(
+            builder: (context, constraints) {
+
+              if (constraints.maxWidth < 800) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          getCurrencyFormatter(context).format(saleLine.priceOverride
+                              ? saleLine.unitPrice
+                              : saleLine.baseUnitPrice),
+                          style: NewLineItem.textStyle,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          saleLine.quantity.toString(),
+                          style: NewLineItem.textStyle,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          getCurrencyFormatter(context).format(saleLine.netAmount),
+                          style: NewLineItem.textStyle,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Container(),
+                    flex: 2,
                   ),
-                ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    saleLine.quantity.toString(),
-                    style: NewLineItem.textStyle,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        getCurrencyFormatter(context).format(saleLine.priceOverride
+                            ? saleLine.unitPrice
+                            : saleLine.baseUnitPrice),
+                        style: NewLineItem.textStyle,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    getCurrencyFormatter(context).format(saleLine.netAmount),
-                    style: NewLineItem.textStyle,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        saleLine.quantity.toString(),
+                        style: NewLineItem.textStyle,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ],
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        getCurrencyFormatter(context).format(saleLine.netAmount),
+                        style: NewLineItem.textStyle,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
           ),
           ...saleLine.lineModifiers
               .map(

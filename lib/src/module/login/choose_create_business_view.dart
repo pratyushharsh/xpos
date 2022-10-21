@@ -109,7 +109,6 @@ class _ChooseCreateBusinessFormState extends State<ChooseCreateBusinessForm> {
     return Card(
       child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
-          print('Listener : $state');
           // if (state.deviceList.isEmpty) {
           //   BlocProvider.of<LoginBloc>(context)
           //       .add(RemoveDevice(_selectedDeviceIds.toList()));
