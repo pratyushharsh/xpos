@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/theme_settings.dart';
 import '../../widgets/appbar_leading.dart';
@@ -41,7 +42,9 @@ class NewReceiptMobileView extends StatelessWidget {
                     Divider(),
                     Expanded(child: BuildLineItem()),
                     SearchAndAddItem(),
-                    Divider(height: 0,),
+                    Divider(
+                      height: 0,
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -57,7 +60,8 @@ class NewReceiptMobileView extends StatelessWidget {
                     top: 20,
                     left: 16,
                     child: AppBarLeading(
-                      heading: "Receipt  #${state.transSeq.toString()}",
+                      heading:
+                      "Receipt #${state.transSeq > 0 ? state.transSeq : ""}",
                       icon: Icons.arrow_back,
                       onTap: () {
                         Navigator.of(context).pop();
@@ -68,39 +72,106 @@ class NewReceiptMobileView extends StatelessWidget {
               ),
               BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
                 builder: (context, state) {
+                  if (state.transactionHeader == null) return const SizedBox();
                   return Positioned(
                       top: 20,
                       right: 16,
-                      child: InkWell(
-                        onTap: () {
-                          showTransitiveAppPopUp(
-                            title: "Return Order",
-                            child: ReturnOrderView(
-                              currentOrderLineItem: BlocProvider.of<CreateNewReceiptBloc>(context).state.lineItem,
-                            ),
-                            context: context,
-                          ).then((value) => {
-                            if (value != null) {
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColor.primary,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        height: 40,
+                        width: 40,
+                        child: PopupMenuButton<String>(
+                          position: PopupMenuPosition.under,
+                          color: AppColor.background,
+                          padding: EdgeInsets.zero,
+                          onSelected: (value) {
+                            if (value == "SUSPEND") {
                               BlocProvider.of<CreateNewReceiptBloc>(context)
-                                  .add(OnReturnLineItemEvent(value))
+                                  .add(OnSuspendTransaction());
+                            } else if (value == "RETURN") {
+                              showTransitiveAppPopUp(
+                                title: "Return Order",
+                                child: ReturnOrderView(
+                                  currentOrderLineItem:
+                                  BlocProvider
+                                      .of<CreateNewReceiptBloc>(context)
+                                      .state
+                                      .lineItem,
+                                ),
+                                context: context,
+                              ).then((value) =>
+                              {
+                                if (value != null)
+                                  {
+                                    BlocProvider.of<CreateNewReceiptBloc>(
+                                        context)
+                                        .add(OnReturnLineItemEvent(value))
+                                  }
+                              });
+                            } else if (value == "CANCEL") {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnCancelTransaction());
                             }
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColor.primary,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          height: 40,
-                          width: 40,
-                          child: const Icon(
-                            Icons.assignment_return_outlined,
+                          },
+                          itemBuilder: (context) =>
+                          [
+                            PopupMenuItem(
+                              child: Row(
+                                children: const [
+                                  FaIcon(
+                                    FontAwesomeIcons.pause,
+                                    color: AppColor.primary,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("Suspend Order"),
+                                ],
+                              ),
+                              value: "SUSPEND",
+                            ),
+                            PopupMenuItem(
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.assignment_return_outlined,
+                                    color: AppColor.primary,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("Return Order"),
+                                ],
+                              ),
+                              value: "RETURN",
+                            ),
+                            PopupMenuItem(
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.cancel_sharp,
+                                    color: AppColor.primary,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("Cancel Order"),
+                                ],
+                              ),
+                              value: "CANCEL",
+                            ),
+                          ],
+                          icon: const Icon(
+                            Icons.more_vert,
                             color: AppColor.iconColor,
                           ),
                         ),
                       ));
                 },
-              )
+              ),
             ],
           ),
           bottomNavigationBar: const Padding(
@@ -117,7 +188,8 @@ class AcceptTenderDisplayMobile extends StatelessWidget {
   final Function onTender;
   final double? suggestedAmount;
 
-  const AcceptTenderDisplayMobile({Key? key, required this.onTender, this.suggestedAmount})
+  const AcceptTenderDisplayMobile(
+      {Key? key, required this.onTender, this.suggestedAmount})
       : super(key: key);
 
   @override

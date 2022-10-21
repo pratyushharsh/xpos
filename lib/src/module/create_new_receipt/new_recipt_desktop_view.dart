@@ -58,7 +58,7 @@ class NewReceiptDesktopView extends StatelessWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const ActionButtonBar(),
+                              const ActionDesktopButtonBar(),
                               if (SaleStep.item == state.step ||
                                   SaleStep.complete == state.step)
                                 const Expanded(
@@ -645,8 +645,8 @@ class _TenderAmountTextFieldState extends State<TenderAmountTextField> {
   }
 }
 
-class ActionButtonBar extends StatelessWidget {
-  const ActionButtonBar({Key? key}) : super(key: key);
+class ActionDesktopButtonBar extends StatelessWidget {
+  const ActionDesktopButtonBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -659,11 +659,52 @@ class ActionButtonBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Tooltip(
+            message: "Suspend Order",
+            child: IconButton(
+              icon: const Icon(Icons.cancel_presentation_outlined),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Confirmation"),
+                      content: const Text(
+                          "Would you like to suspend the transaction?"),
+                      actions: [
+                        SizedBox(
+                          width: 100,
+                          child: RejectButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            label: 'Cancel',
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100,
+                          child: AcceptButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            label: 'OK',
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ).then((value) => {
+                  if (value != null && value)
+                    {BlocProvider.of<CreateNewReceiptBloc>(context)
+                        .add(OnSuspendTransaction())}
+                });
+              },
+            ),
+          ),
+          Tooltip(
             message: "Return Item",
             child: IconButton(
               icon: const Icon(Icons.assignment_return_outlined),
               onPressed: () {
-
                 showTransitiveAppPopUp(
                   title: "Return Order",
                   child: ReturnOrderView(

@@ -25,7 +25,11 @@ class OnUnitPriceUpdate extends CreateNewReceiptEvent {
   OnUnitPriceUpdate({required this.saleLine, required this.unitPrice, required this.reason});
 }
 
-class OnInitiateNewTransaction extends CreateNewReceiptEvent {}
+class OnInitiateNewTransaction extends CreateNewReceiptEvent {
+  final int? transSeq;
+
+  OnInitiateNewTransaction({this.transSeq});
+}
 
 class OnCreateNewTransaction extends CreateNewReceiptEvent {}
 
@@ -98,3 +102,7 @@ class OnChangeCustomerShippingAddress extends CreateNewReceiptEvent {
   final Address address;
   OnChangeCustomerShippingAddress(this.address);
 }
+
+class OnSuspendTransaction extends CreateNewReceiptEvent {}
+
+class OnCancelTransaction extends CreateNewReceiptEvent {}

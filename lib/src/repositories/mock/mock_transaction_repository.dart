@@ -11,7 +11,7 @@ class MockTransactionRepository extends TransactionRepository {
       : super(db: db, restClient: restClient);
 
   @override
-  Future<void> createNewSale(TransactionHeaderEntity header) async {
+  Future<TransactionHeaderEntity> createNewSale(TransactionHeaderEntity header) async {
     throw UnimplementedError('Cannot Implement in the Mock Interface');
   }
 
@@ -94,7 +94,6 @@ class MockTransactionRepository extends TransactionRepository {
       roundTotal: 0.00,
       discountTotal: 0.00,
       status: 'COMPLETED',
-      createTime: DateTime.now(),
     );
     header.lineItems = [lineItem1, lineItem1, lineItem1, lineItem1, lineItem1];
 

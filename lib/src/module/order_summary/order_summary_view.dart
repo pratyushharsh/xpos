@@ -106,7 +106,7 @@ class CustomerAddress extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(AppFormatter.longDateFormatter
-                          .format(order.createTime)),
+                          .format(order.businessDate)),
                       Text('Invoice #' + order.transId.toString()),
                       Text('Sales Associate : ${order.associateName}'),
                       Text('Notes : ' + 'Yet to add this'),

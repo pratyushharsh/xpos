@@ -25,7 +25,8 @@ import 'bloc/create_new_receipt_bloc.dart';
 import 'sale_complete_dialog.dart';
 
 class NewReceiptView extends StatelessWidget {
-  const NewReceiptView({Key? key}) : super(key: key);
+  final int? transId;
+  const NewReceiptView({Key? key, this.transId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class NewReceiptView extends StatelessWidget {
             priceHelper: RepositoryProvider.of(ctx),
             discountHelper: RepositoryProvider.of(ctx),
             errorNotificationBloc: BlocProvider.of(ctx),
-          )..add(OnInitiateNewTransaction()),
+          )..add(OnInitiateNewTransaction(transSeq: transId)),
         ),
         BlocProvider(
           create: (ctx) => CustomerSearchBloc(
@@ -81,14 +82,19 @@ class NewReceiptView extends StatelessWidget {
             Navigator.of(context).pop();
           }
         },
-        child: LayoutBuilder(
-          builder: (context, constrain) {
-            if (constrain.maxWidth > 800) {
-              return const NewReceiptDesktopView();
-            } else {
-              return const NewReceiptMobileView();
-            }
+        child: WillPopScope(
+          onWillPop: () async {
+            return false;
           },
+          child: LayoutBuilder(
+            builder: (context, constrain) {
+              if (constrain.maxWidth > 800) {
+                return const NewReceiptDesktopView();
+              } else {
+                return const NewReceiptMobileView();
+              }
+            },
+          ),
         ),
       ),
     );
@@ -518,12 +524,16 @@ class NewInvoiceButtonBar extends StatelessWidget {
                 child: RejectButton(
                   onPressed: () {
                     // @TODO Void All the tender
+                    if (state.transactionHeader == null) {
+                      Navigator.of(context).pop();
+                      return;
+                    }
+
                     if (state.step == SaleStep.payment) {
                       BlocProvider.of<CreateNewReceiptBloc>(context)
                           .add(OnChangeSaleStep(SaleStep.item));
                       return;
                     }
-
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -555,7 +565,10 @@ class NewInvoiceButtonBar extends StatelessWidget {
                       },
                     ).then((value) => {
                           if (value != null && value)
-                            {Navigator.of(context).pop()}
+                            {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnCancelTransaction())
+                            }
                         });
                   },
                   label: 'Cancel',
@@ -737,7 +750,7 @@ class SaleHeaderBlock extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                'Transaction No#  ${state.transSeq}',
+                'Transaction No#  ${state.transSeq > 0 ? state.transSeq : ""}',
                 style: const TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold),
               )

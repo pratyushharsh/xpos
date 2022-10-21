@@ -8,10 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:receipt_generator/src/config/currency.dart';
-import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
+import '../../config/transaction_config.dart';
 import '../../widgets/appbar_leading.dart';
 import 'bloc/receipt_display_bloc.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -184,20 +184,20 @@ class MyBottomAppBar extends StatelessWidget {
                     ),
                     onPressed: onPrint,
                   ),
-                  if (state.header?.status == SaleStatus.initiated ||
-                      state.header?.status == SaleStatus.pending)
+                  if (state.header?.status == TransactionStatus.created ||
+                      state.header?.status == TransactionStatus.pending)
                     ElevatedButton(
                         onPressed: () {
                           BlocProvider.of<ReceiptDisplayBloc>(context).add(
-                              UpdateReceiptStatusEvent(SaleStatus.cancelled));
+                              UpdateReceiptStatusEvent(TransactionStatus.cancelled));
                         },
                         child: const Text("Cancel")),
-                  if (state.header?.status == SaleStatus.initiated ||
-                      state.header?.status == SaleStatus.pending)
+                  if (state.header?.status == TransactionStatus.created ||
+                      state.header?.status == TransactionStatus.pending)
                     ElevatedButton(
                         onPressed: () {
                           BlocProvider.of<ReceiptDisplayBloc>(context).add(
-                              UpdateReceiptStatusEvent(SaleStatus.completed));
+                              UpdateReceiptStatusEvent(TransactionStatus.completed));
                         },
                         child: const Text("Paid"))
                 ],
@@ -277,7 +277,7 @@ class ReceiptBlock extends StatelessWidget {
               ],
             ),
           ),
-          if (SaleStatus.cancelled ==
+          if (TransactionStatus.cancelled ==
               BlocProvider.of<ReceiptDisplayBloc>(context).state.header?.status)
             Positioned.fill(
                 child: Align(

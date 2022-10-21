@@ -3,13 +3,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/entity/pos/tax_rule_entity.dart';
 import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 
+import '../../../config/transaction_config.dart';
 import '../../../entity/pos/address.dart';
 import '../../../pos/calculator/tax_calculator.dart';
 import '../../../pos/config/config.dart';
@@ -67,18 +67,62 @@ class CreateNewReceiptBloc
     on<OnReturnLineItemEvent>(_onReturnLineItem);
     on<OnChangeCustomerBillingAddress>(_onChangeCustomerBillingAddress);
     on<OnChangeCustomerShippingAddress>(_onChangeCustomerShippingAddress);
+    on<OnSuspendTransaction>(_onSuspendTransaction);
+    on<OnCancelTransaction>(_onCancelTransaction);
   }
 
   void _onInitiateTransaction(OnInitiateNewTransaction event,
       Emitter<CreateNewReceiptState> emit) async {
-    var newSeq =
-        (await sequenceRepository.getNextSequence(SequenceType.trans)).nextSeq;
-    emit(state.copyWith(transSeq: newSeq));
+    if (event.transSeq != null) {
+      final transaction = await transactionRepository
+          .getTransaction(event.transSeq!);
+
+      if (transaction != null) {
+        Map<String, ProductEntity> pm = Map.from(state.productMap);
+
+        for (final lineItem in transaction.lineItems) {
+          final product = await productRepository.getProductById(lineItem.itemId!);
+          if (product != null) {
+            pm[product.productId!] = product;
+          }
+        }
+
+        // Fetch Customer if present
+        ContactEntity? customer;
+        if (transaction.customerId != null) {
+          customer = await customerRepository.getCustomerById(transaction.customerId!);
+        }
+
+
+        emit(state.copyWith(
+          transSeq: transaction.transId,
+          transactionHeader: transaction,
+          lineItem: transaction.lineItems,
+          tenderLine: transaction.paymentLineItems,
+          step: SaleStep.item,
+          status: CreateNewReceiptStatus.initial,
+          productMap: pm,
+          customerAddress: CustomerAddress(
+            billingAddress: transaction.billingAddress,
+            shippingAddress: transaction.shippingAddress,
+          ),
+          customer: customer,
+        ));
+        return;
+      }
+    }
   }
 
   void _onAddNewLineItem(
       AddItemToReceipt event, Emitter<CreateNewReceiptState> emit) async {
     assert(event.product.productId != null);
+
+    // @TODO Check if the header is created otherwise create new transaction header
+    if (state.transactionHeader == null) {
+      var header = await _createNewTransactionHeader();
+      emit(state.copyWith(transactionHeader: header, transSeq: header.transId));
+    }
+
     int seq = state.lineItem.length;
 
     RetailLocationEntity? store = authenticationBloc.state.store;
@@ -140,47 +184,83 @@ class CreateNewReceiptBloc
     }
   }
 
-  // @TODO List different transaction status INITIATED, SALE_COMPLETED, SUSPENDED, CANCELLED, RETURNED, EXCHANGED
-  void _onCreateNewTransaction(
-      OnCreateNewTransaction event, Emitter<CreateNewReceiptState> emit) async {
+
+  // Create a transaction header if this is a new transaction.
+  Future<TransactionHeaderEntity> _createNewTransactionHeader() async {
     RetailLocationEntity? store = authenticationBloc.state.store;
     if (store == null) throw Exception("Store Not Found");
 
-    var currentEmployee = authenticationBloc.state.employee;
+    var newTransactionSequence =
+        (await sequenceRepository.getNextSequence(SequenceType.trans)).nextSeq;
 
+    var currentEmployee = authenticationBloc.state.employee;
     TransactionHeaderEntity header = TransactionHeaderEntity(
-      transId: state.transSeq,
+      transId: newTransactionSequence,
       businessDate: DateTime.now(),
       beginDatetime: DateTime.now(),
       storeCurrency: store.currencyId ?? 'INR',
       storeLocale: store.locale ?? 'en_IN',
       storeId: store.rtlLocId,
       transactionType: TransactionType.cashSale,
-      total: state.total,
-      taxTotal: state.tax,
-      subtotal: state.subTotal,
+      total: 0.0,
+      taxTotal: 0.0,
+      subtotal: 0.0,
       roundTotal: 0.00,
       discountTotal: 0.00,
-      status: SaleStatus.completed,
-      customerId: state.customer?.contactId,
-      customerName: '${state.customer?.firstName} ${state.customer?.lastName}',
-      customerPhone: state.customer?.phoneNumber,
-      shippingAddress: state.customerAddress?.shippingAddress,
-      billingAddress: state.customerAddress?.billingAddress,
-      createTime: DateTime.now(),
+      status: TransactionStatus.created,
       associateId: currentEmployee!.employeeId,
       associateName: '${currentEmployee.firstName} ${currentEmployee.lastName}',
     );
+
+    try {
+      return await transactionRepository.createNewSale(header);
+    } catch (e) {
+      log.severe(e);
+      throw Exception("Error creating new transaction");
+    }
+  }
+
+  // @TODO List different transaction status INITIATED, SALE_COMPLETED, SUSPENDED, CANCELLED, RETURNED, EXCHANGED
+  Future<void> _manageOrder(String status) async {
+    TransactionHeaderEntity transaction = state.transactionHeader!;
+
+    transaction.total = state.total;
+    transaction.taxTotal = state.tax;
+    transaction.subtotal = state.subTotal;
+    transaction.roundTotal = 0.0;
+    transaction.discountTotal = 0.0;
+
+    // Set the status of the transaction
+    transaction.status = status;
+
+    // Set the end date time of the transaction
+    transaction.endDateTime = DateTime.now();
+
+    // Set the associate id and name
+    // transaction.associateId = currentEmployee!.employeeId;
+    // transaction.associateName =
+    //     '${currentEmployee.firstName} ${currentEmployee.lastName}';
+
+    // Set Customer and its address
+    if (state.customer != null) {
+      transaction.customerId = state.customer?.contactId;
+      transaction.customerName = '${state.customer?.firstName} ${state.customer?.lastName}';
+    }
+
+    transaction.shippingAddress = state.customerAddress?.shippingAddress;
+    transaction.billingAddress = state.customerAddress?.billingAddress;
+
+
     List<TransactionLineItemEntity> lineItems = state.lineItem;
-    header.lineItems = lineItems;
-    header.paymentLineItems = state.tenderLine;
+    transaction.lineItems = lineItems;
+    transaction.paymentLineItems = state.tenderLine;
 
     double discountAmount =
-        discountHelper.calculateTransactionDiscountTotal(header);
-    double taxAmount = taxHelper.calculateTransactionTaxAmount(header);
+    discountHelper.calculateTransactionDiscountTotal(transaction);
+    double taxAmount = taxHelper.calculateTransactionTaxAmount(transaction);
 
-    header.discountTotal = discountAmount;
-    header.taxTotal = taxAmount;
+    transaction.discountTotal = discountAmount;
+    transaction.taxTotal = taxAmount;
 
     // Create If Contact Does not exist else override
     if (state.customer != null) {
@@ -192,7 +272,18 @@ class CreateNewReceiptBloc
     }
 
     try {
-      await transactionRepository.createNewSale(header);
+      await transactionRepository.createNewSale(transaction);
+    } catch (e) {
+      log.severe(e);
+      throw Exception("Error creating Transaction");
+    }
+  }
+
+
+  void _onCreateNewTransaction(
+      OnCreateNewTransaction event, Emitter<CreateNewReceiptState> emit) async {
+    try {
+      await _manageOrder(TransactionStatus.completed);
       emit(state.copyWith(
           status: CreateNewReceiptStatus.saleComplete,
           step: SaleStep.printAndEmail));
@@ -200,7 +291,32 @@ class CreateNewReceiptBloc
       log.severe(e);
       emit(state.copyWith(status: CreateNewReceiptStatus.error));
     }
-    // add(_VerifyOrderAndEmitState());
+  }
+
+  void _onSuspendTransaction(
+      OnSuspendTransaction event, Emitter<CreateNewReceiptState> emit) async {
+    try {
+      await _manageOrder(TransactionStatus.suspended);
+      emit(state.copyWith(
+          status: CreateNewReceiptStatus.saleComplete,
+          step: SaleStep.printAndEmail));
+    } catch (e) {
+      log.severe(e);
+      emit(state.copyWith(status: CreateNewReceiptStatus.error));
+    }
+  }
+
+  void _onCancelTransaction(
+      OnCancelTransaction event, Emitter<CreateNewReceiptState> emit) async {
+    try {
+      await _manageOrder(TransactionStatus.cancelled);
+      emit(state.copyWith(
+          status: CreateNewReceiptStatus.saleComplete,
+          step: SaleStep.printAndEmail));
+    } catch (e) {
+      log.severe(e);
+      emit(state.copyWith(status: CreateNewReceiptStatus.error));
+    }
   }
 
   void _onCustomerSelectEvent(

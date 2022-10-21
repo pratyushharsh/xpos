@@ -12,27 +12,16 @@ class TransactionRepository {
 
   TransactionRepository({required this.db, required this.restClient });
 
-  Future<void> createNewSale(TransactionHeaderEntity header) async {
+  Future<TransactionHeaderEntity> createNewSale(TransactionHeaderEntity header) async {
     await db.writeTxn(() async {
       await db.transactionHeaderEntitys.put(header);
-      // await header.lineItems.save();
-      // await header.paymentLineItems.save();
-      // for (var element in header.lineItems) {
-      //   await element.lineModifiers.save();
-      //   await element.taxModifiers.save();
-      // }
     });
+    return header;
   }
 
   Future<TransactionHeaderEntity?> getTransaction(int id) async {
     TransactionHeaderEntity? order = await db.transactionHeaderEntitys.get(id);
     if (order != null) {
-      // await order.lineItems.load();
-      // for (var element in order.lineItems) {
-      //   await element.lineModifiers.load();
-      //   await element.taxModifiers.load();
-      // }
-      // await order.paymentLineItems.load();
       return order;
     }
     return null;

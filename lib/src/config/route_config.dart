@@ -75,7 +75,8 @@ class RouteConfig {
       case loadItemsInBulkScreen:
         return MaterialPageRoute(builder: (_) => const LoadItemInBulk());
       case createReceiptScreen:
-        return MaterialPageRoute(builder: (_) => const NewReceiptView());
+        var transId = settings.arguments as int?;
+        return MaterialPageRoute(builder: (_) => NewReceiptView(transId: transId,));
       case invoiceViewScreen:
         return MaterialPageRoute(builder: (_) => const InvoiceView());
       case businessViewScreen:

@@ -15,30 +15,26 @@ class TransactionHeaderEntity {
   final String transactionType;
   final DateTime businessDate;
   final DateTime beginDatetime;
-  final DateTime? endDateTime;
+  DateTime? endDateTime;
   double total;
   double taxTotal;
   double subtotal;
   double discountTotal;
-  final double roundTotal;
-  final String status;
+  double roundTotal;
+  String status;
 
   @Index()
-  final String? customerId;
+  String? customerId;
 
   @Index()
-  final String? customerPhone;
+  String? customerPhone;
 
-  final Address? shippingAddress;
+  Address? shippingAddress;
 
-  final Address? billingAddress;
-  final String? customerName;
-  final int syncState;
+  Address? billingAddress;
+  String? customerName;
 
-  late DateTime createTime;
-  late DateTime? updateTime;
-  late DateTime? lastChangedAt;
-  late int version;
+  DateTime? lastChangedAt;
 
   final String? associateId;
   final String? associateName;
@@ -73,11 +69,7 @@ class TransactionHeaderEntity {
       this.billingAddress,
       this.customerName,
       this.notes,
-      required this.createTime,
-      this.version = 1,
       this.lastChangedAt,
-      this.syncState = 100,
-      this.updateTime,
       this.associateId,
       this.associateName});
 }

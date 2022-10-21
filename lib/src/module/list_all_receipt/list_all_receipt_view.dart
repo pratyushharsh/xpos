@@ -3,11 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/config/formatter.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
-import 'package:receipt_generator/src/config/sale_status_codes.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/module/list_all_receipt/bloc/list_all_receipt_bloc.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
+
+import '../../config/transaction_config.dart';
 
 class WidgetNoReceipt extends StatelessWidget {
   const WidgetNoReceipt({Key? key}) : super(key: key);
@@ -73,13 +74,15 @@ class ReceiptHeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onDoubleTap: () {
-          Navigator.of(context).pushNamed(RouteConfig.invoiceDisplayScreen,
-              arguments: receipt.transId);
-        },
         onTap: () {
-          Navigator.of(context).pushNamed(RouteConfig.orderSummaryScreen,
-              arguments: receipt.transId);
+          if (receipt.status == TransactionStatus.suspended) {
+            // Navigator.of(context).pushNamed(RouteConfig.receiptDetail, arguments: receipt);
+            Navigator.of(context)
+                .pushNamed(RouteConfig.createReceiptScreen, arguments: receipt.transId);
+          } else {
+            Navigator.of(context).pushNamed(RouteConfig.orderSummaryScreen,
+                arguments: receipt.transId);
+          }
         },
         child: Container(
           padding: const EdgeInsets.all(8),
@@ -148,22 +151,22 @@ class HeaderStatusChip extends StatelessWidget {
   const HeaderStatusChip({Key? key, required this.status}) : super(key: key);
 
   String getStatus() {
-    if (status == SaleStatus.pending) {
-      return "Unpaid";
-    } else if (status == SaleStatus.cancelled) {
+    if (status == TransactionStatus.suspended) {
+      return "Suspended";
+    } else if (status == TransactionStatus.cancelled) {
       return "Cancelled";
-    } else if (status == SaleStatus.completed) {
+    } else if (status == TransactionStatus.completed) {
       return "Paid";
     }
     return '';
   }
 
   Color getStatusColor() {
-    if (status == SaleStatus.pending) {
+    if (status == TransactionStatus.suspended) {
       return Colors.orange;
-    } else if (status == SaleStatus.cancelled) {
+    } else if (status == TransactionStatus.cancelled) {
       return Colors.red;
-    } else if (status == SaleStatus.completed) {
+    } else if (status == TransactionStatus.completed) {
       return Colors.green;
     }
     return Colors.grey;
