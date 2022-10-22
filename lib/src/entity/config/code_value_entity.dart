@@ -8,12 +8,13 @@ class CodeValueEntity {
   final Id? id;
 
   @Index(type: IndexType.value)
-  @Index(composite: [CompositeIndex("code")], unique: true)
+  @Index(composite: [CompositeIndex("code")], unique: true, replace: true)
   final String category;
   final String code;
-  final String value;
   final String? description;
+  final int? sortOrder;
+  final bool hidden;
 
   CodeValueEntity(
-      { this.id, required this.category, required this.code, required this.value, this.description});
+      { this.id, required this.category, required this.code, this.description, this.sortOrder, this.hidden = false});
 }

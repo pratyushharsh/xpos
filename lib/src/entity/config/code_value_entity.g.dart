@@ -32,10 +32,15 @@ const CodeValueEntitySchema = CollectionSchema(
       name: r'description',
       type: IsarType.string,
     ),
-    r'value': PropertySchema(
+    r'hidden': PropertySchema(
       id: 3,
-      name: r'value',
-      type: IsarType.string,
+      name: r'hidden',
+      type: IsarType.bool,
+    ),
+    r'sortOrder': PropertySchema(
+      id: 4,
+      name: r'sortOrder',
+      type: IsarType.long,
     )
   },
   estimateSize: _codeValueEntityEstimateSize,
@@ -61,7 +66,7 @@ const CodeValueEntitySchema = CollectionSchema(
       id: -578290949475070014,
       name: r'category_code',
       unique: true,
-      replace: false,
+      replace: true,
       properties: [
         IndexPropertySchema(
           name: r'category',
@@ -98,7 +103,6 @@ int _codeValueEntityEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.value.length * 3;
   return bytesCount;
 }
 
@@ -111,7 +115,8 @@ void _codeValueEntitySerialize(
   writer.writeString(offsets[0], object.category);
   writer.writeString(offsets[1], object.code);
   writer.writeString(offsets[2], object.description);
-  writer.writeString(offsets[3], object.value);
+  writer.writeBool(offsets[3], object.hidden);
+  writer.writeLong(offsets[4], object.sortOrder);
 }
 
 CodeValueEntity _codeValueEntityDeserialize(
@@ -124,8 +129,9 @@ CodeValueEntity _codeValueEntityDeserialize(
     category: reader.readString(offsets[0]),
     code: reader.readString(offsets[1]),
     description: reader.readStringOrNull(offsets[2]),
+    hidden: reader.readBoolOrNull(offsets[3]) ?? false,
     id: id,
-    value: reader.readString(offsets[3]),
+    sortOrder: reader.readLongOrNull(offsets[4]),
   );
   return object;
 }
@@ -144,7 +150,9 @@ P _codeValueEntityDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 4:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -996,6 +1004,16 @@ extension CodeValueEntityQueryFilter
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
+      hiddenEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hidden',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
       idIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1070,137 +1088,75 @@ extension CodeValueEntityQueryFilter
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+      sortOrderIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'value',
-        value: value,
-        caseSensitive: caseSensitive,
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'sortOrder',
       ));
     });
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueGreaterThan(
-    String value, {
+      sortOrderIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'sortOrder',
+      ));
+    });
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
+      sortOrderEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'sortOrder',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
+      sortOrderGreaterThan(
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'value',
+        property: r'sortOrder',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueLessThan(
-    String value, {
+      sortOrderLessThan(
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'value',
+        property: r'sortOrder',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueBetween(
-    String lower,
-    String upper, {
+      sortOrderBetween(
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'value',
+        property: r'sortOrder',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'value',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'value',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'value',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'value',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'value',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterFilterCondition>
-      valueIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'value',
-        value: '',
       ));
     });
   }
@@ -1255,16 +1211,30 @@ extension CodeValueEntityQuerySortBy
     });
   }
 
-  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy> sortByValue() {
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy> sortByHidden() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'value', Sort.asc);
+      return query.addSortBy(r'hidden', Sort.asc);
     });
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy>
-      sortByValueDesc() {
+      sortByHiddenDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'value', Sort.desc);
+      return query.addSortBy(r'hidden', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy>
+      sortBySortOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortOrder', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy>
+      sortBySortOrderDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortOrder', Sort.desc);
     });
   }
 }
@@ -1312,6 +1282,19 @@ extension CodeValueEntityQuerySortThenBy
     });
   }
 
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy> thenByHidden() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hidden', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy>
+      thenByHiddenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hidden', Sort.desc);
+    });
+  }
+
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1324,16 +1307,17 @@ extension CodeValueEntityQuerySortThenBy
     });
   }
 
-  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy> thenByValue() {
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy>
+      thenBySortOrder() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'value', Sort.asc);
+      return query.addSortBy(r'sortOrder', Sort.asc);
     });
   }
 
   QueryBuilder<CodeValueEntity, CodeValueEntity, QAfterSortBy>
-      thenByValueDesc() {
+      thenBySortOrderDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'value', Sort.desc);
+      return query.addSortBy(r'sortOrder', Sort.desc);
     });
   }
 }
@@ -1361,10 +1345,16 @@ extension CodeValueEntityQueryWhereDistinct
     });
   }
 
-  QueryBuilder<CodeValueEntity, CodeValueEntity, QDistinct> distinctByValue(
-      {bool caseSensitive = true}) {
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QDistinct> distinctByHidden() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'value', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'hidden');
+    });
+  }
+
+  QueryBuilder<CodeValueEntity, CodeValueEntity, QDistinct>
+      distinctBySortOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'sortOrder');
     });
   }
 }
@@ -1396,9 +1386,15 @@ extension CodeValueEntityQueryProperty
     });
   }
 
-  QueryBuilder<CodeValueEntity, String, QQueryOperations> valueProperty() {
+  QueryBuilder<CodeValueEntity, bool, QQueryOperations> hiddenProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'value');
+      return query.addPropertyName(r'hidden');
+    });
+  }
+
+  QueryBuilder<CodeValueEntity, int?, QQueryOperations> sortOrderProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'sortOrder');
     });
   }
 }

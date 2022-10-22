@@ -44,6 +44,8 @@ class SyncConfigRepository {
         await _loadConfiguration(name, fields);
       } else if (filename.startsWith("REASON_CODE")) {
         await _loadReasonCode(fields);
+      } else if (filename.startsWith("CODE_")) {
+        await _loadConfigCode(fields);
       }
     }
 
@@ -56,9 +58,24 @@ class SyncConfigRepository {
     });
   }
 
+  Future<void> _loadConfigCode(List<List<dynamic>> fields) async {
+    var res = await db.writeTxn(() async {
+      for (int i = 1; i < fields.length; i++) {
+        var c = fields[i];
+        db.codeValueEntitys.put(CodeValueEntity(
+            category: c[0],
+            code: c[1],
+            description: c[2],
+            sortOrder: c[3],
+            hidden: "TRUE" == c[4],
+        ));
+      }
+    });
+  }
+
   Future<void> _loadReasonCode(List<List<dynamic>> fields) async {
     var res = await db.writeTxn(() async {
-      for (int i = 0; i < fields.length; i++) {
+      for (int i = 1; i < fields.length; i++) {
         var c = fields[i];
         db.reasonCodeEntitys.put(
             ReasonCodeEntity(
@@ -82,7 +99,6 @@ class SyncConfigRepository {
             CodeValueEntity(
                 category: category,
                 code: c[0].toString(),
-                value: c[1].toString(),
                 description: c[1].toString()),);
       }
     });

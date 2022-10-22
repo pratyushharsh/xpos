@@ -122,7 +122,7 @@ class SettingsScreen extends StatelessWidget {
                         text: "Sync Data",
                         onTap: () async {
                           BlocProvider.of<BackgroundSyncBloc>(context)
-                              .add(SyncAllConfigDataEvent());
+                              .add(SyncAllConfigDataEvent(forceSync: true));
                         }),
                     SettingsItem(
                         text: "Invoice Setting",

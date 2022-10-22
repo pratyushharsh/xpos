@@ -5,7 +5,6 @@ class DefaultConfig {
     return CodeValueEntity(
         category: 'UOM',
         code: 'EA',
-        value: 'EA',
         description: 'Each');
   }
 }

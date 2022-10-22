@@ -17,6 +17,7 @@ class CodeValueDropDown extends StatelessWidget {
   final FormFieldValidator<CodeValueEntity>? validator;
   final CodeValueEntity? value;
   final CodeValueDropDownBuilder builder;
+  final bool enabled;
   const CodeValueDropDown({
     Key? key,
     required this.onChanged,
@@ -27,11 +28,12 @@ class CodeValueDropDown extends StatelessWidget {
     this.errorText,
     this.validator,
     this.value,
+    this.enabled = true,
     this.builder = defaultBuilder,
   }) : super(key: key);
 
   static String defaultBuilder(CodeValueEntity u) {
-    return u.description ?? u.value;
+    return u.description ?? u.code;
   }
 
   @override
@@ -44,10 +46,10 @@ class CodeValueDropDown extends StatelessWidget {
       value: value,
       onChanged: onChanged,
       itemAsString: builder,
+      enabled: enabled,
       crossAxisAlignment: crossAxisAlignment,
       filterFn: (user, filter) =>
           user.code.toLowerCase().contains(filter.toLowerCase()) ||
-          user.value.toLowerCase().contains(filter.toLowerCase()) ||
           user.description!.toLowerCase().contains(filter.toLowerCase()),
       asyncItems: (filter) async {
         return await context
@@ -67,6 +69,7 @@ class CustomDropDown<T> extends StatelessWidget {
   final FormFieldValidator<T>? validator;
   final DropdownSearchOnFind<T>? asyncItems;
   final T? value;
+  final bool enabled;
   final DropdownSearchFilterFn<T>? filterFn;
   final DropdownSearchItemAsString<T>? itemAsString;
   const CustomDropDown({
@@ -78,6 +81,7 @@ class CustomDropDown<T> extends StatelessWidget {
     this.errorText,
     this.validator,
     this.value,
+    this.enabled = true,
     this.filterFn,
     this.asyncItems,
     this.itemAsString,
@@ -109,6 +113,7 @@ class CustomDropDown<T> extends StatelessWidget {
           asyncItems: asyncItems,
           itemAsString: itemAsString,
           onChanged: onChanged,
+          enabled: enabled,
           popupProps: const PopupProps.menu(
             showSearchBox: true,
             searchDelay: Duration(milliseconds: 100),

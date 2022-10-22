@@ -242,7 +242,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
               label: "Currency",
               value: _selectedCurrency,
               builder: (code) {
-                return '${code.code} - ${code.value}';
+                return '${code.code} - ${code.description}';
               },
               validator: BusinessValidator.businessCurrency,
             ),
@@ -357,9 +357,12 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
       _cityController.text = widget.address!.city ?? '';
       _selectedCountry = RepositoryProvider.of<ConfigRepository>(context)
           .getCodeByCategoryAndCode(
-              'COUNTRY_CODE', widget.address!.countryCode);
-      _selectedState = RepositoryProvider.of<ConfigRepository>(context)
-          .getCodeByCategoryAndCode('IN_STATE', widget.address!.stateCode);
+              'COUNTRY', widget.address!.countryCode);
+      if (widget.address!.countryCode != null) {
+        _selectedState = RepositoryProvider.of<ConfigRepository>(context)
+            .getCodeByCategoryAndCode('${widget.address!.countryCode}_STATES', widget.address!.stateCode);
+      }
+
     }
   }
 
@@ -385,6 +388,7 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
   void _onSelectedCountryChange(CodeValueEntity? value) {
     setState(() {
       _selectedCountry = value;
+      _selectedState = null;
     });
   }
 
@@ -403,7 +407,7 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
             child: Column(
               children: [
                 CodeValueDropDown(
-                  category: "COUNTRY_CODE",
+                  category: "COUNTRY",
                   onChanged: _onSelectedCountryChange,
                   label: "Country",
                   value: _selectedCountry,
@@ -426,7 +430,8 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                   controller: _cityController,
                 ),
                 CodeValueDropDown(
-                  category: "IN_STATE",
+                  enabled: _selectedCountry != null,
+                  category: "${_selectedCountry?.code}_STATES",
                   onChanged: _onStateChange,
                   label: "State",
                   value: _selectedState,
@@ -449,9 +454,9 @@ class _AddressFormDialogState extends State<AddressFormDialog> {
                 address1: _buildingController.text,
                 address2: _streetController.text,
                 city: _cityController.text,
-                state: _selectedState!.value,
+                state: _selectedState!.description,
                 stateCode: _selectedState!.code,
-                country: _selectedCountry?.value,
+                country: _selectedCountry?.description,
                 countryCode: _selectedCountry?.code,
               ));
             },

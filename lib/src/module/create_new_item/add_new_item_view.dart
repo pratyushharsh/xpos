@@ -125,7 +125,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           purchasePrice: _purchasePriceController.text.isNotEmpty
               ? toFloat(_purchasePriceController.text)
               : null,
-          uom: _uom?.value ?? DefaultConfig.uom().value,
+          uom: _uom?.description ?? DefaultConfig.uom().code,
           brand:
               _brandController.text.isNotEmpty ? _brandController.text : null,
           hsn: _hsnController.text.isNotEmpty ? _hsnController.text : null,
@@ -174,7 +174,6 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
             _uom = CodeValueEntity(
                 category: 'UOM',
                 code: state.existingProduct!.uom,
-                value: state.existingProduct!.uom,
                 description: state.existingProduct!.uom);
             // @TODO
             _taxGroup = RepositoryProvider.of<TaxRepository>(context).getTaxGroupId(state.existingProduct!.taxGroupId);
@@ -263,7 +262,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                                     value: _uom,
                                     validator: (value) {
                                       return NewProductFieldValidator
-                                          .validateUOM(value?.value);
+                                          .validateUOM(value?.code);
                                     },
                                   ))
                                 ],
