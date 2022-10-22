@@ -22,6 +22,7 @@ class TransactionHeaderEntity {
   double discountTotal;
   double roundTotal;
   String status;
+  bool isVoid;
 
   @Index()
   String? customerId;
@@ -55,6 +56,7 @@ class TransactionHeaderEntity {
       required this.beginDatetime,
       required this.transactionType,
       this.endDateTime,
+      this.isVoid = false,
       required this.total,
       required this.taxTotal,
       required this.subtotal,

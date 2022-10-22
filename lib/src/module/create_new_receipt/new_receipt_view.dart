@@ -17,6 +17,7 @@ import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 
 import '../../entity/pos/address.dart';
 import '../../entity/pos/entity.dart';
+import '../../widgets/customDialog.dart';
 import '../../widgets/desktop_pop_up.dart';
 import '../business/business_view.dart';
 import '../customer_search/customer_search_widget.dart';
@@ -132,6 +133,66 @@ class CustomerSuggestionWidget extends StatelessWidget {
   }
 }
 
+class VoidWidget extends StatelessWidget {
+  final int count;
+  const VoidWidget({Key? key, this.count = 1}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(count, (index) => index, growable: false)
+                    .map(
+                      (e) => const Divider(
+                        thickness: 1,
+                        color: Colors.grey,
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            const Text(
+              "Void",
+              style: TextStyle(
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.w100,
+                  fontSize: 25,
+                  fontStyle: FontStyle.italic),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(count, (index) => index, growable: false)
+                    .map(
+                      (e) => const Divider(
+                    thickness: 1,
+                    color: Colors.grey,
+                  ),
+                )
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class BuildLineItem extends StatelessWidget {
   const BuildLineItem({Key? key}) : super(key: key);
 
@@ -159,59 +220,102 @@ class BuildLineItem extends StatelessWidget {
           itemBuilder: (itemBuilder, idx) {
             if (idx < state.lineItem.length) {
               return InkWell(
-                onTap: !state.lineItem[idx].returnFlag
+                onTap: !(state.lineItem[idx].returnFlag ||
+                        state.lineItem[idx].isVoid)
                     ? () {
                         onTap(context, state.lineItem[idx],
                             state.productMap[state.lineItem[idx].itemId]);
                       }
-                    : () {},
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: state.lineItem[idx].returnFlag
-                            ? Colors.redAccent
-                            : Colors.blueAccent,
-                        width: 10,
-                      ),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: NewLineItem(
-                          saleLine: state.lineItem[idx],
-                          productModel:
-                              state.productMap[state.lineItem[idx].itemId],
+                    : null,
+                child: Stack(
+                  children: [
+                    Opacity(
+                      opacity: state.lineItem[idx].isVoid ? 0.45 : 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              color: state.lineItem[idx].returnFlag
+                                  ? Colors.redAccent
+                                  : Colors.blueAccent,
+                              width: 8,
+                            ),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: NewLineItem(
+                                saleLine: state.lineItem[idx],
+                                productModel: state
+                                    .productMap[state.lineItem[idx].itemId],
+                              ),
+                            ),
+                            const Divider(
+                              height: 0,
+                            )
+                          ],
                         ),
                       ),
-                      const Divider(
-                        height: 0,
-                      )
-                    ],
-                  ),
+                    ),
+                    if (state.lineItem[idx].isVoid)
+                      const Positioned(
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                        child: VoidWidget(count: 5),
+                      ),
+                  ],
                 ),
               );
             }
 
             if (idx >= state.lineItem.length) {
               return InkWell(
-                onTap: () {},
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                onTap: () {
+                  yesOrCancelDialog(context, "Void Tender",
+                          content: "Are you sure you want to void this tender?")
+                      .then((value) {
+                    if (value != null && value) {
+                      BlocProvider.of<CreateNewReceiptBloc>(context).add(
+                          OnTenderLineVoid(
+                              tenderLine: state
+                                  .tenderLine[idx - state.lineItem.length]));
+                    }
+                  });
+                },
+                child: Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: TenderLineDisplay(
-                        tenderLine:
-                            state.tenderLine[idx - state.lineItem.length],
-                      ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Opacity(
+                          opacity: state.tenderLine[idx - state.lineItem.length].isVoid! ? 0.45 : 1,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: TenderLineDisplay(
+                              tenderLine:
+                                  state.tenderLine[idx - state.lineItem.length],
+                            ),
+                          ),
+                        ),
+                        const Divider(
+                          height: 0,
+                        )
+                      ],
                     ),
-                    const Divider(
-                      height: 0,
-                    )
+                    if (state.tenderLine[idx - state.lineItem.length].isVoid ??
+                        false)
+                      const Positioned(
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                        child: VoidWidget(),
+                      ),
                   ],
                 ),
               );
@@ -283,55 +387,12 @@ class LineItemHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 800) {
-          return Row(
-            children: const [
-              Expanded(
-                flex: 2,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "UnitCost",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "Qty",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "Amount",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }
-
+    return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth < 800) {
         return Row(
           children: const [
             Expanded(
               flex: 2,
-              child: Text(
-                "Product Description",
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-            Expanded(
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
@@ -341,6 +402,7 @@ class LineItemHeader extends StatelessWidget {
               ),
             ),
             Expanded(
+              flex: 1,
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
@@ -350,6 +412,7 @@ class LineItemHeader extends StatelessWidget {
               ),
             ),
             Expanded(
+              flex: 2,
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
@@ -361,7 +424,46 @@ class LineItemHeader extends StatelessWidget {
           ],
         );
       }
-    );
+
+      return Row(
+        children: const [
+          Expanded(
+            flex: 2,
+            child: Text(
+              "Product Description",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "UnitCost",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "Qty",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "Amount",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -469,68 +571,26 @@ class NewLineItem extends StatelessWidget {
               )
             ],
           ),
-          LayoutBuilder(
-            builder: (context, constraints) {
-
-              if (constraints.maxWidth < 800) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          getCurrencyFormatter(context).format(saleLine.priceOverride
-                              ? saleLine.unitPrice
-                              : saleLine.baseUnitPrice),
-                          style: NewLineItem.textStyle,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          saleLine.quantity.toString(),
-                          style: NewLineItem.textStyle,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          getCurrencyFormatter(context).format(saleLine.netAmount),
-                          style: NewLineItem.textStyle,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              }
-
+          LayoutBuilder(builder: (context, constraints) {
+            if (constraints.maxWidth < 800) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Expanded(
-                    child: Container(),
                     flex: 2,
-                  ),
-                  Expanded(
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        getCurrencyFormatter(context).format(saleLine.priceOverride
-                            ? saleLine.unitPrice
-                            : saleLine.baseUnitPrice),
+                        getCurrencyFormatter(context).format(
+                            saleLine.priceOverride
+                                ? saleLine.unitPrice
+                                : saleLine.baseUnitPrice),
                         style: NewLineItem.textStyle,
                       ),
                     ),
                   ),
                   Expanded(
+                    flex: 1,
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Text(
@@ -540,10 +600,12 @@ class NewLineItem extends StatelessWidget {
                     ),
                   ),
                   Expanded(
+                    flex: 2,
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        getCurrencyFormatter(context).format(saleLine.netAmount),
+                        getCurrencyFormatter(context)
+                            .format(saleLine.netAmount),
                         style: NewLineItem.textStyle,
                       ),
                     ),
@@ -551,7 +613,47 @@ class NewLineItem extends StatelessWidget {
                 ],
               );
             }
-          ),
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Container(),
+                  flex: 2,
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      getCurrencyFormatter(context).format(
+                          saleLine.priceOverride
+                              ? saleLine.unitPrice
+                              : saleLine.baseUnitPrice),
+                      style: NewLineItem.textStyle,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      saleLine.quantity.toString(),
+                      style: NewLineItem.textStyle,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      getCurrencyFormatter(context).format(saleLine.netAmount),
+                      style: NewLineItem.textStyle,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
           ...saleLine.lineModifiers
               .map(
                 (e) => Row(
@@ -620,35 +722,10 @@ class NewInvoiceButtonBar extends StatelessWidget {
                           .add(OnChangeSaleStep(SaleStep.item));
                       return;
                     }
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Confirmation"),
-                          content: const Text(
-                              "Would you like to cancel the sale transaction?"),
-                          actions: [
-                            SizedBox(
-                              width: 100,
-                              child: RejectButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                label: 'Cancel',
-                              ),
-                            ),
-                            SizedBox(
-                              width: 100,
-                              child: AcceptButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(true);
-                                },
-                                label: 'OK',
-                              ),
-                            ),
-                          ],
-                        );
-                      },
+                    yesOrCancelDialog(
+                      context,
+                      "Cancel Transaction",
+                      content: "Would you like to cancel the sale transaction?",
                     ).then((value) => {
                           if (value != null && value)
                             {

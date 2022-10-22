@@ -16,6 +16,8 @@ class TransactionPaymentLineItemEntity {
   String? tenderId;
   String? tenderStatusCode;
   String? authCode;
+  String? token;
+  bool? isVoid;
 
   TransactionPaymentLineItemEntity(
       {
@@ -27,5 +29,7 @@ class TransactionPaymentLineItemEntity {
       this.currencyId,
       this.tenderId,
       this.tenderStatusCode,
-      this.authCode});
+      this.authCode,
+      this.token,
+      this.isVoid = false});
 }

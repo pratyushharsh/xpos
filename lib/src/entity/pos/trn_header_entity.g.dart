@@ -69,76 +69,81 @@ const TransactionHeaderEntitySchema = CollectionSchema(
       name: r'endDateTime',
       type: IsarType.dateTime,
     ),
-    r'lastChangedAt': PropertySchema(
+    r'isVoid': PropertySchema(
       id: 10,
+      name: r'isVoid',
+      type: IsarType.bool,
+    ),
+    r'lastChangedAt': PropertySchema(
+      id: 11,
       name: r'lastChangedAt',
       type: IsarType.dateTime,
     ),
     r'lineItems': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'lineItems',
       type: IsarType.objectList,
       target: r'TransactionLineItemEntity',
     ),
     r'notes': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'notes',
       type: IsarType.string,
     ),
     r'paymentLineItems': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'paymentLineItems',
       type: IsarType.objectList,
       target: r'TransactionPaymentLineItemEntity',
     ),
     r'roundTotal': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'roundTotal',
       type: IsarType.double,
     ),
     r'shippingAddress': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'shippingAddress',
       type: IsarType.object,
       target: r'Address',
     ),
     r'status': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'status',
       type: IsarType.string,
     ),
     r'storeCurrency': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'storeCurrency',
       type: IsarType.string,
     ),
     r'storeId': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'storeId',
       type: IsarType.long,
     ),
     r'storeLocale': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'storeLocale',
       type: IsarType.string,
     ),
     r'subtotal': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'subtotal',
       type: IsarType.double,
     ),
     r'taxTotal': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'taxTotal',
       type: IsarType.double,
     ),
     r'total': PropertySchema(
-      id: 22,
+      id: 23,
       name: r'total',
       type: IsarType.double,
     ),
     r'transactionType': PropertySchema(
-      id: 23,
+      id: 24,
       name: r'transactionType',
       type: IsarType.string,
     )
@@ -293,35 +298,36 @@ void _transactionHeaderEntitySerialize(
   writer.writeString(offsets[7], object.customerPhone);
   writer.writeDouble(offsets[8], object.discountTotal);
   writer.writeDateTime(offsets[9], object.endDateTime);
-  writer.writeDateTime(offsets[10], object.lastChangedAt);
+  writer.writeBool(offsets[10], object.isVoid);
+  writer.writeDateTime(offsets[11], object.lastChangedAt);
   writer.writeObjectList<TransactionLineItemEntity>(
-    offsets[11],
+    offsets[12],
     allOffsets,
     TransactionLineItemEntitySchema.serialize,
     object.lineItems,
   );
-  writer.writeString(offsets[12], object.notes);
+  writer.writeString(offsets[13], object.notes);
   writer.writeObjectList<TransactionPaymentLineItemEntity>(
-    offsets[13],
+    offsets[14],
     allOffsets,
     TransactionPaymentLineItemEntitySchema.serialize,
     object.paymentLineItems,
   );
-  writer.writeDouble(offsets[14], object.roundTotal);
+  writer.writeDouble(offsets[15], object.roundTotal);
   writer.writeObject<Address>(
-    offsets[15],
+    offsets[16],
     allOffsets,
     AddressSchema.serialize,
     object.shippingAddress,
   );
-  writer.writeString(offsets[16], object.status);
-  writer.writeString(offsets[17], object.storeCurrency);
-  writer.writeLong(offsets[18], object.storeId);
-  writer.writeString(offsets[19], object.storeLocale);
-  writer.writeDouble(offsets[20], object.subtotal);
-  writer.writeDouble(offsets[21], object.taxTotal);
-  writer.writeDouble(offsets[22], object.total);
-  writer.writeString(offsets[23], object.transactionType);
+  writer.writeString(offsets[17], object.status);
+  writer.writeString(offsets[18], object.storeCurrency);
+  writer.writeLong(offsets[19], object.storeId);
+  writer.writeString(offsets[20], object.storeLocale);
+  writer.writeDouble(offsets[21], object.subtotal);
+  writer.writeDouble(offsets[22], object.taxTotal);
+  writer.writeDouble(offsets[23], object.total);
+  writer.writeString(offsets[24], object.transactionType);
 }
 
 TransactionHeaderEntity _transactionHeaderEntityDeserialize(
@@ -345,37 +351,38 @@ TransactionHeaderEntity _transactionHeaderEntityDeserialize(
     customerPhone: reader.readStringOrNull(offsets[7]),
     discountTotal: reader.readDouble(offsets[8]),
     endDateTime: reader.readDateTimeOrNull(offsets[9]),
-    lastChangedAt: reader.readDateTimeOrNull(offsets[10]),
+    isVoid: reader.readBoolOrNull(offsets[10]) ?? false,
+    lastChangedAt: reader.readDateTimeOrNull(offsets[11]),
     lineItems: reader.readObjectList<TransactionLineItemEntity>(
-          offsets[11],
+          offsets[12],
           TransactionLineItemEntitySchema.deserialize,
           allOffsets,
           TransactionLineItemEntity(),
         ) ??
         const [],
-    notes: reader.readStringOrNull(offsets[12]),
+    notes: reader.readStringOrNull(offsets[13]),
     paymentLineItems: reader.readObjectList<TransactionPaymentLineItemEntity>(
-          offsets[13],
+          offsets[14],
           TransactionPaymentLineItemEntitySchema.deserialize,
           allOffsets,
           TransactionPaymentLineItemEntity(),
         ) ??
         const [],
-    roundTotal: reader.readDouble(offsets[14]),
+    roundTotal: reader.readDouble(offsets[15]),
     shippingAddress: reader.readObjectOrNull<Address>(
-      offsets[15],
+      offsets[16],
       AddressSchema.deserialize,
       allOffsets,
     ),
-    status: reader.readString(offsets[16]),
-    storeCurrency: reader.readString(offsets[17]),
-    storeId: reader.readLong(offsets[18]),
-    storeLocale: reader.readString(offsets[19]),
-    subtotal: reader.readDouble(offsets[20]),
-    taxTotal: reader.readDouble(offsets[21]),
-    total: reader.readDouble(offsets[22]),
+    status: reader.readString(offsets[17]),
+    storeCurrency: reader.readString(offsets[18]),
+    storeId: reader.readLong(offsets[19]),
+    storeLocale: reader.readString(offsets[20]),
+    subtotal: reader.readDouble(offsets[21]),
+    taxTotal: reader.readDouble(offsets[22]),
+    total: reader.readDouble(offsets[23]),
     transId: id,
-    transactionType: reader.readString(offsets[23]),
+    transactionType: reader.readString(offsets[24]),
   );
   return object;
 }
@@ -412,8 +419,10 @@ P _transactionHeaderEntityDeserializeProp<P>(
     case 9:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 10:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 11:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 12:
       return (reader.readObjectList<TransactionLineItemEntity>(
             offset,
             TransactionLineItemEntitySchema.deserialize,
@@ -421,9 +430,9 @@ P _transactionHeaderEntityDeserializeProp<P>(
             TransactionLineItemEntity(),
           ) ??
           const []) as P;
-    case 12:
-      return (reader.readStringOrNull(offset)) as P;
     case 13:
+      return (reader.readStringOrNull(offset)) as P;
+    case 14:
       return (reader.readObjectList<TransactionPaymentLineItemEntity>(
             offset,
             TransactionPaymentLineItemEntitySchema.deserialize,
@@ -431,29 +440,29 @@ P _transactionHeaderEntityDeserializeProp<P>(
             TransactionPaymentLineItemEntity(),
           ) ??
           const []) as P;
-    case 14:
-      return (reader.readDouble(offset)) as P;
     case 15:
+      return (reader.readDouble(offset)) as P;
+    case 16:
       return (reader.readObjectOrNull<Address>(
         offset,
         AddressSchema.deserialize,
         allOffsets,
       )) as P;
-    case 16:
-      return (reader.readString(offset)) as P;
     case 17:
       return (reader.readString(offset)) as P;
     case 18:
-      return (reader.readLong(offset)) as P;
-    case 19:
       return (reader.readString(offset)) as P;
+    case 19:
+      return (reader.readLong(offset)) as P;
     case 20:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 21:
       return (reader.readDouble(offset)) as P;
     case 22:
       return (reader.readDouble(offset)) as P;
     case 23:
+      return (reader.readDouble(offset)) as P;
+    case 24:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1736,6 +1745,16 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> isVoidEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isVoid',
+        value: value,
       ));
     });
   }
@@ -3260,6 +3279,20 @@ extension TransactionHeaderEntityQuerySortBy
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByIsVoid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isVoid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByIsVoidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isVoid', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       sortByLastChangedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastChangedAt', Sort.asc);
@@ -3543,6 +3576,20 @@ extension TransactionHeaderEntityQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByIsVoid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isVoid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByIsVoidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isVoid', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       thenByLastChangedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastChangedAt', Sort.asc);
@@ -3779,6 +3826,13 @@ extension TransactionHeaderEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
+      distinctByIsVoid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isVoid');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
       distinctByLastChangedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastChangedAt');
@@ -3934,6 +3988,13 @@ extension TransactionHeaderEntityQueryProperty on QueryBuilder<
       endDateTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'endDateTime');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, bool, QQueryOperations>
+      isVoidProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isVoid');
     });
   }
 

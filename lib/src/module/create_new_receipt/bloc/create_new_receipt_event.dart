@@ -106,3 +106,13 @@ class OnChangeCustomerShippingAddress extends CreateNewReceiptEvent {
 class OnSuspendTransaction extends CreateNewReceiptEvent {}
 
 class OnCancelTransaction extends CreateNewReceiptEvent {}
+
+class OnLineItemVoid extends CreateNewReceiptEvent {
+  final TransactionLineItemEntity saleLine;
+  OnLineItemVoid({required this.saleLine});
+}
+
+class OnTenderLineVoid extends CreateNewReceiptEvent {
+  final TransactionPaymentLineItemEntity tenderLine;
+  OnTenderLineVoid({required this.tenderLine});
+}

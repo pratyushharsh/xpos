@@ -69,6 +69,8 @@ class CreateNewReceiptBloc
     on<OnChangeCustomerShippingAddress>(_onChangeCustomerShippingAddress);
     on<OnSuspendTransaction>(_onSuspendTransaction);
     on<OnCancelTransaction>(_onCancelTransaction);
+    on<OnLineItemVoid>(_onLineItemVoid);
+    on<OnTenderLineVoid>(_onTenderLineVoid);
   }
 
   void _onInitiateTransaction(OnInitiateNewTransaction event,
@@ -682,5 +684,29 @@ class CreateNewReceiptBloc
     var custAddress = state.customerAddress ?? const CustomerAddress();
     emit(state.copyWith(
         customerAddress: custAddress.copyWith(shippingAddress: event.address)));
+  }
+
+  void _onLineItemVoid(OnLineItemVoid event, Emitter<CreateNewReceiptState> emit) async {
+    emit(state.copyWith(status: CreateNewReceiptStatus.loading));
+    List<TransactionLineItemEntity> newList = [];
+    for (var line in state.lineItem) {
+      if (line == event.saleLine) {
+        line.isVoid = true;
+      }
+      newList.add(line);
+    }
+    emit(state.copyWith(lineItem: newList, status: CreateNewReceiptStatus.success));
+  }
+
+  void _onTenderLineVoid(OnTenderLineVoid event, Emitter<CreateNewReceiptState> emit) async {
+    emit(state.copyWith(status: CreateNewReceiptStatus.loading));
+    List<TransactionPaymentLineItemEntity> newList = [];
+    for (var line in state.tenderLine) {
+      if (line == event.tenderLine) {
+        line.isVoid = true;
+      }
+      newList.add(line);
+    }
+    emit(state.copyWith(tenderLine: newList, status: CreateNewReceiptStatus.success));
   }
 }

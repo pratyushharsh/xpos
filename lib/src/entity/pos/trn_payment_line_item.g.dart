@@ -38,23 +38,33 @@ const TransactionPaymentLineItemEntitySchema = Schema(
       name: r'endDate',
       type: IsarType.dateTime,
     ),
-    r'paymentSeq': PropertySchema(
+    r'isVoid': PropertySchema(
       id: 5,
+      name: r'isVoid',
+      type: IsarType.bool,
+    ),
+    r'paymentSeq': PropertySchema(
+      id: 6,
       name: r'paymentSeq',
       type: IsarType.long,
     ),
     r'tenderId': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'tenderId',
       type: IsarType.string,
     ),
     r'tenderStatusCode': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'tenderStatusCode',
       type: IsarType.string,
     ),
+    r'token': PropertySchema(
+      id: 9,
+      name: r'token',
+      type: IsarType.string,
+    ),
     r'transId': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'transId',
       type: IsarType.long,
     )
@@ -95,6 +105,12 @@ int _transactionPaymentLineItemEntityEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.token;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -109,10 +125,12 @@ void _transactionPaymentLineItemEntitySerialize(
   writer.writeDateTime(offsets[2], object.beginDate);
   writer.writeString(offsets[3], object.currencyId);
   writer.writeDateTime(offsets[4], object.endDate);
-  writer.writeLong(offsets[5], object.paymentSeq);
-  writer.writeString(offsets[6], object.tenderId);
-  writer.writeString(offsets[7], object.tenderStatusCode);
-  writer.writeLong(offsets[8], object.transId);
+  writer.writeBool(offsets[5], object.isVoid);
+  writer.writeLong(offsets[6], object.paymentSeq);
+  writer.writeString(offsets[7], object.tenderId);
+  writer.writeString(offsets[8], object.tenderStatusCode);
+  writer.writeString(offsets[9], object.token);
+  writer.writeLong(offsets[10], object.transId);
 }
 
 TransactionPaymentLineItemEntity _transactionPaymentLineItemEntityDeserialize(
@@ -127,10 +145,12 @@ TransactionPaymentLineItemEntity _transactionPaymentLineItemEntityDeserialize(
     beginDate: reader.readDateTimeOrNull(offsets[2]),
     currencyId: reader.readStringOrNull(offsets[3]),
     endDate: reader.readDateTimeOrNull(offsets[4]),
-    paymentSeq: reader.readLongOrNull(offsets[5]),
-    tenderId: reader.readStringOrNull(offsets[6]),
-    tenderStatusCode: reader.readStringOrNull(offsets[7]),
-    transId: reader.readLongOrNull(offsets[8]),
+    isVoid: reader.readBoolOrNull(offsets[5]),
+    paymentSeq: reader.readLongOrNull(offsets[6]),
+    tenderId: reader.readStringOrNull(offsets[7]),
+    tenderStatusCode: reader.readStringOrNull(offsets[8]),
+    token: reader.readStringOrNull(offsets[9]),
+    transId: reader.readLongOrNull(offsets[10]),
   );
   return object;
 }
@@ -153,12 +173,16 @@ P _transactionPaymentLineItemEntityDeserializeProp<P>(
     case 4:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 5:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
+      return (reader.readStringOrNull(offset)) as P;
+    case 10:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -765,6 +789,38 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     });
   }
 
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> isVoidIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isVoid',
+      ));
+    });
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> isVoidIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isVoid',
+      ));
+    });
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> isVoidEqualTo(bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isVoid',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
@@ -1190,6 +1246,166 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'tenderStatusCode',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tokenIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'token',
+      ));
+    });
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> tokenIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'token',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tokenEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tokenGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tokenLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tokenBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'token',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tokenStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tokenEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+          TransactionPaymentLineItemEntity, QAfterFilterCondition>
+      tokenContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'token',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+          TransactionPaymentLineItemEntity, QAfterFilterCondition>
+      tokenMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'token',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity, QAfterFilterCondition> tokenIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'token',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<
+      TransactionPaymentLineItemEntity,
+      TransactionPaymentLineItemEntity,
+      QAfterFilterCondition> tokenIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'token',
         value: '',
       ));
     });

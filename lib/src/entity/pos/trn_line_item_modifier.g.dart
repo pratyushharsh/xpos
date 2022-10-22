@@ -53,48 +53,53 @@ const TransactionLineItemModifierEntitySchema = Schema(
       name: r'groupDiscountId',
       type: IsarType.string,
     ),
-    r'lineItemModSeq': PropertySchema(
+    r'isVoid': PropertySchema(
       id: 8,
+      name: r'isVoid',
+      type: IsarType.bool,
+    ),
+    r'lineItemModSeq': PropertySchema(
+      id: 9,
       name: r'lineItemModSeq',
       type: IsarType.long,
     ),
     r'lineItemSeq': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'lineItemSeq',
       type: IsarType.long,
     ),
     r'notes': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'notes',
       type: IsarType.string,
     ),
     r'percent': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'percent',
       type: IsarType.double,
     ),
     r'posId': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'posId',
       type: IsarType.long,
     ),
     r'priceModifierReasonCode': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'priceModifierReasonCode',
       type: IsarType.string,
     ),
     r'promotionId': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'promotionId',
       type: IsarType.string,
     ),
     r'storeId': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'storeId',
       type: IsarType.long,
     ),
     r'transSeq': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'transSeq',
       type: IsarType.long,
     )
@@ -176,15 +181,16 @@ void _transactionLineItemModifierEntitySerialize(
   writer.writeString(offsets[5], object.discountReasonCode);
   writer.writeDouble(offsets[6], object.extendedAmount);
   writer.writeString(offsets[7], object.groupDiscountId);
-  writer.writeLong(offsets[8], object.lineItemModSeq);
-  writer.writeLong(offsets[9], object.lineItemSeq);
-  writer.writeString(offsets[10], object.notes);
-  writer.writeDouble(offsets[11], object.percent);
-  writer.writeLong(offsets[12], object.posId);
-  writer.writeString(offsets[13], object.priceModifierReasonCode);
-  writer.writeString(offsets[14], object.promotionId);
-  writer.writeLong(offsets[15], object.storeId);
-  writer.writeLong(offsets[16], object.transSeq);
+  writer.writeBool(offsets[8], object.isVoid);
+  writer.writeLong(offsets[9], object.lineItemModSeq);
+  writer.writeLong(offsets[10], object.lineItemSeq);
+  writer.writeString(offsets[11], object.notes);
+  writer.writeDouble(offsets[12], object.percent);
+  writer.writeLong(offsets[13], object.posId);
+  writer.writeString(offsets[14], object.priceModifierReasonCode);
+  writer.writeString(offsets[15], object.promotionId);
+  writer.writeLong(offsets[16], object.storeId);
+  writer.writeLong(offsets[17], object.transSeq);
 }
 
 TransactionLineItemModifierEntity _transactionLineItemModifierEntityDeserialize(
@@ -202,15 +208,16 @@ TransactionLineItemModifierEntity _transactionLineItemModifierEntityDeserialize(
     discountReasonCode: reader.readStringOrNull(offsets[5]),
     extendedAmount: reader.readDoubleOrNull(offsets[6]) ?? 0,
     groupDiscountId: reader.readStringOrNull(offsets[7]),
-    lineItemModSeq: reader.readLongOrNull(offsets[8]),
-    lineItemSeq: reader.readLongOrNull(offsets[9]),
-    notes: reader.readStringOrNull(offsets[10]),
-    percent: reader.readDoubleOrNull(offsets[11]),
-    posId: reader.readLongOrNull(offsets[12]),
-    priceModifierReasonCode: reader.readStringOrNull(offsets[13]),
-    promotionId: reader.readStringOrNull(offsets[14]),
-    storeId: reader.readLongOrNull(offsets[15]),
-    transSeq: reader.readLongOrNull(offsets[16]),
+    isVoid: reader.readBoolOrNull(offsets[8]),
+    lineItemModSeq: reader.readLongOrNull(offsets[9]),
+    lineItemSeq: reader.readLongOrNull(offsets[10]),
+    notes: reader.readStringOrNull(offsets[11]),
+    percent: reader.readDoubleOrNull(offsets[12]),
+    posId: reader.readLongOrNull(offsets[13]),
+    priceModifierReasonCode: reader.readStringOrNull(offsets[14]),
+    promotionId: reader.readStringOrNull(offsets[15]),
+    storeId: reader.readLongOrNull(offsets[16]),
+    transSeq: reader.readLongOrNull(offsets[17]),
   );
   return object;
 }
@@ -239,22 +246,24 @@ P _transactionLineItemModifierEntityDeserializeProp<P>(
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 9:
       return (reader.readLongOrNull(offset)) as P;
     case 10:
-      return (reader.readStringOrNull(offset)) as P;
-    case 11:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 12:
       return (reader.readLongOrNull(offset)) as P;
-    case 13:
+    case 11:
       return (reader.readStringOrNull(offset)) as P;
+    case 12:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 13:
+      return (reader.readLongOrNull(offset)) as P;
     case 14:
       return (reader.readStringOrNull(offset)) as P;
     case 15:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 16:
+      return (reader.readLongOrNull(offset)) as P;
+    case 17:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1359,6 +1368,38 @@ extension TransactionLineItemModifierEntityQueryFilter on QueryBuilder<
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'groupDiscountId',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionLineItemModifierEntity,
+      TransactionLineItemModifierEntity, QAfterFilterCondition> isVoidIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isVoid',
+      ));
+    });
+  }
+
+  QueryBuilder<
+      TransactionLineItemModifierEntity,
+      TransactionLineItemModifierEntity,
+      QAfterFilterCondition> isVoidIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isVoid',
+      ));
+    });
+  }
+
+  QueryBuilder<
+      TransactionLineItemModifierEntity,
+      TransactionLineItemModifierEntity,
+      QAfterFilterCondition> isVoidEqualTo(bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isVoid',
+        value: value,
       ));
     });
   }

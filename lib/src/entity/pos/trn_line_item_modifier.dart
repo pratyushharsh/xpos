@@ -26,6 +26,7 @@ class TransactionLineItemModifierEntity {
   String? discountCode;
   String? groupDiscountId;
   String? discountReasonCode;
+  bool? isVoid;
 
   // @Backlink(to: 'lineModifiers')
   // final lineItem = IsarLink<TransactionLineItemEntity>();
@@ -48,5 +49,6 @@ class TransactionLineItemModifierEntity {
     this.discountCode,
     this.groupDiscountId,
     this.discountReasonCode,
+    this.isVoid = false,
   });
 }

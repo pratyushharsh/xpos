@@ -12,6 +12,7 @@ import '../../config/constants.dart';
 import '../../config/theme_settings.dart';
 import '../../entity/pos/entity.dart';
 import '../../util/text_input_formatter/widget.dart';
+import '../../widgets/customDialog.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 import '../create_new_receipt/sale_complete_dialog.dart';
@@ -104,6 +105,21 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
                 },
                 selected:
                 selectedType == LineItemModificationType.tax,
+              ),
+              DialogButton(
+                label: "Void",
+                onClick: () {
+                  yesOrCancelDialog(
+                    context,
+                    "Void Item",
+                    content: "Are you sure you want to void this item?",
+                  ).then((value) {
+                    if (value != null && value) {
+                      Navigator.of(context).pop(OnLineItemVoid(saleLine: widget.lineItem));
+                    }
+                  });
+                },
+                selected: false,
               ),
             ],
           ),

@@ -241,15 +241,28 @@ class OrderLine extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraint) {
       if (constraint.maxWidth < 800) {
         return Column(
-          children: order.lineItems
-              .map((e) => InkWell(
-                    onTap: () {},
-                    child: NewLineItem(
-                      saleLine: e,
-                      productModel: productMap[e.itemId],
-                    ),
-                  ))
-              .toList(),
+          children: [
+            const SizedBox(height: 8,),
+            const Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: LineItemHeader(),
+            ),
+            const Divider(),
+            ...order.lineItems
+                .map((e) => InkWell(
+                      onTap: () {},
+                      child: Column(
+                        children: [
+                          NewLineItem(
+                            saleLine: e,
+                            productModel: productMap[e.itemId],
+                          ),
+                          const Divider()
+                        ],
+                      ),
+                    ))
+                .toList()
+          ],
         );
       } else {
         return Column(
@@ -260,7 +273,9 @@ class OrderLine extends StatelessWidget {
                         children: [
                           const Divider(height: 0),
                           OrderItemDetailDisplay(
-                              entity: e, product: productMap[e.itemId], orderLocale: order.storeLocale),
+                              entity: e,
+                              product: productMap[e.itemId],
+                              orderLocale: order.storeLocale),
                           const Divider(height: 0),
                         ],
                       ),
@@ -275,7 +290,8 @@ class OrderItemDetailDisplay extends StatelessWidget {
   final TransactionLineItemEntity entity;
   final ProductEntity? product;
   final String orderLocale;
-  const OrderItemDetailDisplay({Key? key, required this.entity, this.product, required this.orderLocale})
+  const OrderItemDetailDisplay(
+      {Key? key, required this.entity, this.product, required this.orderLocale})
       : super(key: key);
 
   @override
@@ -338,7 +354,8 @@ class OrderItemDetailDisplay extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text("${NumberFormat.simpleCurrency(locale: orderLocale, name: entity.currency!).format(entity.unitPrice)} * ${entity.quantity}PCS"),
+                Text(
+                    "${NumberFormat.simpleCurrency(locale: orderLocale, name: entity.currency!).format(entity.unitPrice)} * ${entity.quantity}PCS"),
                 ...entity.lineModifiers
                     .map((e) =>
                         Text(e.description ?? e.discountCode ?? "Discount"))
@@ -351,9 +368,13 @@ class OrderItemDetailDisplay extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: Column(
                 children: [
-                  Text(NumberFormat.simpleCurrency(locale: orderLocale, name: entity.currency!).format(entity.grossAmount)),
+                  Text(NumberFormat.simpleCurrency(
+                          locale: orderLocale, name: entity.currency!)
+                      .format(entity.grossAmount)),
                   ...entity.lineModifiers
-                      .map((e) => Text(NumberFormat.simpleCurrency(locale: orderLocale, name: entity.currency!).format(e.amount)))
+                      .map((e) => Text(NumberFormat.simpleCurrency(
+                              locale: orderLocale, name: entity.currency!)
+                          .format(e.amount)))
                       .toList(),
                 ],
               ),
@@ -433,7 +454,10 @@ class OrderDetailSummary extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Sub Total"),
-                      Text(NumberFormat.simpleCurrency(locale: order.storeLocale, name: order.storeCurrency).format(order.subtotal)),
+                      Text(NumberFormat.simpleCurrency(
+                              locale: order.storeLocale,
+                              name: order.storeCurrency)
+                          .format(order.subtotal)),
                     ]),
               ),
               const Divider(),
@@ -444,7 +468,10 @@ class OrderDetailSummary extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Tax Total"),
-                      Text(NumberFormat.simpleCurrency(locale: order.storeLocale, name: order.storeCurrency).format(order.taxTotal)),
+                      Text(NumberFormat.simpleCurrency(
+                              locale: order.storeLocale,
+                              name: order.storeCurrency)
+                          .format(order.taxTotal)),
                     ]),
               ),
               Divider(),
@@ -455,7 +482,10 @@ class OrderDetailSummary extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Discount Total"),
-                      Text(NumberFormat.simpleCurrency(locale: order.storeLocale, name: order.storeCurrency).format(order.discountTotal)),
+                      Text(NumberFormat.simpleCurrency(
+                              locale: order.storeLocale,
+                              name: order.storeCurrency)
+                          .format(order.discountTotal)),
                     ]),
               ),
               Divider(),
@@ -466,7 +496,10 @@ class OrderDetailSummary extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Grand Total"),
-                      Text(NumberFormat.simpleCurrency(locale: order.storeLocale, name: order.storeCurrency).format(order.total)),
+                      Text(NumberFormat.simpleCurrency(
+                              locale: order.storeLocale,
+                              name: order.storeCurrency)
+                          .format(order.total)),
                     ]),
               ),
               const Divider(),
