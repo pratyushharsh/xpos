@@ -63,7 +63,7 @@ class InvoiceConfig {
       case 'qtyuom':
         return entity.lineItems
             .fold<double>(0.00,
-                (previousValue, element) => previousValue + element.quantity!)
+                (previousValue, element) => previousValue + (!element.isVoid ? element.quantity! : 0))
             .toString();
       case 'tax':
         return NumberFormat.simpleCurrency(locale: entity.storeLocale, name: entity.storeCurrency)
@@ -107,7 +107,7 @@ class InvoiceConfig {
       List<TransactionLineItemEntity> entity) {
     Map<String, TaxSummary> gstTaxSummary = {};
     for (var item in entity) {
-      if (item.taxAmount == 0 || item.hsn == null) {
+      if (item.taxAmount == 0 || item.hsn == null || item.isVoid) {
         continue;
       }
 

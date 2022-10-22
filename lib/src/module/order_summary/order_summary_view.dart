@@ -251,7 +251,7 @@ class OrderLine extends StatelessWidget {
             ...order.lineItems
                 .map((e) => InkWell(
                       onTap: () {},
-                      child: Column(
+                      child: !e.isVoid ? Column(
                         children: [
                           NewLineItem(
                             saleLine: e,
@@ -259,7 +259,7 @@ class OrderLine extends StatelessWidget {
                           ),
                           const Divider()
                         ],
-                      ),
+                      ) : Container(),
                     ))
                 .toList()
           ],
@@ -267,7 +267,7 @@ class OrderLine extends StatelessWidget {
       } else {
         return Column(
             children: order.lineItems
-                .map((e) => InkWell(
+                .map((e) => !e.isVoid ? InkWell(
                       onTap: () {},
                       child: Column(
                         children: [
@@ -279,7 +279,7 @@ class OrderLine extends StatelessWidget {
                           const Divider(height: 0),
                         ],
                       ),
-                    ))
+                    ) : Container())
                 .toList());
       }
     });

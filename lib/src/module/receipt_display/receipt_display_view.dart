@@ -495,7 +495,7 @@ class ReceiptLineItem extends StatelessWidget {
               painter: DrawDottedHorizontalLine(),
               size: Size(MediaQuery.of(context).size.width, 0),
             ),
-            ...state.lineItems!.map((e) => buildLineDetail(e)).toList()
+            ...state.lineItems!.where((element) => !element.isVoid).map((e) => buildLineDetail(e)).toList()
           ],
         );
       },

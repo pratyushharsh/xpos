@@ -17,7 +17,7 @@ class TransactionPaymentLineItemEntity {
   String? tenderStatusCode;
   String? authCode;
   String? token;
-  bool? isVoid;
+  bool isVoid;
 
   TransactionPaymentLineItemEntity(
       {

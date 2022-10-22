@@ -145,7 +145,7 @@ TransactionPaymentLineItemEntity _transactionPaymentLineItemEntityDeserialize(
     beginDate: reader.readDateTimeOrNull(offsets[2]),
     currencyId: reader.readStringOrNull(offsets[3]),
     endDate: reader.readDateTimeOrNull(offsets[4]),
-    isVoid: reader.readBoolOrNull(offsets[5]),
+    isVoid: reader.readBoolOrNull(offsets[5]) ?? false,
     paymentSeq: reader.readLongOrNull(offsets[6]),
     tenderId: reader.readStringOrNull(offsets[7]),
     tenderStatusCode: reader.readStringOrNull(offsets[8]),
@@ -173,7 +173,7 @@ P _transactionPaymentLineItemEntityDeserializeProp<P>(
     case 4:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 5:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 6:
       return (reader.readLongOrNull(offset)) as P;
     case 7:
@@ -789,30 +789,10 @@ extension TransactionPaymentLineItemEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity, QAfterFilterCondition> isVoidIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'isVoid',
-      ));
-    });
-  }
-
   QueryBuilder<
       TransactionPaymentLineItemEntity,
       TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> isVoidIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'isVoid',
-      ));
-    });
-  }
-
-  QueryBuilder<
-      TransactionPaymentLineItemEntity,
-      TransactionPaymentLineItemEntity,
-      QAfterFilterCondition> isVoidEqualTo(bool? value) {
+      QAfterFilterCondition> isVoidEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isVoid',

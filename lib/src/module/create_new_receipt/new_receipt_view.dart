@@ -821,6 +821,12 @@ class NewReceiptSummaryWidget extends StatelessWidget {
         return Column(
           children: [
             RetailSummaryDetailRow(
+              title: "Total Qty",
+              value: state.items.toString(),
+              textStyle: const TextStyle(
+                  fontWeight: FontWeight.w600, color: Colors.black54),
+            ),
+            RetailSummaryDetailRow(
               title: "Sub Total",
               value: getCurrencyFormatter(context).format(state.subTotal),
               textStyle: const TextStyle(

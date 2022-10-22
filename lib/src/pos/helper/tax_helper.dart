@@ -57,7 +57,7 @@ class TaxHelper {
 
   double calculateTransactionTaxAmount(TransactionHeaderEntity transaction) {
     return transaction.lineItems
-        .fold(0.00, (acc, lineItem) => acc + calculateTaxAmount(lineItem));
+        .fold(0.00, (acc, lineItem) => acc + (!lineItem.isVoid ? calculateTaxAmount(lineItem) : 0.0));
   }
 
   List<TransactionLineItemTaxModifier>

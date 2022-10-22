@@ -13,7 +13,7 @@ class TimerWidget extends StatefulWidget {
 class _TimerWidgetState extends State<TimerWidget> {
 
   late DateTime _startTime;
-  final DateFormat _format = DateFormat.EEEE('en_US');
+  final DateFormat _format = DateFormat.Hms();
   late Timer _timer;
 
   @override
