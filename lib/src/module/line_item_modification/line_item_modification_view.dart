@@ -14,6 +14,7 @@ import '../../entity/pos/entity.dart';
 import '../../util/text_input_formatter/widget.dart';
 import '../../widgets/customDialog.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_image.dart';
 import '../../widgets/custom_text_field.dart';
 import '../create_new_receipt/sale_complete_dialog.dart';
 import 'line_item_tax_modification.dart';
@@ -73,8 +74,7 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
                     selectedType = LineItemModificationType.price;
                   });
                 },
-                selected:
-                selectedType == LineItemModificationType.price,
+                selected: selectedType == LineItemModificationType.price,
               ),
               DialogButton(
                 label: "Quantity",
@@ -83,8 +83,7 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
                     selectedType = LineItemModificationType.quantity;
                   });
                 },
-                selected:
-                selectedType == LineItemModificationType.quantity,
+                selected: selectedType == LineItemModificationType.quantity,
               ),
               DialogButton(
                 label: "Discount",
@@ -93,8 +92,7 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
                     selectedType = LineItemModificationType.discount;
                   });
                 },
-                selected:
-                selectedType == LineItemModificationType.discount,
+                selected: selectedType == LineItemModificationType.discount,
               ),
               DialogButton(
                 label: "Tax",
@@ -103,8 +101,7 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
                     selectedType = LineItemModificationType.tax;
                   });
                 },
-                selected:
-                selectedType == LineItemModificationType.tax,
+                selected: selectedType == LineItemModificationType.tax,
               ),
               DialogButton(
                 label: "Void",
@@ -115,7 +112,8 @@ class _LineItemModificationViewState extends State<LineItemModificationView> {
                     content: "Are you sure you want to void this item?",
                   ).then((value) {
                     if (value != null && value) {
-                      Navigator.of(context).pop(OnLineItemVoid(saleLine: widget.lineItem));
+                      Navigator.of(context)
+                          .pop(OnLineItemVoid(saleLine: widget.lineItem));
                     }
                   });
                 },
@@ -142,16 +140,11 @@ class ModifyLineItemViewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       (productModel != null && productModel!.imageUrl.isNotEmpty)
-          ? Image.file(
-              File(Constants.baseImagePath + productModel!.imageUrl[0]),
-              fit: BoxFit.cover,
+          ? CustomImage(
+              url: productModel!.imageUrl[0],
               height: 100,
-              width: 100, errorBuilder: (context, obj, trace) {
-              return const SizedBox(
-                height: 100,
-                width: 100,
-              );
-            })
+              width: 100,
+            )
           : Image.network(
               "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
               fit: BoxFit.cover,
@@ -477,22 +470,22 @@ class _LineItemDiscountModifyViewState
               Expanded(
                 child: AcceptButton(
                   label: "Apply Discount Percentage",
-                  onPressed: discountPercentage >= 0 &&
-                          discountPercentage <= 100
-                      ? () {
-                          Navigator.pop(
-                            context,
-                            OnApplyLineItemDiscountPercent(
-                              saleLine:
-                                  BlocProvider.of<LineItemModificationBloc>(
-                                          context)
-                                      .lineItem,
-                              discountPercent: discountPercentage,
-                              reason: "Discount Percentage Changed",
-                            ),
-                          );
-                        }
-                      : null,
+                  onPressed:
+                      discountPercentage >= 0 && discountPercentage <= 100
+                          ? () {
+                              Navigator.pop(
+                                context,
+                                OnApplyLineItemDiscountPercent(
+                                  saleLine:
+                                      BlocProvider.of<LineItemModificationBloc>(
+                                              context)
+                                          .lineItem,
+                                  discountPercent: discountPercentage,
+                                  reason: "Discount Percentage Changed",
+                                ),
+                              );
+                            }
+                          : null,
                 ),
               ),
           ],

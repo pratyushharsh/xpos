@@ -18,6 +18,7 @@ import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 import '../../entity/pos/address.dart';
 import '../../entity/pos/entity.dart';
 import '../../widgets/customDialog.dart';
+import '../../widgets/custom_image.dart';
 import '../../widgets/desktop_pop_up.dart';
 import '../business/business_view.dart';
 import '../customer_search/customer_search_widget.dart';
@@ -529,17 +530,9 @@ class NewLineItem extends StatelessWidget {
                 decoration: BoxDecoration(border: Border.all(width: 1)),
                 child:
                     (productModel != null && productModel!.imageUrl.isNotEmpty)
-                        ? Image.file(
-                            File(Constants.baseImagePath +
-                                productModel!.imageUrl[0]),
-                            fit: BoxFit.cover,
-                            height: 70,
-                            width: 70, errorBuilder: (context, obj, trace) {
-                            return const SizedBox(
-                              height: 70,
-                              width: 70,
-                            );
-                          })
+                        ? CustomImage(
+                            url: productModel!.imageUrl[0],
+                          )
                         : Image.network(
                             "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
                             fit: BoxFit.cover,

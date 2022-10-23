@@ -12,6 +12,7 @@ import '../../config/constants.dart';
 import '../../config/route_config.dart';
 import '../../config/theme_settings.dart';
 import '../../widgets/appbar_leading.dart';
+import '../../widgets/custom_image.dart';
 import '../create_new_receipt/new_receipt_view.dart';
 import 'bloc/order_summary_bloc.dart';
 
@@ -242,7 +243,9 @@ class OrderLine extends StatelessWidget {
       if (constraint.maxWidth < 800) {
         return Column(
           children: [
-            const SizedBox(height: 8,),
+            const SizedBox(
+              height: 8,
+            ),
             const Padding(
               padding: EdgeInsets.only(right: 8.0),
               child: LineItemHeader(),
@@ -251,15 +254,17 @@ class OrderLine extends StatelessWidget {
             ...order.lineItems
                 .map((e) => InkWell(
                       onTap: () {},
-                      child: !e.isVoid ? Column(
-                        children: [
-                          NewLineItem(
-                            saleLine: e,
-                            productModel: productMap[e.itemId],
-                          ),
-                          const Divider()
-                        ],
-                      ) : Container(),
+                      child: !e.isVoid
+                          ? Column(
+                              children: [
+                                NewLineItem(
+                                  saleLine: e,
+                                  productModel: productMap[e.itemId],
+                                ),
+                                const Divider()
+                              ],
+                            )
+                          : Container(),
                     ))
                 .toList()
           ],
@@ -267,19 +272,21 @@ class OrderLine extends StatelessWidget {
       } else {
         return Column(
             children: order.lineItems
-                .map((e) => !e.isVoid ? InkWell(
-                      onTap: () {},
-                      child: Column(
-                        children: [
-                          const Divider(height: 0),
-                          OrderItemDetailDisplay(
-                              entity: e,
-                              product: productMap[e.itemId],
-                              orderLocale: order.storeLocale),
-                          const Divider(height: 0),
-                        ],
-                      ),
-                    ) : Container())
+                .map((e) => !e.isVoid
+                    ? InkWell(
+                        onTap: () {},
+                        child: Column(
+                          children: [
+                            const Divider(height: 0),
+                            OrderItemDetailDisplay(
+                                entity: e,
+                                product: productMap[e.itemId],
+                                orderLocale: order.storeLocale),
+                            const Divider(height: 0),
+                          ],
+                        ),
+                      )
+                    : Container())
                 .toList());
       }
     });
@@ -307,16 +314,11 @@ class OrderItemDetailDisplay extends StatelessWidget {
               children: [
                 Container(
                   child: (product != null && product!.imageUrl.isNotEmpty)
-                      ? Image.file(
-                          File(Constants.baseImagePath + product!.imageUrl[0]),
-                          fit: BoxFit.cover,
+                      ? CustomImage(
+                          url: product!.imageUrl[0],
                           height: 80,
-                          width: 80, errorBuilder: (context, obj, trace) {
-                          return const SizedBox(
-                            height: 80,
-                            width: 80,
-                          );
-                        })
+                          width: 80,
+                        )
                       : Image.network(
                           "https://cdn.iconscout.com/icon/premium/png-128-thumb/no-image-2840056-2359564.png",
                           fit: BoxFit.cover,

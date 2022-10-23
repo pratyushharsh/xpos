@@ -232,7 +232,7 @@ class SyncConfigRepository {
                   ? e[10]
                       .toString()
                       .split(";")
-                      .where((element) => element.isNotEmpty)
+                      .where((element) => element.isNotEmpty).map((e) => 'file:/$e')
                       .toList()
                   : [],
               enable: true,

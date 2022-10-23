@@ -19,6 +19,7 @@ import '../../entity/config/code_value_entity.dart';
 import '../../entity/pos/tax_group_entity.dart';
 import '../../repositories/tax_repository.dart';
 import '../../widgets/code_value_dropdown.dart';
+import '../../widgets/custom_image.dart';
 
 enum NewItemScreenState { editItem, createItem }
 
@@ -176,7 +177,8 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                 code: state.existingProduct!.uom,
                 description: state.existingProduct!.uom);
             // @TODO
-            _taxGroup = RepositoryProvider.of<TaxRepository>(context).getTaxGroupId(state.existingProduct!.taxGroupId);
+            _taxGroup = RepositoryProvider.of<TaxRepository>(context)
+                .getTaxGroupId(state.existingProduct!.taxGroupId);
             _productId = state.existingProduct!.skuCode ??
                 state.existingProduct!.productId;
             _productNameController.text = state.existingProduct!.displayName;
@@ -350,7 +352,9 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                                       itemAsString: (TaxGroupEntity? value) =>
                                           value?.name ?? "",
                                       asyncItems: (filter) async {
-                                        return await RepositoryProvider.of<TaxRepository>(context).getAllTaxGroups();
+                                        return await RepositoryProvider.of<
+                                                TaxRepository>(context)
+                                            .getAllTaxGroups();
                                       },
                                       onChanged: _onTaxGroupChange,
                                       validator: NewProductFieldValidator
@@ -481,7 +485,7 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
           height: 400,
           width: 400,
           child: selectedUrl.isNotEmpty
-              ? Image.file(File('${Constants.baseImagePath}/$selectedUrl'))
+              ? CustomImage(url: selectedUrl)
               : Container(),
         ),
         SizedBox(
@@ -495,8 +499,8 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
                           selectedUrl = e;
                         });
                       },
-                      child: Image.file(
-                        File('${Constants.baseImagePath}/$e'),
+                      child: CustomImage(
+                        url: e,
                         height: 100,
                         width: 100,
                       ),
@@ -511,9 +515,7 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
   Widget _buildVertical() {
     return Column(
       children: [
-        selectedUrl.isNotEmpty
-            ? Image.file(File('${Constants.baseImagePath}/$selectedUrl'))
-            : Container(),
+        selectedUrl.isNotEmpty ? CustomImage(url: selectedUrl) : Container(),
         Wrap(
           direction: Axis.horizontal,
           children: widget.imageUrl
@@ -523,8 +525,8 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
                         selectedUrl = e;
                       });
                     },
-                    child: Image.file(
-                      File('${Constants.baseImagePath}/$e'),
+                    child: CustomImage(
+                      url: e,
                       height: 60,
                       width: 50,
                     ),

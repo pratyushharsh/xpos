@@ -13,6 +13,7 @@ import '../../config/tender_config.dart';
 import '../../config/theme_settings.dart';
 import '../../util/text_input_formatter/money_editing_controller.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_image.dart';
 import '../../widgets/desktop_pop_up.dart';
 import '../../widgets/keypad_overlay/keypad_overlay.dart';
 import '../../widgets/timer.dart';
@@ -213,17 +214,10 @@ class SearchItemProductsListDesktop extends StatelessWidget {
                         child: Row(
                           children: [
                             p.imageUrl.isNotEmpty
-                                ? Image.file(
-                                    File(Constants.baseImagePath +
-                                        p.imageUrl[0]),
-                                    height: 50,
+                                ? CustomImage(
+                                    url: p.imageUrl[0],
                                     width: 50,
-                                    errorBuilder: (context, obj, trace) {
-                                      return const SizedBox(
-                                        height: 50,
-                                        width: 50,
-                                      );
-                                    },
+                                    height: 50,
                                   )
                                 : const SizedBox(
                                     height: 50,

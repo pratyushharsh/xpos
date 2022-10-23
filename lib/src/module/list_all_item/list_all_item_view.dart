@@ -11,6 +11,7 @@ import 'package:receipt_generator/src/widgets/my_loader.dart';
 
 import '../../config/constants.dart';
 import '../../entity/pos/entity.dart';
+import '../../widgets/custom_image.dart';
 import '../create_new_item/add_new_item_view.dart';
 
 class WidgetNoItems extends StatelessWidget {
@@ -136,11 +137,8 @@ class ItemCard extends StatelessWidget {
                 height: 100,
                 width: 100,
                 child: product.imageUrl.isNotEmpty
-                    ? Image.file(
-                        File(
-                            '${Constants.baseImagePath}/${product.imageUrl[0]}'),
-                        cacheHeight: 200,
-                        cacheWidth: 200,
+                    ? CustomImage(
+                        url: product.imageUrl[0],
                       )
                     : Container(),
               ),
