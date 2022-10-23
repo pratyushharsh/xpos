@@ -312,7 +312,16 @@ class CreateNewReceiptBloc
 
   void _onCancelTransaction(
       OnCancelTransaction event, Emitter<CreateNewReceiptState> emit) async {
+
+    // Check if any tender not voided is present.
+    if (state.tenderLine.any((element) => !element.isVoid)) {
+      errorNotificationBloc.add(ErrorEvent("Please Void all Tender to cancel the transaction."));
+      return;
+    }
+
+
     try {
+
       var txn = await _manageOrder(TransactionStatus.cancelled);
       emit(state.copyWith(
           transactionHeader: txn,
