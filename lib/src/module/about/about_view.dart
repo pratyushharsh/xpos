@@ -24,9 +24,9 @@ class AboutView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: AppColor.background,
-        child: SafeArea(
-            child: Scaffold(
+      color: AppColor.background,
+      child: SafeArea(
+        child: Scaffold(
           backgroundColor: AppColor.background,
           body: Stack(
             fit: StackFit.expand,
@@ -45,7 +45,9 @@ class AboutView extends StatelessWidget {
               ),
             ],
           ),
-        )));
+        ),
+      ),
+    );
   }
 }
 
@@ -54,13 +56,15 @@ class AboutScreenComponentList extends StatelessWidget {
 
   Future<String> calculateSizeOfDirectory(BuildContext context) async {
     final appDoc = await getApplicationSupportDirectory();
+    final temDir = await getTemporaryDirectory();
     String dirPath = appDoc.path;
     int fileNum = 0;
     int totalSize = 0;
     var dir = Directory(dirPath);
     try {
       if (dir.existsSync()) {
-        dir.listSync(recursive: true, followLinks: false)
+        dir
+            .listSync(recursive: true, followLinks: false)
             .forEach((FileSystemEntity entity) {
           if (entity is File) {
             fileNum++;
@@ -71,6 +75,23 @@ class AboutScreenComponentList extends StatelessWidget {
     } catch (e) {
       print(e.toString());
     }
+
+    var tmpDiPath = Directory(temDir.path);
+    try {
+      if (tmpDiPath.existsSync()) {
+        tmpDiPath
+            .listSync(recursive: true, followLinks: false)
+            .forEach((FileSystemEntity entity) {
+          if (entity is File) {
+            fileNum++;
+            totalSize += entity.lengthSync();
+          }
+        });
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+
     // return {'fileNum': fileNum, 'size': totalSize};
     return '${(totalSize / (1024 * 1024)).toStringAsFixed(2)} MB';
   }
@@ -126,7 +147,8 @@ class AboutScreenComponentList extends StatelessWidget {
 class InfoWidget extends StatelessWidget {
   final String label;
   final Future<String> Function(BuildContext context) future;
-  const InfoWidget({Key? key, required this.label, required this.future}) : super(key: key);
+  const InfoWidget({Key? key, required this.label, required this.future})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +183,7 @@ class InfoWidget extends StatelessWidget {
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: AppColor.primary),
-              );;
+              );
             }
           },
         ),

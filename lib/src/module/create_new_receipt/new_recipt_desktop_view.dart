@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
@@ -12,6 +13,7 @@ import '../../config/constants.dart';
 import '../../config/tender_config.dart';
 import '../../config/theme_settings.dart';
 import '../../util/text_input_formatter/money_editing_controller.dart';
+import '../../widgets/customDialog.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_image.dart';
 import '../../widgets/desktop_pop_up.dart';
@@ -99,14 +101,6 @@ class NewReceiptDesktopView extends StatelessWidget {
                         )
                       ],
                     ),
-                    // const Positioned(
-                    //   child: Draggable(
-                    //     feedback: PosActionBar(),
-                    //     child: PosActionBar(),
-                    //   ),
-                    //   top: 0,
-                    //   left: 650,
-                    // )
                   ],
                 );
               },
@@ -308,8 +302,8 @@ class _TenderDisplayDesktopState extends State<TenderDisplayDesktop> {
   @override
   void initState() {
     super.initState();
-    tenderController = MoneyEditingController(
-        formatter: getCurrencyFormatter(context));
+    tenderController =
+        MoneyEditingController(formatter: getCurrencyFormatter(context));
     tenderFocusNode = FocusNode();
   }
 
@@ -534,8 +528,7 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
                     child: RetailSummaryDetailRow(
                       mainAxisAlignment: MainAxisAlignment.end,
                       title: "Tax:\t",
-                      value: getCurrencyFormatter(context)
-                          .format(state.tax),
+                      value: getCurrencyFormatter(context).format(state.tax),
                       textStyle: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.white),
                     ),
@@ -544,8 +537,8 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
                     child: RetailSummaryDetailRow(
                       mainAxisAlignment: MainAxisAlignment.end,
                       title: "Sub Total:\t",
-                      value: getCurrencyFormatter(context)
-                          .format(state.subTotal),
+                      value:
+                          getCurrencyFormatter(context).format(state.subTotal),
                       textStyle: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.white),
                     ),
@@ -555,9 +548,7 @@ class NewReceiptSummaryDesktopWidget extends StatelessWidget {
             ),
             RetailSummaryDetailRow(
               title: "Amount Due",
-              value:
-              getCurrencyFormatter(context)
-                      .format(state.amountDue),
+              value: getCurrencyFormatter(context).format(state.amountDue),
               textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
@@ -644,82 +635,136 @@ class ActionDesktopButtonBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 60,
-      decoration: const BoxDecoration(
-        border: Border(right: BorderSide(color: Colors.black26)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Tooltip(
-            message: "Suspend Order",
-            child: IconButton(
-              icon: const Icon(Icons.cancel_presentation_outlined),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text("Confirmation"),
-                      content: const Text(
-                          "Would you like to suspend the transaction?"),
-                      actions: [
-                        SizedBox(
-                          width: 100,
-                          child: RejectButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            label: 'Cancel',
-                          ),
-                        ),
-                        SizedBox(
-                          width: 100,
-                          child: AcceptButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                            },
-                            label: 'OK',
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ).then((value) => {
-                  if (value != null && value)
-                    {BlocProvider.of<CreateNewReceiptBloc>(context)
-                        .add(OnSuspendTransaction())}
-                });
-              },
-            ),
+    return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
+      builder: (context, state) {
+        return Container(
+          width: 75,
+          decoration: const BoxDecoration(
+            border: Border(right: BorderSide(color: Colors.black26)),
           ),
-          Tooltip(
-            message: "Return Item",
-            child: IconButton(
-              icon: const Icon(Icons.assignment_return_outlined),
-              onPressed: () {
-                showTransitiveAppPopUp(
-                  title: "Return Order",
-                  child: ReturnOrderView(
-                    currentOrderLineItem: BlocProvider.of<CreateNewReceiptBloc>(context).state.lineItem,
-                  ),
-                  context: context,
-                ).then((value) => {
-                      if (value != null)
-                        {
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DesktopActionBarButton(
+                icon: const Icon(Icons.cancel_presentation_outlined),
+                onPressed: () {
+                  yesOrCancelDialog(
+                    context,
+                    "Confirmation",
+                    content: "Would you like to suspend the transaction?",
+                  ).then((value) => {
+                        if (value != null && value)
+                          {
+                            BlocProvider.of<CreateNewReceiptBloc>(context)
+                                .add(OnSuspendTransaction())
+                          }
+                      });
+                },
+                label: "Suspend",
+                tooltip: "Suspend Transaction",
+              ),
+              DesktopActionBarButton(
+                icon: const Icon(Icons.assignment_return_outlined),
+                onPressed: () {
+                  showTransitiveAppPopUp(
+                    title: "Return Order",
+                    child: ReturnOrderView(
+                      currentOrderLineItem:
                           BlocProvider.of<CreateNewReceiptBloc>(context)
-                              .add(OnReturnLineItemEvent(value))
-                        }
-                    });
-              },
+                              .state
+                              .lineItem,
+                    ),
+                    context: context,
+                  ).then((value) => {
+                        if (value != null)
+                          {
+                            BlocProvider.of<CreateNewReceiptBloc>(context)
+                                .add(OnReturnLineItemEvent(value))
+                          }
+                      });
+                },
+                label: "Return",
+                tooltip: "Return Item",
+                borderTop: false,
+              ),
+              if (state.customer != null)
+                DesktopActionBarButton(
+                  icon: const FaIcon(
+                    FontAwesomeIcons.moneyBills,
+                  ),
+                  onPressed: () {
+                    yesOrCancelDialog(
+                      context,
+                      "Confirmation",
+                      content:
+                          "Would you accept partial payment on this transaction?",
+                    ).then((value) => {
+                          if (value != null && value)
+                            {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnPartialPayment())
+                            }
+                        });
+                  },
+                  label: "Partial Pay",
+                  tooltip: "Partial Payment Transaction",
+                  borderTop: false,
+                ),
+              IconButton(
+                icon: const Icon(Icons.settings_accessibility),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class DesktopActionBarButton extends StatelessWidget {
+  final void Function() onPressed;
+  final String? tooltip;
+  final String label;
+  final Widget icon;
+  final bool borderTop;
+  final bool borderBottom;
+  const DesktopActionBarButton(
+      {Key? key,
+      required this.onPressed,
+      this.tooltip,
+      required this.label,
+      required this.icon,
+      this.borderTop = true,
+      this.borderBottom = true})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip ?? label,
+      child: InkWell(
+        onTap: onPressed,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+          decoration: BoxDecoration(
+            border: Border(
+              top: borderTop
+                  ? const BorderSide(color: Colors.black26)
+                  : BorderSide.none,
+              bottom: borderBottom
+                  ? const BorderSide(color: Colors.black26)
+                  : BorderSide.none,
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.settings_accessibility),
-            onPressed: () {},
+          width: double.infinity,
+          child: Column(
+            children: [
+              icon,
+              Text(label),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

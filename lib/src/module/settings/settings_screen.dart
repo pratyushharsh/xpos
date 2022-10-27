@@ -162,6 +162,13 @@ class SettingsScreen extends StatelessWidget {
                             .add(LoadSampleData(fullImport: true));
                       },
                     ),
+                    SettingsItem(
+                      text: "Export Data",
+                      onTap: () {
+                        BlocProvider.of<BackgroundSyncBloc>(context)
+                            .add(ExportDataEvent());
+                      },
+                    ),
                     SettingsItem(text: "FAQ and Videos", onTap: () {}),
                     SettingsItem(text: "Contact us", onTap: () {}),
                     SettingsItem(text: "About", onTap: () {
@@ -409,7 +416,7 @@ class _SwitchBusinessAccountWidgetState
   Widget build(BuildContext context) {
     AuthenticationState state =
         BlocProvider.of<AuthenticationBloc>(context).state;
-    String rtlLocId = '${state.store!.rtlLocId ?? ''}';
+    String rtlLocId = '${state.store!.rtlLocId}';
 
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) {

@@ -23,3 +23,5 @@ class LoadSampleData extends BackgroundSyncEvent {
 
   LoadSampleData({this.fullImport = false});
 }
+
+class ExportDataEvent extends BackgroundSyncEvent {}

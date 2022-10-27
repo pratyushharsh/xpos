@@ -31,39 +31,50 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
       final input = File(event.path).openRead();
       final fields = await input
           .transform(utf8.decoder)
-          .transform(const CsvToListConverter(shouldParseNumbers: false, eol: '\n'))
+          .transform(
+              const CsvToListConverter(shouldParseNumbers: false, eol: '\n'))
           .toList();
+
+      log.info("Total Records to process: ${fields.length}");
 
       var resp = await db.writeTxn(() async {
         for (var i = 1; i < fields.length; i++) {
           var e = fields[i];
 
           var productId = e[0].toString();
-          int? seq;
-          if (productId.isEmpty) {
-            seq = (await sequenceRepository.getNextSequence(SequenceType.item))
-                .nextSeq;
-            productId = 'SKU$seq';
-          }
 
           var entity = ProductEntity(
-            displayName: e[1].toString(),
-            description: e[2].toString(),
-            listPrice:
-                e[3].toString().isNotEmpty ? double.parse(e[3].toString()) : 9999999.00,
-            salePrice:
-                e[4].toString().isNotEmpty ? double.parse(e[3].toString()) : 9999999.00,
-            uom: e[5].toString(),
-            brand: e[6].toString(),
-            skuCode: e[7].toString(),
-            hsn: e[8].toString(),
-            taxGroupId: e[9].toString(),
-            imageUrl: e[10].toString().isNotEmpty ? e[10].toString().split(";").where((element) => element.isNotEmpty).toList() : [],
+            productId: productId,
+            category: [e[1].toString(), ...e[2].toString().split(",").map((e) => e).toList()],
+            displayName: e[3].toString(),
+            description: e[4].toString(),
+            listPrice: e[5].toString().isNotEmpty
+                ? double.parse(e[5].toString())
+                : 9999999.00,
+            salePrice: e[6].toString().isNotEmpty
+                ? double.parse(e[6].toString())
+                : 9999999.00,
+            uom: e[7].toString(),
+            brand: e[8],
+            skuCode: e[9].toString(),
+            hsn: e[11],
+            taxGroupId: e[11],
+            imageUrl: e[12].toString().isNotEmpty
+                ? e[12]
+                    .toString()
+                    .split(",")
+                    .where((element) => element.isNotEmpty)
+                    .map((e) {
+                    if (e.startsWith("http") || e.startsWith("https")) {
+                      return e;
+                    } else {
+                      return 'file:/$e';
+                    }
+                  }).toList()
+                : [],
             enable: true,
-            productId: productId.toString(),
             storeId: auth.state.store!.rtlLocId,
             createTime: DateTime.now(),
-            id: seq,
           );
           await db.productEntitys.put(entity);
         }

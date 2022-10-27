@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,7 @@ class AllProductsList extends StatelessWidget {
           right: 10,
           child: OpenContainer(
             transitionType: ContainerTransitionType.fade,
-            transitionDuration: const Duration(milliseconds: 500),
+            transitionDuration: const Duration(milliseconds: 300),
             openBuilder: (BuildContext context, VoidCallback _) {
               return const AddNewItemScreen();
             },
@@ -130,56 +131,105 @@ class ItemCard extends StatelessWidget {
         },
         child: Container(
           padding: const EdgeInsets.all(8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                height: 100,
-                width: 100,
-                child: product.imageUrl.isNotEmpty
-                    ? CustomImage(
-                        url: product.imageUrl[0],
+          child: IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: product.imageUrl.isNotEmpty
+                      ? CustomImage(
+                          url: product.imageUrl[0],
+                        )
+                      : Container(),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.displayName,
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                          ),
+                          Text(
+                            '${product.productId ?? product.skuCode}',
+                            style: const TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20,),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          if (product.brand != null && product.brand!.isNotEmpty)
+                          ProductCategoryChip(
+                            category: product.brand!,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          ...product.category.map((e) => ProductCategoryChip(category: e)).toList(),
+                        ],
                       )
-                    : Container(),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      '${product.productId ?? product.skuCode}',
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    Text(
-                      product.displayName,
-                      style: const TextStyle(fontWeight: FontWeight.normal),
-                    ),
+                    if (product.salePrice != null && product.salePrice! > 0)
+                      Text(
+                          getCurrencyFormatter(context)
+                              .format(product.salePrice!),
+                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                    if (product.listPrice != null)
+                      Text(
+                        getCurrencyFormatter(context).format(product.listPrice!),
+                        style:
+                            (product.salePrice != null && product.salePrice! > 0)
+                                ? const TextStyle(
+                                    decoration: TextDecoration.lineThrough, fontStyle: FontStyle.italic, color: AppColor.color5)
+                                : const TextStyle(),
+                      ),
                   ],
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  if (product.salePrice != null && product.salePrice! > 0)
-                    Text(
-                        getCurrencyFormatter(context)
-                            .format(product.salePrice!),
-                        style: const TextStyle(fontWeight: FontWeight.w600)),
-                  if (product.listPrice != null)
-                    Text(
-                      getCurrencyFormatter(context).format(product.listPrice!),
-                      style:
-                          (product.salePrice != null && product.salePrice! > 0)
-                              ? const TextStyle(
-                                  decoration: TextDecoration.lineThrough)
-                              : const TextStyle(),
-                    ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class ProductCategoryChip extends StatelessWidget {
+  final String category;
+  final FontWeight fontWeight;
+  const ProductCategoryChip({Key? key, required this.category, this.fontWeight = FontWeight.normal}) : super(key: key);
+  static Map<String, Color> categoryColor = {};
+
+  @override
+  Widget build(BuildContext context) {
+    late Color color;
+
+    if (!categoryColor.containsKey(category)) {
+      // categoryColor[category] = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+      categoryColor[category] = Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    }
+     color = categoryColor[category]!;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color),
+      ),
+      child: Text(category, style: TextStyle(fontWeight: fontWeight, color: color),),
     );
   }
 }

@@ -62,7 +62,7 @@ class NewReceiptMobileView extends StatelessWidget {
                     left: 16,
                     child: AppBarLeading(
                       heading:
-                      "Receipt #${state.transSeq > 0 ? state.transSeq : ""}",
+                          "Receipt #${state.transSeq > 0 ? state.transSeq : ""}",
                       icon: Icons.arrow_back,
                       onTap: () {
                         if (state.transactionHeader == null) {
@@ -104,12 +104,12 @@ class NewReceiptMobileView extends StatelessWidget {
                             );
                           },
                         ).then((value) => {
-                          if (value != null && value)
-                            {
-                              BlocProvider.of<CreateNewReceiptBloc>(context)
-                                  .add(OnCancelTransaction())
-                            }
-                        });
+                              if (value != null && value)
+                                {
+                                  BlocProvider.of<CreateNewReceiptBloc>(context)
+                                      .add(OnCancelTransaction())
+                                }
+                            });
                       },
                     ),
                   );
@@ -141,34 +141,56 @@ class NewReceiptMobileView extends StatelessWidget {
                                 title: "Return Order",
                                 child: ReturnOrderView(
                                   currentOrderLineItem:
-                                  BlocProvider
-                                      .of<CreateNewReceiptBloc>(context)
-                                      .state
-                                      .lineItem,
+                                      BlocProvider.of<CreateNewReceiptBloc>(
+                                              context)
+                                          .state
+                                          .lineItem,
                                 ),
                                 context: context,
-                              ).then((value) =>
-                              {
-                                if (value != null)
-                                  {
-                                    BlocProvider.of<CreateNewReceiptBloc>(
-                                        context)
-                                        .add(OnReturnLineItemEvent(value))
-                                  }
-                              });
+                              ).then((value) => {
+                                    if (value != null)
+                                      {
+                                        BlocProvider.of<CreateNewReceiptBloc>(
+                                                context)
+                                            .add(OnReturnLineItemEvent(value))
+                                      }
+                                  });
                             } else if (value == "CANCEL") {
                               BlocProvider.of<CreateNewReceiptBloc>(context)
                                   .add(OnCancelTransaction());
+                            } else if (value == "PARTIAL_PAYMENT") {
+                              BlocProvider.of<CreateNewReceiptBloc>(context)
+                                  .add(OnPartialPayment());
                             }
                           },
-                          itemBuilder: (context) =>
-                          [
+                          itemBuilder: (context) => [
+                            if (state.customer != null)
+                              PopupMenuItem(
+                                child: Row(
+                                  children: const [
+                                    FaIcon(
+                                      FontAwesomeIcons.moneyBills,
+                                      color: AppColor.primary,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Partial Pay"),
+                                  ],
+                                ),
+                                value: "PARTIAL_PAYMENT",
+                              ),
                             PopupMenuItem(
                               child: Row(
                                 children: const [
-                                  FaIcon(
-                                    FontAwesomeIcons.pause,
-                                    color: AppColor.primary,
+                                  SizedBox(
+                                    width: 30,
+                                    child: Center(
+                                      child: FaIcon(
+                                        FontAwesomeIcons.pause,
+                                        color: AppColor.primary,
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 10,
@@ -244,9 +266,9 @@ class AcceptTenderDisplayMobile extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
             body: TenderDisplayDesktop(
-              onTender: onTender,
-              suggestedAmount: suggestedAmount,
-            )),
+          onTender: onTender,
+          suggestedAmount: suggestedAmount,
+        )),
       ),
     );
   }

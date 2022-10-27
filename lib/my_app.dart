@@ -18,26 +18,17 @@ import 'package:receipt_generator/src/pos/calculator/tax_calculator.dart';
 import 'package:receipt_generator/src/pos/helper/discount_helper.dart';
 import 'package:receipt_generator/src/pos/helper/price_helper.dart';
 import 'package:receipt_generator/src/pos/helper/tax_helper.dart';
-import 'package:receipt_generator/src/repositories/business_repository.dart';
-import 'package:receipt_generator/src/repositories/config_repository.dart';
-import 'package:receipt_generator/src/repositories/contact_repository.dart';
-import 'package:receipt_generator/src/repositories/customer_repository.dart';
-import 'package:receipt_generator/src/repositories/sequence_repository.dart';
-import 'package:receipt_generator/src/repositories/setting_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_config_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_repository.dart';
-import 'package:receipt_generator/src/repositories/tax_repository.dart';
-import 'package:receipt_generator/src/repositories/transaction_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
+import 'src/config/theme_settings.dart';
 import 'src/module/error/bloc/error_notification_bloc.dart';
 import 'src/module/error/error_notification.dart';
 import 'src/module/login/choose_create_business_view.dart';
 import 'src/module/settings/bloc/settings_bloc.dart';
 import 'src/repositories/checklist_helper.dart';
-import 'src/repositories/employee_repository.dart';
-import 'src/repositories/product_repository.dart';
-import 'src/repositories/reason_code_repository.dart';
+import 'src/repositories/repository.dart';
 
 class MyApp extends StatelessWidget {
   final Isar database;
@@ -127,9 +118,11 @@ class MyApp extends StatelessWidget {
             lazy: false,
             create: (context) => TaxModifierCalculator(
                 taxRepository: RepositoryProvider.of(context)),
-          )
-          // ..._buildHelperList(db: database, restClient: restClient),
-          // ..._buildCalculatorList(db: database, restClient: restClient),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                InvoiceRepository(db: database, restClient: restClient),
+          ),
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(
@@ -205,8 +198,12 @@ class _MyAppViewState extends State<MyAppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: _navigatorKey,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: ThemeData.light().copyWith(
+        primaryColor: AppColor.primary,
+        brightness: Brightness.light,
+        backgroundColor: AppColor.background,
+        dividerColor: Colors.white54,
+        colorScheme: const ColorScheme.light(primary: AppColor.primary),
         textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
       ),
       localizationsDelegates: context.localizationDelegates,

@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:receipt_generator/src/entity/pos/trn_header_entity.dart';
 import 'package:receipt_generator/src/model/api/api.dart';
 
 import '../util/helper/rest_api.dart';
@@ -108,6 +112,21 @@ class SyncRepository {
       } else {
         throw 'Unable to sync the data. Contact Admin';
       }
+    } catch (e) {
+      log.severe(e);
+    }
+  }
+
+  Future<void> exportData() async {
+    try {
+      var x = await db.transactionHeaderEntitys.where().exportJsonRaw((p0) => p0,);
+      // var dir = Directory('/storage/emulated/0/Download');
+      var dir = await getApplicationSupportDirectory();
+      Archive archive = Archive();
+      print(dir.path);
+      var myFile = File('${dir.path}/transaction.txt');
+      await myFile.writeAsBytes(x, flush: true);
+      print('File written');
     } catch (e) {
       log.severe(e);
     }

@@ -3,9 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:receipt_generator/src/config/constants.dart';
-import 'package:receipt_generator/src/config/currency.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/new_receipt_mobile_view.dart';
@@ -15,6 +12,7 @@ import 'package:receipt_generator/src/module/item_search/item_search_view.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
 import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 
+import '../../config/transaction_config.dart';
 import '../../entity/pos/address.dart';
 import '../../entity/pos/entity.dart';
 import '../../widgets/customDialog.dart';
@@ -212,6 +210,17 @@ class BuildLineItem extends StatelessWidget {
     );
   }
 
+  bool canLineItemModified(TransactionHeaderEntity header, TransactionLineItemEntity saleLine) {
+    if (saleLine.returnFlag || saleLine.isVoid) {
+      return false;
+    }
+
+    if (header.status == TransactionStatus.partialPayment) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateNewReceiptBloc, CreateNewReceiptState>(
@@ -221,8 +230,7 @@ class BuildLineItem extends StatelessWidget {
           itemBuilder: (itemBuilder, idx) {
             if (idx < state.lineItem.length) {
               return InkWell(
-                onTap: !(state.lineItem[idx].returnFlag ||
-                        state.lineItem[idx].isVoid)
+                onTap: canLineItemModified(state.transactionHeader!, state.lineItem[idx])
                     ? () {
                         onTap(context, state.lineItem[idx],
                             state.productMap[state.lineItem[idx].itemId]);
@@ -294,7 +302,7 @@ class BuildLineItem extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Opacity(
-                          opacity: state.tenderLine[idx - state.lineItem.length].isVoid! ? 0.45 : 1,
+                          opacity: state.tenderLine[idx - state.lineItem.length].isVoid ? 0.45 : 1,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4),
                             child: TenderLineDisplay(
@@ -308,8 +316,7 @@ class BuildLineItem extends StatelessWidget {
                         )
                       ],
                     ),
-                    if (state.tenderLine[idx - state.lineItem.length].isVoid ??
-                        false)
+                    if (state.tenderLine[idx - state.lineItem.length].isVoid)
                       const Positioned(
                         top: 0,
                         right: 0,
@@ -942,6 +949,13 @@ class _CustomerWidgetState extends State<CustomerWidget> {
     }
   }
 
+  bool canCustomerModified(TransactionHeaderEntity? transaction) {
+    if (transaction != null && transaction.status == TransactionStatus.partialPayment) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -1045,12 +1059,12 @@ class _CustomerWidgetState extends State<CustomerWidget> {
                             ],
                           ),
                         ),
-                        if (!state.isCustomerPresent)
+                        if (!state.isCustomerPresent && canCustomerModified(state.transactionHeader))
                           const FaIcon(
                             FontAwesomeIcons.personCirclePlus,
                             color: AppColor.primary,
                           ),
-                        if (state.isCustomerPresent)
+                        if (state.isCustomerPresent && canCustomerModified(state.transactionHeader))
                           InkWell(
                             onTap: () {
                               BlocProvider.of<CreateNewReceiptBloc>(context)

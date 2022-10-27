@@ -71,6 +71,7 @@ class CreateNewReceiptBloc
     on<OnCancelTransaction>(_onCancelTransaction);
     on<OnLineItemVoid>(_onLineItemVoid);
     on<OnTenderLineVoid>(_onTenderLineVoid);
+    on<OnPartialPayment>(_onPartialPayment);
   }
 
   void _onInitiateTransaction(OnInitiateNewTransaction event,
@@ -323,6 +324,20 @@ class CreateNewReceiptBloc
     try {
 
       var txn = await _manageOrder(TransactionStatus.cancelled);
+      emit(state.copyWith(
+          transactionHeader: txn,
+          status: CreateNewReceiptStatus.saleComplete,
+          step: SaleStep.confirmed));
+    } catch (e) {
+      log.severe(e);
+      emit(state.copyWith(status: CreateNewReceiptStatus.error));
+    }
+  }
+
+  void _onPartialPayment(
+      OnPartialPayment event, Emitter<CreateNewReceiptState> emit) async {
+    try {
+      var txn = await _manageOrder(TransactionStatus.partialPayment);
       emit(state.copyWith(
           transactionHeader: txn,
           status: CreateNewReceiptStatus.saleComplete,

@@ -184,16 +184,14 @@ class MyBottomAppBar extends StatelessWidget {
                     ),
                     onPressed: onPrint,
                   ),
-                  if (state.header?.status == TransactionStatus.created ||
-                      state.header?.status == TransactionStatus.pending)
+                  if (state.header?.status == TransactionStatus.created)
                     ElevatedButton(
                         onPressed: () {
                           BlocProvider.of<ReceiptDisplayBloc>(context).add(
                               UpdateReceiptStatusEvent(TransactionStatus.cancelled));
                         },
                         child: const Text("Cancel")),
-                  if (state.header?.status == TransactionStatus.created ||
-                      state.header?.status == TransactionStatus.pending)
+                  if (state.header?.status == TransactionStatus.created)
                     ElevatedButton(
                         onPressed: () {
                           BlocProvider.of<ReceiptDisplayBloc>(context).add(

@@ -19,6 +19,7 @@ import 'log.dart';
 import 'my_app.dart';
 import 'src/entity/pos/employee_role_entity.dart';
 import 'src/entity/pos/reason_code_entity.dart';
+import 'src/entity/pos/report_config_entity.dart';
 
 final log = Logger('Main');
 
@@ -48,6 +49,7 @@ Future<void> main() {
         CodeValueEntitySchema,
         ReasonCodeEntitySchema,
         TaxGroupEntitySchema,
+        ReportConfigEntitySchema,
       ],
       inspector: true,
       directory: dir.path,

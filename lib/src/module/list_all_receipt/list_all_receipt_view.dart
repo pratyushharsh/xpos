@@ -75,7 +75,7 @@ class ReceiptHeaderCard extends StatelessWidget {
     return Card(
       child: InkWell(
         onTap: () {
-          if (receipt.status == TransactionStatus.suspended) {
+          if (receipt.status == TransactionStatus.suspended || receipt.status == TransactionStatus.partialPayment) {
             // Navigator.of(context).pushNamed(RouteConfig.receiptDetail, arguments: receipt);
             Navigator.of(context)
                 .pushNamed(RouteConfig.createReceiptScreen, arguments: receipt.transId);
@@ -157,6 +157,8 @@ class HeaderStatusChip extends StatelessWidget {
       return "Cancelled";
     } else if (status == TransactionStatus.completed) {
       return "Paid";
+    } else if (TransactionStatus.partialPayment == status) {
+      return "Partial Payment";
     }
     return '';
   }
@@ -168,6 +170,8 @@ class HeaderStatusChip extends StatelessWidget {
       return Colors.red;
     } else if (status == TransactionStatus.completed) {
       return Colors.green;
+    } else if (status == TransactionStatus.partialPayment) {
+      return Colors.purple;
     }
     return Colors.grey;
   }

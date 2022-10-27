@@ -116,3 +116,5 @@ class OnTenderLineVoid extends CreateNewReceiptEvent {
   final TransactionPaymentLineItemEntity tenderLine;
   OnTenderLineVoid({required this.tenderLine});
 }
+
+class OnPartialPayment extends CreateNewReceiptEvent {}

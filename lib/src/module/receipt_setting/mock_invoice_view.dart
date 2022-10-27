@@ -9,6 +9,8 @@ import '../authentication/bloc/authentication_bloc.dart';
 import '../receipt_display/bloc/receipt_display_bloc.dart';
 import '../receipt_display/template/invoice.dart';
 import '../receipt_display/template/invoice_1.dart';
+import '../receipt_display/template/invoice_config.dart';
+import 'bloc/invoice_setting_bloc.dart';
 import 'bloc/receipt_setting_bloc.dart';
 
 class MockInvoiceView extends StatefulWidget {
@@ -19,32 +21,41 @@ class MockInvoiceView extends StatefulWidget {
 }
 
 class _MockInvoiceViewState extends State<MockInvoiceView> {
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
       create: (context) => ReceiptDisplayBloc(
-          transId: 10001,
+          transId: 6,
           authBloc: RepositoryProvider.of(context),
           transactionRepo: MockTransactionRepository(
               db: RepositoryProvider.of(context),
               restClient: RepositoryProvider.of(context)),
           settingsRepo: RepositoryProvider.of(context))
         ..add(FetchReceiptDataEvent()),
-      child: BlocListener<ReceiptSettingBloc, ReceiptSettingState>(
-        listener: (context, state) {
-
+      child: BlocBuilder<InvoiceSettingBloc, InvoiceSettingState>(
+        builder: (context, state) {
+          return MockInvoiceForm(
+              config: InvoiceConfig(
+            columnConfig: state.columns,
+            showTaxSummary: state.showTaxSummary,
+            showPaymentDetails: state.showPaymentDetails,
+            paymentColumnConfig: InvoiceConfigConstants.paymentColumn,
+            logo: state.logo,
+            termsAndCondition: state.termsAndCondition,
+            declaration: state.declaration,
+            showDeclaration: state.showDeclaration,
+            showTermsAndCondition: state.showTermsAndCondition,
+          ));
         },
-        child: const MockInvoiceForm(),
       ),
     );
   }
 }
 
 class MockInvoiceForm extends StatelessWidget {
-
-  const MockInvoiceForm({Key? key }) : super(key: key);
+  final InvoiceConfig config;
+  const MockInvoiceForm({Key? key, required this.config}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +70,7 @@ class MockInvoiceForm extends StatelessWidget {
             color: Colors.white,
             child: PdfPreview(
               loadingWidget: const MyLoader(color: AppColor.primary),
-               actions: [],
+              useActions: false,
               allowPrinting: false,
               allowSharing: false,
               canDebug: false,
@@ -67,7 +78,13 @@ class MockInvoiceForm extends StatelessWidget {
               scrollViewDecoration: const BoxDecoration(
                 color: Colors.white,
               ),
-              build: (format) => generateInvoice(format, state.header!, RepositoryProvider.of<AuthenticationBloc>(context).state.store!),
+              build: (format) => generateInvoice(
+                  format,
+                  state.header!,
+                  RepositoryProvider.of<AuthenticationBloc>(context)
+                      .state
+                      .store!,
+                  config),
             ),
           );
         }

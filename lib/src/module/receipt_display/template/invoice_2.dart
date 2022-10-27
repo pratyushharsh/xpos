@@ -166,8 +166,8 @@ class Invoice2 {
       cellAlignment: Alignment.centerLeft,
       headerHeight: 25,
       cellHeight: 40,
-      columnWidths: InvoiceConfig.columnWidths(Invoice2Config.columnConfig),
-      cellAlignments: InvoiceConfig.cellAlignments(Invoice2Config.columnConfig),
+      columnWidths: InvoiceConfigConstants.columnWidths(Invoice2Config.columnConfig),
+      cellAlignments: InvoiceConfigConstants.cellAlignments(Invoice2Config.columnConfig),
       rowDecoration: BoxDecoration(
         border: Border.all(color: PdfColors.black, width: .5),
       ),
@@ -189,7 +189,7 @@ class Invoice2 {
       headers: Invoice2Config.columnConfig.map((e) => e.title).toList(),
       data: order.lineItems.map((li) {
         return Invoice2Config.columnConfig.map((e) {
-          return InvoiceConfig.getLineItemValue(e.key, li);
+          return InvoiceConfigConstants.getLineItemValue(e.key, li);
         }).toList();
       }).toList(),
     );

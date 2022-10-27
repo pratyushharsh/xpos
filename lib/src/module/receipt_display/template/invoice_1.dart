@@ -10,23 +10,26 @@ import 'package:receipt_generator/src/module/receipt_display/template/invoice_co
 import 'package:receipt_generator/src/util/extension/string_extension.dart';
 
 import '../../../entity/pos/entity.dart';
+import '../../../entity/pos/report_config_entity.dart';
 
 class Invoice1 {
   final TransactionHeaderEntity order;
   final RetailLocationEntity store;
-  Invoice1(this.order, this.store);
+  final InvoiceConfig config;
+  Invoice1(this.order, this.store, this.config);
 
-  TextAlign getColumnAlign(String align) {
+  TextAlign getColumnAlign(ColumnAlignment? align) {
     switch (align) {
-      case 'right':
+      case ColumnAlignment.right:
         return TextAlign.right;
-      case 'center':
+      case ColumnAlignment.center:
         return TextAlign.center;
+      case ColumnAlignment.justify:
+        return TextAlign.justify;
       default:
         return TextAlign.left;
     }
   }
-
   ImageProvider? _logoImage;
 
   Future<Uint8List> buildPdf(PdfPageFormat pageFormat) async {
@@ -53,7 +56,8 @@ class Invoice1 {
           _buildLineItemSummary(context),
           Divider(thickness: 0.8),
           _contentAmountInWords(context),
-          _contentTaxSummary(context)
+          if (config.showTaxSummary) _contentTaxSummary(context),
+          if (config.showPaymentDetails) _contentPaymentDetail(context),
         ],
       ),
     );
@@ -77,12 +81,13 @@ class Invoice1 {
 
   Widget _buildLineItemSummary(Context context) {
     return Row(
-      children: InvoiceConfig.columnConfig
+      children: config.columnConfig
           .map((e) => Expanded(
-                flex: e.flex,
+                flex: e.flex!,
                 child: Container(
                   child: Text(
-                    InvoiceConfig.buildLineItemSummaryValue(e.key, order),
+                    InvoiceConfigConstants.buildLineItemSummaryValue(
+                        e.key!, order),
                     textAlign: getColumnAlign(e.align),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -204,22 +209,19 @@ class Invoice1 {
   }
 
   Widget _buildFooter(Context context) {
-    return Container(
-      child: Center(
-        child: Text(
-          'Made with ',
-        ),
-      ),
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text("Made on Parchi."),
+      Text("Page ${context.pageNumber} of ${context.pagesCount}"),
+    ]);
   }
 
   Widget _contentTable(Context context) {
-    var lineItems = order.lineItems.where((element) => !element.isVoid).toList();
+    var lineItems =
+        order.lineItems.where((element) => !element.isVoid).toList();
     lineItems.sort((a, b) => a.lineItemSeq!.compareTo(b.lineItemSeq!));
     return Container(
       child: ListView.builder(
           itemBuilder: (context, idx) {
-
             return Column(
               children: [
                 _contentTableBody(context, lineItems[idx]),
@@ -238,12 +240,12 @@ class Invoice1 {
 
   Widget _contentTableHeader(Context context) {
     return Row(
-      children: InvoiceConfig.columnConfig
+      children: config.columnConfig
           .map((e) => Expanded(
-                flex: e.flex,
+                flex: e.flex!,
                 child: Container(
                   child: Text(
-                    e.title,
+                    e.title!,
                     textAlign: getColumnAlign(e.align),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -258,14 +260,14 @@ class Invoice1 {
   Widget _contentTableBody(
       Context context, TransactionLineItemEntity lineItem) {
     return Row(
-      children: InvoiceConfig.columnConfig
+      children: config.columnConfig
           .map((e) => Expanded(
-                flex: e.flex,
+                flex: e.flex!,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 1),
                   margin: const EdgeInsets.all(0),
                   child: Text(
-                    InvoiceConfig.getLineItemValue(e.key, lineItem,
+                    InvoiceConfigConstants.getLineItemValue(e.key!, lineItem,
                         locale: order.storeLocale),
                     textAlign: getColumnAlign(e.align),
                     textScaleFactor: 0.8,
@@ -279,13 +281,107 @@ class Invoice1 {
     );
   }
 
+  Widget _contentPaymentDetail(Context context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text("Payment Details",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+      Divider(height: 6, thickness: 0.8),
+      Row(children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            'Date',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Amount',
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Mode',
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            'Remarks',
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ]),
+      Divider(height: 6, thickness: 0.8),
+      ...order.paymentLineItems.map((e) => Row(children: [
+            Expanded(
+              flex: 2,
+              child: Text(
+                '${DateFormat.yMEd().format(e.beginDate!)} ${DateFormat.Hms().format(e.beginDate!)}',
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                NumberFormat.compactCurrency(
+                        locale: order.storeLocale, name: e.currencyId)
+                    .format(e.amount),
+                textAlign: TextAlign.right,
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                '${e.tenderId}',
+                textAlign: TextAlign.right,
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                '',
+                textAlign: TextAlign.right,
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ])),
+      Divider(height: 6, thickness: 0.8),
+    ]);
+  }
+
   Widget _contentTaxSummary(Context context) {
     // Build header rows for
     // 1. HSN Code
     // 2. Taxable Value
     // ... Different Taxes
     // 3. Total Tax
-    var taxSummary = InvoiceConfig.buildGstTaxSummary(order.lineItems);
+    var taxSummary = InvoiceConfigConstants.buildGstTaxSummary(order.lineItems);
     List<String> rows = [];
     rows.add("HSN Code");
     rows.add("Taxable Value");
@@ -305,7 +401,10 @@ class Invoice1 {
     // Build the table
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text("Tax Summary",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
         // Build header
         Divider(height: 6, thickness: 0.8),
         Row(

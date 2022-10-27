@@ -31,6 +31,7 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     on<SyncAllConfigDataEvent>(_onSyncAllConfigEvent);
     on<LoadSampleData>(_onLoadSampleDataEvent);
     on<StopSyncEvent>(_onStopSyncEvent);
+    on<ExportDataEvent>(_onExportDataEvent);
   }
 
   // @TODO Control Sync Using State
@@ -73,5 +74,9 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     Duration diff = end.difference(start);
     log.info("${diff.inSeconds} Seconds elapsed in syncing the data");
     emit(state.copyWith(status: BackgroundSyncStatus.success));
+  }
+
+  void _onExportDataEvent(ExportDataEvent event, Emitter<BackgroundSyncState> emit) async {
+    await syncRepository.exportData();
   }
 }
