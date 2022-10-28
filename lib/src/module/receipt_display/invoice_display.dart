@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:printing/printing.dart';
 import 'package:receipt_generator/src/module/receipt_display/template/invoice_config.dart';
+import 'package:receipt_generator/src/repositories/invoice_repository.dart';
 
 import '../../config/theme_settings.dart';
 import '../../widgets/appbar_leading.dart';
@@ -47,22 +48,40 @@ class AppInvoiceDisplay extends StatelessWidget {
                         colorScheme:
                             const ColorScheme.light(primary: AppColor.primary),
                       ),
-                      home: PdfPreview(
-                        loadingWidget: const MyLoader(color: AppColor.primary),
-                        canDebug: false,
-                        maxPageWidth: 700,
-                        scrollViewDecoration: const BoxDecoration(
-                          color: AppColor.background,
-                        ),
-                        build: (format) => generateInvoice(
-                            format,
-                            state.header!,
-                            RepositoryProvider.of<AuthenticationBloc>(context)
-                                .state
-                                .store!,
-                            InvoiceConfig(
-                                columnConfig:
-                                    InvoiceConfigConstants.columnConfig, paymentColumnConfig: InvoiceConfigConstants.paymentColumn)),
+                      home: FutureBuilder<InvoiceConfig>(
+                        future:
+                            RepositoryProvider.of<InvoiceRepository>(context)
+                                .getInvoiceSettingByName('INVOICE'),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return PdfPreview(
+                              loadingWidget:
+                                  const MyLoader(color: AppColor.primary),
+                              canDebug: false,
+                              maxPageWidth: 700,
+                              scrollViewDecoration: const BoxDecoration(
+                                color: AppColor.background,
+                              ),
+                              build: (format) => generateInvoice(
+                                format,
+                                state.header!,
+                                RepositoryProvider.of<AuthenticationBloc>(
+                                        context)
+                                    .state
+                                    .store!,
+                                snapshot.data!,
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(snapshot.error.toString()),
+                            );
+                          } else {
+                            return const Center(
+                              child: MyLoader(color: AppColor.primary),
+                            );
+                          }
+                        },
                       ),
                     );
                   }

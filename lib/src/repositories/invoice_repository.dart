@@ -17,7 +17,8 @@ enum InvoiceField {
   declaration("DECLARATION"),
   showDeclaration("SHOW_DECLARATION"),
   termsAndCondition("TERMS_AND_CONDITION"),
-  showTermsAndCondition("SHOW_TERMS_AND_CONDITION"),;
+  showTermsAndCondition("SHOW_TERMS_AND_CONDITION"),
+  ;
 
   const InvoiceField(this.value);
 
@@ -30,7 +31,7 @@ class InvoiceRepository {
   final Isar db;
   final RestApiClient restClient;
 
-  InvoiceRepository({required this.db, required this.restClient });
+  InvoiceRepository({required this.db, required this.restClient});
 
   Future<void> saveInvoiceSetting(InvoiceConfig setting) async {
     db.writeTxn(() async {
@@ -88,17 +89,56 @@ class InvoiceRepository {
   }
 
   Future<InvoiceConfig> getInvoiceSettingByName(String name) async {
-    final config = await db.reportConfigEntitys.where().typeEqualToAnySubtype(name).findAll();
+    final config = await db.reportConfigEntitys
+        .where()
+        .typeEqualToAnySubtype(name)
+        .findAll();
+    if (config.isEmpty) {
+      return InvoiceConfig.defaultValue;
+    }
+
     return InvoiceConfig(
-      columnConfig: config.firstWhere((e) => e.subtype == InvoiceField.item.value).columnConfig,
-      paymentColumnConfig: config.firstWhere((e) => e.subtype == InvoiceField.payment.value).columnConfig,
-      logo: config.firstWhere((e) => e.subtype == InvoiceField.logo.value, orElse: () => ReportConfigEntity(type: '', subtype: '')).stringValue,
-      showTaxSummary: config.firstWhere((e) => e.subtype == InvoiceField.showTaxSummary.value, orElse: () => ReportConfigEntity(type: '', subtype: '')).boolValue ?? false,
-      showPaymentDetails: config.firstWhere((e) => e.subtype == InvoiceField.showPaymentDetails.value, orElse: () => ReportConfigEntity(type: '', subtype: '')).boolValue ?? false,
-      declaration: config.firstWhere((e) => e.subtype == InvoiceField.declaration.value, orElse: () => ReportConfigEntity(type: '', subtype: '')).stringValue,
-      showDeclaration: config.firstWhere((e) => e.subtype == InvoiceField.showDeclaration.value, orElse: () => ReportConfigEntity(type: '', subtype: '')).boolValue ?? false,
-      termsAndCondition: config.firstWhere((e) => e.subtype == InvoiceField.termsAndCondition.value, orElse: () => ReportConfigEntity(type: '', subtype: '')).stringValue,
-      showTermsAndCondition: config.firstWhere((e) => e.subtype == InvoiceField.showTermsAndCondition.value, orElse: () => ReportConfigEntity(type: '', subtype: '')).boolValue ?? false,
+      columnConfig: config
+          .firstWhere((e) => e.subtype == InvoiceField.item.value)
+          .columnConfig,
+      paymentColumnConfig: config
+          .firstWhere((e) => e.subtype == InvoiceField.payment.value)
+          .columnConfig,
+      logo: config
+          .firstWhere((e) => e.subtype == InvoiceField.logo.value,
+              orElse: () => ReportConfigEntity(type: '', subtype: ''))
+          .stringValue,
+      showTaxSummary: config
+              .firstWhere((e) => e.subtype == InvoiceField.showTaxSummary.value,
+                  orElse: () => ReportConfigEntity(type: '', subtype: ''))
+              .boolValue ??
+          false,
+      showPaymentDetails: config
+              .firstWhere(
+                  (e) => e.subtype == InvoiceField.showPaymentDetails.value,
+                  orElse: () => ReportConfigEntity(type: '', subtype: ''))
+              .boolValue ??
+          false,
+      declaration: config
+          .firstWhere((e) => e.subtype == InvoiceField.declaration.value,
+              orElse: () => ReportConfigEntity(type: '', subtype: ''))
+          .stringValue,
+      showDeclaration: config
+              .firstWhere(
+                  (e) => e.subtype == InvoiceField.showDeclaration.value,
+                  orElse: () => ReportConfigEntity(type: '', subtype: ''))
+              .boolValue ??
+          false,
+      termsAndCondition: config
+          .firstWhere((e) => e.subtype == InvoiceField.termsAndCondition.value,
+              orElse: () => ReportConfigEntity(type: '', subtype: ''))
+          .stringValue,
+      showTermsAndCondition: config
+              .firstWhere(
+                  (e) => e.subtype == InvoiceField.showTermsAndCondition.value,
+                  orElse: () => ReportConfigEntity(type: '', subtype: ''))
+              .boolValue ??
+          false,
     );
   }
 

@@ -263,6 +263,39 @@ class InvoiceConfig {
       this.termsAndCondition,
       this.showDeclaration = false,
       this.declaration});
+
+  static InvoiceConfig defaultValue = InvoiceConfig(
+    columnConfig: [
+      ReportColumnConfigEntity(
+          key: 'sno', title: 'S.No', flex: 1, align: ColumnAlignment.center),
+      ReportColumnConfigEntity(key: 'desc', title: 'Description', flex: 5),
+      ReportColumnConfigEntity(
+          key: 'hsn/sac',
+          title: 'HSN/SAC',
+          flex: 2,
+          align: ColumnAlignment.right),
+      ReportColumnConfigEntity(
+          key: 'qtyuom',
+          title: 'Qty/UOM',
+          flex: 2,
+          align: ColumnAlignment.center),
+      ReportColumnConfigEntity(
+          key: 'rate',
+          title: 'Unit Price',
+          flex: 2,
+          align: ColumnAlignment.right),
+      ReportColumnConfigEntity(
+          key: 'discountAmount',
+          title: 'Discount',
+          flex: 3,
+          align: ColumnAlignment.right),
+      ReportColumnConfigEntity(
+          key: 'tax', title: 'Tax Amount', flex: 3, align: ColumnAlignment.right),
+      ReportColumnConfigEntity(
+          key: 'amount', title: 'Amount', flex: 3, align: ColumnAlignment.right),
+    ],
+    paymentColumnConfig: InvoiceConfigConstants.paymentColumn,
+  );
 }
 
 class TaxSummary {

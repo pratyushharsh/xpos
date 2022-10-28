@@ -22,7 +22,7 @@ Future<Uint8List> generateInvoice(
   return await invoice.buildPdf(pageFormat);
 }
 
-abstract class IInvoice {
+mixin InvoiceUtil {
   TextAlign getColumnAlign(ColumnAlignment? align) {
     switch (align) {
       case ColumnAlignment.right:
@@ -35,6 +35,9 @@ abstract class IInvoice {
         return TextAlign.left;
     }
   }
+}
+
+abstract class IInvoice {
 
   Future<Uint8List> buildPdf(PdfPageFormat pageFormat);
   ImageProvider? getStoreLogo(Context context);

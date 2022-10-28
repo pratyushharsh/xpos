@@ -11,7 +11,7 @@ import 'package:receipt_generator/src/module/receipt_display/template/invoice_co
 
 import 'invoice.dart';
 
-class BaseInvoice extends IInvoice {
+class BaseInvoice extends IInvoice with InvoiceUtil {
   final TransactionHeaderEntity order;
   final RetailLocationEntity store;
   final InvoiceConfig config;
@@ -23,10 +23,6 @@ class BaseInvoice extends IInvoice {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (context.pageNumber == context.pagesCount)
-          buildTermsAndConditions(context),
-        if (context.pageNumber == context.pagesCount)
-          buildDeclarationSignature(context),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -93,8 +89,37 @@ class BaseInvoice extends IInvoice {
         footer: buildFooter,
         build: (context) => [
           buildItemBody(context),
+          if (config.showPaymentDetails)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  'Payment Details',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 6),
+              ],
+            ),
           buildPaymentDetails(context),
+          if (config.showTaxSummary)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  'Tax Summary',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 6),
+              ],
+            ),
           buildTaxSummary(context),
+          InvoiceFooterWidget(config: config)
         ],
       ),
     );
@@ -221,93 +246,7 @@ class BaseInvoice extends IInvoice {
 
   @override
   Widget buildPaymentDetails(Context context) {
-    final rows = <TableRow>[];
-
-    final headerRow = <Widget>[];
-
-    for (var i = 0; i < config.paymentColumnConfig.length; i++) {
-      final column = config.paymentColumnConfig[i];
-      headerRow.add(
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 3),
-          child: Text(
-            column.title!,
-            textAlign: getColumnAlign(column.align),
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
-    rows.add(
-      TableRow(
-        children: headerRow,
-        repeat: true,
-        decoration: const BoxDecoration(
-          color: PdfColors.grey200,
-          border: Border.symmetric(
-            horizontal: BorderSide(
-              color: PdfColors.black,
-              width: 0.8,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    for (var i = 0; i < order.paymentLineItems.length; i++) {
-      final lineItem = order.paymentLineItems[i];
-      final row = <Widget>[];
-      for (var j = 0; j < config.paymentColumnConfig.length; j++) {
-        final column = config.paymentColumnConfig[j];
-        row.add(
-          Expanded(
-            flex: column.flex!,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Text(
-                InvoiceConfigConstants.getPaymentLineValue(
-                    column.key!, order, lineItem),
-                textAlign: getColumnAlign(column.align),
-              ),
-            ),
-          ),
-        );
-      }
-      rows.add(
-        TableRow(
-          children: row,
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: PdfColors.grey,
-                width: 0.5,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 20),
-        Text(
-          'Payment Details',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 6),
-        Table(
-          children: rows,
-          // columnWidths: columnWidths,
-        )
-      ],
-    );
+    return PaymentDetailsWidget(config: config, order: order, store: store);
   }
 
   @override
@@ -465,22 +404,9 @@ class BaseInvoice extends IInvoice {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 20),
-        Text(
-          'Tax Summary',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 6),
-        Table(
-          children: rows,
-          // columnWidths: columnWidths,
-        )
-      ],
+    return Table(
+      children: rows,
+      // columnWidths: columnWidths,
     );
   }
 
@@ -589,25 +515,8 @@ class BaseInvoice extends IInvoice {
     if (!config.showTermsAndCondition) {
       return Container();
     }
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Terms & Conditions',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline,
-            ),
-          ),
-          Text(
-            config.termsAndCondition ?? '',
-          ),
-          SizedBox(height: 10),
-        ],
-      ),
-    );
+    return TermsAndConditionWidget(
+        termsAndCondition: config.termsAndCondition ?? '');
   }
 
   @override
@@ -648,25 +557,27 @@ class DeclarationAndSignatureWidget extends StatelessWidget {
   Widget build(Context context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Expanded(
-        child: showDeclaration ? Container(
-          margin: const EdgeInsets.only(right: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Declaration',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
+        child: showDeclaration
+            ? Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Declaration',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                    Text(
+                      declaration,
+                    ),
+                  ],
                 ),
-              ),
-              Text(
-                declaration,
-              ),
-            ],
-          ),
-        ): Container(),
+              )
+            : Container(),
       ),
       Container(
         child: Column(
@@ -693,5 +604,154 @@ class DeclarationAndSignatureWidget extends StatelessWidget {
         ),
       ),
     ]);
+  }
+}
+
+class TermsAndConditionWidget extends StatelessWidget {
+  final String termsAndCondition;
+
+  TermsAndConditionWidget({required this.termsAndCondition});
+  @override
+  Widget build(Context context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Terms & Conditions',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+          Text(
+            termsAndCondition,
+          ),
+          SizedBox(height: 10),
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool get canSpan {
+    return false;
+  }
+}
+
+class PaymentDetailsWidget extends StatelessWidget with InvoiceUtil {
+  final TransactionHeaderEntity order;
+  final RetailLocationEntity store;
+  final InvoiceConfig config;
+
+  PaymentDetailsWidget(
+      {required this.order, required this.store, required this.config})
+      : super();
+
+  @override
+  Widget build(Context context) {
+    final rows = <TableRow>[];
+
+    final headerRow = <Widget>[];
+
+    for (var i = 0; i < config.paymentColumnConfig.length; i++) {
+      final column = config.paymentColumnConfig[i];
+      headerRow.add(
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 3),
+          child: Text(
+            column.title!,
+            textAlign: getColumnAlign(column.align),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }
+    rows.add(
+      TableRow(
+        children: headerRow,
+        repeat: true,
+        decoration: const BoxDecoration(
+          color: PdfColors.grey200,
+          border: Border.symmetric(
+            horizontal: BorderSide(
+              color: PdfColors.black,
+              width: 0.8,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    for (var i = 0; i < order.paymentLineItems.length; i++) {
+      final lineItem = order.paymentLineItems[i];
+      final row = <Widget>[];
+      for (var j = 0; j < config.paymentColumnConfig.length; j++) {
+        final column = config.paymentColumnConfig[j];
+        row.add(
+          Expanded(
+            flex: column.flex!,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(
+                InvoiceConfigConstants.getPaymentLineValue(
+                    column.key!, order, lineItem),
+                textAlign: getColumnAlign(column.align),
+              ),
+            ),
+          ),
+        );
+      }
+      rows.add(
+        TableRow(
+          children: row,
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: PdfColors.grey,
+                width: 0.5,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Table(
+      children: rows,
+      // columnWidths: columnWidths,
+    );
+  }
+
+  @override
+  bool get canSpan {
+    return true;
+  }
+}
+
+class InvoiceFooterWidget extends StatelessWidget {
+  final InvoiceConfig config;
+
+  InvoiceFooterWidget({required this.config});
+  @override
+  Widget build(Context context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TermsAndConditionWidget(
+            termsAndCondition: config.termsAndCondition ?? "",
+          ),
+          DeclarationAndSignatureWidget(
+              declaration: config.declaration ?? "",
+              showDeclaration: config.showDeclaration),
+        ],
+      ),
+    );
   }
 }
