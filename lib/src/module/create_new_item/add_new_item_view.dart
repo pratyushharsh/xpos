@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
@@ -13,7 +12,6 @@ import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 import 'package:receipt_generator/src/widgets/loading.dart';
 import 'package:validators/sanitizers.dart';
 
-import '../../config/constants.dart';
 import '../../config/defaults.dart';
 import '../../entity/config/code_value_entity.dart';
 import '../../entity/pos/tax_group_entity.dart';
@@ -404,10 +402,9 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                             style: TextStyle(color: AppColor.primary),
                           ),
                           style: ElevatedButton.styleFrom(
-                            elevation: 0,
+                            elevation: 0, backgroundColor: AppColor.color8,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 14, horizontal: 10),
-                            primary: AppColor.color8,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0)),
                           ),

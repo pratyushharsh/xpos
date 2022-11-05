@@ -415,8 +415,6 @@ class CreateNewReceiptBloc
           line.taxableAmount = newLine.netAmount;
         }
 
-        List<TransactionLineItemModifierEntity> modifier =
-            newLine.lineModifiers.toList();
         // newLine.lineModifiers.removeAll(modifier);
         newLine.discountAmount = 0.0;
 

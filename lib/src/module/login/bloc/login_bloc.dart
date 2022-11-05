@@ -123,7 +123,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       emit(state.copyWith(status: LoginStatus.verifyDeviceLoading));
       CognitoUser user = state.user!;
-      var res = await user.sendCustomChallengeAnswer(' ');
+      await user.sendCustomChallengeAnswer(' ');
       _getUserDetail();
     } catch (e) {
       log.severe(e);

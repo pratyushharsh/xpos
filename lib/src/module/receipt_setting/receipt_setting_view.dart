@@ -78,9 +78,9 @@ class ReceiptSettingForm extends StatelessWidget {
                 ),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
+                  backgroundColor: AppColor.color8,
                   padding:
                       const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                  primary: AppColor.color8,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0)),
                 ),

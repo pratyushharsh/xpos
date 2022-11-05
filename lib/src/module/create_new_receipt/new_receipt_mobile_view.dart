@@ -7,7 +7,6 @@ import '../../widgets/appbar_leading.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/desktop_pop_up.dart';
 import '../return_order/return_order_view.dart';
-import '../return_order/return_order_view_mobile.dart';
 import 'bloc/create_new_receipt_bloc.dart';
 import 'new_receipt_view.dart';
 import 'new_recipt_desktop_view.dart';
@@ -284,23 +283,21 @@ class CashTender extends StatefulWidget {
 class _CashTenderState extends State<CashTender> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.money),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelStyle: TextStyle(fontSize: 18),
-              border: InputBorder.none,
-            ),
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-            style: const TextStyle(
-                fontSize: 40, fontWeight: FontWeight.bold, letterSpacing: 1.5),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.money),
+        TextFormField(
+          decoration: const InputDecoration(
+            labelStyle: TextStyle(fontSize: 18),
+            border: InputBorder.none,
           ),
-        ],
-      ),
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: const TextStyle(
+              fontSize: 40, fontWeight: FontWeight.bold, letterSpacing: 1.5),
+        ),
+      ],
     );
   }
 }

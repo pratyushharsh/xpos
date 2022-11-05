@@ -1,7 +1,4 @@
 import 'package:isar/isar.dart';
-
-import 'entity.dart';
-
 part 'trn_payment_line_item.g.dart';
 
 @embedded

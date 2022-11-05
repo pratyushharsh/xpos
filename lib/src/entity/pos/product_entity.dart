@@ -1,5 +1,4 @@
 import 'package:isar/isar.dart';
-import 'package:receipt_generator/src/entity/pos/entity.dart';
 
 // @Entity(tableName: 'product', indices: [
 //   Index(value: ['description']),

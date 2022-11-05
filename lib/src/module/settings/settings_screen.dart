@@ -30,7 +30,7 @@ class SettingsScreen extends StatelessWidget {
             await RepositoryProvider.of<BusinessRepository>(context)
                 .findAndPersistBusiness(storeId);
           } catch (e) {
-            print(e);
+            // print(e);
           }
         }
       },
@@ -92,9 +92,7 @@ class SettingsScreen extends StatelessWidget {
                           Navigator.of(context)
                               .pushNamed(RouteConfig.localeScreen)
                               .then((value) {
-                            print('Locale changed : $value');
                             if (value != null && value is Locale) {
-                              print('Setting Locale changed : $value');
                               EasyLocalization.of(context)?.setLocale(value);
                             }
                           });
@@ -379,15 +377,15 @@ class _SwitchBusinessAccountWidgetState
     super.dispose();
   }
 
-  Widget _buildInvalidUser() {
-    return const Text(
-      "You are not a valid user",
-      style: TextStyle(
-          color: AppColor.subtitleColorPrimary,
-          fontWeight: FontWeight.w500,
-          fontSize: 15),
-    );
-  }
+  // Widget _buildInvalidUser() {
+  //   return const Text(
+  //     "You are not a valid user",
+  //     style: TextStyle(
+  //         color: AppColor.subtitleColorPrimary,
+  //         fontWeight: FontWeight.w500,
+  //         fontSize: 15),
+  //   );
+  // }
 
   Widget _buildNewBusinessButton() {
     return InkWell(

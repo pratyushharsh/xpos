@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -47,7 +45,7 @@ class ReceiptDisplayBloc
           await transactionRepo.getTransaction(transId);
 
       // build tax detail
-      HashMap<String, List<TransactionLineItemEntity>> hsnCategory = HashMap();
+      // HashMap<String, List<TransactionLineItemEntity>> hsnCategory = HashMap();
       // for (TransactionLineItemEntity li in transaction.lineItems.toList()) {
       //   if (li.hsn == null) continue;
       //   hsnCategory.putIfAbsent(li.hsn!, () => List.empty(growable: true));

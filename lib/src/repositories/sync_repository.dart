@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:archive/archive_io.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,14 +42,6 @@ class SyncRepository {
         var decode = json.decode(rawResp.body);
         if (decode is List) {
           log.info("Fetched ${decode.length} records to sync");
-          for (var element in decode) {
-            try {
-              // @TODO
-              // await db.productDao.insertBulk(ProductEntity.fromMap(element));
-            } catch (e) {
-              log.severe(e);
-            }
-          }
         }
       } else {
         throw 'Unable to sync the data. Contact Admin';
@@ -69,14 +60,6 @@ class SyncRepository {
         var decode = json.decode(rawResp.body);
         if (decode is List) {
           log.info("Fetched ${decode.length} records to sync");
-          for (var element in decode) {
-            try {
-              // @TODO
-              // await db.contactDao.insertBulk(ContactEntity.fromMap(element));
-            } catch (e) {
-              log.severe(e);
-            }
-          }
         }
       } else {
         throw 'Unable to sync the data. Contact Admin';
@@ -122,11 +105,11 @@ class SyncRepository {
       var x = await db.transactionHeaderEntitys.where().exportJsonRaw((p0) => p0,);
       // var dir = Directory('/storage/emulated/0/Download');
       var dir = await getApplicationSupportDirectory();
-      Archive archive = Archive();
-      print(dir.path);
+      // Archive archive = Archive();
+      log.info(dir.path);
       var myFile = File('${dir.path}/transaction.txt');
       await myFile.writeAsBytes(x, flush: true);
-      print('File written');
+      log.info('File written');
     } catch (e) {
       log.severe(e);
     }

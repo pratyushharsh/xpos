@@ -482,7 +482,6 @@ class _BusinessLogoState extends State<BusinessLogo> {
   final TextEditingController maxWidthController = TextEditingController();
   final TextEditingController maxHeightController = TextEditingController();
   final TextEditingController qualityController = TextEditingController();
-  bool _newImage = false;
   File? _imagePath;
 
   Future<void> _onImageButtonPressed(ImageSource source) async {
@@ -492,8 +491,6 @@ class _BusinessLogoState extends State<BusinessLogo> {
       if (pickedFile != null) {
         setState(() {
           _imagePath = File(pickedFile.path);
-          _newImage = true;
-
           BlocProvider.of<BusinessBloc>(context)
               .add(OnChangePhoto(_imagePath!));
         });

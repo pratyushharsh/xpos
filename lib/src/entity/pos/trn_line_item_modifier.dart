@@ -1,7 +1,5 @@
 import 'package:isar/isar.dart';
 
-import 'entity.dart';
-
 part 'trn_line_item_modifier.g.dart';
 
 @embedded

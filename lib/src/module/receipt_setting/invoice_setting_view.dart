@@ -8,7 +8,6 @@ import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/widgets/appbar_leading.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
 
-import '../../entity/pos/report_config_entity.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/invoice/widget.dart';
 import '../receipt_display/template/invoice_config.dart';
@@ -349,7 +348,7 @@ class UploadViewImage extends StatelessWidget {
           .add(UploadLogoFromPlatform(result.files.single));
     } else {
       // User canceled the picker
-      print("User Cancelled");
+      // print("User Cancelled");
     }
   }
 

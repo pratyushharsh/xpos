@@ -73,7 +73,7 @@ class AboutScreenComponentList extends StatelessWidget {
         });
       }
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
     }
 
     var tmpDiPath = Directory(temDir.path);
@@ -89,11 +89,11 @@ class AboutScreenComponentList extends StatelessWidget {
         });
       }
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
     }
 
     // return {'fileNum': fileNum, 'size': totalSize};
-    return '${(totalSize / (1024 * 1024)).toStringAsFixed(2)} MB';
+    return '${(totalSize / (1024 * 1024)).toStringAsFixed(2)} MB | $fileNum files';
   }
 
   Future<String> calculateDatabaseSize(BuildContext context) async {

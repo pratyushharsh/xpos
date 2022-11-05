@@ -1,19 +1,16 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
-import '../../config/constants.dart';
 import '../../config/tender_config.dart';
 import '../../config/theme_settings.dart';
 import '../../util/text_input_formatter/money_editing_controller.dart';
-import '../../widgets/customDialog.dart';
+import '../../widgets/custom_dialog.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_image.dart';
 import '../../widgets/desktop_pop_up.dart';
@@ -258,28 +255,26 @@ class SaleReturnDisplayDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          const SaleHeaderBlock(),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: const [
-                  LineItemHeader(),
-                  Divider(),
-                  Expanded(
-                    child: BuildLineItem(),
-                  ),
-                  NewReceiptSummaryDesktopWidget(),
-                  NewInvoiceButtonBar()
-                ],
-              ),
+    return Column(
+      children: [
+        const SaleHeaderBlock(),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: const [
+                LineItemHeader(),
+                Divider(),
+                Expanded(
+                  child: BuildLineItem(),
+                ),
+                NewReceiptSummaryDesktopWidget(),
+                NewInvoiceButtonBar()
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -606,7 +601,7 @@ class _TenderAmountTextFieldState extends State<TenderAmountTextField> {
   Widget build(BuildContext context) {
     return KeypadOverlay(
       overlayPadding: const EdgeInsets.all(0),
-      key: _overlayKey,
+      gKey: _overlayKey,
       showOverlay: _isNodeFocus,
       child: TextFormField(
         enabled: widget.selectedTender.isNotEmpty,

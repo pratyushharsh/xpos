@@ -104,7 +104,7 @@ class BusinessRepository {
     try {
       var option = RestOptions(
           path: '/business/$businessId', body: json.encode(request.toMap()));
-      var rawResp = await restClient.put(restOptions: option);
+      await restClient.put(restOptions: option);
       return findAndPersistBusiness(businessId);
     } catch (e) {
       log.severe(e);

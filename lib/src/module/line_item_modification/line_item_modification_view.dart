@@ -1,18 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/module/create_new_receipt/bloc/create_new_receipt_bloc.dart';
 import 'package:receipt_generator/src/module/line_item_modification/bloc/line_item_modification_bloc.dart';
 import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 
-import '../../config/constants.dart';
 import '../../config/theme_settings.dart';
 import '../../entity/pos/entity.dart';
 import '../../util/text_input_formatter/widget.dart';
-import '../../widgets/customDialog.dart';
+import '../../widgets/custom_dialog.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_image.dart';
 import '../../widgets/custom_text_field.dart';

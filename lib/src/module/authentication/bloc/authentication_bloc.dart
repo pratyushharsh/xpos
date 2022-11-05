@@ -129,7 +129,7 @@ class AuthenticationBloc
       ChooseBusinessEvent event, Emitter<AuthenticationState> emit) async {
     emit(state.copyWith(status: AuthenticationStatus.chooseBusinessLoading));
     var user = await userPool.getCurrentUser();
-    var session = await user!.getSession();
+    await user!.getSession();
     await user.storage.setItem("CURRENT_STORE", event.business.storeId);
     var business = await businessRepository.getBusinessById(int.parse(event.business.storeId!));
     var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(event.business.storeId!, user.getUsername()!);

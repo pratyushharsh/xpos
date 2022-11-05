@@ -36,7 +36,8 @@ class TaxModifierCalculator implements AbstractCalculator {
       }
 
       AbstractTaxStrategy taxStrategy = getTaxStrategy(mod.authorityType!);
-      double modifierTax = calculateModifierTax(taxStrategy, taxInfo, lineItem.returnFlag);
+      // Modified Tax
+      calculateModifierTax(taxStrategy, taxInfo, lineItem.returnFlag);
     }
     return lineItem;
   }

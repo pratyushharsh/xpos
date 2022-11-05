@@ -43,29 +43,29 @@ class _InvoiceDisplayViewState extends State<InvoiceDisplayView> {
   List<GlobalKey<State<StatefulWidget>>> keys = List.generate(200, (index) => GlobalKey());
   int count = 0;
 
-  void _printReceipt(List<GlobalKey> key) {
-    Printing.layoutPdf(
-        format: PdfPageFormat.a4,
-        onLayout: (PdfPageFormat format) async {
-          final doc = pw.Document();
-
-          for (GlobalKey k in key) {
-            final image = await WidgetWraper.fromKey(
-              key: k,
-              pixelRatio: 5.0,
-            );
-            doc.addPage(pw.Page(
-                pageFormat: format,
-                build: (pw.Context context) {
-                  return pw.Center(
-                    child: pw.Image(image),
-                  );
-                }));
-          }
-
-          return doc.save();
-        });
-  }
+  // void _printReceipt(List<GlobalKey> key) {
+  //   Printing.layoutPdf(
+  //       format: PdfPageFormat.a4,
+  //       onLayout: (PdfPageFormat format) async {
+  //         final doc = pw.Document();
+  //
+  //         for (GlobalKey k in key) {
+  //           final image = await WidgetWraper.fromKey(
+  //             key: k,
+  //             pixelRatio: 5.0,
+  //           );
+  //           doc.addPage(pw.Page(
+  //               pageFormat: format,
+  //               build: (pw.Context context) {
+  //                 return pw.Center(
+  //                   child: pw.Image(image),
+  //                 );
+  //               }));
+  //         }
+  //
+  //         return doc.save();
+  //       });
+  // }
 
   void _shareReceipt(List<GlobalKey> key) async {
     final doc = pw.Document();
@@ -93,7 +93,7 @@ class _InvoiceDisplayViewState extends State<InvoiceDisplayView> {
 
   void updateKeys(int k) {
     // _keys = k;
-    print('total page $k');
+    // print('total page $k');
     count = k;
   }
 
@@ -309,7 +309,7 @@ class InvoiceBlock extends StatelessWidget {
                 data: headers,
               ),
               ...lineItems
-                  .map((e) => InvoiceTableCells(
+                  .map((e) => const InvoiceTableCells(
                         data: [
                           // InvoiceTableCellModel(
                           //     label: e.transSeq.toString(), flex: 2),
@@ -791,44 +791,42 @@ class InvoiceTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          InvoiceTableCells(
-            bottomBorder: true,
-            data: headers,
-          ),
-          const InvoiceTableLineItems(),
-          Expanded(child: InvoiceSpacer(data: headers)),
-          const InvoiceTableOrderSummary(),
-          const Text(
-            "Amount Chargeable (in words)",
-            style: TextStyle(fontSize: fontSize),
-          ),
-          BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
-            builder: (context, state) {
-              var x = state.header!.total.toInt();
-              var y = (state.header!.total * 100 % 100).toInt();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InvoiceTableCells(
+          bottomBorder: true,
+          data: headers,
+        ),
+        const InvoiceTableLineItems(),
+        Expanded(child: InvoiceSpacer(data: headers)),
+        const InvoiceTableOrderSummary(),
+        const Text(
+          "Amount Chargeable (in words)",
+          style: TextStyle(fontSize: fontSize),
+        ),
+        BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
+          builder: (context, state) {
+            var x = state.header!.total.toInt();
+            var y = (state.header!.total * 100 % 100).toInt();
 
-              String amountToWord =
-                  "INR " + NumberToWord().convert('en-in', x).toTitleCase();
-              if (y > 0) {
-                amountToWord += " and ";
-                amountToWord +=
-                    NumberToWord().convert('en-in', y).toTitleCase();
-                amountToWord += "paise Only";
-              }
+            String amountToWord =
+                "INR " + NumberToWord().convert('en-in', x).toTitleCase();
+            if (y > 0) {
+              amountToWord += " and ";
+              amountToWord +=
+                  NumberToWord().convert('en-in', y).toTitleCase();
+              amountToWord += "paise Only";
+            }
 
-              return Text(
-                amountToWord,
-                style: const TextStyle(
-                    fontSize: fontSize + 1, fontWeight: FontWeight.bold),
-              );
-            },
-          )
-        ],
-      ),
+            return Text(
+              amountToWord,
+              style: const TextStyle(
+                  fontSize: fontSize + 1, fontWeight: FontWeight.bold),
+            );
+          },
+        )
+      ],
     );
   }
 }
@@ -917,7 +915,7 @@ class InvoiceTableLineItems extends StatelessWidget {
         if (state.lineItems == null) return Container();
         return Column(
           children: state.lineItems!
-              .map((e) => InvoiceTableCells(
+              .map((e) => const InvoiceTableCells(
                     data: [
                       // InvoiceTableCellModel(
                       //     label: e.transSeq.toString(), flex: 2),
@@ -1235,90 +1233,88 @@ class InvoiceTaxDetail extends StatelessWidget {
         var totTaxAmount = state.taxSummary.fold<double>(
             0.0, (previousValue, element) => previousValue + element.taxTotal);
 
-        return Container(
-          child: Column(
-            children: [
-              const TaxTableHeader(),
-              ...state.taxSummary
-                  .map((e) => InvoiceTableCells(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 1),
-                        topBorder: true,
-                        data: [
-                          InvoiceTableCellModel(label: e.hsn, flex: 10),
-                          InvoiceTableCellModel(
-                              label: e.amount.toStringAsFixed(2),
-                              flex: 5,
-                              textAlign: TextAlign.right),
-                          InvoiceTableCellModel(
-                              label:
-                                  "${(e.cgstRate * 100).toStringAsFixed(0)}%",
-                              flex: 2,
-                              textAlign: TextAlign.right),
-                          InvoiceTableCellModel(
-                              label: e.cgstAmount.toStringAsFixed(2),
-                              flex: 5,
-                              textAlign: TextAlign.right),
-                          InvoiceTableCellModel(
-                              label:
-                                  "${(e.sgstRate * 100).toStringAsFixed(0)}%",
-                              flex: 2,
-                              textAlign: TextAlign.right),
-                          InvoiceTableCellModel(
-                              label: e.sgstAmont.toStringAsFixed(2),
-                              flex: 5,
-                              textAlign: TextAlign.right),
-                          InvoiceTableCellModel(
-                              label: e.taxTotal.toStringAsFixed(2),
-                              flex: 5,
-                              textAlign: TextAlign.right),
-                        ],
-                      ))
-                  .toList(),
-              InvoiceTableCells(
-                topBorder: true,
-                bottomBorder: true,
-                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 1),
-                data: [
-                  InvoiceTableCellModel(
-                      label: "Total",
-                      flex: 10,
-                      fontWeight: FontWeight.bold,
-                      textAlign: TextAlign.right),
-                  InvoiceTableCellModel(
-                      label: totAmount.toStringAsFixed(2),
-                      flex: 5,
-                      textAlign: TextAlign.right,
-                      fontWeight: FontWeight.bold),
-                  InvoiceTableCellModel(
-                      label: "9%",
-                      flex: 2,
-                      textAlign: TextAlign.right,
-                      fontWeight: FontWeight.bold),
-                  InvoiceTableCellModel(
-                      label: totCgstAmount.toStringAsFixed(2),
-                      flex: 5,
-                      textAlign: TextAlign.right,
-                      fontWeight: FontWeight.bold),
-                  InvoiceTableCellModel(
-                      label: "9%",
-                      flex: 2,
-                      textAlign: TextAlign.right,
-                      fontWeight: FontWeight.bold),
-                  InvoiceTableCellModel(
-                      label: totSgstAmount.toStringAsFixed(2),
-                      flex: 5,
-                      textAlign: TextAlign.right,
-                      fontWeight: FontWeight.bold),
-                  InvoiceTableCellModel(
-                      label: totTaxAmount.toStringAsFixed(2),
-                      flex: 5,
-                      textAlign: TextAlign.right,
-                      fontWeight: FontWeight.bold),
-                ],
-              )
-            ],
-          ),
+        return Column(
+          children: [
+            const TaxTableHeader(),
+            ...state.taxSummary
+                .map((e) => InvoiceTableCells(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 2, horizontal: 1),
+                      topBorder: true,
+                      data: [
+                        InvoiceTableCellModel(label: e.hsn, flex: 10),
+                        InvoiceTableCellModel(
+                            label: e.amount.toStringAsFixed(2),
+                            flex: 5,
+                            textAlign: TextAlign.right),
+                        InvoiceTableCellModel(
+                            label:
+                                "${(e.cgstRate * 100).toStringAsFixed(0)}%",
+                            flex: 2,
+                            textAlign: TextAlign.right),
+                        InvoiceTableCellModel(
+                            label: e.cgstAmount.toStringAsFixed(2),
+                            flex: 5,
+                            textAlign: TextAlign.right),
+                        InvoiceTableCellModel(
+                            label:
+                                "${(e.sgstRate * 100).toStringAsFixed(0)}%",
+                            flex: 2,
+                            textAlign: TextAlign.right),
+                        InvoiceTableCellModel(
+                            label: e.sgstAmont.toStringAsFixed(2),
+                            flex: 5,
+                            textAlign: TextAlign.right),
+                        InvoiceTableCellModel(
+                            label: e.taxTotal.toStringAsFixed(2),
+                            flex: 5,
+                            textAlign: TextAlign.right),
+                      ],
+                    ))
+                .toList(),
+            InvoiceTableCells(
+              topBorder: true,
+              bottomBorder: true,
+              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 1),
+              data: [
+                InvoiceTableCellModel(
+                    label: "Total",
+                    flex: 10,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.right),
+                InvoiceTableCellModel(
+                    label: totAmount.toStringAsFixed(2),
+                    flex: 5,
+                    textAlign: TextAlign.right,
+                    fontWeight: FontWeight.bold),
+                InvoiceTableCellModel(
+                    label: "9%",
+                    flex: 2,
+                    textAlign: TextAlign.right,
+                    fontWeight: FontWeight.bold),
+                InvoiceTableCellModel(
+                    label: totCgstAmount.toStringAsFixed(2),
+                    flex: 5,
+                    textAlign: TextAlign.right,
+                    fontWeight: FontWeight.bold),
+                InvoiceTableCellModel(
+                    label: "9%",
+                    flex: 2,
+                    textAlign: TextAlign.right,
+                    fontWeight: FontWeight.bold),
+                InvoiceTableCellModel(
+                    label: totSgstAmount.toStringAsFixed(2),
+                    flex: 5,
+                    textAlign: TextAlign.right,
+                    fontWeight: FontWeight.bold),
+                InvoiceTableCellModel(
+                    label: totTaxAmount.toStringAsFixed(2),
+                    flex: 5,
+                    textAlign: TextAlign.right,
+                    fontWeight: FontWeight.bold),
+              ],
+            )
+          ],
         );
       },
     );
@@ -1366,20 +1362,18 @@ class InvoiceFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          const InvoiceTaxDetail(),
-          const SizedBox(height: 15),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Expanded(child: Declaration()),
-              Expanded(child: AuthoritySignature())
-            ],
-          )
-        ],
-      ),
+    return Column(
+      children: [
+        const InvoiceTaxDetail(),
+        const SizedBox(height: 15),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Expanded(child: Declaration()),
+            Expanded(child: AuthoritySignature())
+          ],
+        )
+      ],
     );
   }
 }

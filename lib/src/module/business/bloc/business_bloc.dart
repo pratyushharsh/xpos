@@ -102,7 +102,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
           emit(state.copyWith(status: BusinessStatus.uploadingImage));
           var uploadUrl = await repo.getLogoUploadUrl(state.entity!.rtlLocId);
           var data = await state.photo!.readAsBytes();
-          var response = await repo.uploadImage(uploadUrl, data);
+          await repo.uploadImage(uploadUrl, data);
           emit(state.copyWith(status: BusinessStatus.modified));
         }
         authBloc.add(RefreshBusinessEvent());

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -106,7 +104,7 @@ class CreateEditEmployeeBloc
       // https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html
       final phone = '+${state.phone.replaceAll(RegExp(r'[^0-9]'),'')}';
 
-      var data = await employeeRepository.createNewEmployeeForStore(
+      await employeeRepository.createNewEmployeeForStore(
           CreateStoreEmployeeRequest(
               firstName: state.firstName,
               lastName: state.lastName,
@@ -126,7 +124,7 @@ class CreateEditEmployeeBloc
       OnSaveEmployee event, Emitter<CreateEditEmployeeState> emit) async {
     try {
       emit(state.copyWith(status: CreateEditEmployeeStatus.userUpdating));
-      var data = await employeeRepository.updateEmployee(
+      await employeeRepository.updateEmployee(
           UpdateEmployeeRequest(
             firstName: state.firstName,
             middleName: state.middleName,

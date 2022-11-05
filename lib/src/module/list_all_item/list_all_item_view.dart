@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:animations/animations.dart';
@@ -10,7 +9,6 @@ import 'package:receipt_generator/src/module/list_all_item/bloc/list_all_item_bl
 import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
-import '../../config/constants.dart';
 import '../../entity/pos/entity.dart';
 import '../../widgets/custom_image.dart';
 import '../create_new_item/add_new_item_view.dart';

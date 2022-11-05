@@ -29,7 +29,7 @@ class MeasureSize extends StatefulWidget {
   final Widget? child;
   final OnWidgetSizeChange onSizeChange;
 
-   MeasureSize({
+   const MeasureSize({super.key,
     required this.onSizeChange,
     required this.child,
   });

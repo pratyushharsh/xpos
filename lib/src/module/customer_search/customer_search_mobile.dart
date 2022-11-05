@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../widgets/appbar_leading.dart';
 import '../../widgets/custom_text_field.dart';
 import 'bloc/customer_search_bloc.dart';
-import 'customer_search_desktop.dart';
 import 'customer_search_widget.dart';
 
 class CustomerSearchMobile extends StatelessWidget {

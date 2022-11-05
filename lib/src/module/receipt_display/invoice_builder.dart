@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 typedef OnLineItemOverFlow = void Function(List<double> heights, double maxHeight);
 
+// ignore: must_be_immutable
 class CustomInvoiceColumn extends MultiChildRenderObjectWidget {
   final OnLineItemOverFlow onLineItemOverflow;
   CustomInvoiceColumn({Key? key, List<Widget> children = const [], required this.onLineItemOverflow})

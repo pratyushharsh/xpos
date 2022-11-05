@@ -131,10 +131,9 @@ class EmployeeDetailView extends StatelessWidget {
                             style: TextStyle(color: AppColor.primary),
                           ),
                           style: ElevatedButton.styleFrom(
-                            elevation: 0,
+                            elevation: 0, backgroundColor: AppColor.color8,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 14, horizontal: 10),
-                            primary: AppColor.color8,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0)),
                           ),
@@ -158,10 +157,9 @@ class EmployeeDetailView extends StatelessWidget {
                             style: TextStyle(color: AppColor.primary),
                           ),
                           style: ElevatedButton.styleFrom(
-                            elevation: 0,
+                            elevation: 0, backgroundColor: AppColor.color8,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 14, horizontal: 10),
-                            primary: AppColor.color8,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0)),
                           ),

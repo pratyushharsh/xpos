@@ -13,7 +13,7 @@ class SequenceRepository {
   SequenceRepository({required this.db, required this.restClient});
 
   Future<SequenceEntity> getNextSequence(SequenceType type) async {
-    var data = await db.writeTxn(() async {
+    await db.writeTxn(() async {
       var seq = await db.sequenceEntitys.get(type.index);
       if (seq != null) {
         await db.sequenceEntitys.put(seq.copyWith(nextSeq: seq.nextSeq + 1));

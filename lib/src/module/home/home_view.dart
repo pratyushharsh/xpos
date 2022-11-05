@@ -13,7 +13,6 @@ import 'package:receipt_generator/src/module/load_customer_contact/bloc/load_cus
 
 import '../../../locale_keys.dart';
 import '../../widgets/clipper/wave_clipper.dart';
-import '../error/error_notification.dart';
 
 typedef _LetIndexPage = void Function(int value);
 
@@ -398,9 +397,8 @@ class SaleOptionButton extends StatelessWidget {
         ],
       ),
       style: ElevatedButton.styleFrom(
-        elevation: 0,
+        elevation: 0, backgroundColor: AppColor.color8,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-        primary: AppColor.color8,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
       ),

@@ -15,7 +15,7 @@ import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 import '../../config/transaction_config.dart';
 import '../../entity/pos/address.dart';
 import '../../entity/pos/entity.dart';
-import '../../widgets/customDialog.dart';
+import '../../widgets/custom_dialog.dart';
 import '../../widgets/custom_image.dart';
 import '../../widgets/desktop_pop_up.dart';
 import '../business/business_view.dart';

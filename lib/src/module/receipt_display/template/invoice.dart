@@ -6,8 +6,6 @@ import 'package:pdf/widgets.dart';
 import '../../../entity/pos/entity.dart';
 import '../../../entity/pos/report_config_entity.dart';
 import 'base_invoice.dart';
-import 'invoice_1.dart';
-import 'invoice_2.dart';
 import 'invoice_config.dart';
 
 Future<Uint8List> generateInvoice(

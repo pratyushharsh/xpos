@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -14,7 +12,6 @@ class ErrorNotificationBloc extends Bloc<ErrorNotificationEvent, ErrorNotificati
 
   final CheckListHelper checkListHelper;
   final AuthenticationBloc authenticationBloc;
-  Timer? _timer;
 
   ErrorNotificationBloc({required this.checkListHelper, required this.authenticationBloc}) : super(const ErrorNotificationState()) {
     on<ValidateStoreSetup>(_onValidateStoreSetup);

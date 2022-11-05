@@ -52,8 +52,8 @@ const SyncEntitySchema = CollectionSchema(
     r'type': IndexSchema(
       id: 5117122708147080838,
       name: r'type',
-      unique: false,
-      replace: false,
+      unique: true,
+      replace: true,
       properties: [
         IndexPropertySchema(
           name: r'type',
@@ -142,6 +142,60 @@ List<IsarLinkBase<dynamic>> _syncEntityGetLinks(SyncEntity object) {
 }
 
 void _syncEntityAttach(IsarCollection<dynamic> col, Id id, SyncEntity object) {}
+
+extension SyncEntityByIndex on IsarCollection<SyncEntity> {
+  Future<SyncEntity?> getByType(String type) {
+    return getByIndex(r'type', [type]);
+  }
+
+  SyncEntity? getByTypeSync(String type) {
+    return getByIndexSync(r'type', [type]);
+  }
+
+  Future<bool> deleteByType(String type) {
+    return deleteByIndex(r'type', [type]);
+  }
+
+  bool deleteByTypeSync(String type) {
+    return deleteByIndexSync(r'type', [type]);
+  }
+
+  Future<List<SyncEntity?>> getAllByType(List<String> typeValues) {
+    final values = typeValues.map((e) => [e]).toList();
+    return getAllByIndex(r'type', values);
+  }
+
+  List<SyncEntity?> getAllByTypeSync(List<String> typeValues) {
+    final values = typeValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'type', values);
+  }
+
+  Future<int> deleteAllByType(List<String> typeValues) {
+    final values = typeValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'type', values);
+  }
+
+  int deleteAllByTypeSync(List<String> typeValues) {
+    final values = typeValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'type', values);
+  }
+
+  Future<Id> putByType(SyncEntity object) {
+    return putByIndex(r'type', object);
+  }
+
+  Id putByTypeSync(SyncEntity object, {bool saveLinks = true}) {
+    return putByIndexSync(r'type', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByType(List<SyncEntity> objects) {
+    return putAllByIndex(r'type', objects);
+  }
+
+  List<Id> putAllByTypeSync(List<SyncEntity> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'type', objects, saveLinks: saveLinks);
+  }
+}
 
 extension SyncEntityQueryWhereSort
     on QueryBuilder<SyncEntity, SyncEntity, QWhere> {

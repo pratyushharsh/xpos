@@ -1,14 +1,9 @@
-import 'dart:convert';
-
 import 'package:isar/isar.dart';
-
 import 'address.dart';
-
 part 'contact_entity.g.dart';
 
 @Collection()
 class ContactEntity {
-
   final Id? id;
 
   @Index(unique: true)
@@ -38,25 +33,24 @@ class ContactEntity {
   late DateTime? lastSyncAt;
   late int version;
 
-  ContactEntity({
-    this.id,
-    required this.contactId,
-    required this.firstName,
-    required this.lastName,
-    required this.storeId,
-    this.phoneNumber,
-    this.email,
-    this.shippingAddress,
-    this.billingAddress,
-    this.panCard,
-    this.gstin,
-    required this.createTime,
-    this.version = 1,
-    this.syncState = 100,
-    this.lastSyncAt,
-    this.updateTime});
+  ContactEntity(
+      {this.id,
+      required this.contactId,
+      required this.firstName,
+      required this.lastName,
+      required this.storeId,
+      this.phoneNumber,
+      this.email,
+      this.shippingAddress,
+      this.billingAddress,
+      this.panCard,
+      this.gstin,
+      required this.createTime,
+      this.version = 1,
+      this.syncState = 100,
+      this.lastSyncAt,
+      this.updateTime});
 }
-
 
 // class AddressConverter extends TypeConverter<Address?, String?> {
 //   const AddressConverter(); // Converters need to have an empty const constructor

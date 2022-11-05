@@ -20,13 +20,10 @@
  * SOFTWARE.
  */
 
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../module/calculator/calculator.dart';
 import 'get_position.dart';
-import 'measure_size.dart';
 
 class KeypadWidget extends StatefulWidget {
   final GetPosition? position;
@@ -80,48 +77,48 @@ class _KeypadWidgetState extends State<KeypadWidget> {
   }
 }
 
-class _Arrow extends CustomPainter {
-  final Color strokeColor;
-  final PaintingStyle paintingStyle;
-  final double strokeWidth;
-  final bool isUpArrow;
-
-  _Arrow(
-      {this.strokeColor = Colors.black,
-      this.strokeWidth = 3,
-      this.paintingStyle = PaintingStyle.stroke,
-      this.isUpArrow = true});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = strokeColor
-      ..strokeWidth = strokeWidth
-      ..style = paintingStyle;
-
-    canvas.drawPath(getTrianglePath(size.width, size.height), paint);
-  }
-
-  Path getTrianglePath(double x, double y) {
-    if (isUpArrow) {
-      return Path()
-        ..moveTo(0, y)
-        ..lineTo(x / 2, 0)
-        ..lineTo(x, y)
-        ..lineTo(0, y);
-    } else {
-      return Path()
-        ..moveTo(0, 0)
-        ..lineTo(x, 0)
-        ..lineTo(x / 2, y)
-        ..lineTo(0, 0);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_Arrow oldDelegate) {
-    return oldDelegate.strokeColor != strokeColor ||
-        oldDelegate.paintingStyle != paintingStyle ||
-        oldDelegate.strokeWidth != strokeWidth;
-  }
-}
+// class _Arrow extends CustomPainter {
+//   final Color strokeColor;
+//   final PaintingStyle paintingStyle;
+//   final double strokeWidth;
+//   final bool isUpArrow;
+//
+//   _Arrow(
+//       {this.strokeColor = Colors.black,
+//       this.strokeWidth = 3,
+//       this.paintingStyle = PaintingStyle.stroke,
+//       this.isUpArrow = true});
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     final paint = Paint()
+//       ..color = strokeColor
+//       ..strokeWidth = strokeWidth
+//       ..style = paintingStyle;
+//
+//     canvas.drawPath(getTrianglePath(size.width, size.height), paint);
+//   }
+//
+//   Path getTrianglePath(double x, double y) {
+//     if (isUpArrow) {
+//       return Path()
+//         ..moveTo(0, y)
+//         ..lineTo(x / 2, 0)
+//         ..lineTo(x, y)
+//         ..lineTo(0, y);
+//     } else {
+//       return Path()
+//         ..moveTo(0, 0)
+//         ..lineTo(x, 0)
+//         ..lineTo(x / 2, y)
+//         ..lineTo(0, 0);
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(_Arrow oldDelegate) {
+//     return oldDelegate.strokeColor != strokeColor ||
+//         oldDelegate.paintingStyle != paintingStyle ||
+//         oldDelegate.strokeWidth != strokeWidth;
+//   }
+// }

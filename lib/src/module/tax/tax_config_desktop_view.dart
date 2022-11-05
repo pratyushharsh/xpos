@@ -56,6 +56,6 @@ class TaxConfigDesktopView extends StatelessWidget {
           ]),
         ),
       ],
-    );;
+    );
   }
 }

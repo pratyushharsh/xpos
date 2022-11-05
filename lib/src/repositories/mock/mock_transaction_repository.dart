@@ -45,7 +45,7 @@ class MockTransactionRepository extends TransactionRepository {
         extendedAmount: 100,
         netAmount: 128,
         grossAmount: 100,
-        hsn: '1234${e}',
+        hsn: '1234$e',
         uom: 'EA',
         priceOverride: false,
         priceOverrideAmount: null,

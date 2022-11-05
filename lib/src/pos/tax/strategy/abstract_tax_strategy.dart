@@ -1,5 +1,4 @@
 import 'package:logging/logging.dart';
-import 'package:receipt_generator/src/repositories/tax_repository.dart';
 
 import '../../../entity/pos/tax_rule_entity.dart';
 import '../../../entity/pos/trn_line_item_tax.dart';
@@ -22,9 +21,9 @@ abstract class AbstractTaxStrategy {
 
   double calculateRawAmount(double argTaxableAmount, double argItemQuantity, double argSubTotal, TaxCalculationInfo ti) {
 
-    double totalUnitTaxAmount = argTaxableAmount;
-    double totalRawTaxAmount = 0.0;
-    double totalRawTaxPercentage = 0.0;
+    // double totalUnitTaxAmount = argTaxableAmount;
+    // double totalRawTaxAmount = 0.0;
+    // double totalRawTaxPercentage = 0.0;
     double taxableUnitAmount = argTaxableAmount / argItemQuantity;
 
     TaxRuleEntity taxRule = ti.taxRule;

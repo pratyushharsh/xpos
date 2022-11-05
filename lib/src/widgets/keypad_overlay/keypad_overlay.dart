@@ -6,16 +6,15 @@ import 'layout_overlay.dart';
 import 'tooltip_widget.dart';
 
 class KeypadOverlay extends StatefulWidget {
-  @override
-  final GlobalKey key;
+  final GlobalKey gKey;
   final Widget child;
   final Widget overlayWidget;
   final bool showOverlay;
   final EdgeInsets overlayPadding;
 
   const KeypadOverlay(
-      {required this.key, required this.child, required this.overlayPadding, required this.showOverlay, required this.overlayWidget})
-      : super(key: key);
+      {required this.gKey, required this.child, required this.overlayPadding, required this.showOverlay, required this.overlayWidget})
+      : super(key: gKey);
 
   @override
   State<KeypadOverlay> createState() => _KeypadOverlayState();
@@ -28,7 +27,7 @@ class _KeypadOverlayState extends State<KeypadOverlay> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     position ??= GetPosition(
-      key: widget.key,
+      key: widget.gKey,
       padding: widget.overlayPadding,
       screenWidth: MediaQuery.of(context).size.width,
       screenHeight: MediaQuery.of(context).size.height,
@@ -48,7 +47,7 @@ class _KeypadOverlayState extends State<KeypadOverlay> {
       overlayBuilder: (context, rectBound, offset) {
         final size = MediaQuery.of(context).size;
         position = GetPosition(
-          key: widget.key,
+          key: widget.gKey,
           padding: widget.overlayPadding,
           screenWidth: size.width,
           screenHeight: size.height,

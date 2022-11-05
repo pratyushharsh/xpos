@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:receipt_generator/src/config/formatter.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
-import '../../config/constants.dart';
 import '../../config/route_config.dart';
 import '../../config/theme_settings.dart';
 import '../../widgets/appbar_leading.dart';
@@ -110,7 +108,7 @@ class CustomerAddress extends StatelessWidget {
                           .format(order.businessDate)),
                       Text('Invoice #' + order.transId.toString()),
                       Text('Sales Associate : ${order.associateName}'),
-                      Text('Notes : ' + 'Yet to add this'),
+                      const Text('Notes : Yet to add this'),
                     ]),
               ),
               if (order.customerId != null)
@@ -457,7 +455,7 @@ class OrderDetailSummary extends StatelessWidget {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Sub Total"),
+                      const Text("Sub Total"),
                       Text(NumberFormat.simpleCurrency(
                               locale: order.storeLocale,
                               name: order.storeCurrency)
@@ -471,35 +469,35 @@ class OrderDetailSummary extends StatelessWidget {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Tax Total"),
+                      const Text("Tax Total"),
                       Text(NumberFormat.simpleCurrency(
                               locale: order.storeLocale,
                               name: order.storeCurrency)
                           .format(order.taxTotal)),
                     ]),
               ),
-              Divider(),
+              const Divider(),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Discount Total"),
+                      const Text("Discount Total"),
                       Text(NumberFormat.simpleCurrency(
                               locale: order.storeLocale,
                               name: order.storeCurrency)
                           .format(order.discountTotal)),
                     ]),
               ),
-              Divider(),
+              const Divider(),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Grand Total"),
+                      const Text("Grand Total"),
                       Text(NumberFormat.simpleCurrency(
                               locale: order.storeLocale,
                               name: order.storeCurrency)

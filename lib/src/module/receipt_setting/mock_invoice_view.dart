@@ -8,10 +8,8 @@ import '../../widgets/my_loader.dart';
 import '../authentication/bloc/authentication_bloc.dart';
 import '../receipt_display/bloc/receipt_display_bloc.dart';
 import '../receipt_display/template/invoice.dart';
-import '../receipt_display/template/invoice_1.dart';
 import '../receipt_display/template/invoice_config.dart';
 import 'bloc/invoice_setting_bloc.dart';
-import 'bloc/receipt_setting_bloc.dart';
 
 class MockInvoiceView extends StatefulWidget {
   const MockInvoiceView({Key? key}) : super(key: key);

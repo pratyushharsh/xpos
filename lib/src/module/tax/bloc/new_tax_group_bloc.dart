@@ -27,7 +27,7 @@ class NewTaxGroupBloc extends Bloc<NewTaxGroupEvent, NewTaxGroupState> {
         name: state.name,
         description: state.description,
       );
-      var data = await taxRepository.createNewTaxGroup(taxGroup);
+      await taxRepository.createNewTaxGroup(taxGroup);
       emit(state.copyWith(status: NewTaxGroupStatus.success,));
     } catch (e) {
       emit(state.copyWith(status: NewTaxGroupStatus.error));

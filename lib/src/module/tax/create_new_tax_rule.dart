@@ -5,11 +5,9 @@ import 'package:receipt_generator/src/widgets/my_loader.dart';
 import '../../config/theme_settings.dart';
 import '../../entity/pos/tax_group_entity.dart';
 import '../../util/text_input_formatter/custom_formatter.dart';
-import '../../util/text_input_formatter/decimal_text_input_formatter.dart';
 import '../../widgets/address_widget.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
-import 'bloc/new_tax_group_bloc.dart';
 import 'bloc/new_tax_rule_bloc.dart';
 
 class CreateNewTaxRuleView extends StatelessWidget {

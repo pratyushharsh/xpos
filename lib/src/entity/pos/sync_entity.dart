@@ -6,7 +6,7 @@ part 'sync_entity.g.dart';
 class SyncEntity {
   final Id? id;
 
-  @Index()
+  @Index(unique: true, replace: true, name: "type")
   final String type;
 
   final DateTime? lastSyncAt;

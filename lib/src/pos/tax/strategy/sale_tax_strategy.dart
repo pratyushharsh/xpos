@@ -1,5 +1,4 @@
 import 'package:receipt_generator/src/entity/pos/trn_line_item_tax.dart';
-import 'package:receipt_generator/src/repositories/tax_repository.dart';
 
 import '../../../entity/pos/tax_rule_entity.dart';
 import 'abstract_tax_strategy.dart';

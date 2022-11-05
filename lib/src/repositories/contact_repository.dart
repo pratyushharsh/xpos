@@ -1,7 +1,9 @@
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/contact_entity.dart';
 
 class ContactRepository {
+  final log = Logger('ContactRepository');
   List<ContactEntity>? _contacts;
 
   Future<List<ContactEntity>> getContact() async {
@@ -45,7 +47,7 @@ class ContactRepository {
 
   Future<List<Contact>?> _getContactFromPhonebook() async {
     if (!await FlutterContacts.requestPermission(readonly: true)) {
-      print("Permission Denied");
+      log.info("Permission Denied");
     } else {
       return await FlutterContacts.getContacts(withProperties: true);
     }

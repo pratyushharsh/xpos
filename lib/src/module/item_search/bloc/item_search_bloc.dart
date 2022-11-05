@@ -1,10 +1,8 @@
 
 import 'package:bloc/bloc.dart';
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
-import 'package:receipt_generator/src/model/model.dart';
 
 import '../../../repositories/product_repository.dart';
 

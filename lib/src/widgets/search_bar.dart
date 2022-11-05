@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
-
-import '../module/home/clients_view.dart';
 
 class SearchBar extends StatefulWidget {
   final String label;
@@ -31,49 +28,6 @@ class _SearchBarState extends State<SearchBar> {
     Offset? offset = renderBox?.localToGlobal(Offset.zero);
     dx = offset?.dx;
     dy = offset?.dy;
-  }
-
-  OverlayEntry _createFloatingOverlay(BuildContext ctx) {
-    return OverlayEntry(builder: (context) {
-      return Positioned(
-        left: MediaQuery.of(ctx).size.width * 0.6 - 50,
-        width: MediaQuery.of(ctx).size.width * 0.4,
-        top: dy! + height! + 30,
-        child: Material(
-          child: Column(
-            children: [
-              Container(
-                height: 200,
-                width: 800,
-                color: Colors.green,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: sortOptions
-                      .map((e) => Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  e,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const Divider(
-                                  height: 0,
-                                )
-                              ],
-                            ),
-                          ))
-                      .toList(),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    });
   }
 
   @override

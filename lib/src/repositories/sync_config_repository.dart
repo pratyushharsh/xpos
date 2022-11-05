@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:isolate';
 
-import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:csv/csv.dart';
 import 'package:isar/isar.dart';
@@ -54,12 +53,12 @@ class SyncConfigRepository {
         lastSyncAt: DateTime.now(),
         status: 1);
     await db.writeTxn(() async {
-      await db.syncEntitys.putByIndex('type', syncEntity);
+      await db.syncEntitys.putByType(syncEntity);
     });
   }
 
   Future<void> _loadConfigCode(List<List<dynamic>> fields) async {
-    var res = await db.writeTxn(() async {
+    await db.writeTxn(() async {
       for (int i = 1; i < fields.length; i++) {
         var c = fields[i];
         db.codeValueEntitys.put(CodeValueEntity(
@@ -74,7 +73,7 @@ class SyncConfigRepository {
   }
 
   Future<void> _loadReasonCode(List<List<dynamic>> fields) async {
-    var res = await db.writeTxn(() async {
+    await db.writeTxn(() async {
       for (int i = 1; i < fields.length; i++) {
         var c = fields[i];
         db.reasonCodeEntitys.put(
@@ -92,10 +91,10 @@ class SyncConfigRepository {
   Future<void> _loadConfiguration(
       String filename, List<List<dynamic>> fields) async {
     String category = filename.replaceAll(".csv", "");
-    var res = await db.writeTxn(() async {
+    await db.writeTxn(() async {
       for (int i = 1; i < fields.length; i++) {
         var c = fields[i];
-        db.codeValueEntitys.putByIndex('category_code',
+        db.codeValueEntitys.putByCategoryCode(
             CodeValueEntity(
                 category: category,
                 code: c[0].toString(),
@@ -207,7 +206,7 @@ class SyncConfigRepository {
             .transform(const CsvToListConverter())
             .toList();
 
-        var resp = await db.writeTxn(() async {
+        await db.writeTxn(() async {
           for (var i = 1; i < fields.length; i++) {
             var e = fields[i];
 

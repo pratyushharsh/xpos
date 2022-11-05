@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
@@ -37,7 +35,7 @@ class CreateEditTaxBloc extends Bloc<CreateEditTaxEvent, CreateEditTaxState> {
             break;
           }
         }
-        print('Selected Tax Group: ${selectedTaxGroup!.taxRules}');
+        log.info('Selected Tax Group: ${selectedTaxGroup!.taxRules}');
       }
       emit(state.copyWith(status: CreateEditTaxStatus.success, taxGroups: taxGroups, selectedTaxGroup: selectedTaxGroup));
     } catch (e) {

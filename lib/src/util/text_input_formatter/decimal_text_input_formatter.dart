@@ -35,6 +35,5 @@ class DecimalTextInputFormatter extends TextInputFormatter {
       selection: newSelection,
       composing: TextRange.empty,
     );
-    return newValue;
   }
 }

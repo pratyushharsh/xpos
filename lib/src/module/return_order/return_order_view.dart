@@ -10,7 +10,6 @@ import '../../repositories/reason_code_repository.dart';
 import '../../util/text_input_formatter/custom_formatter.dart';
 import '../../widgets/code_value_dropdown.dart';
 import '../../widgets/custom_button.dart';
-import '../../widgets/custom_dropdown.dart';
 import 'bloc/return_order_bloc.dart';
 import 'return_form_validation.dart';
 
