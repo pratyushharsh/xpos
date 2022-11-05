@@ -45,6 +45,18 @@ class EmployeeRepository {
   }
 
   Future<EmployeeEntity?> getEmployeeByStoreAndUserId(String storeId, String userId) async {
+
+    // Get the data form the local database if present.
+    try {
+      var data = await db.employeeEntitys.where().employeeIdEqualTo(userId).findFirst();
+      if(data != null) {
+        return data;
+      }
+    } catch (e) {
+      log.severe(e);
+    }
+
+
     try {
       var option = RestOptions(path: '/business/$storeId/employee/$userId');
       var rawResp = await restClient.get(restOptions: option);
@@ -64,6 +76,9 @@ class EmployeeRepository {
           gender: resp.employee.gender,
           picture: resp.employee.picture
         );
+        await db.writeTxn(() async {
+          await db.employeeEntitys.put(emp);
+        });
 
         return emp;
       }

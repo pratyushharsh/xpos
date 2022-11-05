@@ -335,12 +335,14 @@ class OrderItemDetailDisplay extends StatelessWidget {
                 const SizedBox(
                   width: 10,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(entity.itemDescription!),
-                    Text(entity.itemId!),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(entity.itemDescription!,),
+                      Text(entity.itemId!),
+                    ],
+                  ),
                 ),
               ],
             ),

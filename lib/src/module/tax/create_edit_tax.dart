@@ -22,11 +22,12 @@ class CreateEditTaxView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          CreateEditTaxBloc(taxRepository: RepositoryProvider.of(context))
-            ..add(
-              FetchAllTaxGroup(),
-            ),
+      create: (context) => CreateEditTaxBloc(
+          taxRepository: RepositoryProvider.of(context),
+          authenticationBloc: BlocProvider.of(context))
+        ..add(
+          FetchAllTaxGroup(),
+        ),
       child: Container(
         color: Colors.white,
         child: SafeArea(
@@ -52,6 +53,30 @@ class CreateEditTaxView extends StatelessWidget {
                         Navigator.of(context).pop();
                       },
                     ),
+                  ),
+                  BlocBuilder<CreateEditTaxBloc, CreateEditTaxState>(
+                    builder: (context, state) {
+                      return Positioned(
+                        top: 20,
+                        right: 16,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColor.primary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              BlocProvider.of<CreateEditTaxBloc>(context)
+                                  .add(FetchAllTaxGroupFromServer());
+                            },
+                            icon: const Icon(
+                              Icons.sync,
+                              color: AppColor.iconColor,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               )),

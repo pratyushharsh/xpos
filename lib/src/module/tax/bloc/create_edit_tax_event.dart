@@ -11,6 +11,8 @@ class CreateNewTaxGroup extends CreateEditTaxEvent {
 
 class FetchAllTaxGroup extends CreateEditTaxEvent {}
 
+class FetchAllTaxGroupFromServer extends CreateEditTaxEvent {}
+
 class SelectTaxGroup extends CreateEditTaxEvent {
   final TaxGroupEntity taxGroup;
 

@@ -13,12 +13,27 @@ class TaxRepository {
 
   TaxRepository({required this.db, required this.restClient});
 
+  Future<void> fetchAllTaxGroupFromServer(String businessId) async {
+    try {
+      var option = RestOptions(path: '/business/$businessId/settings/tax');
+      var rawResp = await restClient.get(restOptions: option);
+      if (rawResp.statusCode == 200) {
+        db.writeTxn(() async {
+          await db.taxGroupEntitys.importJsonRaw(rawResp.bodyBytes);
+        });
+      }
+    } catch (e) {
+      log.severe('Error while fetching business from server', e.toString());
+      rethrow;
+    }
+  }
+
   Future<int> createNewTaxGroup(TaxGroupEntity taxGroup) async {
     return db.writeTxn(() => db.taxGroupEntitys.put(taxGroup));
   }
 
-  Future<void> createNewTaxRule(TaxGroupEntity taxGroup, TaxRuleEntity taxRule) async {
-
+  Future<void> createNewTaxRule(
+      TaxGroupEntity taxGroup, TaxRuleEntity taxRule) async {
     if (taxGroup.id == null) {
       log.severe('Tax group id is null');
       return;
@@ -30,7 +45,7 @@ class TaxRepository {
       log.severe('Tax group is not found');
       return;
     }
-    
+
     tg.taxRules = [...tg.taxRules, taxRule];
 
     await db.writeTxn(() async {
@@ -43,7 +58,6 @@ class TaxRepository {
   }
 
   Future<void> deleteTaxRule(TaxRuleEntity taxRule) async {
-
     if (taxRule.groupId == null) {
       log.severe('Tax group id is null');
       return;
@@ -56,7 +70,9 @@ class TaxRepository {
       return;
     }
 
-    tg.taxRules = tg.taxRules.where((element) => element.ruleName!.compareTo(taxRule.ruleName!) != 0).toList();
+    tg.taxRules = tg.taxRules
+        .where((element) => element.ruleName!.compareTo(taxRule.ruleName!) != 0)
+        .toList();
 
     await db.writeTxn(() async {
       await db.taxGroupEntitys.put(tg);
@@ -68,7 +84,7 @@ class TaxRepository {
   }
 
   Future<List<TaxGroupEntity>> getAllTaxGroups({bool loadRules = false}) async {
-      var taxGroups = await db.taxGroupEntitys.where().findAll();
+    var taxGroups = await db.taxGroupEntitys.where().findAll();
     return taxGroups;
   }
 
@@ -88,12 +104,14 @@ class TaxRepository {
     return taxGroup.taxRules;
   }
 
-  Future<TaxRuleEntity?> getTaxRulesByGroupIdAndRuleName(String groupId, String ruleName) async {
+  Future<TaxRuleEntity?> getTaxRulesByGroupIdAndRuleName(
+      String groupId, String ruleName) async {
     var taxGroup = await db.taxGroupEntitys.getByGroupId(groupId);
     if (taxGroup == null) {
       log.severe('Tax group $groupId is not found');
       throw Exception('Tax group $groupId is not found');
     }
-    return taxGroup.taxRules.firstWhere((element) => element.ruleName!.compareTo(ruleName) == 0);
+    return taxGroup.taxRules
+        .firstWhere((element) => element.ruleName!.compareTo(ruleName) == 0);
   }
 }

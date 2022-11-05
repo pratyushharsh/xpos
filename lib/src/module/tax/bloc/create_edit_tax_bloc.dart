@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:receipt_generator/src/module/authentication/bloc/authentication_bloc.dart';
 
 import '../../../entity/pos/tax_group_entity.dart';
 import '../../../entity/pos/tax_rule_entity.dart';
@@ -13,10 +14,12 @@ part 'create_edit_tax_state.dart';
 
 class CreateEditTaxBloc extends Bloc<CreateEditTaxEvent, CreateEditTaxState> {
   final log = Logger('CreateEditTaxBloc');
+  final AuthenticationBloc authenticationBloc;
   final TaxRepository taxRepository;
 
-  CreateEditTaxBloc({ required this.taxRepository }) : super(const CreateEditTaxState()) {
+  CreateEditTaxBloc({ required this.authenticationBloc, required this.taxRepository }) : super(const CreateEditTaxState()) {
     on<FetchAllTaxGroup>(_fetchAllTaxGroupEvent);
+    on<FetchAllTaxGroupFromServer>(_fetchAllTaxGroupFromServerEvent);
     on<SelectTaxGroup>(_selectTaxGroupEvent);
     on<DeleteTaxRule>(_deleteTaxRuleEvent);
   }
@@ -40,6 +43,17 @@ class CreateEditTaxBloc extends Bloc<CreateEditTaxEvent, CreateEditTaxState> {
     } catch (e) {
       log.severe(e);
       emit(state.copyWith(status: CreateEditTaxStatus.error));
+    }
+  }
+
+  void _fetchAllTaxGroupFromServerEvent(FetchAllTaxGroupFromServer event, Emitter<CreateEditTaxState> emit) async {
+    emit(state.copyWith(status: CreateEditTaxStatus.fetchingTaxGroup));
+    try {
+      await taxRepository.fetchAllTaxGroupFromServer('${authenticationBloc.state.store!.rtlLocId}');
+      add(FetchAllTaxGroup());
+    } catch (e) {
+      log.severe(e);
+      emit(state.copyWith(status: CreateEditTaxStatus.fetchingTaxGroupFailed));
     }
   }
 

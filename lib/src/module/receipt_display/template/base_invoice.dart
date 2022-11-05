@@ -204,17 +204,14 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
       final column = config.columnConfig[i];
       summaryRow.add(Expanded(
           flex: column.flex!,
-          child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Text(
-                InvoiceConfigConstants.buildLineItemSummaryValue(
-                    column.key!, order),
-                textAlign: getColumnAlign(column.align),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Text(
+              InvoiceConfigConstants.buildLineItemSummaryValue(
+                  column.key!, order),
+              textAlign: getColumnAlign(column.align),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
               ),
             ),
           )));

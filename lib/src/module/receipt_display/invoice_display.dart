@@ -26,80 +26,85 @@ class AppInvoiceDisplay extends StatelessWidget {
           authBloc: RepositoryProvider.of(context),
           settingsRepo: RepositoryProvider.of(context))
         ..add(FetchReceiptDataEvent()),
-      child: Scaffold(
-        backgroundColor: AppColor.background,
-        body: Stack(
-          children: [
-            Positioned(
-              top: 70,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
-                builder: (context, state) {
-                  if (state.status == ReceiptDisplayStatus.success) {
-                    return MaterialApp(
-                      debugShowCheckedModeBanner: false,
-                      theme: ThemeData.light().copyWith(
-                        primaryColor: AppColor.primary,
-                        brightness: Brightness.light,
-                        backgroundColor: AppColor.background,
-                        dividerColor: Colors.white54,
-                        colorScheme:
-                            const ColorScheme.light(primary: AppColor.primary),
-                      ),
-                      home: FutureBuilder<InvoiceConfig>(
-                        future:
-                            RepositoryProvider.of<InvoiceRepository>(context)
+      child: Container(
+        color: AppColor.background,
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: AppColor.background,
+            body: Stack(
+              children: [
+                Positioned(
+                  top: 70,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: BlocBuilder<ReceiptDisplayBloc, ReceiptDisplayState>(
+                    builder: (context, state) {
+                      if (state.status == ReceiptDisplayStatus.success) {
+                        return MaterialApp(
+                          debugShowCheckedModeBanner: false,
+                          theme: ThemeData.light().copyWith(
+                            primaryColor: AppColor.primary,
+                            brightness: Brightness.light,
+                            backgroundColor: AppColor.background,
+                            dividerColor: Colors.white54,
+                            colorScheme: const ColorScheme.light(
+                                primary: AppColor.primary),
+                          ),
+                          home: FutureBuilder<InvoiceConfig>(
+                            future: RepositoryProvider.of<InvoiceRepository>(
+                                    context)
                                 .getInvoiceSettingByName('INVOICE'),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return PdfPreview(
-                              loadingWidget:
-                                  const MyLoader(color: AppColor.primary),
-                              canDebug: false,
-                              maxPageWidth: 700,
-                              scrollViewDecoration: const BoxDecoration(
-                                color: AppColor.background,
-                              ),
-                              build: (format) => generateInvoice(
-                                format,
-                                state.header!,
-                                RepositoryProvider.of<AuthenticationBloc>(
-                                        context)
-                                    .state
-                                    .store!,
-                                snapshot.data!,
-                              ),
-                            );
-                          } else if (snapshot.hasError) {
-                            return Center(
-                              child: Text(snapshot.error.toString()),
-                            );
-                          } else {
-                            return const Center(
-                              child: MyLoader(color: AppColor.primary),
-                            );
-                          }
-                        },
-                      ),
-                    );
-                  }
-                  return Container();
-                },
-              ),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return PdfPreview(
+                                  loadingWidget:
+                                      const MyLoader(color: AppColor.primary),
+                                  canDebug: false,
+                                  maxPageWidth: 700,
+                                  scrollViewDecoration: const BoxDecoration(
+                                    color: AppColor.background,
+                                  ),
+                                  build: (format) => generateInvoice(
+                                    format,
+                                    state.header!,
+                                    RepositoryProvider.of<AuthenticationBloc>(
+                                            context)
+                                        .state
+                                        .store!,
+                                    snapshot.data!,
+                                  ),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                  child: Text(snapshot.error.toString()),
+                                );
+                              } else {
+                                return const Center(
+                                  child: MyLoader(color: AppColor.primary),
+                                );
+                              }
+                            },
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
+                ),
+                Positioned(
+                  top: 20,
+                  left: 16,
+                  child: AppBarLeading(
+                    icon: Icons.arrow_back,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              ],
             ),
-            Positioned(
-              top: 20,
-              left: 16,
-              child: AppBarLeading(
-                icon: Icons.arrow_back,
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

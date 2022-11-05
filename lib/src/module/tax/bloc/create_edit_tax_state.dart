@@ -7,7 +7,10 @@ enum CreateEditTaxStatus {
   taxGroupLoadingFailed,
   success,
   loadingNewTaxGroup,
-  error
+  error,
+  fetchingTaxGroup,
+  fetchingTaxGroupFailed,
+  fetchingTaxGroupSuccess,
 }
 
 class CreateEditTaxState {

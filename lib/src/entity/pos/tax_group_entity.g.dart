@@ -49,7 +49,7 @@ const TaxGroupEntitySchema = CollectionSchema(
       id: -8523216633229774932,
       name: r'groupId',
       unique: true,
-      replace: false,
+      replace: true,
       properties: [
         IndexPropertySchema(
           name: r'groupId',

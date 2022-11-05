@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
 import 'package:receipt_generator/src/widgets/appbar_leading.dart';
 import 'package:receipt_generator/src/widgets/custom_button.dart';
@@ -29,54 +30,73 @@ class InvoiceSettingView extends StatelessWidget {
   }
 }
 
-class InvoiceSettingForm extends StatelessWidget {
+class InvoiceSettingForm extends StatefulWidget {
   const InvoiceSettingForm({Key? key}) : super(key: key);
 
   @override
+  State<InvoiceSettingForm> createState() => _InvoiceSettingFormState();
+}
+
+class _InvoiceSettingFormState extends State<InvoiceSettingForm> {
+  bool _openSetting = false;
+
+  bool _isMobileView() {
+    return MediaQuery.of(context).size.width < 800;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Stack(
           fit: StackFit.expand,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: Column(
-                          children: const [
-                            SizedBox(
-                              height: 80,
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: (_isMobileView() && _openSetting) ? MediaQuery.of(context).size.height * 0.60 : 0,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (width > 800)
+                    Expanded(
+                      flex: 1,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          SingleChildScrollView(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            child: Column(
+                              children: const [
+                                SizedBox(
+                                  height: 80,
+                                ),
+                                InvoiceSettingInput()
+                              ],
                             ),
-                            InvoiceSettingInput()
-                          ],
-                        ),
+                          ),
+                          Positioned(
+                            bottom: 10,
+                            left: 16,
+                            right: 16,
+                            child: AcceptButton(
+                              label: 'Save',
+                              onPressed: () {
+                                BlocProvider.of<InvoiceSettingBloc>(context)
+                                    .add(OnSaveInvoiceSettingEvent());
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      Positioned(
-                        bottom: 10,
-                        left: 50,
-                        right: 50,
-                        child: AcceptButton(
-                          label: 'Save',
-                          onPressed: () {
-                            BlocProvider.of<InvoiceSettingBloc>(context)
-                                .add(OnSaveInvoiceSettingEvent());
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const Expanded(flex: 2, child: MockInvoiceView())
-              ],
+                    ),
+                  const Expanded(flex: 2, child: MockInvoiceView())
+                ],
+              ),
             ),
             Positioned(
               top: 20,
@@ -88,28 +108,77 @@ class InvoiceSettingForm extends StatelessWidget {
                     Navigator.of(context).pop();
                   }),
             ),
+            if (width <= 800)
+              Positioned(
+                top: 20,
+                right: 16,
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _openSetting = !_openSetting;
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColor.iconColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    height: 40,
+                    width: 40,
+                    child: Center(
+                      child: FaIcon(
+                        _openSetting ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
+                        color: AppColor.primary,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (width <= 800 && _openSetting)
+              Positioned(
+                top: MediaQuery.of(context).size.height * 0.35,
+                right: 0,
+                left: 0,
+                bottom: 0,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  child: Card(
+                    elevation: 10,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: AppColor.background,
+                      ),
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: const [
+                            SizedBox(
+                              height: 80,
+                            ),
+                            InvoiceSettingInput()
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            if (width <= 800 && _openSetting)
             Positioned(
-              top: 20,
+              bottom: 10,
+              left: 16,
               right: 16,
-              child: ElevatedButton(
+              child: AcceptButton(
+                label: 'Save',
                 onPressed: () {
                   BlocProvider.of<InvoiceSettingBloc>(context)
                       .add(OnSaveInvoiceSettingEvent());
                 },
-                child: const Text(
-                  "Save",
-                  style: TextStyle(color: AppColor.primary),
-                ),
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                  primary: AppColor.color8,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0)),
-                ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -127,7 +196,6 @@ class InvoiceSettingInput extends StatefulWidget {
 class _InvoiceSettingInputState extends State<InvoiceSettingInput> {
   late TextEditingController _termsConditionController;
   late TextEditingController _declarationController;
-
 
   @override
   void initState() {
@@ -161,11 +229,15 @@ class _InvoiceSettingInputState extends State<InvoiceSettingInput> {
               textInputType: TextInputType.phone,
               onValueChange: (val) {},
             ),
-            MultiChoiceSelection<ReportColumnConfigEntity>(
+            MultiChoiceReportColumnConfigSelection(
               options: InvoiceConfigConstants.columnConfig
                   .where((e) => !state.columns.contains(e))
                   .toList(),
               selectedOptions: state.columns,
+              onUpdateOption: (val) {
+                BlocProvider.of<InvoiceSettingBloc>(context)
+                    .add(OnReportColumnConfigUpdate(val));
+              },
               onSelect: (val) {
                 context.read<InvoiceSettingBloc>().add(AddNewConfigColumn(val));
               },

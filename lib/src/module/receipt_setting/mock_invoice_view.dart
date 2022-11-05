@@ -68,7 +68,9 @@ class MockInvoiceForm extends StatelessWidget {
         if (state.status == ReceiptDisplayStatus.success) {
           return Container(
             color: Colors.white,
+            padding: const EdgeInsets.only(top: 70),
             child: PdfPreview(
+              shouldRepaint: true,
               loadingWidget: const MyLoader(color: AppColor.primary),
               useActions: false,
               allowPrinting: false,
@@ -79,12 +81,11 @@ class MockInvoiceForm extends StatelessWidget {
                 color: Colors.white,
               ),
               build: (format) => generateInvoice(
-                  format,
-                  state.header!,
-                  RepositoryProvider.of<AuthenticationBloc>(context)
-                      .state
-                      .store!,
-                  config),
+                format,
+                state.header!,
+                RepositoryProvider.of<AuthenticationBloc>(context).state.store!,
+                config,
+              ),
             ),
           );
         }

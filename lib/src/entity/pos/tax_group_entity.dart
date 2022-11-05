@@ -8,7 +8,7 @@ part 'tax_group_entity.g.dart';
 class TaxGroupEntity {
   final Id? id;
 
-  @Index(unique: true)
+  @Index(unique: true, replace: true)
   final String groupId;
   final String name;
   final String description;

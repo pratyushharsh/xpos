@@ -60,3 +60,9 @@ class UpdateDeclaration extends InvoiceSettingEvent {
 
   UpdateDeclaration(this.declaration);
 }
+
+class OnReportColumnConfigUpdate extends InvoiceSettingEvent {
+  final ReportColumnConfigEntity column;
+
+  OnReportColumnConfigUpdate(this.column);
+}

@@ -36,7 +36,6 @@ class ReportColumnConfigEntity {
   @Enumerated(EnumType.name)
   ColumnAlignment? align;
 
-
   @override
   String toString() {
     return '$title';
@@ -44,6 +43,20 @@ class ReportColumnConfigEntity {
 
   ReportColumnConfigEntity(
       {this.key, this.title, this.flex, this.align});
+
+  ReportColumnConfigEntity copyWith({
+    String? key,
+    String? title,
+    int? flex,
+    ColumnAlignment? align,
+  }) {
+    return ReportColumnConfigEntity(
+      key: key ?? this.key,
+      title: title ?? this.title,
+      flex: flex ?? this.flex,
+      align: align ?? this.align,
+    );
+  }
 }
 
 enum ColumnAlignment {

@@ -68,6 +68,11 @@ class AuthenticationBloc
         // He owns multiple business need to choose which one to login. @TODO
         // Only one business directly login to system.
         var session = await user.getSession();
+        var validSession = session?.isValid() ?? false;
+        if (!validSession) {
+          emit(AuthenticationState.unauthenticated());
+          return;
+        }
         var curStore = await userPool.storage.getItem("CURRENT_STORE");
 
         //

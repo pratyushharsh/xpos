@@ -41,6 +41,7 @@ class InvoiceSettingBloc
     on<UpdateTermsAnsCondition>(_onUpdateTermsAnsCondition, transformer: debounce(_duration));
     on<ShowDeclaration>(_onShowDeclaration);
     on<UpdateDeclaration>(_onUpdateDeclaration, transformer: debounce(_duration));
+    on<OnReportColumnConfigUpdate>(_onReportColumnConfigUpdate);
   }
 
   void _onInitialInvoiceSettingEvent(OnInitialInvoiceSettingEvent event,
@@ -134,5 +135,24 @@ class InvoiceSettingBloc
   void _onUpdateDeclaration(
       UpdateDeclaration event, Emitter<InvoiceSettingState> emit) {
     emit(state.copyWith(declaration: event.declaration, status: InvoiceSettingStatus.modified));
+  }
+
+  void _onReportColumnConfigUpdate(
+      OnReportColumnConfigUpdate event, Emitter<InvoiceSettingState> emit) {
+    // Find the column from current state and update
+    final newColumns = List<ReportColumnConfigEntity>.from(state.columns);
+    for (var i = 0; i < newColumns.length; i++) {
+      if (newColumns[i].key == event.column.key) {
+        newColumns[i] = ReportColumnConfigEntity(
+          key: event.column.key,
+          title: event.column.title,
+          align: event.column.align,
+          flex: event.column.flex,
+        );
+        break;
+      }
+    }
+
+    emit(state.copyWith(columns: newColumns, status: InvoiceSettingStatus.modified));
   }
 }

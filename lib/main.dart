@@ -6,12 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:printing/printing.dart';
 import 'package:receipt_generator/src/config/constants.dart';
 import 'package:receipt_generator/src/entity/config/code_value_entity.dart';
 import 'package:receipt_generator/src/entity/pos/collection.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/entity/pos/tax_group_entity.dart';
-import 'package:receipt_generator/src/repositories/custom_storage.dart';
+import 'package:receipt_generator/src/util/cache/custom_storage.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
 import 'bloc_observer.dart';
@@ -20,6 +21,7 @@ import 'my_app.dart';
 import 'src/entity/pos/employee_role_entity.dart';
 import 'src/entity/pos/reason_code_entity.dart';
 import 'src/entity/pos/report_config_entity.dart';
+import 'src/util/cache/custom_pdf_cache.dart';
 
 final log = Logger('Main');
 
@@ -29,6 +31,7 @@ Future<void> main() {
     WidgetsFlutterBinding.ensureInitialized();
     initRootLogger();
     await EasyLocalization.ensureInitialized();
+    PdfBaseCache.defaultCache = CustomPdfCache();
 
     // Database Configuration
     final dir = await getApplicationSupportDirectory();
