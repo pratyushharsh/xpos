@@ -38,8 +38,8 @@ class EmployeeRepository {
           userBusinesses.add(UserBusiness.fromJson(item));
         }
       }
-    } catch (e) {
-      log.severe(e);
+    } catch (e, st) {
+      log.severe(e.toString(), e, st);
     }
     return userBusinesses;
   }

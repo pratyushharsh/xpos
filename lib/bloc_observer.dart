@@ -7,18 +7,18 @@ class InvoicingBlocObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    log.info(event);
+    // log.info(event);
   }
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-    log.info(transition);
+    // log.info(transition);
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    log.severe(error);
+    log.severe(bloc, error, stackTrace);
     super.onError(bloc, error, stackTrace);
   }
 }

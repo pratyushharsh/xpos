@@ -181,8 +181,8 @@ class CreateNewReceiptBloc
       emit(state.copyWith(
           lineItem: newList, step: SaleStep.item, productMap: pm));
       add(_VerifyOrderAndEmitState());
-    } catch (e) {
-      log.severe(e);
+    } catch (e, st) {
+      log.severe(e, e, st);
       errorNotificationBloc.add(ErrorEvent(e.toString()));
     }
   }
@@ -217,8 +217,8 @@ class CreateNewReceiptBloc
 
     try {
       return await transactionRepository.createNewSale(header);
-    } catch (e) {
-      log.severe(e);
+    } catch (e, st) {
+      log.severe(e, e, st);
       throw Exception("Error creating new transaction");
     }
   }
@@ -276,8 +276,8 @@ class CreateNewReceiptBloc
 
     try {
       return await transactionRepository.createNewSale(transaction);
-    } catch (e) {
-      log.severe(e);
+    } catch (e, st) {
+      log.severe(e, e, st);
       throw Exception("Error creating Transaction");
     }
   }
@@ -291,8 +291,8 @@ class CreateNewReceiptBloc
           transactionHeader: txn,
           status: CreateNewReceiptStatus.saleComplete,
           step: SaleStep.printAndEmail));
-    } catch (e) {
-      log.severe(e);
+    } catch (e, st) {
+      log.severe(e, e, st);
       emit(state.copyWith(status: CreateNewReceiptStatus.error));
     }
   }

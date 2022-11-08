@@ -35,7 +35,7 @@ class TaxModifierCalculator implements AbstractCalculator {
         taxInfo.rawTaxableAmount = originalTaxableAmount;
       }
 
-      AbstractTaxStrategy taxStrategy = getTaxStrategy(mod.authorityType!);
+      AbstractTaxStrategy taxStrategy = getTaxStrategy(mod.authorityType);
       // Modified Tax
       calculateModifierTax(taxStrategy, taxInfo, lineItem.returnFlag);
     }
@@ -86,7 +86,7 @@ class TaxModifierCalculator implements AbstractCalculator {
   }
 
   // @TODO Get the tax strategy based on the type
-  AbstractTaxStrategy getTaxStrategy(String type) {
+  AbstractTaxStrategy getTaxStrategy(String? type) {
     return SaleTaxStrategy();
   }
 }

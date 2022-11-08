@@ -40,22 +40,6 @@ class AuthenticationBloc
     on<RefreshBusinessEvent>(_refreshBusinessEvent);
     on<ChangeBusinessAccount>(_changeBusinessAccount);
   }
-  // signInIfSessionAvailable() async {
-  //   log.info('Getting if user already present');
-  //   // final session = await Amplify.Auth.fetchAuthSession();
-  //   // if (session.isSignedIn) {
-  //   //   print('User Alreadu Present');
-  //   // }
-  //   // try {
-  //   //   CognitoAuthSession res = await Amplify.Auth.fetchAuthSession(
-  //   //       options: CognitoSessionOptions(getAWSCredentials: true));
-  //   //   print(res.userSub);
-  //   //   print(res.identityId);
-  //   // } on AmplifyException catch (e) {
-  //   //
-  //   //   print(e);
-  //   // }
-  // }
 
   void _onInitialAuth(
       InitialAuthEvent event, Emitter<AuthenticationState> emit) async {
@@ -85,13 +69,13 @@ class AuthenticationBloc
           var business = await businessRepository.getBusinessById(int.parse(curStore));
           var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(curStore, user.getUsername()!);
           emit(AuthenticationState.authenticated(user, business, userDetail!));
+          sync.add(StartSyncEvent(int.parse(curStore)));
         }
-
       } else {
         emit(AuthenticationState.unauthenticated());
       }
-    } catch (e) {
-      log.severe(e);
+    } catch (e, st) {
+      log.severe(e.toString(), e, st);
       emit(AuthenticationState.unauthenticated());
     }
   }

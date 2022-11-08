@@ -180,7 +180,7 @@ class RestOptions {
     this.url,
     this.queryParameters,
     this.headers,
-  }): assert(url != null);
+  }): assert(path.isNotEmpty || url != null);
 
   @override
   String toString() {

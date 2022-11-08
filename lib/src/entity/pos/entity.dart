@@ -14,3 +14,8 @@ export 'types.dart';
 export 'discount_entity.dart';
 export 'trn_line_item_tax.dart';
 export 'employee_entity.dart';
+export 'report_config_entity.dart';
+export 'tax_group_entity.dart';
+export 'reason_code_entity.dart';
+export 'employee_role_entity.dart';
+export 'collection.dart';

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
@@ -6,8 +7,11 @@ import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/repositories/sync_config_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_repository.dart';
 
+import '../background_isolate_service.dart';
+
 part 'background_sync_event.dart';
 part 'background_sync_state.dart';
+
 
 class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> {
 
@@ -36,14 +40,25 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
 
   // @TODO Control Sync Using State
   void _onStartSyncEvent(StartSyncEvent event, Emitter<BackgroundSyncState> emit) async {
+    final ReceivePort receivePort = ReceivePort();
+    await Isolate.spawn(IsolateSyncService.isolateEntryPoint, receivePort.sendPort);
+    SendPort sendPort = await receivePort.first;
+
+    // Response Port
+    ReceivePort responsePort = ReceivePort();
+    responsePort.listen((dynamic message) {
+      log.info('Received From Isolate: $message');
+      print('Received From Isolate: $message');
+    });
+
+    // sendPort.send(["Starting Background Sync", responsePort.sendPort]);
     emit(state.copyWith(storeId: event.storeId, status: BackgroundSyncStatus.started));
+    log.info("Start Sync Event");
     if (_timer != null) {
       _timer!.cancel();
     } else {
-      _timer = Timer.periodic(const Duration(minutes: 30), (t) async {
-        if (BackgroundSyncStatus.inProgress != state.status) {
-          add(SyncAllDataEvent());
-        }
+      _timer = Timer.periodic(const Duration(seconds: 10), (t) async {
+        sendPort.send(["message $t", responsePort.sendPort]);
       });
     }
   }
@@ -70,9 +85,9 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     DateTime start = DateTime.now();
     log.info("Starting Sync for all the Data");
     await syncRepository.startSync(state.storeId!);
-    DateTime end = DateTime.now();
-    Duration diff = end.difference(start);
-    log.info("${diff.inSeconds} Seconds elapsed in syncing the data");
+    // DateTime end = DateTime.now();
+    // Duration diff = end.difference(start);
+    // log.info("${diff.inSeconds} Seconds elapsed in syncing the data");
     emit(state.copyWith(status: BackgroundSyncStatus.success));
   }
 

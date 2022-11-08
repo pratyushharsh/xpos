@@ -35,6 +35,7 @@ class TransactionHeaderEntity {
   Address? billingAddress;
   String? customerName;
 
+  @Index(type: IndexType.value)
   DateTime? lastChangedAt;
 
   final String? associateId;

@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:receipt_generator/src/entity/pos/trn_header_entity.dart';
 import 'package:receipt_generator/src/model/api/api.dart';
 
+import '../entity/config/code_value_entity.dart';
+import '../entity/pos/entity.dart';
 import '../util/helper/rest_api.dart';
 
 /*
@@ -357,9 +360,63 @@ class SyncRepository {
   // }
 
 
+  Future<String> createDummyMessages() async {
+    // we don't need the path here because the instance is already open
+    final isar = await Isar.open(
+      [TransactionHeaderEntitySchema],
+        name: 'xpos'
+    );
+
+    var data = await isar.transactionHeaderEntitys.where().findAll();
+    print(data);
+    return 'Data';
+  }
+
+  static void spawnIsolate(SendPort sendPort) async {
+    print("It is present in new isolate");
+    ReceivePort childReceivePort = ReceivePort();
+    sendPort.send(childReceivePort.sendPort);
+
+    final isar = await Isar.open(
+        [
+          RetailLocationEntitySchema,
+          ContactEntitySchema,
+          EmployeeEntitySchema,
+          EmployeeRoleEntitySchema,
+          ProductEntitySchema,
+          CollectionEntitySchema,
+          SequenceEntitySchema,
+          SettingEntitySchema,
+          SyncEntitySchema,
+          TransactionHeaderEntitySchema,
+          CodeValueEntitySchema,
+          ReasonCodeEntitySchema,
+          TaxGroupEntitySchema,
+          ReportConfigEntitySchema,
+        ],
+        name: 'xpos'
+    );
+
+    // Get the last config from the database
+
+    var parsedDate = DateTime.parse('1974-03-20 00:00:00.000');
+    var data = await isar.transactionHeaderEntitys.filter().lastChangedAtGreaterThan(parsedDate).findAll();
+    print(data);
+
+    SendPort sPort = (await childReceivePort.first)[1];
+    sPort.send("Hello");
+    print("New Isolate End");
+  }
+
   Future<void> startSync(int storeId) async {
-    // await _getAllTheProductFromLastSync(storeId);
-    // await _getAllTransactionFromLastSync(storeId);
-    // await _syncAllContacts(storeId);
+    ReceivePort receivePort = ReceivePort();
+    // Isolate.spawn(spawnIsolate, receivePort.sendPort);
+    //
+    // SendPort sendPort = await receivePort.first;
+    //
+    // ReceivePort responsePort = ReceivePort();
+    // sendPort.send(["Logic", responsePort.sendPort]);
+    // var resp = await responsePort.first;
+    // print(resp);
   }
 }

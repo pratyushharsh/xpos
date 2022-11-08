@@ -14,6 +14,7 @@ class TransactionRepository {
 
   Future<TransactionHeaderEntity> createNewSale(TransactionHeaderEntity header) async {
     await db.writeTxn(() async {
+      header.lastChangedAt = DateTime.now();
       await db.transactionHeaderEntitys.put(header);
     });
     return header;
