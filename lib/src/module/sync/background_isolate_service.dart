@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:isar/isar.dart';
@@ -8,19 +9,30 @@ import 'package:receipt_generator/log.dart';
 import '../../entity/config/code_value_entity.dart';
 import '../../entity/pos/entity.dart';
 
+/// Syncing architecture information
+/// Pull the record from the last timestamp to the current timestamp
+/// 1. Get the last timestamp from the local database
+/// 2. Get the current timestamp from the server
+/// 3. Get the data from the last timestamp to the current timestamp
+/// 4. Save the data to the local database
+/// 5. Update the last timestamp to the current timestamp
+
 class BackgroundSyncServiceFromIso {
   final log = Logger('BackgroundSyncServiceFromIso');
+  final int storeId;
   static Isar? _isar;
   String path;
 
+  final String _baseUrl =
+      'https://yp4fg0z7dc.execute-api.ap-south-1.amazonaws.com/DEV';
+
   final String transactionSync = 'TRANSACTION';
 
-  BackgroundSyncServiceFromIso(this.path) {
+  BackgroundSyncServiceFromIso(this.path, this.storeId) {
     log.info('Starting the database service for background sync: $path');
-    _initIsar(path);
   }
 
-  static _initIsar(String path) async {
+  initIsar() async {
     _isar = await Isar.open([
       RetailLocationEntitySchema,
       ContactEntitySchema,
@@ -39,10 +51,49 @@ class BackgroundSyncServiceFromIso {
     ], inspector: false, name: 'xpos');
   }
 
+  Future<Map<String, dynamic>> uploadSyncData(
+      List<Map<String, dynamic>> input) async {
+    log.info('Uploading Sync Data');
+    Map<String, dynamic> rawBody = {
+      'transactions': input,
+    };
+    var body = json.encode(rawBody);
+    final response = await http.post(
+      Uri.parse('$_baseUrl/business/$storeId/sync'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      var responseJson = json.decode(response.body);
+      return responseJson;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Future<Map<String, dynamic>> getDataFromServer(int timestamp) async {
+    log.info('Get Sync Data From: $_baseUrl/business/$storeId/sync?startTime=$timestamp');
+    final response = await http.get(
+      Uri.parse('$_baseUrl/business/$storeId/sync?startTime=$timestamp'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var responseJson = json.decode(response.body);
+      return responseJson;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
   Future<void> getNewTransactionToSync() async {
     if (_isar == null) {
       log.warning('Isar is not initialized');
-      await _initIsar(path);
+      await initIsar();
     }
 
     try {
@@ -78,14 +129,57 @@ class BackgroundSyncServiceFromIso {
         });
       }
 
-      // last sync time
-      DateTime lastSyncTime = syncEntity?.lastSyncAt ?? DateTime.now().subtract(const Duration(days: 30));
-      DateTime lastSyncTimeEnd = DateTime.now();
+      // Fetch Data from Server
+      var data = await getDataFromServer(syncEntity!.lastSyncAt?.microsecondsSinceEpoch ?? 0);
 
-      var x = await _isar!.transactionHeaderEntitys.filter().lastChangedAtBetween(lastSyncTime, lastSyncTimeEnd, includeLower: false).exportJson();
+      List<Map<String, dynamic>> transactions = [];
+
+      for (var transaction in data['transactions']) {
+        var tmp = Map<String, dynamic>.from(transaction);
+        tmp['syncState'] = 1000;
+        transactions.add(tmp);
+      }
+
+      var trans = data['transactions'].map((e) {
+        Map<String, dynamic> tmp = Map<String, dynamic>.from(e);
+        tmp['syncState'] = 1000;
+        return tmp;
+      }).toList();
+
+      await _isar!.writeTxn(() async {
+        await _isar!.transactionHeaderEntitys.importJson(transactions);
+        syncEntity = SyncEntity(
+            type: transactionSync,
+            lastSyncAt: DateTime.fromMicrosecondsSinceEpoch(data['to']),
+            status: 100,
+            syncStartTime: syncEntity!.syncStartTime,
+            syncEndTime: DateTime.fromMicrosecondsSinceEpoch(data['to']));
+        await _isar!.syncEntitys.putByType(syncEntity!);
+      });
+
+      log.info('Server Data: $data');
+
+      // last sync time
+      DateTime lastSyncTime = syncEntity?.lastSyncAt ??
+          DateTime.now().subtract(const Duration(days: 30));
+
+      var x = await _isar!.transactionHeaderEntitys
+          .where()
+          .syncStateIsNull()
+          .or()
+          .syncStateLessThan(500)
+          .or()
+          .lastSyncAtGreaterThan(lastSyncTime)
+          .exportJson();
 
       if (x.isNotEmpty) {
         log.info('Found ${x.length} transactions to sync');
+        // Do the api call to sync the data
+        var uploadResponse = await uploadSyncData(x);
+        log.info('Upload Response: $uploadResponse');
+        DateTime syncedTime =
+            DateTime.fromMicrosecondsSinceEpoch(uploadResponse['lastSyncedAt']);
+
         await _isar!.writeTxn(() async {
           for (var i in x) {
             // Get the transaction and update the last changed at.
@@ -95,25 +189,23 @@ class BackgroundSyncServiceFromIso {
                 .findFirst();
 
             if (transaction != null) {
-              transaction.lastChangedAt = lastSyncTimeEnd;
+              transaction.lastSyncAt = syncedTime;
+              transaction.syncState = 1000;
               await _isar!.transactionHeaderEntitys.put(transaction);
             }
           }
+
+          syncEntity = SyncEntity(
+              type: transactionSync,
+              lastSyncAt: syncedTime,
+              status: 100,
+              syncStartTime: syncEntity!.syncStartTime,
+              syncEndTime: syncedTime);
+          await _isar!.syncEntitys.putByType(syncEntity!);
         });
       } else {
         log.info('No new transaction found');
       }
-
-      await _isar!.writeTxn(() async {
-        syncEntity = SyncEntity(
-            type: transactionSync,
-            lastSyncAt: lastSyncTimeEnd,
-            status: 100,
-            syncStartTime: syncEntity!.syncStartTime,
-            syncEndTime: lastSyncTimeEnd);
-        await _isar!.syncEntitys.putByType(syncEntity!);
-      });
-
     } catch (e) {
       log.severe(e);
     }
@@ -122,13 +214,6 @@ class BackgroundSyncServiceFromIso {
 
 class IsolateSyncService {
   static Logger log = Logger('IsolateSyncService');
-
-  static httpGetCall() async {
-    var _url = Uri.parse('http://www.example.com/');
-    final response = await http.get(_url);
-    print(response);
-    print("GET Response: ${response.statusCode}");
-  }
 
   static executeSync(BackgroundSyncServiceFromIso syncDb) async {
     DateTime start = DateTime.now();
@@ -143,10 +228,19 @@ class IsolateSyncService {
     sendPort.send(receivePort.sendPort);
     // Initializing the logger
     initRootLogger();
-    var syncDb = BackgroundSyncServiceFromIso('test');
-    await executeSync(syncDb);
+    BackgroundSyncServiceFromIso? syncDb;
     receivePort.listen((dynamic message) async {
-      await executeSync(syncDb);
+      if (message is Map) {
+        if (message['syncType'] == 'start') {
+          log.info('Starting Sync Service');
+          syncDb = BackgroundSyncServiceFromIso(
+              '${message['storeId']}', message['storeId']);
+          await syncDb!.initIsar();
+          await executeSync(syncDb!);
+        } else if (message['syncType'] == 'refresh') {
+          await executeSync(syncDb!);
+        }
+      }
     });
   }
 }

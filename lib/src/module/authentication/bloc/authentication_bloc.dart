@@ -138,5 +138,6 @@ class AuthenticationBloc
     var business = await businessRepository.getBusinessById(int.parse(event.rtlLocId));
     var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(event.rtlLocId, user.getUsername()!);
     emit(AuthenticationState.authenticated(user, business, userDetail!));
+    sync.add(StartSyncEvent(business.rtlLocId));
   }
 }

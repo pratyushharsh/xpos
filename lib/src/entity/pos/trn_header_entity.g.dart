@@ -79,71 +79,81 @@ const TransactionHeaderEntitySchema = CollectionSchema(
       name: r'lastChangedAt',
       type: IsarType.dateTime,
     ),
-    r'lineItems': PropertySchema(
+    r'lastSyncAt': PropertySchema(
       id: 12,
+      name: r'lastSyncAt',
+      type: IsarType.dateTime,
+    ),
+    r'lineItems': PropertySchema(
+      id: 13,
       name: r'lineItems',
       type: IsarType.objectList,
       target: r'TransactionLineItemEntity',
     ),
     r'notes': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'notes',
       type: IsarType.string,
     ),
     r'paymentLineItems': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'paymentLineItems',
       type: IsarType.objectList,
       target: r'TransactionPaymentLineItemEntity',
     ),
     r'roundTotal': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'roundTotal',
       type: IsarType.double,
     ),
     r'shippingAddress': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'shippingAddress',
       type: IsarType.object,
       target: r'Address',
     ),
     r'status': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'status',
       type: IsarType.string,
     ),
     r'storeCurrency': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'storeCurrency',
       type: IsarType.string,
     ),
     r'storeId': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'storeId',
       type: IsarType.long,
     ),
     r'storeLocale': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'storeLocale',
       type: IsarType.string,
     ),
     r'subtotal': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'subtotal',
       type: IsarType.double,
     ),
+    r'syncState': PropertySchema(
+      id: 23,
+      name: r'syncState',
+      type: IsarType.long,
+    ),
     r'taxTotal': PropertySchema(
-      id: 22,
+      id: 24,
       name: r'taxTotal',
       type: IsarType.double,
     ),
     r'total': PropertySchema(
-      id: 23,
+      id: 25,
       name: r'total',
       type: IsarType.double,
     ),
     r'transactionType': PropertySchema(
-      id: 24,
+      id: 26,
       name: r'transactionType',
       type: IsarType.string,
     )
@@ -177,6 +187,45 @@ const TransactionHeaderEntitySchema = CollectionSchema(
           name: r'customerPhone',
           type: IndexType.hash,
           caseSensitive: true,
+        )
+      ],
+    ),
+    r'lastChangedAt': IndexSchema(
+      id: -4409887940193105571,
+      name: r'lastChangedAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'lastChangedAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'lastSyncAt': IndexSchema(
+      id: -8300919554834343292,
+      name: r'lastSyncAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'lastSyncAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'syncState': IndexSchema(
+      id: -413052077849439895,
+      name: r'syncState',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'syncState',
+          type: IndexType.value,
+          caseSensitive: false,
         )
       ],
     )
@@ -300,34 +349,36 @@ void _transactionHeaderEntitySerialize(
   writer.writeDateTime(offsets[9], object.endDateTime);
   writer.writeBool(offsets[10], object.isVoid);
   writer.writeDateTime(offsets[11], object.lastChangedAt);
+  writer.writeDateTime(offsets[12], object.lastSyncAt);
   writer.writeObjectList<TransactionLineItemEntity>(
-    offsets[12],
+    offsets[13],
     allOffsets,
     TransactionLineItemEntitySchema.serialize,
     object.lineItems,
   );
-  writer.writeString(offsets[13], object.notes);
+  writer.writeString(offsets[14], object.notes);
   writer.writeObjectList<TransactionPaymentLineItemEntity>(
-    offsets[14],
+    offsets[15],
     allOffsets,
     TransactionPaymentLineItemEntitySchema.serialize,
     object.paymentLineItems,
   );
-  writer.writeDouble(offsets[15], object.roundTotal);
+  writer.writeDouble(offsets[16], object.roundTotal);
   writer.writeObject<Address>(
-    offsets[16],
+    offsets[17],
     allOffsets,
     AddressSchema.serialize,
     object.shippingAddress,
   );
-  writer.writeString(offsets[17], object.status);
-  writer.writeString(offsets[18], object.storeCurrency);
-  writer.writeLong(offsets[19], object.storeId);
-  writer.writeString(offsets[20], object.storeLocale);
-  writer.writeDouble(offsets[21], object.subtotal);
-  writer.writeDouble(offsets[22], object.taxTotal);
-  writer.writeDouble(offsets[23], object.total);
-  writer.writeString(offsets[24], object.transactionType);
+  writer.writeString(offsets[18], object.status);
+  writer.writeString(offsets[19], object.storeCurrency);
+  writer.writeLong(offsets[20], object.storeId);
+  writer.writeString(offsets[21], object.storeLocale);
+  writer.writeDouble(offsets[22], object.subtotal);
+  writer.writeLong(offsets[23], object.syncState);
+  writer.writeDouble(offsets[24], object.taxTotal);
+  writer.writeDouble(offsets[25], object.total);
+  writer.writeString(offsets[26], object.transactionType);
 }
 
 TransactionHeaderEntity _transactionHeaderEntityDeserialize(
@@ -353,36 +404,38 @@ TransactionHeaderEntity _transactionHeaderEntityDeserialize(
     endDateTime: reader.readDateTimeOrNull(offsets[9]),
     isVoid: reader.readBoolOrNull(offsets[10]) ?? false,
     lastChangedAt: reader.readDateTimeOrNull(offsets[11]),
+    lastSyncAt: reader.readDateTimeOrNull(offsets[12]),
     lineItems: reader.readObjectList<TransactionLineItemEntity>(
-          offsets[12],
+          offsets[13],
           TransactionLineItemEntitySchema.deserialize,
           allOffsets,
           TransactionLineItemEntity(),
         ) ??
         const [],
-    notes: reader.readStringOrNull(offsets[13]),
+    notes: reader.readStringOrNull(offsets[14]),
     paymentLineItems: reader.readObjectList<TransactionPaymentLineItemEntity>(
-          offsets[14],
+          offsets[15],
           TransactionPaymentLineItemEntitySchema.deserialize,
           allOffsets,
           TransactionPaymentLineItemEntity(),
         ) ??
         const [],
-    roundTotal: reader.readDouble(offsets[15]),
+    roundTotal: reader.readDouble(offsets[16]),
     shippingAddress: reader.readObjectOrNull<Address>(
-      offsets[16],
+      offsets[17],
       AddressSchema.deserialize,
       allOffsets,
     ),
-    status: reader.readString(offsets[17]),
-    storeCurrency: reader.readString(offsets[18]),
-    storeId: reader.readLong(offsets[19]),
-    storeLocale: reader.readString(offsets[20]),
-    subtotal: reader.readDouble(offsets[21]),
-    taxTotal: reader.readDouble(offsets[22]),
-    total: reader.readDouble(offsets[23]),
+    status: reader.readString(offsets[18]),
+    storeCurrency: reader.readString(offsets[19]),
+    storeId: reader.readLong(offsets[20]),
+    storeLocale: reader.readString(offsets[21]),
+    subtotal: reader.readDouble(offsets[22]),
+    syncState: reader.readLongOrNull(offsets[23]),
+    taxTotal: reader.readDouble(offsets[24]),
+    total: reader.readDouble(offsets[25]),
     transId: id,
-    transactionType: reader.readString(offsets[24]),
+    transactionType: reader.readString(offsets[26]),
   );
   return object;
 }
@@ -423,6 +476,8 @@ P _transactionHeaderEntityDeserializeProp<P>(
     case 11:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 12:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 13:
       return (reader.readObjectList<TransactionLineItemEntity>(
             offset,
             TransactionLineItemEntitySchema.deserialize,
@@ -430,9 +485,9 @@ P _transactionHeaderEntityDeserializeProp<P>(
             TransactionLineItemEntity(),
           ) ??
           const []) as P;
-    case 13:
-      return (reader.readStringOrNull(offset)) as P;
     case 14:
+      return (reader.readStringOrNull(offset)) as P;
+    case 15:
       return (reader.readObjectList<TransactionPaymentLineItemEntity>(
             offset,
             TransactionPaymentLineItemEntitySchema.deserialize,
@@ -440,29 +495,31 @@ P _transactionHeaderEntityDeserializeProp<P>(
             TransactionPaymentLineItemEntity(),
           ) ??
           const []) as P;
-    case 15:
-      return (reader.readDouble(offset)) as P;
     case 16:
+      return (reader.readDouble(offset)) as P;
+    case 17:
       return (reader.readObjectOrNull<Address>(
         offset,
         AddressSchema.deserialize,
         allOffsets,
       )) as P;
-    case 17:
-      return (reader.readString(offset)) as P;
     case 18:
       return (reader.readString(offset)) as P;
     case 19:
-      return (reader.readLong(offset)) as P;
-    case 20:
       return (reader.readString(offset)) as P;
+    case 20:
+      return (reader.readLong(offset)) as P;
     case 21:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 22:
       return (reader.readDouble(offset)) as P;
     case 23:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 24:
+      return (reader.readDouble(offset)) as P;
+    case 25:
+      return (reader.readDouble(offset)) as P;
+    case 26:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -487,6 +544,33 @@ extension TransactionHeaderEntityQueryWhereSort
       anyTransId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterWhere>
+      anyLastChangedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'lastChangedAt'),
+      );
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterWhere>
+      anyLastSyncAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'lastSyncAt'),
+      );
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterWhere>
+      anySyncState() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'syncState'),
+      );
     });
   }
 }
@@ -693,6 +777,351 @@ extension TransactionHeaderEntityQueryWhere on QueryBuilder<
               includeUpper: false,
             ));
       }
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastChangedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastChangedAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastChangedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastChangedAtEqualTo(DateTime? lastChangedAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastChangedAt',
+        value: [lastChangedAt],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastChangedAtNotEqualTo(DateTime? lastChangedAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [],
+              upper: [lastChangedAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [lastChangedAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [lastChangedAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [],
+              upper: [lastChangedAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastChangedAtGreaterThan(
+    DateTime? lastChangedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [lastChangedAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastChangedAtLessThan(
+    DateTime? lastChangedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [],
+        upper: [lastChangedAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastChangedAtBetween(
+    DateTime? lowerLastChangedAt,
+    DateTime? upperLastChangedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [lowerLastChangedAt],
+        includeLower: includeLower,
+        upper: [upperLastChangedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastSyncAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastSyncAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastSyncAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastSyncAtEqualTo(DateTime? lastSyncAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastSyncAt',
+        value: [lastSyncAt],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastSyncAtNotEqualTo(DateTime? lastSyncAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [],
+              upper: [lastSyncAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [lastSyncAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [lastSyncAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [],
+              upper: [lastSyncAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastSyncAtGreaterThan(
+    DateTime? lastSyncAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [lastSyncAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastSyncAtLessThan(
+    DateTime? lastSyncAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [],
+        upper: [lastSyncAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> lastSyncAtBetween(
+    DateTime? lowerLastSyncAt,
+    DateTime? upperLastSyncAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [lowerLastSyncAt],
+        includeLower: includeLower,
+        upper: [upperLastSyncAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> syncStateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'syncState',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> syncStateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> syncStateEqualTo(int? syncState) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'syncState',
+        value: [syncState],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> syncStateNotEqualTo(int? syncState) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [],
+              upper: [syncState],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [syncState],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [syncState],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [],
+              upper: [syncState],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> syncStateGreaterThan(
+    int? syncState, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [syncState],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> syncStateLessThan(
+    int? syncState, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [],
+        upper: [syncState],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterWhereClause> syncStateBetween(
+    int? lowerSyncState,
+    int? upperSyncState, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [lowerSyncState],
+        includeLower: includeLower,
+        upper: [upperSyncState],
+        includeUpper: includeUpper,
+      ));
     });
   }
 }
@@ -1834,6 +2263,80 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> lastSyncAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastSyncAt',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> lastSyncAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastSyncAt',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> lastSyncAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastSyncAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> lastSyncAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastSyncAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> lastSyncAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastSyncAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> lastSyncAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastSyncAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> lineItemsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -2788,6 +3291,80 @@ extension TransactionHeaderEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> syncStateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'syncState',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> syncStateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'syncState',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> syncStateEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'syncState',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> syncStateGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'syncState',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> syncStateLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'syncState',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
+      QAfterFilterCondition> syncStateBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'syncState',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity,
       QAfterFilterCondition> taxTotalEqualTo(
     double value, {
     double epsilon = Query.epsilon,
@@ -3307,6 +3884,20 @@ extension TransactionHeaderEntityQuerySortBy
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByLastSyncAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSyncAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortByLastSyncAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSyncAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       sortByNotes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notes', Sort.asc);
@@ -3401,6 +3992,20 @@ extension TransactionHeaderEntityQuerySortBy
       sortBySubtotalDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'subtotal', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortBySyncState() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'syncState', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      sortBySyncStateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'syncState', Sort.desc);
     });
   }
 
@@ -3604,6 +4209,20 @@ extension TransactionHeaderEntityQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByLastSyncAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSyncAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenByLastSyncAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSyncAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
       thenByNotes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notes', Sort.asc);
@@ -3698,6 +4317,20 @@ extension TransactionHeaderEntityQuerySortThenBy on QueryBuilder<
       thenBySubtotalDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'subtotal', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenBySyncState() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'syncState', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QAfterSortBy>
+      thenBySyncStateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'syncState', Sort.desc);
     });
   }
 
@@ -3840,6 +4473,13 @@ extension TransactionHeaderEntityQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
+      distinctByLastSyncAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastSyncAt');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
       distinctByNotes({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'notes', caseSensitive: caseSensitive);
@@ -3886,6 +4526,13 @@ extension TransactionHeaderEntityQueryWhereDistinct on QueryBuilder<
       distinctBySubtotal() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'subtotal');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, TransactionHeaderEntity, QDistinct>
+      distinctBySyncState() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'syncState');
     });
   }
 
@@ -4005,6 +4652,13 @@ extension TransactionHeaderEntityQueryProperty on QueryBuilder<
     });
   }
 
+  QueryBuilder<TransactionHeaderEntity, DateTime?, QQueryOperations>
+      lastSyncAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastSyncAt');
+    });
+  }
+
   QueryBuilder<TransactionHeaderEntity, List<TransactionLineItemEntity>,
       QQueryOperations> lineItemsProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -4072,6 +4726,13 @@ extension TransactionHeaderEntityQueryProperty on QueryBuilder<
       subtotalProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'subtotal');
+    });
+  }
+
+  QueryBuilder<TransactionHeaderEntity, int?, QQueryOperations>
+      syncStateProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'syncState');
     });
   }
 

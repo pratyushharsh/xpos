@@ -103,7 +103,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
                 SizedBox(height: 6),
               ],
             ),
-          buildPaymentDetails(context),
+          // buildPaymentDetails(context),
           if (config.showTaxSummary)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

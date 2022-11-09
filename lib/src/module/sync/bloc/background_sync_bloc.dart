@@ -19,6 +19,8 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
   final SyncRepository syncRepository;
   final SyncConfigRepository syncConfigRepository;
   Timer? _timer;
+  Isolate? _isolate;
+  bool isSyncEnabled = false;
 
 
   @override
@@ -40,27 +42,37 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
 
   // @TODO Control Sync Using State
   void _onStartSyncEvent(StartSyncEvent event, Emitter<BackgroundSyncState> emit) async {
+    if (!isSyncEnabled) {
+      return;
+    }
+
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+
+    if (_isolate != null) {
+      _isolate!.kill(priority: Isolate.immediate);
+    }
+
     final ReceivePort receivePort = ReceivePort();
-    await Isolate.spawn(IsolateSyncService.isolateEntryPoint, receivePort.sendPort);
+    _isolate = await Isolate.spawn(IsolateSyncService.isolateEntryPoint, receivePort.sendPort);
     SendPort sendPort = await receivePort.first;
 
     // Response Port
     ReceivePort responsePort = ReceivePort();
     responsePort.listen((dynamic message) {
       log.info('Received From Isolate: $message');
-      print('Received From Isolate: $message');
     });
+
+    // Send Store Id to start the background sync.
+    sendPort.send({'storeId': event.storeId, 'sendPort': responsePort.sendPort, 'syncType': 'start'});
 
     // sendPort.send(["Starting Background Sync", responsePort.sendPort]);
     emit(state.copyWith(storeId: event.storeId, status: BackgroundSyncStatus.started));
     log.info("Start Sync Event");
-    if (_timer != null) {
-      _timer!.cancel();
-    } else {
-      _timer = Timer.periodic(const Duration(seconds: 10), (t) async {
-        sendPort.send(["message $t", responsePort.sendPort]);
-      });
-    }
+    _timer = Timer.periodic(const Duration(minutes: 5), (t) async {
+      sendPort.send({'storeId': event.storeId, 'sendPort': responsePort.sendPort, 'syncType': 'refresh'});
+    });
   }
 
   void _onStopSyncEvent(StopSyncEvent event, Emitter<BackgroundSyncState> emit) async {

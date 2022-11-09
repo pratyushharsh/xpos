@@ -4,6 +4,8 @@ import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
+import '../config/constants.dart';
+
 class TransactionRepository {
   final log = Logger('TransactionRepository');
 
@@ -15,6 +17,7 @@ class TransactionRepository {
   Future<TransactionHeaderEntity> createNewSale(TransactionHeaderEntity header) async {
     await db.writeTxn(() async {
       header.lastChangedAt = DateTime.now();
+      header.syncState = 100;
       await db.transactionHeaderEntitys.put(header);
     });
     return header;

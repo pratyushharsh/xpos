@@ -38,6 +38,12 @@ class TransactionHeaderEntity {
   @Index(type: IndexType.value)
   DateTime? lastChangedAt;
 
+  @Index(type: IndexType.value)
+  DateTime? lastSyncAt;
+
+  @Index(type: IndexType.value)
+  int? syncState;
+
   final String? associateId;
   final String? associateName;
   final String? notes;
@@ -73,6 +79,8 @@ class TransactionHeaderEntity {
       this.customerName,
       this.notes,
       this.lastChangedAt,
+      this.lastSyncAt,
+      this.syncState,
       this.associateId,
       this.associateName});
 }

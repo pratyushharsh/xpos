@@ -115,6 +115,7 @@ class ReceiptHeaderCard extends StatelessWidget {
                   if (receipt.status.isNotEmpty)
                     HeaderStatusChip(
                       status: receipt.status,
+                      syncState: receipt.syncState ?? 0,
                     )
                 ],
               ),
@@ -148,7 +149,8 @@ class ReceiptHeaderCard extends StatelessWidget {
 
 class HeaderStatusChip extends StatelessWidget {
   final String status;
-  const HeaderStatusChip({Key? key, required this.status}) : super(key: key);
+  final int syncState;
+  const HeaderStatusChip({Key? key, required this.status, this.syncState = 0}) : super(key: key);
 
   String getStatus() {
     if (status == TransactionStatus.suspended) {
@@ -176,30 +178,51 @@ class HeaderStatusChip extends StatelessWidget {
     return Colors.grey;
   }
 
+  Widget syncStateWidget() {
+    if (syncState == 0) {
+      return const Icon(Icons.cloud_off, color: Colors.grey, size: 15);
+    } else if (syncState == 1000) {
+      return const Icon(Icons.cloud_done, color: Colors.green, size: 15);
+    } else if (syncState == 500) {
+      return const Icon(Icons.cloud_upload, color: Colors.orange, size: 15);
+    } else if (syncState == 3) {
+      return const Icon(Icons.cloud_off, color: Colors.red, size: 15);
+    }
+    return const Icon(Icons.cloud_off, color: Colors.grey, size: 15);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(color: getStatusColor()),
-          borderRadius: BorderRadius.circular(5)),
-      margin: const EdgeInsets.symmetric(vertical: 3),
-      padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
-      child: Row(
-        children: [
-          Text(
-            '${getStatus()} ',
-            style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: getStatusColor()),
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal:4),
+          child: syncStateWidget(),
+        ),
+        Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: getStatusColor()),
+              borderRadius: BorderRadius.circular(5)),
+          margin: const EdgeInsets.symmetric(vertical: 3),
+          padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
+          child: Row(
+            children: [
+              Text(
+                '${getStatus()} ',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: getStatusColor()),
+              ),
+              Icon(
+                Icons.circle,
+                size: 8,
+                color: getStatusColor(),
+              ),
+            ],
           ),
-          Icon(
-            Icons.circle,
-            size: 8,
-            color: getStatusColor(),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
