@@ -2,8 +2,6 @@ import 'package:intl/intl.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:pdf/widgets.dart';
 
-import '../../../entity/pos/report_config_entity.dart';
-
 class InvoiceConfigConstants {
   static List<ReportColumnConfigEntity> columnConfig = [
     ReportColumnConfigEntity(

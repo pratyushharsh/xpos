@@ -5,15 +5,16 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/contact_entity.dart';
 
+import '../../../database/db_provider.dart';
+
 part 'all_customer_event.dart';
 part 'all_customer_state.dart';
 
-class AllCustomerBloc extends Bloc<AllCustomerEvent, AllCustomerState> {
+class AllCustomerBloc extends Bloc<AllCustomerEvent, AllCustomerState> with DatabaseProvider {
 
   final log = Logger('AllCustomerBloc');
-  final Isar db;
 
-  AllCustomerBloc({required this.db}) : super(AllCustomerState()) {
+  AllCustomerBloc() : super(AllCustomerState()) {
     on<LoadAllCustomer>(_onLoadCustomers);
   }
 

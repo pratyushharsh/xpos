@@ -34,7 +34,7 @@ class AllCustomerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
-      create: (context) => AllCustomerBloc(db: RepositoryProvider.of(context))
+      create: (context) => AllCustomerBloc()
         ..add(LoadAllCustomer()),
       child: BlocBuilder<AllCustomerBloc, AllCustomerState>(
         builder: (context, state) {

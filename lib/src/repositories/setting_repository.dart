@@ -4,15 +4,15 @@ import 'package:receipt_generator/src/config/code_value.dart';
 import 'package:receipt_generator/src/model/model.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
+import '../database/db_provider.dart';
 import '../entity/pos/entity.dart';
 
-class SettingsRepository {
+class SettingsRepository with DatabaseProvider {
   final log = Logger('SettingsRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  SettingsRepository({required this.db, required this.restClient});
+  SettingsRepository({required this.restClient});
 
   Future<ReceiptSettingsModel> updateReceiptSetting(
       ReceiptSettingsModel req) async {

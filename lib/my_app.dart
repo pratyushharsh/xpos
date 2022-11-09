@@ -30,76 +30,84 @@ import 'src/module/settings/bloc/settings_bloc.dart';
 import 'src/repositories/checklist_helper.dart';
 import 'src/repositories/repository.dart';
 
-class MyApp extends StatelessWidget {
-  final Isar database;
+class MyApp extends StatefulWidget {
   final CognitoUserPool userPool;
   final RestApiClient restClient;
   const MyApp(
       {Key? key,
-      required this.database,
       required this.userPool,
-      required this.restClient})
+      required this.restClient,})
       : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Isar database;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
         providers: [
-          RepositoryProvider(lazy: false, create: (context) => database),
-          RepositoryProvider(lazy: false, create: (context) => restClient),
+          // RepositoryProvider(lazy: false, create: (context) => database),
+          RepositoryProvider(lazy: false, create: (context) => widget.restClient),
           RepositoryProvider(
-              lazy: false, create: (context) => CheckListHelper(db: database)),
+              lazy: false, create: (context) => CheckListHelper()),
           RepositoryProvider(create: (context) => ContactRepository()),
-          RepositoryProvider(create: (context) => userPool),
+          RepositoryProvider(create: (context) => widget.userPool),
           RepositoryProvider(
             create: (context) => BusinessRepository(
-              db: database,
-              restClient: restClient,
+              restClient: widget.restClient,
             ),
           ),
           RepositoryProvider(
             create: (context) => SyncRepository(
-              db: database,
-              restClient: restClient,
+              restClient: widget.restClient,
             ),
           ),
           RepositoryProvider(
-            create: (context) => SyncConfigRepository(db: database),
+            create: (context) => SyncConfigRepository(),
           ),
           RepositoryProvider(
             create: (context) =>
-                SettingsRepository(db: database, restClient: restClient),
+                SettingsRepository(restClient: widget.restClient),
           ),
           RepositoryProvider(
             create: (context) =>
-                SequenceRepository(db: database, restClient: restClient),
+                SequenceRepository(restClient: widget.restClient),
           ),
           RepositoryProvider(
             create: (context) =>
-                TransactionRepository(db: database, restClient: restClient),
+                TransactionRepository(restClient: widget.restClient),
           ),
           RepositoryProvider(
-            create: (context) => ConfigRepository(db: database),
-          ),
-          RepositoryProvider(
-            create: (context) =>
-                ReasonCodeRepository(db: database, restClient: restClient),
+            create: (context) => ConfigRepository(),
           ),
           RepositoryProvider(
             create: (context) =>
-                TaxRepository(db: database, restClient: restClient),
+                ReasonCodeRepository(restClient: widget.restClient),
           ),
           RepositoryProvider(
             create: (context) =>
-                EmployeeRepository(db: database, restClient: restClient),
+                TaxRepository(restClient: widget.restClient),
           ),
           RepositoryProvider(
             create: (context) =>
-                CustomerRepository(db: database, restClient: restClient),
+                EmployeeRepository(restClient: widget.restClient),
           ),
           RepositoryProvider(
             create: (context) =>
-                ProductRepository(db: database, restClient: restClient),
+                CustomerRepository(restClient: widget.restClient),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                ProductRepository(restClient: widget.restClient),
           ),
           RepositoryProvider(
             lazy: false,
@@ -121,7 +129,7 @@ class MyApp extends StatelessWidget {
           ),
           RepositoryProvider(
             create: (context) =>
-                InvoiceRepository(db: database, restClient: restClient),
+                InvoiceRepository(restClient: widget.restClient),
           ),
         ],
         child: MultiBlocProvider(providers: [
@@ -215,7 +223,7 @@ class _MyAppViewState extends State<MyAppView> {
             listenWhen: (previous, current) {
               return true;
             },
-            listener: (context, state) {
+            listener: (context, state) async {
               switch (state.status) {
                 case AuthenticationStatus.authenticated:
                   _navigator.pushAndRemoveUntil<void>(

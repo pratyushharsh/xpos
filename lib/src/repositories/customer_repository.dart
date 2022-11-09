@@ -1,16 +1,16 @@
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 
+import '../database/db_provider.dart';
 import '../entity/pos/entity.dart';
 import '../util/helper/rest_api.dart';
 
-class CustomerRepository {
+class CustomerRepository with DatabaseProvider {
   final log = Logger('CustomerRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  CustomerRepository({required this.db, required this.restClient});
+  CustomerRepository({required this.restClient});
 
   Future<void> createOrUpdateCustomer(ContactEntity customer) async {
     try {
@@ -33,7 +33,11 @@ class CustomerRepository {
     return null;
   }
 
-  Future<List<TransactionHeaderEntity>> getPurchaseListByCustomerId(String customerId) {
-    return db.transactionHeaderEntitys.where().customerIdEqualTo(customerId).findAll();
+  Future<List<TransactionHeaderEntity>> getPurchaseListByCustomerId(
+      String customerId) {
+    return db.transactionHeaderEntitys
+        .where()
+        .customerIdEqualTo(customerId)
+        .findAll();
   }
 }

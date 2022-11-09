@@ -9,15 +9,13 @@ import 'package:http/http.dart' as http;
 import 'package:receipt_generator/src/entity/config/code_value_entity.dart';
 
 import '../config/constants.dart';
+import '../database/db_provider.dart';
 import '../entity/pos/entity.dart';
-import '../entity/pos/reason_code_entity.dart';
 
-class SyncConfigRepository {
+class SyncConfigRepository with DatabaseProvider {
   final log = Logger('SyncConfigRepository');
 
-  final Isar db;
-
-  SyncConfigRepository({required this.db});
+  SyncConfigRepository();
 
   Future<void> getDataFromServer() async {
     String url =

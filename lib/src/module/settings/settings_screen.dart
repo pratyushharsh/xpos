@@ -505,7 +505,7 @@ class _SwitchBusinessAccountWidgetState
                                           BlocProvider.of<AuthenticationBloc>(
                                                   context)
                                               .add(
-                                                  ChangeBusinessAccount(value));
+                                              ChangeBusinessAccount(value));
                                         }
                                       },
                                     )

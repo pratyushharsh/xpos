@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:receipt_generator/src/model/api/api.dart';
 
+import '../database/db_provider.dart';
 import '../entity/config/code_value_entity.dart';
 import '../entity/pos/entity.dart';
 import '../util/helper/rest_api.dart';
@@ -20,10 +20,9 @@ SyncState
 500 - Failed to sync
  */
 
-class SyncRepository {
+class SyncRepository with DatabaseProvider {
   final log = Logger('SyncRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
   static const int staging = 200;
@@ -32,7 +31,6 @@ class SyncRepository {
   DateTime firstStartTime = DateTime(2000);
 
   SyncRepository({
-    required this.db,
     required this.restClient,
   });
 

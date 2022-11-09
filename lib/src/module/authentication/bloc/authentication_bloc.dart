@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/business_entity.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 
+import '../../../database/db_provider.dart';
 import '../../../entity/pos/employee_entity.dart';
 import '../../../model/api/api.dart';
 import '../../../repositories/employee_repository.dart';
@@ -14,8 +15,7 @@ import '../../sync/bloc/background_sync_bloc.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final log = Logger('AuthenticationBloc');
   final bool test = false;
 
@@ -36,7 +36,7 @@ class AuthenticationBloc
     on<VerifyUserOtpStep>(_onVerifyUser);
     on<VerifyUserDeviceStep>(_onVerifyUserDevice);
     on<LogOutUserEvent>(_logOutUser);
-    on<ChooseBusinessEvent>(_chooseBusinessEvent);
+    // on<ChooseBusinessEvent>(_chooseBusinessEvent);
     on<RefreshBusinessEvent>(_refreshBusinessEvent);
     on<ChangeBusinessAccount>(_changeBusinessAccount);
   }
@@ -62,12 +62,16 @@ class AuthenticationBloc
         //
         // return;
         if (curStore == null) {
-          var businessList = await employeeRepository.getBusinessAssociatedWithUser(user.getUsername()!);
+          var businessList = await employeeRepository
+              .getBusinessAssociatedWithUser(user.getUsername()!);
           emit(AuthenticationState.chooseBusiness(businessList));
         } else {
+          await DatabaseProvider.switchDatabase(curStore);
           // Get business from cache
-          var business = await businessRepository.getBusinessById(int.parse(curStore));
-          var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(curStore, user.getUsername()!);
+          var business =
+              await businessRepository.getBusinessById(int.parse(curStore));
+          var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(
+              curStore, user.getUsername()!);
           emit(AuthenticationState.authenticated(user, business, userDetail!));
           sync.add(StartSyncEvent(int.parse(curStore)));
         }
@@ -80,8 +84,8 @@ class AuthenticationBloc
     }
   }
 
-  void _onUserChanged(AuthenticationUserChanged event,
-      Emitter<AuthenticationState> emit) {
+  void _onUserChanged(
+      AuthenticationUserChanged event, Emitter<AuthenticationState> emit) {
     add(InitialAuthEvent());
   }
 
@@ -109,21 +113,25 @@ class AuthenticationBloc
     }
   }
 
-  void _chooseBusinessEvent(
-      ChooseBusinessEvent event, Emitter<AuthenticationState> emit) async {
-    emit(state.copyWith(status: AuthenticationStatus.chooseBusinessLoading));
-    var user = await userPool.getCurrentUser();
-    await user!.getSession();
-    await user.storage.setItem("CURRENT_STORE", event.business.storeId);
-    var business = await businessRepository.getBusinessById(int.parse(event.business.storeId!));
-    var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(event.business.storeId!, user.getUsername()!);
-    emit(AuthenticationState.authenticated(user, business, userDetail!));
-  }
+  // void _chooseBusinessEvent(
+  //     ChooseBusinessEvent event, Emitter<AuthenticationState> emit) async {
+  //   emit(state.copyWith(status: AuthenticationStatus.chooseBusinessLoading));
+  //   var user = await userPool.getCurrentUser();
+  //   await user!.getSession();
+  //   await user.storage.setItem("CURRENT_STORE", event.business.storeId);
+  //   // Change the database for new business.
+  //   var business = await businessRepository
+  //       .getBusinessById(int.parse(event.business.storeId!));
+  //   var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(
+  //       event.business.storeId!, user.getUsername()!);
+  //   emit(AuthenticationState.authenticated(user, business, userDetail!));
+  // }
 
   void _refreshBusinessEvent(
       RefreshBusinessEvent event, Emitter<AuthenticationState> emit) async {
     if (state.store != null) {
-      var business = await businessRepository.getBusinessById(state.store!.rtlLocId);
+      var business =
+          await businessRepository.getBusinessById(state.store!.rtlLocId);
       emit(state.copyWith(store: business));
     }
   }
@@ -132,11 +140,17 @@ class AuthenticationBloc
     sync.add(SyncAllConfigDataEvent());
   }
 
-  void _changeBusinessAccount(ChangeBusinessAccount event, Emitter<AuthenticationState> emit) async {
+  void _changeBusinessAccount(
+      ChangeBusinessAccount event, Emitter<AuthenticationState> emit) async {
     var user = await userPool.getCurrentUser();
     await user!.storage.setItem("CURRENT_STORE", event.rtlLocId);
-    var business = await businessRepository.getBusinessById(int.parse(event.rtlLocId));
-    var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(event.rtlLocId, user.getUsername()!);
+    // Switch the database.
+    await DatabaseProvider.switchDatabase(event.rtlLocId);
+    //
+    var business =
+        await businessRepository.getBusinessById(int.parse(event.rtlLocId));
+    var userDetail = await employeeRepository.getEmployeeByStoreAndUserId(
+        event.rtlLocId, user.getUsername()!);
     emit(AuthenticationState.authenticated(user, business, userDetail!));
     sync.add(StartSyncEvent(business.rtlLocId));
   }

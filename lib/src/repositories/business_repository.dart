@@ -1,22 +1,21 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/model/api/api.dart';
 import 'package:receipt_generator/src/model/api/create_business_response.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
+import '../database/db_provider.dart';
 import '../entity/pos/address.dart';
 import '../entity/pos/entity.dart';
 
-class BusinessRepository {
+class BusinessRepository with DatabaseProvider {
   final log = Logger('BusinessRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  BusinessRepository({required this.db, required this.restClient});
+  BusinessRepository({required this.restClient});
 
   Future<RetailLocationEntity> findAndPersistBusiness(int businessId) async {
     try {

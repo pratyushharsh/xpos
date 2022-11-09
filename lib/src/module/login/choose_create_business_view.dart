@@ -157,7 +157,7 @@ class _ChooseCreateBusinessFormState extends State<ChooseCreateBusinessForm> {
                         child: AcceptButton(
                           label: "Continue",
                           onPressed: _selectedBusiness != null ? () {
-                            BlocProvider.of<AuthenticationBloc>(context).add(ChooseBusinessEvent(_selectedBusinessData!));
+                            BlocProvider.of<AuthenticationBloc>(context).add(ChangeBusinessAccount(_selectedBusinessData!.storeId!));
                           } : null,
                         ),
                       )

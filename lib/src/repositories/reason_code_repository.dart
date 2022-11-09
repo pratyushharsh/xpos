@@ -1,16 +1,16 @@
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 
+import '../database/db_provider.dart';
 import '../entity/pos/reason_code_entity.dart';
 import '../util/helper/rest_api.dart';
 
-class ReasonCodeRepository {
+class ReasonCodeRepository with DatabaseProvider {
   final log = Logger('ReasonCodeRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  ReasonCodeRepository({required this.db, required this.restClient});
+  ReasonCodeRepository({required this.restClient});
 
   Future<List<ReasonCodeEntity>> getReasonCodeByTypeCode(String reasonTypeCode) {
     try {

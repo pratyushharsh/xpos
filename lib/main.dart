@@ -3,13 +3,10 @@ import 'package:easy_localization/easy_localization.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:printing/printing.dart';
 import 'package:receipt_generator/src/config/constants.dart';
-import 'package:receipt_generator/src/entity/config/code_value_entity.dart';
-import 'package:receipt_generator/src/entity/pos/entity.dart';
+import 'package:receipt_generator/src/database/db_provider.dart';
 import 'package:receipt_generator/src/util/cache/custom_storage.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
@@ -26,33 +23,33 @@ Future<void> main() {
     WidgetsFlutterBinding.ensureInitialized();
     initRootLogger();
     await EasyLocalization.ensureInitialized();
+    await DatabaseProvider.ensureInitialized();
     PdfBaseCache.defaultCache = CustomPdfCache();
 
     // Database Configuration
-    final dir = await getApplicationSupportDirectory();
     await Constants.getImageBasePath();
-    log.info('App Support Directory:  $dir');
-    final isar = await Isar.open(
-      [
-        RetailLocationEntitySchema,
-        ContactEntitySchema,
-        EmployeeEntitySchema,
-        EmployeeRoleEntitySchema,
-        ProductEntitySchema,
-        CollectionEntitySchema,
-        SequenceEntitySchema,
-        SettingEntitySchema,
-        SyncEntitySchema,
-        TransactionHeaderEntitySchema,
-        CodeValueEntitySchema,
-        ReasonCodeEntitySchema,
-        TaxGroupEntitySchema,
-        ReportConfigEntitySchema,
-      ],
-      inspector: true,
-      directory: dir.path,
-      name: 'xpos'
-    );
+    // log.info('App Support Directory:  $dir');
+    // final isar = await Isar.open(
+    //   [
+    //     RetailLocationEntitySchema,
+    //     ContactEntitySchema,
+    //     EmployeeEntitySchema,
+    //     EmployeeRoleEntitySchema,
+    //     ProductEntitySchema,
+    //     CollectionEntitySchema,
+    //     SequenceEntitySchema,
+    //     SettingEntitySchema,
+    //     SyncEntitySchema,
+    //     TransactionHeaderEntitySchema,
+    //     CodeValueEntitySchema,
+    //     ReasonCodeEntitySchema,
+    //     TaxGroupEntitySchema,
+    //     ReportConfigEntitySchema,
+    //   ],
+    //   inspector: true,
+    //   directory: dir.path,
+    //   name: 'default'
+    // );
 
     await _initAmplifyFlutter();
 
@@ -83,7 +80,6 @@ Future<void> main() {
         ],
         fallbackLocale: const Locale('en', 'US'),
         child: MyApp(
-          database: isar,
           userPool: userPool,
           restClient: restClient,
         ),

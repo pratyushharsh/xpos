@@ -1,16 +1,16 @@
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 
+import '../database/db_provider.dart';
 import '../entity/pos/entity.dart';
 import '../util/helper/rest_api.dart';
 
-class ProductRepository {
+class ProductRepository with DatabaseProvider {
   final log = Logger('ProductRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  ProductRepository({required this.db, required this.restClient});
+  ProductRepository({required this.restClient});
 
   Future<ProductEntity?> getProductById(String productId) {
     return db.productEntitys.getByProductId(productId);

@@ -1,16 +1,15 @@
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 
+import '../database/db_provider.dart';
 import '../entity/pos/entity.dart';
 import '../util/helper/rest_api.dart';
 
-class SequenceRepository {
+class SequenceRepository with DatabaseProvider {
   final log = Logger('BusinessRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  SequenceRepository({required this.db, required this.restClient});
+  SequenceRepository({required this.restClient});
 
   Future<SequenceEntity> getNextSequence(SequenceType type) async {
     await db.writeTxn(() async {

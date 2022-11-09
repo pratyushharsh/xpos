@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/widgets/widgets.dart';
 
-import '../../entity/pos/reason_code_entity.dart';
 import '../../repositories/reason_code_repository.dart';
 import '../../util/text_input_formatter/custom_formatter.dart';
 import '../../widgets/code_value_dropdown.dart';

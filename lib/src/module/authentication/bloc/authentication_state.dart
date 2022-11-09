@@ -18,11 +18,12 @@ class AuthenticationState extends Equatable {
   final EmployeeEntity? employee;
   final RetailLocationEntity? store;
   final List<UserBusiness> userBusinesses;
+  final int? rtlLocId;
 
   const AuthenticationState._(
-      {required this.status, this.user, this.employee, this.store, this.userBusinesses = const []})
+      {required this.status, this.user, this.employee, this.store, this.userBusinesses = const [], this.rtlLocId})
       : assert(status == AuthenticationStatus.authenticated
-            ? store != null
+            ? (store != null)
             : true);
 
   const AuthenticationState.unauthenticated()
@@ -67,13 +68,15 @@ class AuthenticationState extends Equatable {
       CognitoUser? user,
       EmployeeEntity? employee,
       RetailLocationEntity? store,
-      List<UserBusiness>? userBusinesses}) {
+      List<UserBusiness>? userBusinesses,
+      int? rtlLocId}) {
     return AuthenticationState._(
         status: status ?? this.status,
         user: user ?? this.user,
         employee: employee ?? this.employee,
         store: store ?? this.store,
-        userBusinesses: userBusinesses ?? this.userBusinesses);
+        userBusinesses: userBusinesses ?? this.userBusinesses,
+        rtlLocId: rtlLocId ?? this.rtlLocId);
   }
 
   @override

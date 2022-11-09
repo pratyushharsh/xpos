@@ -4,18 +4,18 @@ import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/employee_entity.dart';
 
+import '../database/db_provider.dart';
 import '../model/api/api.dart';
 import '../model/api/create_store_employee_request.dart';
 import '../model/api/get_employee_response.dart';
 import '../util/helper/rest_api.dart';
 
-class EmployeeRepository {
+class EmployeeRepository with DatabaseProvider {
   final log = Logger('EmployeeRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  EmployeeRepository({required this.db, required this.restClient});
+  EmployeeRepository({ required this.restClient});
 
   // Future<EmployeeEntity?> getEmployeeByUserId(String userId) async {
   //   try {

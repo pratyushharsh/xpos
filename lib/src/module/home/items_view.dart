@@ -13,7 +13,7 @@ class ItemsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
-      create: (context) => ListAllItemBloc(db: RepositoryProvider.of(context))
+      create: (context) => ListAllItemBloc()
         ..add(LoadAllItems()),
       child: const  ItemViewWidgets(),
     );

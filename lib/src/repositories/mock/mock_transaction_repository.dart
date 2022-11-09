@@ -9,7 +9,7 @@ import '../transaction_repository.dart';
 class MockTransactionRepository extends TransactionRepository {
   MockTransactionRepository(
       {required Isar db, required RestApiClient restClient})
-      : super(db: db, restClient: restClient);
+      : super(restClient: restClient);
 
   @override
   Future<TransactionHeaderEntity> createNewSale(TransactionHeaderEntity header) async {

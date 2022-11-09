@@ -9,7 +9,6 @@ import 'package:receipt_generator/src/module/receipt_display/template/invoice_co
 import 'package:receipt_generator/src/util/extension/string_extension.dart';
 
 import '../../../entity/pos/entity.dart';
-import '../../../entity/pos/report_config_entity.dart';
 
 class Invoice1 {
   final TransactionHeaderEntity order;

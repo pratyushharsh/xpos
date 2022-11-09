@@ -1,18 +1,16 @@
 
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
 
-import '../config/constants.dart';
+import '../database/db_provider.dart';
 
-class TransactionRepository {
+class TransactionRepository with DatabaseProvider {
   final log = Logger('TransactionRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  TransactionRepository({required this.db, required this.restClient });
+  TransactionRepository({required this.restClient });
 
   Future<TransactionHeaderEntity> createNewSale(TransactionHeaderEntity header) async {
     await db.writeTxn(() async {

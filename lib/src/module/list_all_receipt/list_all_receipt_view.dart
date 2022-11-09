@@ -40,7 +40,7 @@ class ListAllReceiptView extends StatelessWidget {
     return BlocProvider(
       lazy: false,
       create: (context) =>
-          ListAllReceiptBloc(db: RepositoryProvider.of(context))
+          ListAllReceiptBloc()
             ..add(LoadAllReceipt()),
       child: BlocBuilder<ListAllReceiptBloc, ListAllReceiptState>(
         builder: (context, state) {

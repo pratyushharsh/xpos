@@ -5,15 +5,16 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
+import '../../../database/db_provider.dart';
+
 part 'list_all_receipt_event.dart';
 part 'list_all_receipt_state.dart';
 
-class ListAllReceiptBloc extends Bloc<ListAllReceiptEvent, ListAllReceiptState> {
+class ListAllReceiptBloc extends Bloc<ListAllReceiptEvent, ListAllReceiptState> with DatabaseProvider {
 
   final log = Logger('ListAllReceiptBloc');
-  final Isar db;
 
-  ListAllReceiptBloc({required this.db}) : super(ListAllReceiptState()) {
+  ListAllReceiptBloc() : super(ListAllReceiptState()) {
     on<LoadAllReceipt>(_onLoadAllReceipt);
   }
 

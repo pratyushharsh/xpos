@@ -4,7 +4,6 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
 import '../../../entity/pos/entity.dart';
-import '../../../entity/pos/report_config_entity.dart';
 import 'base_invoice.dart';
 import 'invoice_config.dart';
 

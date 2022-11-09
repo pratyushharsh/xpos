@@ -2,23 +2,23 @@ import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/tax_rule_entity.dart';
 
+import '../database/db_provider.dart';
 import '../entity/pos/tax_group_entity.dart';
 import '../util/helper/rest_api.dart';
 
-class TaxRepository {
+class TaxRepository with DatabaseProvider {
   final log = Logger('TaxRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  TaxRepository({required this.db, required this.restClient});
+  TaxRepository({required this.restClient});
 
   Future<void> fetchAllTaxGroupFromServer(String businessId) async {
     try {
       var option = RestOptions(path: '/business/$businessId/settings/tax');
       var rawResp = await restClient.get(restOptions: option);
       if (rawResp.statusCode == 200) {
-        db.writeTxn(() async {
+        await db.writeTxn(() async {
           await db.taxGroupEntitys.importJsonRaw(rawResp.bodyBytes);
         });
       }

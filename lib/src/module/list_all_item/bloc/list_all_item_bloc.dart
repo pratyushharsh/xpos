@@ -4,14 +4,15 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
+import '../../../database/db_provider.dart';
+
 part 'list_all_item_event.dart';
 part 'list_all_item_state.dart';
 
-class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> {
+class ListAllItemBloc extends Bloc<ListAllItemEvent, ListAllItemState> with DatabaseProvider {
   final log = Logger('ListAllItemBloc');
-  final Isar db;
 
-  ListAllItemBloc({required this.db}) : super(ListAllItemState()) {
+  ListAllItemBloc() : super(ListAllItemState()) {
     on<LoadAllItems>(_onLoadItem);
     on<LoadNextProduct>(_onLoadNextProducts);
     on<SearchProductByNameFilter>(_filerProductsByDisplayName);

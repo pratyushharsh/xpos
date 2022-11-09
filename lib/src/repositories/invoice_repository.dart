@@ -5,6 +5,7 @@ import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/report_config_entity.dart';
 
+import '../database/db_provider.dart';
 import '../module/receipt_display/template/invoice_config.dart';
 import '../util/helper/rest_api.dart';
 
@@ -25,13 +26,12 @@ enum InvoiceField {
   final String value;
 }
 
-class InvoiceRepository {
+class InvoiceRepository with DatabaseProvider {
   final log = Logger('InvoiceRepository');
 
-  final Isar db;
   final RestApiClient restClient;
 
-  InvoiceRepository({required this.db, required this.restClient});
+  InvoiceRepository({ required this.restClient});
 
   Future<void> saveInvoiceSetting(InvoiceConfig setting) async {
     db.writeTxn(() async {

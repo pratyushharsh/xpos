@@ -1,11 +1,9 @@
-import 'package:isar/isar.dart';
-
+import '../database/db_provider.dart';
 import '../entity/pos/business_entity.dart';
 
-class CheckListHelper {
-  final Isar db;
+class CheckListHelper with DatabaseProvider {
 
-  CheckListHelper({required this.db});
+  CheckListHelper();
 
   List<String> validateStore(RetailLocationEntity store) {
     List<String> err = [];
