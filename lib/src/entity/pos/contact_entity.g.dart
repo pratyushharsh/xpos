@@ -48,50 +48,45 @@ const ContactEntitySchema = CollectionSchema(
       name: r'gstin',
       type: IsarType.string,
     ),
-    r'lastName': PropertySchema(
+    r'lastChangedAt': PropertySchema(
       id: 6,
+      name: r'lastChangedAt',
+      type: IsarType.dateTime,
+    ),
+    r'lastName': PropertySchema(
+      id: 7,
       name: r'lastName',
       type: IsarType.string,
     ),
     r'lastSyncAt': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'lastSyncAt',
       type: IsarType.dateTime,
     ),
     r'panCard': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'panCard',
       type: IsarType.string,
     ),
     r'phoneNumber': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'shippingAddress': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'shippingAddress',
       type: IsarType.object,
       target: r'Address',
     ),
     r'storeId': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'storeId',
       type: IsarType.string,
     ),
     r'syncState': PropertySchema(
-      id: 12,
-      name: r'syncState',
-      type: IsarType.long,
-    ),
-    r'updateTime': PropertySchema(
       id: 13,
-      name: r'updateTime',
-      type: IsarType.dateTime,
-    ),
-    r'version': PropertySchema(
-      id: 14,
-      name: r'version',
+      name: r'syncState',
       type: IsarType.long,
     )
   },
@@ -105,11 +100,11 @@ const ContactEntitySchema = CollectionSchema(
       id: -4093605102051572933,
       name: r'contactId',
       unique: true,
-      replace: false,
+      replace: true,
       properties: [
         IndexPropertySchema(
           name: r'contactId',
-          type: IndexType.hash,
+          type: IndexType.value,
           caseSensitive: true,
         )
       ],
@@ -150,6 +145,45 @@ const ContactEntitySchema = CollectionSchema(
           name: r'email',
           type: IndexType.hash,
           caseSensitive: true,
+        )
+      ],
+    ),
+    r'lastChangedAt': IndexSchema(
+      id: -4409887940193105571,
+      name: r'lastChangedAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'lastChangedAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'lastSyncAt': IndexSchema(
+      id: -8300919554834343292,
+      name: r'lastSyncAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'lastSyncAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'syncState': IndexSchema(
+      id: -413052077849439895,
+      name: r'syncState',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'syncState',
+          type: IndexType.value,
+          caseSensitive: false,
         )
       ],
     )
@@ -230,20 +264,19 @@ void _contactEntitySerialize(
   writer.writeString(offsets[3], object.email);
   writer.writeString(offsets[4], object.firstName);
   writer.writeString(offsets[5], object.gstin);
-  writer.writeString(offsets[6], object.lastName);
-  writer.writeDateTime(offsets[7], object.lastSyncAt);
-  writer.writeString(offsets[8], object.panCard);
-  writer.writeString(offsets[9], object.phoneNumber);
+  writer.writeDateTime(offsets[6], object.lastChangedAt);
+  writer.writeString(offsets[7], object.lastName);
+  writer.writeDateTime(offsets[8], object.lastSyncAt);
+  writer.writeString(offsets[9], object.panCard);
+  writer.writeString(offsets[10], object.phoneNumber);
   writer.writeObject<Address>(
-    offsets[10],
+    offsets[11],
     allOffsets,
     AddressSchema.serialize,
     object.shippingAddress,
   );
-  writer.writeString(offsets[11], object.storeId);
-  writer.writeLong(offsets[12], object.syncState);
-  writer.writeDateTime(offsets[13], object.updateTime);
-  writer.writeLong(offsets[14], object.version);
+  writer.writeString(offsets[12], object.storeId);
+  writer.writeLong(offsets[13], object.syncState);
 }
 
 ContactEntity _contactEntityDeserialize(
@@ -264,19 +297,18 @@ ContactEntity _contactEntityDeserialize(
     firstName: reader.readString(offsets[4]),
     gstin: reader.readStringOrNull(offsets[5]),
     id: id,
-    lastName: reader.readString(offsets[6]),
-    lastSyncAt: reader.readDateTimeOrNull(offsets[7]),
-    panCard: reader.readStringOrNull(offsets[8]),
-    phoneNumber: reader.readStringOrNull(offsets[9]),
+    lastChangedAt: reader.readDateTimeOrNull(offsets[6]),
+    lastName: reader.readString(offsets[7]),
+    lastSyncAt: reader.readDateTimeOrNull(offsets[8]),
+    panCard: reader.readStringOrNull(offsets[9]),
+    phoneNumber: reader.readStringOrNull(offsets[10]),
     shippingAddress: reader.readObjectOrNull<Address>(
-      offsets[10],
+      offsets[11],
       AddressSchema.deserialize,
       allOffsets,
     ),
-    storeId: reader.readString(offsets[11]),
-    syncState: reader.readLongOrNull(offsets[12]) ?? 100,
-    updateTime: reader.readDateTimeOrNull(offsets[13]),
-    version: reader.readLongOrNull(offsets[14]) ?? 1,
+    storeId: reader.readString(offsets[12]),
+    syncState: reader.readLongOrNull(offsets[13]),
   );
   return object;
 }
@@ -305,27 +337,25 @@ P _contactEntityDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readString(offset)) as P;
-    case 7:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 7:
+      return (reader.readString(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 9:
       return (reader.readStringOrNull(offset)) as P;
     case 10:
+      return (reader.readStringOrNull(offset)) as P;
+    case 11:
       return (reader.readObjectOrNull<Address>(
         offset,
         AddressSchema.deserialize,
         allOffsets,
       )) as P;
-    case 11:
-      return (reader.readString(offset)) as P;
     case 12:
-      return (reader.readLongOrNull(offset) ?? 100) as P;
+      return (reader.readString(offset)) as P;
     case 13:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 14:
-      return (reader.readLongOrNull(offset) ?? 1) as P;
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -402,6 +432,38 @@ extension ContactEntityQueryWhereSort
   QueryBuilder<ContactEntity, ContactEntity, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhere> anyContactId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'contactId'),
+      );
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhere> anyLastChangedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'lastChangedAt'),
+      );
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhere> anyLastSyncAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'lastSyncAt'),
+      );
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhere> anySyncState() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'syncState'),
+      );
     });
   }
 }
@@ -517,6 +579,102 @@ extension ContactEntityQueryWhere
               lower: [],
               upper: [contactId],
               includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      contactIdGreaterThan(
+    String contactId, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'contactId',
+        lower: [contactId],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      contactIdLessThan(
+    String contactId, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'contactId',
+        lower: [],
+        upper: [contactId],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      contactIdBetween(
+    String lowerContactId,
+    String upperContactId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'contactId',
+        lower: [lowerContactId],
+        includeLower: includeLower,
+        upper: [upperContactId],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      contactIdStartsWith(String ContactIdPrefix) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'contactId',
+        lower: [ContactIdPrefix],
+        upper: ['$ContactIdPrefix\u{FFFFF}'],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      contactIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'contactId',
+        value: [''],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      contactIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'contactId',
+              upper: [''],
+            ))
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'contactId',
+              lower: [''],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'contactId',
+              lower: [''],
+            ))
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'contactId',
+              upper: [''],
             ));
       }
     });
@@ -697,6 +855,351 @@ extension ContactEntityQueryWhere
               includeUpper: false,
             ));
       }
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastChangedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastChangedAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastChangedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastChangedAtEqualTo(DateTime? lastChangedAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastChangedAt',
+        value: [lastChangedAt],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastChangedAtNotEqualTo(DateTime? lastChangedAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [],
+              upper: [lastChangedAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [lastChangedAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [lastChangedAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [],
+              upper: [lastChangedAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastChangedAtGreaterThan(
+    DateTime? lastChangedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [lastChangedAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastChangedAtLessThan(
+    DateTime? lastChangedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [],
+        upper: [lastChangedAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastChangedAtBetween(
+    DateTime? lowerLastChangedAt,
+    DateTime? upperLastChangedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [lowerLastChangedAt],
+        includeLower: includeLower,
+        upper: [upperLastChangedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastSyncAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastSyncAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastSyncAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastSyncAtEqualTo(DateTime? lastSyncAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastSyncAt',
+        value: [lastSyncAt],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastSyncAtNotEqualTo(DateTime? lastSyncAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [],
+              upper: [lastSyncAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [lastSyncAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [lastSyncAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [],
+              upper: [lastSyncAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastSyncAtGreaterThan(
+    DateTime? lastSyncAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [lastSyncAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastSyncAtLessThan(
+    DateTime? lastSyncAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [],
+        upper: [lastSyncAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      lastSyncAtBetween(
+    DateTime? lowerLastSyncAt,
+    DateTime? upperLastSyncAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [lowerLastSyncAt],
+        includeLower: includeLower,
+        upper: [upperLastSyncAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      syncStateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'syncState',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      syncStateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      syncStateEqualTo(int? syncState) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'syncState',
+        value: [syncState],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      syncStateNotEqualTo(int? syncState) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [],
+              upper: [syncState],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [syncState],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [syncState],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [],
+              upper: [syncState],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      syncStateGreaterThan(
+    int? syncState, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [syncState],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      syncStateLessThan(
+    int? syncState, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [],
+        upper: [syncState],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterWhereClause>
+      syncStateBetween(
+    int? lowerSyncState,
+    int? upperSyncState, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [lowerSyncState],
+        includeLower: includeLower,
+        upper: [upperSyncState],
+        includeUpper: includeUpper,
+      ));
     });
   }
 }
@@ -1429,6 +1932,80 @@ extension ContactEntityQueryFilter
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastChangedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastChangedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastChangedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastChangedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastChangedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastChangedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastChangedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastChangedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastChangedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastChangedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      lastChangedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastChangedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       lastNameEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -2101,7 +2678,25 @@ extension ContactEntityQueryFilter
   }
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      syncStateEqualTo(int value) {
+      syncStateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'syncState',
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      syncStateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'syncState',
+      ));
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
+      syncStateEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'syncState',
@@ -2112,7 +2707,7 @@ extension ContactEntityQueryFilter
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       syncStateGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -2126,7 +2721,7 @@ extension ContactEntityQueryFilter
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       syncStateLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -2140,144 +2735,14 @@ extension ContactEntityQueryFilter
 
   QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
       syncStateBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'syncState',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      updateTimeIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'updateTime',
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      updateTimeIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'updateTime',
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      updateTimeEqualTo(DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'updateTime',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      updateTimeGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'updateTime',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      updateTimeLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'updateTime',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      updateTimeBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'updateTime',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      versionEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'version',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      versionGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'version',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      versionLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'version',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterFilterCondition>
-      versionBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'version',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -2372,6 +2837,20 @@ extension ContactEntityQuerySortBy
     });
   }
 
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
+      sortByLastChangedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastChangedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
+      sortByLastChangedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastChangedAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByLastName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastName', Sort.asc);
@@ -2445,31 +2924,6 @@ extension ContactEntityQuerySortBy
       sortBySyncStateDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'syncState', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByUpdateTime() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updateTime', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
-      sortByUpdateTimeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updateTime', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByVersion() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'version', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> sortByVersionDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'version', Sort.desc);
     });
   }
 }
@@ -2551,6 +3005,20 @@ extension ContactEntityQuerySortThenBy
     });
   }
 
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
+      thenByLastChangedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastChangedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
+      thenByLastChangedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastChangedAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByLastName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastName', Sort.asc);
@@ -2626,31 +3094,6 @@ extension ContactEntityQuerySortThenBy
       return query.addSortBy(r'syncState', Sort.desc);
     });
   }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByUpdateTime() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updateTime', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy>
-      thenByUpdateTimeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updateTime', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByVersion() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'version', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QAfterSortBy> thenByVersionDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'version', Sort.desc);
-    });
-  }
 }
 
 extension ContactEntityQueryWhereDistinct
@@ -2686,6 +3129,13 @@ extension ContactEntityQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'gstin', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContactEntity, ContactEntity, QDistinct>
+      distinctByLastChangedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastChangedAt');
     });
   }
 
@@ -2726,18 +3176,6 @@ extension ContactEntityQueryWhereDistinct
   QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctBySyncState() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'syncState');
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctByUpdateTime() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'updateTime');
-    });
-  }
-
-  QueryBuilder<ContactEntity, ContactEntity, QDistinct> distinctByVersion() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'version');
     });
   }
 }
@@ -2787,6 +3225,13 @@ extension ContactEntityQueryProperty
     });
   }
 
+  QueryBuilder<ContactEntity, DateTime?, QQueryOperations>
+      lastChangedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastChangedAt');
+    });
+  }
+
   QueryBuilder<ContactEntity, String, QQueryOperations> lastNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastName');
@@ -2825,22 +3270,9 @@ extension ContactEntityQueryProperty
     });
   }
 
-  QueryBuilder<ContactEntity, int, QQueryOperations> syncStateProperty() {
+  QueryBuilder<ContactEntity, int?, QQueryOperations> syncStateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'syncState');
-    });
-  }
-
-  QueryBuilder<ContactEntity, DateTime?, QQueryOperations>
-      updateTimeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'updateTime');
-    });
-  }
-
-  QueryBuilder<ContactEntity, int, QQueryOperations> versionProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'version');
     });
   }
 }

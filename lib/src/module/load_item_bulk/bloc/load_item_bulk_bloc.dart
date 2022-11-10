@@ -73,7 +73,6 @@ class LoadItemBulkBloc extends Bloc<LoadItemBulkEvent, LoadItemBulkState> {
                   }).toList()
                 : [],
             enable: true,
-            storeId: auth.state.store!.rtlLocId,
             createTime: DateTime.now(),
           );
           await db.productEntitys.put(entity);

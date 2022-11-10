@@ -26,7 +26,11 @@ class BackgroundSyncServiceFromIso {
   final String _baseUrl =
       'https://yp4fg0z7dc.execute-api.ap-south-1.amazonaws.com/DEV';
 
-  final String transactionSync = 'TRANSACTION';
+  static const String transactionSync = 'TRANSACTION';
+  static const String customerSync = 'CUSTOMER';
+  static const String productSync = 'PRODUCT';
+
+  List<String> toSyncEntity = [transactionSync, customerSync, productSync];
 
   BackgroundSyncServiceFromIso(this.path, this.storeId) {
     log.info('Starting the database service for background sync: $path');
@@ -48,16 +52,13 @@ class BackgroundSyncServiceFromIso {
       ReasonCodeEntitySchema,
       TaxGroupEntitySchema,
       ReportConfigEntitySchema,
-    ], inspector: false, name: 'xpos');
+    ], inspector: false, name: storeId.toString());
   }
 
   Future<Map<String, dynamic>> uploadSyncData(
-      List<Map<String, dynamic>> input) async {
-    log.info('Uploading Sync Data');
-    Map<String, dynamic> rawBody = {
-      'transactions': input,
-    };
-    var body = json.encode(rawBody);
+      Map<String, dynamic> input) async {
+    log.info('Uploading Sync Data: $input');
+    var body = json.encode(input);
     final response = await http.post(
       Uri.parse('$_baseUrl/business/$storeId/sync'),
       headers: <String, String>{
@@ -65,16 +66,19 @@ class BackgroundSyncServiceFromIso {
       },
       body: body,
     );
+    log.info('Response: ${response.body}');
     if (response.statusCode == 200) {
       var responseJson = json.decode(response.body);
       return responseJson;
     } else {
+      log.severe(response.body);
       throw Exception('Failed to load data');
     }
   }
 
   Future<Map<String, dynamic>> getDataFromServer(int timestamp) async {
-    log.info('Get Sync Data From: $_baseUrl/business/$storeId/sync?startTime=$timestamp');
+    log.info(
+        'Get Sync Data From: $_baseUrl/business/$storeId/sync?startTime=$timestamp');
     final response = await http.get(
       Uri.parse('$_baseUrl/business/$storeId/sync?startTime=$timestamp'),
       headers: <String, String>{
@@ -90,124 +94,214 @@ class BackgroundSyncServiceFromIso {
     }
   }
 
-  Future<void> getNewTransactionToSync() async {
+  Future<void> syncAllData() async {
     if (_isar == null) {
       log.warning('Isar is not initialized');
       await initIsar();
     }
 
+    // Fetch all the SyncEntity from the database
     try {
-      // Get Last Synced Transaction Time
-      var lastData = await _isar!.syncEntitys
-          .where()
-          .typeEqualTo(transactionSync)
-          .findFirst();
+      var rawSyncData = await _isar!.syncEntitys.where().findAll();
+      // Filter the records to sync.
+      // var syncEntities = rawSyncData.where((e) => toSyncEntity.contains(e.type)).toList();
 
-      late SyncEntity? syncEntity = lastData;
-
-      if (lastData == null) {
-        log.info('No last sync data found');
-        syncEntity = SyncEntity(
-            type: transactionSync,
-            lastSyncAt: null,
-            status: 100,
-            syncStartTime: DateTime.now(),
-            syncEndTime: null);
-        await _isar!.writeTxn(() async {
-          await _isar!.syncEntitys.putByType(syncEntity!);
-        });
-      } else {
-        log.info('Last sync data found: ${lastData.lastSyncAt}');
-        await _isar!.writeTxn(() async {
-          syncEntity = SyncEntity(
-              type: transactionSync,
-              lastSyncAt: syncEntity!.lastSyncAt,
-              status: 100,
-              syncStartTime: DateTime.now(),
-              syncEndTime: null);
-          await _isar!.syncEntitys.putByType(syncEntity!);
-        });
+      List<SyncEntity> syncEntities = [];
+      for (var e in toSyncEntity) {
+        var syncEntity = rawSyncData.firstWhere((element) => element.type == e,
+            orElse: () => SyncEntity(
+                type: e,
+                lastSyncAt: null,
+                status: 100,
+                syncStartTime: DateTime.now(),
+                syncEndTime: null));
+        syncEntities.add(syncEntity);
       }
-
-      // Fetch Data from Server
-      var data = await getDataFromServer(syncEntity!.lastSyncAt?.microsecondsSinceEpoch ?? 0);
-
-      List<Map<String, dynamic>> transactions = [];
-
-      for (var transaction in data['transactions']) {
-        var tmp = Map<String, dynamic>.from(transaction);
-        tmp['syncState'] = 1000;
-        transactions.add(tmp);
-      }
-
-      var trans = data['transactions'].map((e) {
-        Map<String, dynamic> tmp = Map<String, dynamic>.from(e);
-        tmp['syncState'] = 1000;
-        return tmp;
-      }).toList();
 
       await _isar!.writeTxn(() async {
-        await _isar!.transactionHeaderEntitys.importJson(transactions);
-        syncEntity = SyncEntity(
-            type: transactionSync,
-            lastSyncAt: DateTime.fromMicrosecondsSinceEpoch(data['to']),
-            status: 100,
-            syncStartTime: syncEntity!.syncStartTime,
-            syncEndTime: DateTime.fromMicrosecondsSinceEpoch(data['to']));
-        await _isar!.syncEntitys.putByType(syncEntity!);
+        await _isar!.syncEntitys.putAllByType(syncEntities);
       });
 
-      log.info('Server Data: $data');
+      // Find the minimum lastsync time
+      var minLastSyncTime = syncEntities
+          .map((e) => e.lastSyncAt?.millisecondsSinceEpoch ?? 0)
+          .reduce((value, element) => value < element ? value : element);
 
-      // last sync time
-      DateTime lastSyncTime = syncEntity?.lastSyncAt ??
-          DateTime.now().subtract(const Duration(days: 30));
+      // Fetch All the data from last sync.
+      // Fetch Data from Server
+      // Find the last sync time and proceed
+      var data = await getDataFromServer(minLastSyncTime);
 
-      var x = await _isar!.transactionHeaderEntitys
+      List<Map<String, dynamic>> transactions = [];
+      List<Map<String, dynamic>> customers = [];
+      List<Map<String, dynamic>> products = [];
+
+      // Loading transaction from the server
+      if (data['transactions'] != null &&
+          data['transactions']['data'] != null) {
+        for (var transaction in data['transactions']['data']) {
+          var tmp = Map<String, dynamic>.from(transaction);
+          tmp['syncState'] = 1000;
+          transactions.add(tmp);
+        }
+      }
+      await _isar!.writeTxn(() async {
+        if (transactions.isNotEmpty) {
+          await _isar!.transactionHeaderEntitys.importJson(transactions);
+        }
+
+        // Find Sync Entity
+        var e = syncEntities
+            .firstWhere((element) => element.type == transactionSync);
+        e.lastSyncAt =
+            DateTime.fromMillisecondsSinceEpoch(data['transactions']['to']);
+        e.syncStartTime = DateTime.now();
+        await _isar!.syncEntitys.putAllByType(syncEntities);
+      });
+
+      // Loading Customer Data from server
+      if (data['customers'] != null && data['customers']['data'] != null) {
+        for (var customer in data['customers']['data']) {
+          var tmp = Map<String, dynamic>.from(customer);
+          tmp['syncState'] = 1000;
+          customers.add(tmp);
+        }
+      }
+      await _isar!.writeTxn(() async {
+        if (customers.isNotEmpty) {
+          await _isar!.contactEntitys.importJson(customers);
+        }
+
+        // Find Sync Entity
+        var e = syncEntities
+            .firstWhere((element) => element.type == customerSync);
+        e.lastSyncAt =
+            DateTime.fromMillisecondsSinceEpoch(data['customers']['to']);
+        e.syncStartTime = DateTime.now();
+        await _isar!.syncEntitys.putAllByType(syncEntities);
+      });
+
+      // Loading product from server to database
+      if (data['products'] != null && data['products']['data'] != null) {
+        for (var product in data['products']['data']) {
+          var tmp = Map<String, dynamic>.from(product);
+          tmp['syncState'] = 1000;
+          products.add(tmp);
+        }
+      }
+      await _isar!.writeTxn(() async {
+        if (products.isNotEmpty) {
+          await _isar!.productEntitys.importJson(products);
+        }
+        // Find Sync Entity
+        var e =
+        syncEntities.firstWhere((element) => element.type == productSync);
+        e.lastSyncAt =
+            DateTime.fromMillisecondsSinceEpoch(data['products']['to']);
+        e.syncStartTime = DateTime.now();
+        await _isar!.syncEntitys.putAllByType(syncEntities);
+      });
+
+      // Get the unsynced data from the database and post it to the server.
+
+      // Fetch all the transaction from the database
+      var transactionsToSync = await _isar!.transactionHeaderEntitys
           .where()
           .syncStateIsNull()
           .or()
           .syncStateLessThan(500)
-          .or()
-          .lastSyncAtGreaterThan(lastSyncTime)
           .exportJson();
 
-      if (x.isNotEmpty) {
-        log.info('Found ${x.length} transactions to sync');
-        // Do the api call to sync the data
-        var uploadResponse = await uploadSyncData(x);
-        log.info('Upload Response: $uploadResponse');
-        DateTime syncedTime =
-            DateTime.fromMicrosecondsSinceEpoch(uploadResponse['lastSyncedAt']);
+      // Fetch all the customer from the database
+      var customerToSync = await _isar!.contactEntitys
+          .where()
+          .syncStateIsNull()
+          .or()
+          .syncStateLessThan(500)
+          .exportJson();
 
-        await _isar!.writeTxn(() async {
-          for (var i in x) {
-            // Get the transaction and update the last changed at.
-            var transaction = await _isar!.transactionHeaderEntitys
-                .where()
-                .transIdEqualTo(i['transId'])
-                .findFirst();
+      // Fetch all the product from the database
+      var productToSync = await _isar!.productEntitys
+          .where()
+          .syncStateIsNull()
+          .or()
+          .syncStateLessThan(500)
+          .exportJson();
 
-            if (transaction != null) {
-              transaction.lastSyncAt = syncedTime;
-              transaction.syncState = 1000;
-              await _isar!.transactionHeaderEntitys.put(transaction);
-            }
-          }
-
-          syncEntity = SyncEntity(
-              type: transactionSync,
-              lastSyncAt: syncedTime,
-              status: 100,
-              syncStartTime: syncEntity!.syncStartTime,
-              syncEndTime: syncedTime);
-          await _isar!.syncEntitys.putByType(syncEntity!);
-        });
-      } else {
-        log.info('No new transaction found');
+      if (!(transactionsToSync.isNotEmpty || customerToSync.isNotEmpty || productToSync.isNotEmpty)) {
+        log.info('No data to sync');
+        return;
       }
-    } catch (e) {
-      log.severe(e);
+
+      Map<String, dynamic> rawRequestBody = {
+        'transactions': transactionsToSync,
+        'customers': customerToSync,
+        'products': productToSync,
+      };
+
+      var uploadResponse = await uploadSyncData(rawRequestBody);
+
+      // Construct the json to add lastSyncAt state and syncState
+      // Update the syncState and lastSyncAt in the database
+      DateTime syncedTime =
+          DateTime.fromMicrosecondsSinceEpoch(uploadResponse['lastSyncedAt']);
+      int syncTimeInMill = uploadResponse['lastSyncedAt'];
+
+      var transactionsToSyncResp = transactionsToSync.map((e) {
+        var tmp = Map<String, dynamic>.from(e);
+        tmp['syncState'] = 1000;
+        tmp['lastSyncAt'] = syncTimeInMill;
+        return tmp;
+      }).toList();
+
+      await _isar!.writeTxn(() async {
+        await _isar!.transactionHeaderEntitys
+            .importJson(transactionsToSyncResp);
+
+        // Find Sync Entity
+        var e = syncEntities
+            .firstWhere((element) => element.type == transactionSync);
+        e.lastSyncAt = syncedTime;
+        e.syncEndTime = syncedTime;
+        await _isar!.syncEntitys.putAllByType(syncEntities);
+      });
+
+      var customerToSyncResp = customerToSync.map((e) {
+        var tmp = Map<String, dynamic>.from(e);
+        tmp['syncState'] = 1000;
+        tmp['lastSyncAt'] = syncTimeInMill;
+        return tmp;
+      }).toList();
+
+      await _isar!.writeTxn(() async {
+        await _isar!.contactEntitys.importJson(customerToSyncResp);
+
+        // Find Sync Entity
+        var e =
+            syncEntities.firstWhere((element) => element.type == customerSync);
+        e.lastSyncAt = syncedTime;
+        e.syncEndTime = syncedTime;
+        await _isar!.syncEntitys.putAllByType(syncEntities);
+      });
+
+      var productToSyncResp = productToSync.map((e) {
+        var tmp = Map<String, dynamic>.from(e);
+        tmp['syncState'] = 1000;
+        tmp['lastSyncAt'] = syncTimeInMill;
+        return tmp;
+      }).toList();
+
+      await _isar!.writeTxn(() async {
+        await _isar!.productEntitys.importJson(productToSyncResp);
+        // Find Sync Entity
+        var e =
+            syncEntities.firstWhere((element) => element.type == productSync);
+        e.lastSyncAt = syncedTime;
+        e.syncEndTime = syncedTime;
+        await _isar!.syncEntitys.putAllByType(syncEntities);
+      });
+    } catch (e, st) {
+      log.severe('Error while syncing data: $e', e, st);
     }
   }
 }
@@ -217,7 +311,8 @@ class IsolateSyncService {
 
   static executeSync(BackgroundSyncServiceFromIso syncDb) async {
     DateTime start = DateTime.now();
-    await syncDb.getNewTransactionToSync();
+    // await syncDb.getNewTransactionToSync();
+    await syncDb.syncAllData();
     DateTime end = DateTime.now();
     Duration diff = end.difference(start);
     log.info('Time taken to sync: ${diff.inMilliseconds} ms');

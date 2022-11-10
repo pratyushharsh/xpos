@@ -9,10 +9,10 @@ class SyncEntity {
   @Index(unique: true, replace: true, name: "type")
   final String type;
 
-  final DateTime? lastSyncAt;
-  final int status;
-  final DateTime? syncStartTime;
-  final DateTime? syncEndTime;
+  DateTime? lastSyncAt;
+  int status;
+  DateTime? syncStartTime;
+  DateTime? syncEndTime;
 
   SyncEntity(
       {this.id,

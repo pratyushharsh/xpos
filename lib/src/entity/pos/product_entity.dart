@@ -13,7 +13,6 @@ class ProductEntity {
   @Index(unique: true, type: IndexType.value, replace: true, name: 'product')
   String? productId;
   String? skuId;
-  int storeId;
 
   final String displayName;
   final String? description;
@@ -27,11 +26,16 @@ class ProductEntity {
   final String? taxGroupId;
   final List<String> category;
   final List<String> imageUrl;
-  final int syncState;
   late DateTime createTime;
-  late DateTime? updateTime;
-  late DateTime? lastSyncAt;
-  late int version;
+
+  @Index(type: IndexType.value)
+  DateTime? lastChangedAt;
+
+  @Index(type: IndexType.value)
+  DateTime? lastSyncAt;
+
+  @Index(type: IndexType.value)
+  int? syncState;
 
   @Index(type: IndexType.value, caseSensitive: false)
   List<String> get descriptionWords => Isar.splitWords(displayName);
@@ -39,7 +43,6 @@ class ProductEntity {
   ProductEntity(
       {this.id,
       this.productId,
-      required this.storeId,
       required this.displayName,
       this.description,
       required this.listPrice,
@@ -53,8 +56,7 @@ class ProductEntity {
       this.category = const [],
       this.imageUrl = const [],
       required this.createTime,
-      this.version = 1,
-      this.syncState = 100,
+      this.syncState,
       this.lastSyncAt,
-      this.updateTime});
+      this.lastChangedAt,});
 }

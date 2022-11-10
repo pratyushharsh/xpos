@@ -30,7 +30,6 @@ class NewCustomerView extends StatelessWidget {
         BlocProvider(
           lazy: false,
           create: (context) => CreateEditCustomerBloc(
-              db: RepositoryProvider.of(context),
               sequenceRepository: RepositoryProvider.of(context),
               customerRepository: RepositoryProvider.of(context),
               editMode: customerId != null,

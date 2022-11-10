@@ -1,16 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:isar/isar.dart';
+import 'package:receipt_generator/src/database/db_provider.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
 part 'order_summary_event.dart';
 part 'order_summary_state.dart';
 
-class OrderSummaryBloc extends Bloc<OrderSummaryEvent, OrderSummaryState> {
+class OrderSummaryBloc extends Bloc<OrderSummaryEvent, OrderSummaryState> with DatabaseProvider {
 
   final int orderId;
-  final Isar db;
 
-  OrderSummaryBloc({required this.orderId, required this.db}) : super(const OrderSummaryState()) {
+
+  OrderSummaryBloc({required this.orderId}) : super(const OrderSummaryState()) {
     on<LoadOrderDetail>(_fetchOrderDetail);
     add(LoadOrderDetail());
   }

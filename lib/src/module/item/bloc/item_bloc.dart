@@ -52,7 +52,6 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
       e.id = seq;
       e.productId ??=
           'SKU$seq';
-      e.storeId = storeId;
 
       await productRepository.createNewProduct(e);
       emit(state.copyWith(status: ItemStatus.addingSuccess));

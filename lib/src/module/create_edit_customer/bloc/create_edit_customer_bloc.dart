@@ -6,22 +6,22 @@ import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/repositories/sequence_repository.dart';
 
+import '../../../database/db_provider.dart';
 import '../../../repositories/customer_repository.dart';
 
 part 'create_edit_customer_event.dart';
 part 'create_edit_customer_state.dart';
 
 class CreateEditCustomerBloc
-    extends Bloc<CreateCustomerEvent, CreateEditCustomerState> {
+    extends Bloc<CreateCustomerEvent, CreateEditCustomerState> with DatabaseProvider {
   final log = Logger('CreateEditCustomerBloc');
-  final Isar db;
   final SequenceRepository sequenceRepository;
   final CustomerRepository customerRepository;
   final bool editMode;
   final String? customerId;
 
   CreateEditCustomerBloc(
-      {required this.db,
+      {
       required this.sequenceRepository,
       required this.customerRepository,
       this.editMode = false,

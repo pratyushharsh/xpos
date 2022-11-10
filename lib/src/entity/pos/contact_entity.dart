@@ -6,7 +6,8 @@ part 'contact_entity.g.dart';
 class ContactEntity {
   final Id? id;
 
-  @Index(unique: true)
+  @Index(
+      unique: true, replace: true, caseSensitive: true, type: IndexType.value)
   final String contactId;
   final String storeId;
 
@@ -23,15 +24,20 @@ class ContactEntity {
   final Address? shippingAddress;
 
   final Address? billingAddress;
-  final int syncState;
 
   final String? panCard;
   final String? gstin;
 
   late DateTime createTime;
-  late DateTime? updateTime;
-  late DateTime? lastSyncAt;
-  late int version;
+
+  @Index(type: IndexType.value)
+  DateTime? lastChangedAt;
+
+  @Index(type: IndexType.value)
+  DateTime? lastSyncAt;
+
+  @Index(type: IndexType.value)
+  int? syncState;
 
   ContactEntity(
       {this.id,
@@ -46,10 +52,9 @@ class ContactEntity {
       this.panCard,
       this.gstin,
       required this.createTime,
-      this.version = 1,
-      this.syncState = 100,
+      this.lastChangedAt,
       this.lastSyncAt,
-      this.updateTime});
+      this.syncState});
 }
 
 // class AddressConverter extends TypeConverter<Address?, String?> {

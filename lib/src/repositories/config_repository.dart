@@ -9,13 +9,13 @@ class ConfigRepository with DatabaseProvider {
   ConfigRepository();
 
   Future<List<CodeValueEntity>> getCodeByCategory(String category) {
-    return db.codeValueEntitys.where().categoryEqualTo(category).findAll();
+    return defaultInstance.codeValueEntitys.where().categoryEqualTo(category).findAll();
   }
 
   CodeValueEntity? getCodeByCategoryAndCode(String category, String? code) {
     if (category.isEmpty || (code == null || code.isEmpty)) {
       return null;
     }
-    return db.codeValueEntitys.getByCategoryCodeSync(category, code);
+    return defaultInstance.codeValueEntitys.getByCategoryCodeSync(category, code);
   }
 }

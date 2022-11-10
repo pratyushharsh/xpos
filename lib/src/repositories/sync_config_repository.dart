@@ -118,8 +118,8 @@ class SyncConfigRepository with DatabaseProvider {
         log.info("Data is already present in the database");
       }
     } catch (e) {
-      log.info(e);
-      log.info('No data present in the database. Syncing data from server');
+      log.severe(e);
+      log.severe('No data present in the database. Syncing data from server');
     }
 
     // ReceivePort receivePort = ReceivePort();
@@ -234,7 +234,6 @@ class SyncConfigRepository with DatabaseProvider {
                   : [],
               enable: true,
               productId: productId.toString(),
-              storeId: -1,
               createTime: DateTime.now(),
               id: seq,
             );

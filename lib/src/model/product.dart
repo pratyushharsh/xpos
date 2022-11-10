@@ -68,7 +68,7 @@ class ProductModel {
         skuCode: skuCode,
         imageUrl: imageUrl,
         hsn: hsn,
-        uom: uom, createTime: DateTime.now(), storeId: 000);
+        uom: uom, createTime: DateTime.now());
   }
 
   // static ProductModel fromEntity(ProductEntity entity) {

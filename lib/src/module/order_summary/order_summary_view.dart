@@ -22,8 +22,7 @@ class OrderSummaryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       lazy: false,
-      create: (context) => OrderSummaryBloc(
-          db: RepositoryProvider.of(context), orderId: orderId),
+      create: (context) => OrderSummaryBloc(orderId: orderId),
       child: Container(
         color: AppColor.color3,
         child: SafeArea(

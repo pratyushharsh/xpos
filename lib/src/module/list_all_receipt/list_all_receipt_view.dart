@@ -55,8 +55,13 @@ class ListAllReceiptView extends StatelessWidget {
                   .add(LoadAllReceipt());
             },
             child: state.receipts.isEmpty ? const WidgetNoReceipt(): ListView.builder(
-                itemCount: state.receipts.length,
+                itemCount: state.receipts.length + 1,
                 itemBuilder: (ctx, idx) {
+
+                  if (idx == state.receipts.length) {
+                    return const SizedBox(height: 150);
+                  }
+
                   return ReceiptHeaderCard(receipt: state.receipts[idx]);
                 }),
           );

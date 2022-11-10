@@ -62,40 +62,40 @@ const ProductEntitySchema = CollectionSchema(
       name: r'imageUrl',
       type: IsarType.stringList,
     ),
-    r'lastSyncAt': PropertySchema(
+    r'lastChangedAt': PropertySchema(
       id: 9,
+      name: r'lastChangedAt',
+      type: IsarType.dateTime,
+    ),
+    r'lastSyncAt': PropertySchema(
+      id: 10,
       name: r'lastSyncAt',
       type: IsarType.dateTime,
     ),
     r'listPrice': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'listPrice',
       type: IsarType.double,
     ),
     r'productId': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'productId',
       type: IsarType.string,
     ),
     r'salePrice': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'salePrice',
       type: IsarType.double,
     ),
     r'skuCode': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'skuCode',
       type: IsarType.string,
     ),
     r'skuId': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'skuId',
       type: IsarType.string,
-    ),
-    r'storeId': PropertySchema(
-      id: 15,
-      name: r'storeId',
-      type: IsarType.long,
     ),
     r'syncState': PropertySchema(
       id: 16,
@@ -111,16 +111,6 @@ const ProductEntitySchema = CollectionSchema(
       id: 18,
       name: r'uom',
       type: IsarType.string,
-    ),
-    r'updateTime': PropertySchema(
-      id: 19,
-      name: r'updateTime',
-      type: IsarType.dateTime,
-    ),
-    r'version': PropertySchema(
-      id: 20,
-      name: r'version',
-      type: IsarType.long,
     )
   },
   estimateSize: _productEntityEstimateSize,
@@ -139,6 +129,45 @@ const ProductEntitySchema = CollectionSchema(
           name: r'productId',
           type: IndexType.value,
           caseSensitive: true,
+        )
+      ],
+    ),
+    r'lastChangedAt': IndexSchema(
+      id: -4409887940193105571,
+      name: r'lastChangedAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'lastChangedAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'lastSyncAt': IndexSchema(
+      id: -8300919554834343292,
+      name: r'lastSyncAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'lastSyncAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'syncState': IndexSchema(
+      id: -413052077849439895,
+      name: r'syncState',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'syncState',
+          type: IndexType.value,
+          caseSensitive: false,
         )
       ],
     ),
@@ -253,18 +282,16 @@ void _productEntitySerialize(
   writer.writeBool(offsets[6], object.enable);
   writer.writeString(offsets[7], object.hsn);
   writer.writeStringList(offsets[8], object.imageUrl);
-  writer.writeDateTime(offsets[9], object.lastSyncAt);
-  writer.writeDouble(offsets[10], object.listPrice);
-  writer.writeString(offsets[11], object.productId);
-  writer.writeDouble(offsets[12], object.salePrice);
-  writer.writeString(offsets[13], object.skuCode);
-  writer.writeString(offsets[14], object.skuId);
-  writer.writeLong(offsets[15], object.storeId);
+  writer.writeDateTime(offsets[9], object.lastChangedAt);
+  writer.writeDateTime(offsets[10], object.lastSyncAt);
+  writer.writeDouble(offsets[11], object.listPrice);
+  writer.writeString(offsets[12], object.productId);
+  writer.writeDouble(offsets[13], object.salePrice);
+  writer.writeString(offsets[14], object.skuCode);
+  writer.writeString(offsets[15], object.skuId);
   writer.writeLong(offsets[16], object.syncState);
   writer.writeString(offsets[17], object.taxGroupId);
   writer.writeString(offsets[18], object.uom);
-  writer.writeDateTime(offsets[19], object.updateTime);
-  writer.writeLong(offsets[20], object.version);
 }
 
 ProductEntity _productEntityDeserialize(
@@ -283,19 +310,17 @@ ProductEntity _productEntityDeserialize(
     hsn: reader.readStringOrNull(offsets[7]),
     id: id,
     imageUrl: reader.readStringList(offsets[8]) ?? const [],
-    lastSyncAt: reader.readDateTimeOrNull(offsets[9]),
-    listPrice: reader.readDoubleOrNull(offsets[10]),
-    productId: reader.readStringOrNull(offsets[11]),
-    salePrice: reader.readDoubleOrNull(offsets[12]),
-    skuCode: reader.readStringOrNull(offsets[13]),
-    storeId: reader.readLong(offsets[15]),
-    syncState: reader.readLongOrNull(offsets[16]) ?? 100,
+    lastChangedAt: reader.readDateTimeOrNull(offsets[9]),
+    lastSyncAt: reader.readDateTimeOrNull(offsets[10]),
+    listPrice: reader.readDoubleOrNull(offsets[11]),
+    productId: reader.readStringOrNull(offsets[12]),
+    salePrice: reader.readDoubleOrNull(offsets[13]),
+    skuCode: reader.readStringOrNull(offsets[14]),
+    syncState: reader.readLongOrNull(offsets[16]),
     taxGroupId: reader.readStringOrNull(offsets[17]),
     uom: reader.readString(offsets[18]),
-    updateTime: reader.readDateTimeOrNull(offsets[19]),
-    version: reader.readLongOrNull(offsets[20]) ?? 1,
   );
-  object.skuId = reader.readStringOrNull(offsets[14]);
+  object.skuId = reader.readStringOrNull(offsets[15]);
   return object;
 }
 
@@ -327,27 +352,23 @@ P _productEntityDeserializeProp<P>(
     case 9:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 10:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
-    case 12:
       return (reader.readDoubleOrNull(offset)) as P;
-    case 13:
+    case 12:
       return (reader.readStringOrNull(offset)) as P;
+    case 13:
+      return (reader.readDoubleOrNull(offset)) as P;
     case 14:
       return (reader.readStringOrNull(offset)) as P;
     case 15:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 16:
-      return (reader.readLongOrNull(offset) ?? 100) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 17:
       return (reader.readStringOrNull(offset)) as P;
     case 18:
       return (reader.readString(offset)) as P;
-    case 19:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 20:
-      return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -434,6 +455,30 @@ extension ProductEntityQueryWhereSort
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'product'),
+      );
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhere> anyLastChangedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'lastChangedAt'),
+      );
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhere> anyLastSyncAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'lastSyncAt'),
+      );
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhere> anySyncState() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'syncState'),
       );
     });
   }
@@ -679,6 +724,351 @@ extension ProductEntityQueryWhere
               upper: [''],
             ));
       }
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastChangedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastChangedAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastChangedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastChangedAtEqualTo(DateTime? lastChangedAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastChangedAt',
+        value: [lastChangedAt],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastChangedAtNotEqualTo(DateTime? lastChangedAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [],
+              upper: [lastChangedAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [lastChangedAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [lastChangedAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastChangedAt',
+              lower: [],
+              upper: [lastChangedAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastChangedAtGreaterThan(
+    DateTime? lastChangedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [lastChangedAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastChangedAtLessThan(
+    DateTime? lastChangedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [],
+        upper: [lastChangedAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastChangedAtBetween(
+    DateTime? lowerLastChangedAt,
+    DateTime? upperLastChangedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastChangedAt',
+        lower: [lowerLastChangedAt],
+        includeLower: includeLower,
+        upper: [upperLastChangedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastSyncAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastSyncAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastSyncAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastSyncAtEqualTo(DateTime? lastSyncAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastSyncAt',
+        value: [lastSyncAt],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastSyncAtNotEqualTo(DateTime? lastSyncAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [],
+              upper: [lastSyncAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [lastSyncAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [lastSyncAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastSyncAt',
+              lower: [],
+              upper: [lastSyncAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastSyncAtGreaterThan(
+    DateTime? lastSyncAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [lastSyncAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastSyncAtLessThan(
+    DateTime? lastSyncAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [],
+        upper: [lastSyncAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      lastSyncAtBetween(
+    DateTime? lowerLastSyncAt,
+    DateTime? upperLastSyncAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastSyncAt',
+        lower: [lowerLastSyncAt],
+        includeLower: includeLower,
+        upper: [upperLastSyncAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      syncStateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'syncState',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      syncStateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      syncStateEqualTo(int? syncState) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'syncState',
+        value: [syncState],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      syncStateNotEqualTo(int? syncState) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [],
+              upper: [syncState],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [syncState],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [syncState],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'syncState',
+              lower: [],
+              upper: [syncState],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      syncStateGreaterThan(
+    int? syncState, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [syncState],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      syncStateLessThan(
+    int? syncState, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [],
+        upper: [syncState],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterWhereClause>
+      syncStateBetween(
+    int? lowerSyncState,
+    int? upperSyncState, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'syncState',
+        lower: [lowerSyncState],
+        includeLower: includeLower,
+        upper: [upperSyncState],
+        includeUpper: includeUpper,
+      ));
     });
   }
 
@@ -2237,6 +2627,80 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      lastChangedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastChangedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      lastChangedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastChangedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      lastChangedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastChangedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      lastChangedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastChangedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      lastChangedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastChangedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
+      lastChangedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastChangedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
       lastSyncAtIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2941,63 +3405,25 @@ extension ProductEntityQueryFilter
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      storeIdEqualTo(int value) {
+      syncStateIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'storeId',
-        value: value,
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'syncState',
       ));
     });
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      storeIdGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
+      syncStateIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'storeId',
-        value: value,
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'syncState',
       ));
     });
   }
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      storeIdLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'storeId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      storeIdBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'storeId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      syncStateEqualTo(int value) {
+      syncStateEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'syncState',
@@ -3008,7 +3434,7 @@ extension ProductEntityQueryFilter
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
       syncStateGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -3022,7 +3448,7 @@ extension ProductEntityQueryFilter
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
       syncStateLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -3036,8 +3462,8 @@ extension ProductEntityQueryFilter
 
   QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
       syncStateBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -3339,136 +3765,6 @@ extension ProductEntityQueryFilter
       ));
     });
   }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      updateTimeIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'updateTime',
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      updateTimeIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'updateTime',
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      updateTimeEqualTo(DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'updateTime',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      updateTimeGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'updateTime',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      updateTimeLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'updateTime',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      updateTimeBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'updateTime',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      versionEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'version',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      versionGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'version',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      versionLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'version',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterFilterCondition>
-      versionBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'version',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
 }
 
 extension ProductEntityQueryObject
@@ -3554,6 +3850,20 @@ extension ProductEntityQuerySortBy
     });
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
+      sortByLastChangedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastChangedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
+      sortByLastChangedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastChangedAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByLastSyncAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastSyncAt', Sort.asc);
@@ -3630,18 +3940,6 @@ extension ProductEntityQuerySortBy
     });
   }
 
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByStoreId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'storeId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByStoreIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'storeId', Sort.desc);
-    });
-  }
-
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortBySyncState() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'syncState', Sort.asc);
@@ -3677,31 +3975,6 @@ extension ProductEntityQuerySortBy
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByUomDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'uom', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByUpdateTime() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updateTime', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
-      sortByUpdateTimeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updateTime', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByVersion() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'version', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> sortByVersionDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'version', Sort.desc);
     });
   }
 }
@@ -3795,6 +4068,20 @@ extension ProductEntityQuerySortThenBy
     });
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
+      thenByLastChangedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastChangedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
+      thenByLastChangedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastChangedAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByLastSyncAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastSyncAt', Sort.asc);
@@ -3871,18 +4158,6 @@ extension ProductEntityQuerySortThenBy
     });
   }
 
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByStoreId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'storeId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByStoreIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'storeId', Sort.desc);
-    });
-  }
-
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenBySyncState() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'syncState', Sort.asc);
@@ -3918,31 +4193,6 @@ extension ProductEntityQuerySortThenBy
   QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByUomDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'uom', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByUpdateTime() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updateTime', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy>
-      thenByUpdateTimeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updateTime', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByVersion() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'version', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QAfterSortBy> thenByVersionDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'version', Sort.desc);
     });
   }
 }
@@ -4008,6 +4258,13 @@ extension ProductEntityQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ProductEntity, ProductEntity, QDistinct>
+      distinctByLastChangedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastChangedAt');
+    });
+  }
+
   QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByLastSyncAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastSyncAt');
@@ -4047,12 +4304,6 @@ extension ProductEntityQueryWhereDistinct
     });
   }
 
-  QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByStoreId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'storeId');
-    });
-  }
-
   QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctBySyncState() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'syncState');
@@ -4070,18 +4321,6 @@ extension ProductEntityQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'uom', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByUpdateTime() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'updateTime');
-    });
-  }
-
-  QueryBuilder<ProductEntity, ProductEntity, QDistinct> distinctByVersion() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'version');
     });
   }
 }
@@ -4152,6 +4391,13 @@ extension ProductEntityQueryProperty
   }
 
   QueryBuilder<ProductEntity, DateTime?, QQueryOperations>
+      lastChangedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastChangedAt');
+    });
+  }
+
+  QueryBuilder<ProductEntity, DateTime?, QQueryOperations>
       lastSyncAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastSyncAt');
@@ -4188,13 +4434,7 @@ extension ProductEntityQueryProperty
     });
   }
 
-  QueryBuilder<ProductEntity, int, QQueryOperations> storeIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'storeId');
-    });
-  }
-
-  QueryBuilder<ProductEntity, int, QQueryOperations> syncStateProperty() {
+  QueryBuilder<ProductEntity, int?, QQueryOperations> syncStateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'syncState');
     });
@@ -4209,19 +4449,6 @@ extension ProductEntityQueryProperty
   QueryBuilder<ProductEntity, String, QQueryOperations> uomProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'uom');
-    });
-  }
-
-  QueryBuilder<ProductEntity, DateTime?, QQueryOperations>
-      updateTimeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'updateTime');
-    });
-  }
-
-  QueryBuilder<ProductEntity, int, QQueryOperations> versionProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'version');
     });
   }
 }

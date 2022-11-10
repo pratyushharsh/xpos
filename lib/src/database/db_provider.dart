@@ -15,6 +15,8 @@ mixin DatabaseProvider {
 
   Isar get db => _dbMap[_currentKey]!;
 
+  Isar get defaultInstance => _dbMap[defaultDbName]!;
+
   static Future<void> ensureInitialized({String name = defaultDbName}) async {
     await switchDatabase(name);
   }
