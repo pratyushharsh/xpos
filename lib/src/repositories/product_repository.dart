@@ -17,6 +17,8 @@ class ProductRepository with DatabaseProvider {
   }
 
   Future<void> createNewProduct(ProductEntity product) {
+    product.lastChangedAt = DateTime.now();
+    product.syncState = 200;
     return db.writeTxn(() => db.productEntitys.putByProductId(product));
   }
 

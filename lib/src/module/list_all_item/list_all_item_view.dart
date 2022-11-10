@@ -10,6 +10,7 @@ import 'package:receipt_generator/src/widgets/extension/retail_extension.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
 import '../../entity/pos/entity.dart';
+import '../../widgets/cloud_sync_widget.dart';
 import '../../widgets/custom_image.dart';
 import '../create_new_item/add_new_item_view.dart';
 
@@ -179,21 +180,27 @@ class ItemCard extends StatelessWidget {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (product.salePrice != null && product.salePrice! > 0)
-                      Text(
-                          getCurrencyFormatter(context)
-                              .format(product.salePrice!),
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                    if (product.listPrice != null)
-                      Text(
-                        getCurrencyFormatter(context).format(product.listPrice!),
-                        style:
+                    Column(
+                      children: [
+                        if (product.salePrice != null && product.salePrice! > 0)
+                          Text(
+                              getCurrencyFormatter(context)
+                                  .format(product.salePrice!),
+                              style: const TextStyle(fontWeight: FontWeight.w600)),
+                        if (product.listPrice != null)
+                          Text(
+                            getCurrencyFormatter(context).format(product.listPrice!),
+                            style:
                             (product.salePrice != null && product.salePrice! > 0)
                                 ? const TextStyle(
-                                    decoration: TextDecoration.lineThrough, fontStyle: FontStyle.italic, color: AppColor.color5)
+                                decoration: TextDecoration.lineThrough, fontStyle: FontStyle.italic, color: AppColor.color5)
                                 : const TextStyle(),
-                      ),
+                          ),
+                      ]
+                    ),
+                    CloudSyncIcon(syncState: product.syncState ?? 0,)
                   ],
                 ),
               ],

@@ -9,6 +9,7 @@ import 'package:receipt_generator/src/module/list_all_receipt/bloc/list_all_rece
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
 import '../../config/transaction_config.dart';
+import '../../widgets/cloud_sync_widget.dart';
 
 class WidgetNoReceipt extends StatelessWidget {
   const WidgetNoReceipt({Key? key}) : super(key: key);
@@ -183,26 +184,13 @@ class HeaderStatusChip extends StatelessWidget {
     return Colors.grey;
   }
 
-  Widget syncStateWidget() {
-    if (syncState == 0) {
-      return const Icon(Icons.cloud_off, color: Colors.grey, size: 15);
-    } else if (syncState == 1000) {
-      return const Icon(Icons.cloud_done, color: Colors.green, size: 15);
-    } else if (syncState == 500) {
-      return const Icon(Icons.cloud_upload, color: Colors.orange, size: 15);
-    } else if (syncState == 3) {
-      return const Icon(Icons.cloud_off, color: Colors.red, size: 15);
-    }
-    return const Icon(Icons.cloud_off, color: Colors.grey, size: 15);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal:4),
-          child: syncStateWidget(),
+          child: CloudSyncIcon(syncState: syncState),
         ),
         Container(
           decoration: BoxDecoration(

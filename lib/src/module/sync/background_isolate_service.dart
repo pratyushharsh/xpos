@@ -85,7 +85,7 @@ class BackgroundSyncServiceFromIso {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-
+    log.info('Response: ${response.body}');
     if (response.statusCode == 200) {
       var responseJson = json.decode(response.body);
       return responseJson;

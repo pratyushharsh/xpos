@@ -6,6 +6,8 @@ import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:receipt_generator/src/module/all_customer/bloc/all_customer_bloc.dart';
 import 'package:receipt_generator/src/widgets/my_loader.dart';
 
+import '../../widgets/cloud_sync_widget.dart';
+
 class WidgetNoCustomer extends StatelessWidget {
   const WidgetNoCustomer({Key? key}) : super(key: key);
 
@@ -70,18 +72,25 @@ class CustomerViewCard extends StatelessWidget {
         },
         child: Container(
           padding: const EdgeInsets.all(8),
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                contact.firstName + ' ' + contact.lastName,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    contact.firstName + ' ' + contact.lastName,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  if (contact.phoneNumber != null) Text('${contact.phoneNumber}'),
+                  if (contact.email != null) Text('${contact.email}'),
+                  if (contact.billingAddress != null )
+                  Text(
+                      '${contact.billingAddress}'),
+                ],
               ),
-              if (contact.phoneNumber != null) Text('${contact.phoneNumber}'),
-              if (contact.email != null) Text('${contact.email}'),
-              if (contact.billingAddress != null )
-              Text(
-                  '${contact.billingAddress}'),
+              CloudSyncIcon(syncState: contact.syncState ?? 0),
             ],
           ),
         ),
