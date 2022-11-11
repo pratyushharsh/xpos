@@ -26,6 +26,7 @@ class NewTaxGroupBloc extends Bloc<NewTaxGroupEvent, NewTaxGroupState> {
         groupId: state.groupId,
         name: state.name,
         description: state.description,
+        createTime: DateTime.now(),
       );
       await taxRepository.createNewTaxGroup(taxGroup);
       emit(state.copyWith(status: NewTaxGroupStatus.success,));

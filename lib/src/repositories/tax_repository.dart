@@ -29,6 +29,7 @@ class TaxRepository with DatabaseProvider {
   }
 
   Future<int> createNewTaxGroup(TaxGroupEntity taxGroup) async {
+    taxGroup.lastChangedAt = DateTime.now();
     return db.writeTxn(() => db.taxGroupEntitys.put(taxGroup));
   }
 
@@ -49,6 +50,8 @@ class TaxRepository with DatabaseProvider {
     tg.taxRules = [...tg.taxRules, taxRule];
 
     await db.writeTxn(() async {
+      tg.lastChangedAt = DateTime.now();
+      tg.syncState = 200;
       await db.taxGroupEntitys.put(tg);
     });
 
@@ -75,12 +78,10 @@ class TaxRepository with DatabaseProvider {
         .toList();
 
     await db.writeTxn(() async {
+      tg.lastChangedAt = DateTime.now();
+      tg.syncState = 200;
       await db.taxGroupEntitys.put(tg);
     });
-
-    // await db.writeTxn((isar) => {
-    //
-    // });
   }
 
   Future<List<TaxGroupEntity>> getAllTaxGroups({bool loadRules = false}) async {

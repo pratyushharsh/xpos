@@ -27,7 +27,6 @@ class _MockReceiptViewState extends State<MockReceiptView> {
           transId: 10001,
           authBloc: RepositoryProvider.of(context),
           transactionRepo: MockTransactionRepository(
-              db: RepositoryProvider.of(context),
               restClient: RepositoryProvider.of(context)),
           settingsRepo: RepositoryProvider.of(context))
         ..add(FetchReceiptDataEvent()),

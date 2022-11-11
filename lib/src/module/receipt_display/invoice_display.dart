@@ -43,7 +43,7 @@ class AppInvoiceDisplay extends StatelessWidget {
                       if (state.status == ReceiptDisplayStatus.success) {
                         return MaterialApp(
                           debugShowCheckedModeBanner: false,
-                          theme: ThemeData.light().copyWith(
+                          theme: ThemeData.dark().copyWith(
                             primaryColor: AppColor.primary,
                             brightness: Brightness.light,
                             backgroundColor: AppColor.background,
@@ -58,6 +58,7 @@ class AppInvoiceDisplay extends StatelessWidget {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return PdfPreview(
+
                                   loadingWidget:
                                       const MyLoader(color: AppColor.primary),
                                   canDebug: false,

@@ -67,11 +67,11 @@ dependencies:
   blurrycontainer: ^1.0.2
   isar: ^3.0.2
   isar_flutter_libs: ^3.0.2 # contains Isar Core
-  archive: ^3.3.0
+  archive: ^3.3.2
   easy_localization: ^3.0.1
   dropdown_search: ^5.0.3
   image_picker: ^0.8.5+3
-  awesome_snackbar_content: ^0.0.8
+  awesome_snackbar_content: ^0.1.0
   package_info_plus: ^3.0.1
   cached_network_image: ^3.2.2
 #  firebase_messaging: ^13.0.2

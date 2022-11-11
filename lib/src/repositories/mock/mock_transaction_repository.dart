@@ -8,7 +8,7 @@ import '../transaction_repository.dart';
 
 class MockTransactionRepository extends TransactionRepository {
   MockTransactionRepository(
-      {required Isar db, required RestApiClient restClient})
+      {required RestApiClient restClient})
       : super(restClient: restClient);
 
   @override

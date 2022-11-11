@@ -103,7 +103,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
                 SizedBox(height: 6),
               ],
             ),
-          // buildPaymentDetails(context),
+          buildPaymentDetails(context),
           if (config.showTaxSummary)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,7 +243,80 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
 
   @override
   Widget buildPaymentDetails(Context context) {
-    return PaymentDetailsWidget(config: config, order: order, store: store);
+    final rows = <TableRow>[];
+
+    final headerRow = <Widget>[];
+
+    for (var i = 0; i < config.paymentColumnConfig.length; i++) {
+      final column = config.paymentColumnConfig[i];
+      headerRow.add(
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 3),
+          child: Text(
+            column.title!,
+            textAlign: getColumnAlign(column.align),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }
+    rows.add(
+      TableRow(
+        children: headerRow,
+        repeat: true,
+        decoration: const BoxDecoration(
+          color: PdfColors.grey200,
+          border: Border.symmetric(
+            horizontal: BorderSide(
+              color: PdfColors.black,
+              width: 0.8,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    for (var i = 0; i < order.paymentLineItems.length; i++) {
+      final lineItem = order.paymentLineItems[i];
+      final row = <Widget>[];
+      for (var j = 0; j < config.paymentColumnConfig.length; j++) {
+        final column = config.paymentColumnConfig[j];
+        row.add(
+          Expanded(
+            flex: column.flex!,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(
+                InvoiceConfigConstants.getPaymentLineValue(
+                    column.key!, order, lineItem),
+                textAlign: getColumnAlign(column.align),
+              ),
+            ),
+          ),
+        );
+      }
+      rows.add(
+        TableRow(
+          children: row,
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: PdfColors.grey,
+                width: 0.5,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Table(
+      children: rows,
+      // columnWidths: columnWidths,
+    );
   }
 
   @override
@@ -637,98 +710,25 @@ class TermsAndConditionWidget extends StatelessWidget {
   }
 }
 
-class PaymentDetailsWidget extends StatelessWidget with InvoiceUtil {
-  final TransactionHeaderEntity order;
-  final RetailLocationEntity store;
-  final InvoiceConfig config;
-
-  PaymentDetailsWidget(
-      {required this.order, required this.store, required this.config})
-      : super();
-
-  @override
-  Widget build(Context context) {
-    final rows = <TableRow>[];
-
-    final headerRow = <Widget>[];
-
-    for (var i = 0; i < config.paymentColumnConfig.length; i++) {
-      final column = config.paymentColumnConfig[i];
-      headerRow.add(
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 3),
-          child: Text(
-            column.title!,
-            textAlign: getColumnAlign(column.align),
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
-    rows.add(
-      TableRow(
-        children: headerRow,
-        repeat: true,
-        decoration: const BoxDecoration(
-          color: PdfColors.grey200,
-          border: Border.symmetric(
-            horizontal: BorderSide(
-              color: PdfColors.black,
-              width: 0.8,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    for (var i = 0; i < order.paymentLineItems.length; i++) {
-      final lineItem = order.paymentLineItems[i];
-      final row = <Widget>[];
-      for (var j = 0; j < config.paymentColumnConfig.length; j++) {
-        final column = config.paymentColumnConfig[j];
-        row.add(
-          Expanded(
-            flex: column.flex!,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Text(
-                InvoiceConfigConstants.getPaymentLineValue(
-                    column.key!, order, lineItem),
-                textAlign: getColumnAlign(column.align),
-              ),
-            ),
-          ),
-        );
-      }
-      rows.add(
-        TableRow(
-          children: row,
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: PdfColors.grey,
-                width: 0.5,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Table(
-      children: rows,
-      // columnWidths: columnWidths,
-    );
-  }
-
-  @override
-  bool get canSpan {
-    return true;
-  }
-}
+// class PaymentDetailsWidget extends StatelessWidget with InvoiceUtil {
+//   final TransactionHeaderEntity order;
+//   final RetailLocationEntity store;
+//   final InvoiceConfig config;
+//
+//   PaymentDetailsWidget(
+//       {required this.order, required this.store, required this.config})
+//       : super();
+//
+//   @override
+//   Widget build(Context context) {
+//
+//   }
+//
+//   @override
+//   bool get canSpan {
+//     return true;
+//   }
+// }
 
 class InvoiceFooterWidget extends StatelessWidget {
   final InvoiceConfig config;

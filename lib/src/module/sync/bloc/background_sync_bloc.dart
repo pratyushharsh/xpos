@@ -70,7 +70,7 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     // sendPort.send(["Starting Background Sync", responsePort.sendPort]);
     emit(state.copyWith(storeId: event.storeId, status: BackgroundSyncStatus.started));
     log.info("Start Sync Event");
-    _timer = Timer.periodic(const Duration(seconds: 300), (t) async {
+    _timer = Timer.periodic(const Duration(seconds: 30), (t) async {
       sendPort.send({'storeId': event.storeId, 'sendPort': responsePort.sendPort, 'syncType': 'refresh'});
     });
   }
