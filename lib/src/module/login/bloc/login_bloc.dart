@@ -35,7 +35,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   void _onLoginUserWithPhone(
       LoginUserWithPhone event, Emitter<LoginState> emit) async {
     emit(state.copyWith(status: LoginStatus.loadingLogin));
-    await Future.delayed(const Duration(seconds: 2));
     try {
       // userPool.getCurrentUser()
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -47,10 +46,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         deviceName = '${info.name}:${info.model}:${info.systemName}:${info.systemVersion}';
       } else if (Platform.isAndroid) {
         AndroidDeviceInfo info = await deviceInfo.androidInfo;
-        deviceName = '${info.device}:${info.model}:${info.hardware}';
+        deviceName = '${info.device} | ${info.display}';
       } else if (Platform.isMacOS) {
         MacOsDeviceInfo info = await deviceInfo.macOsInfo;
-        deviceName = '${info.computerName}:${info.model}:${info.osRelease}:${info.systemGUID}';
+        deviceName = '${info.computerName} | ${info.osRelease}';
       } else if (Platform.isWindows) {
         WindowsDeviceInfo info = await deviceInfo.windowsInfo;
         deviceName = '${info.computerName}:${info.numberOfCores}:${info.systemMemoryInMegabytes}';
@@ -111,7 +110,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       log.severe(e.challengeParameters);
       var deviceList = json.decode(e.challengeParameters['device_list']) as List<dynamic>;
       authenticationBloc.add(VerifyUserDeviceStep(e.challengeParameters));
-      emit(state.copyWith(status: LoginStatus.verifyDevice, deviceList: deviceList));
+
+      CognitoUser user = state.user!;
+      String deviceKeyPrefix = '${user.keyPrefix}.deviceKey';
+      var deviceKey = await userPool.storage.getItem(deviceKeyPrefix);
+      log.info("Current device key: $deviceKey");
+      emit(state.copyWith(status: LoginStatus.verifyDevice, deviceList: deviceList, deviceKey: deviceKey));
     } catch (e) {
       log.severe(e);
     }
@@ -123,7 +127,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       emit(state.copyWith(status: LoginStatus.verifyDeviceLoading));
       CognitoUser user = state.user!;
-      await user.sendCustomChallengeAnswer(' ');
+      await user.sendCustomChallengeAnswer(event.devices.isNotEmpty ? event.devices.join(';') : ' ');
       _getUserDetail();
     } catch (e) {
       log.severe(e);

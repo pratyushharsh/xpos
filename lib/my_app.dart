@@ -21,6 +21,7 @@ import 'package:receipt_generator/src/pos/helper/tax_helper.dart';
 import 'package:receipt_generator/src/repositories/sync_config_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_repository.dart';
 import 'package:receipt_generator/src/util/helper/rest_api.dart';
+import 'package:receipt_generator/src/widgets/my_loader.dart';
 
 import 'src/config/theme_settings.dart';
 import 'src/module/error/bloc/error_notification_bloc.dart';
@@ -33,11 +34,11 @@ import 'src/repositories/repository.dart';
 class MyApp extends StatefulWidget {
   final CognitoUserPool userPool;
   final RestApiClient restClient;
-  const MyApp(
-      {Key? key,
-      required this.userPool,
-      required this.restClient,})
-      : super(key: key);
+  const MyApp({
+    Key? key,
+    required this.userPool,
+    required this.restClient,
+  }) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -56,7 +57,8 @@ class _MyAppState extends State<MyApp> {
     return MultiRepositoryProvider(
         providers: [
           // RepositoryProvider(lazy: false, create: (context) => database),
-          RepositoryProvider(lazy: false, create: (context) => widget.restClient),
+          RepositoryProvider(
+              lazy: false, create: (context) => widget.restClient),
           RepositoryProvider(
               lazy: false, create: (context) => CheckListHelper()),
           RepositoryProvider(create: (context) => ContactRepository()),
@@ -94,8 +96,7 @@ class _MyAppState extends State<MyApp> {
                 ReasonCodeRepository(restClient: widget.restClient),
           ),
           RepositoryProvider(
-            create: (context) =>
-                TaxRepository(restClient: widget.restClient),
+            create: (context) => TaxRepository(restClient: widget.restClient),
           ),
           RepositoryProvider(
             create: (context) =>
@@ -167,9 +168,8 @@ class _MyAppState extends State<MyApp> {
                   )..add(ValidateStoreSetup())),
           BlocProvider(
             create: (context) => SettingsBloc(
-              employeeRepository: RepositoryProvider.of(context),
-              authenticationBloc: BlocProvider.of(context)
-            ),
+                employeeRepository: RepositoryProvider.of(context),
+                authenticationBloc: BlocProvider.of(context)),
           ),
         ], child: const MyAppView()));
   }
@@ -251,6 +251,16 @@ class _MyAppViewState extends State<MyAppView> {
                   break;
                 case AuthenticationStatus.chooseBusiness:
                   _navigator.push(ChooseCreateBusinessView.route());
+                  break;
+                case AuthenticationStatus.chooseBusinessLoading:
+                  _navigator.push(
+                    DialogRoute<void>(
+                      context: context,
+                      builder: (context) => const Center(
+                        child: MyLoader(),
+                      ),
+                    ),
+                  );
                   break;
                 default:
                   break;

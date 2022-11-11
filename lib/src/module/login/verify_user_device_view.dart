@@ -30,10 +30,8 @@ class VerifyUserDeviceView extends StatelessWidget {
                 child: Align(
                   child: Container(
                     constraints: BoxConstraints(
-                      maxWidth:
-                          min(MediaQuery.of(context).size.width, 600),
-                      maxHeight:
-                          min(MediaQuery.of(context).size.height, 600),
+                      maxWidth: min(MediaQuery.of(context).size.width, 600),
+                      maxHeight: min(MediaQuery.of(context).size.height, 600),
                     ),
                     child: const VerifyUserDeviceForm(),
                   ),
@@ -79,7 +77,7 @@ class _VerifyUserDeviceFormState extends State<VerifyUserDeviceForm> {
     super.dispose();
   }
 
-  Widget _buildDeviceList(device) {
+  Widget _buildDeviceList(device, String? currentDeviceKey) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Container(
@@ -90,23 +88,42 @@ class _VerifyUserDeviceFormState extends State<VerifyUserDeviceForm> {
         ),
         child: Row(
           children: [
-            Checkbox(value: _selectedDeviceIds.contains(device['device_key']), onChanged: (val) {
-              setState(() {
-                if (_selectedDeviceIds.contains(device['device_key'])) {
-                  _selectedDeviceIds.remove(device['device_key']);
-                } else {
-                  _selectedDeviceIds.add(device['device_key']);
-                }
-              });
-            }),
+            Checkbox(
+              value: _selectedDeviceIds.contains(device['device_key']),
+              onChanged: device['device_key'] != currentDeviceKey ? (val) {
+                setState(
+                  () {
+                    if (_selectedDeviceIds.contains(device['device_key'])) {
+                      _selectedDeviceIds.remove(device['device_key']);
+                    } else {
+                      _selectedDeviceIds.add(device['device_key']);
+                    }
+                  },
+                );
+              } : null,
+            ),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(
-                device['device_name'] ?? '',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    device['device_name'] ?? '',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (device['device_key'] == currentDeviceKey)
+                    const Text(
+                      'This device',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.primary,
+                      ),
+                    ),
+                ],
               ),
             ),
           ],
@@ -128,54 +145,56 @@ class _VerifyUserDeviceFormState extends State<VerifyUserDeviceForm> {
         builder: (context, state) {
           return Container(
             padding: const EdgeInsets.all(20),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Check your existing device',
-                    style: TextStyle(
-                        fontSize: 30,
-                        letterSpacing: 1.4,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  const Text(
-                    "  Select the device to remove from saved history.",
-                    style: TextStyle(
-                        color: AppColor.color5, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const SizedBox(height: 20),
+              const Text(
+                'Check your existing device',
+                style: TextStyle(
+                    fontSize: 30,
+                    letterSpacing: 1.4,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              const Text(
+                "  Select the device to remove from saved history.",
+                style: TextStyle(
+                    color: AppColor.color5, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: state.deviceList.length,
+                  itemBuilder: (context, index) {
+                    return _buildDeviceList(
+                        state.deviceList[index], state.deviceKey);
+                  },
+                ),
+              ),
+              Row(children: [
+                if (state.status == LoginStatus.verifyDeviceLoading)
+                  const Expanded(
+                      child: MyLoader(
+                    color: AppColor.primary,
+                  )),
+                if (state.status != LoginStatus.verifyDeviceLoading)
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: state.deviceList.length,
-                      itemBuilder: (context, index) {
-                        return _buildDeviceList(state.deviceList[index]);
-                      },
+                    child: AcceptButton(
+                      label: "Continue",
+                      onPressed: state.deviceList.where((e) => e['device_key'] != state.deviceKey).toList().length - _selectedDeviceIds.length < 3
+                          ? () {
+                              BlocProvider.of<LoginBloc>(context).add(
+                                  RemoveDevice(_selectedDeviceIds.toList()));
+                            }
+                          : null,
                     ),
-                  ),
-                  Row(children: [
-                    if (state.status == LoginStatus.verifyDeviceLoading)
-                      const Expanded(child: MyLoader(color: AppColor.primary,)),
-                    if (state.status != LoginStatus.verifyDeviceLoading)
-                      Expanded(
-                        child: AcceptButton(
-                          label: "Continue",
-                          onPressed: _selectedDeviceIds.isNotEmpty || state.deviceList.isEmpty
-                              ? () {
-                            BlocProvider.of<LoginBloc>(context)
-                                .add(RemoveDevice(_selectedDeviceIds.toList()));
-                          }
-                              : null,
-                        ),
-                      )
-                  ])
-              ]
-            ),
+                  )
+              ])
+            ]),
           );
         },
       ),

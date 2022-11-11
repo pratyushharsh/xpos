@@ -102,7 +102,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   void _logOutUser(
       LogOutUserEvent event, Emitter<AuthenticationState> emit) async {
     var tmp = await userPool.getCurrentUser();
-    // sync.add(StopSyncEvent());
+    sync.add(StopSyncEvent());
     if (tmp != null) {
       await tmp.signOut();
       await tmp.clearCachedTokens();
@@ -142,6 +142,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   void _changeBusinessAccount(
       ChangeBusinessAccount event, Emitter<AuthenticationState> emit) async {
+    // add a state for change business account
+    emit(state.copyWith(status: AuthenticationStatus.chooseBusinessLoading));
     var user = await userPool.getCurrentUser();
     await user!.storage.setItem("CURRENT_STORE", event.rtlLocId);
     // Switch the database.

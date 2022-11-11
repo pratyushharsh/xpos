@@ -21,6 +21,7 @@ class LoginState {
   final int retryCount;
   final String error;
   final List<dynamic> deviceList;
+  final String? deviceKey;
   // final List<dynamic> businessList;
 
   LoginState(
@@ -28,24 +29,26 @@ class LoginState {
       this.user,
       this.retryCount = 0,
       this.deviceList = const [],
-      this.error = ''});
+      this.error = '', this.deviceKey});
 
   LoginState copyWith(
       {LoginStatus? status,
       CognitoUser? user,
       int? retryCount,
       List<dynamic>? deviceList,
-      String? error}) {
+      String? error,
+      String? deviceKey}) {
     return LoginState(
         status: status ?? this.status,
         user: user ?? this.user,
         deviceList: deviceList ?? this.deviceList,
         retryCount: retryCount ?? this.retryCount,
-        error: error ?? this.error);
+        error: error ?? this.error,
+        deviceKey: deviceKey ?? this.deviceKey);
   }
 
   @override
   String toString() {
-    return 'LoginState{status: $status, user: $user, retryCount: $retryCount, error: $error, deviceList: $deviceList}';
+    return 'LoginState{status: $status, user: $user, retryCount: $retryCount, error: $error, deviceList: $deviceList, deviceKey: $deviceKey}';
   }
 }
