@@ -66,14 +66,17 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
             buildStoreDetail(context)
           ]),
           Divider(height: 6, thickness: 0.8),
-          Row(children: [
-            Expanded(
-              child: buildBillingAddress(context),
-            ),
-            Expanded(
-              child: buildShippingAddress(context),
-            )
-          ]),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: buildBillingAddress(context),
+              ),
+              Expanded(
+                child: buildShippingAddress(context),
+              )
+            ],
+          ),
           Divider(height: 0, thickness: 0.8),
         ],
       ),
@@ -518,6 +521,11 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
         Text(
           'GST: ${store.gst ?? ''}',
         ),
+        ...config.headerFieldConfig
+            .map((e) => Text(
+                  '${e.title}: ${e.defaultValue}',
+                ))
+            .toList(),
       ],
     );
   }
@@ -548,6 +556,11 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
           Text(
             'Ph: ${order.customerPhone}',
           ),
+          ...config.billingAddFieldConfig
+              .map((e) => Text(
+                    '${e.title}: ${e.defaultValue}',
+                  ))
+              .toList(),
         ],
       ),
     );
@@ -577,6 +590,11 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
         Text(
           'Ph: ${order.customerPhone}',
         ),
+        ...config.shippingAddFieldConfig
+            .map((e) => Text(
+                  '${e.title}: ${e.defaultValue}',
+                ))
+            .toList(),
       ],
     );
   }

@@ -52,6 +52,9 @@ class InvoiceSettingBloc
     emit(state.copyWith(
       columns: config.columnConfig,
       paymentColumns: config.paymentColumnConfig,
+      billingAddressFields: config.billingAddFieldConfig,
+      headerFields: config.headerFieldConfig,
+      shippingAddressFields: config.shippingAddFieldConfig,
       showTaxSummary: config.showTaxSummary,
       showPaymentDetails: config.showPaymentDetails,
       logo: config.logo,
