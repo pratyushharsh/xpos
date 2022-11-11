@@ -31,10 +31,6 @@ class InvoiceSettingBloc
   InvoiceSettingBloc({required this.invoiceRepo, required this.authBloc})
       : super(const InvoiceSettingState()) {
     on<OnInitialInvoiceSettingEvent>(_onInitialInvoiceSettingEvent);
-    on<AddNewConfigColumn>(_onAddNewConfigColumn);
-    on<RemoveConfigColumn>(_onRemoveConfigColumn);
-    on<AddNewPaymentColumn>(_onAddNewPaymentColumn);
-    on<RemovePaymentColumn>(_onRemovePaymentColumn);
     on<ShowTaxSummary>(_onShowTaxSummary);
     on<ShowPaymentDetails>(_onShowPaymentDetails);
     on<UploadLogoFromPlatform>(_onUploadLogo);
@@ -45,8 +41,9 @@ class InvoiceSettingBloc
     on<ShowDeclaration>(_onShowDeclaration);
     on<UpdateDeclaration>(_onUpdateDeclaration,
         transformer: debounce(_duration));
-    on<OnReportColumnConfigUpdate>(_onReportColumnConfigUpdate);
-    on<OnReportPaymentColumnConfigUpdate>(_onReportPaymentColumnConfigUpdate);
+    on<AddNewConfigField>(_onAddNewConfigField);
+    on<RemoveConfigField>(_onRemoveConfigField);
+    on<OnReportFieldConfigUpdate>(_onReportFieldConfigUpdate);
   }
 
   void _onInitialInvoiceSettingEvent(OnInitialInvoiceSettingEvent event,
@@ -66,49 +63,49 @@ class InvoiceSettingBloc
     ));
   }
 
-  void _onAddNewConfigColumn(
-      AddNewConfigColumn event, Emitter<InvoiceSettingState> emit) {
-    final newColumns = List<ReportColumnConfigEntity>.from(state.columns);
-    newColumns.add(ReportColumnConfigEntity(
-      key: event.column.key,
-      title: event.column.title,
-      flex: event.column.flex,
-      align: event.column.align,
-      defaultValue: event.column.defaultValue,
-    ));
-    emit(state.copyWith(
-        columns: newColumns, status: InvoiceSettingStatus.modified));
-  }
+  // void _onAddNewConfigColumn(
+  //     AddNewConfigColumn event, Emitter<InvoiceSettingState> emit) {
+  //   final newColumns = List<ReportFieldConfigEntity>.from(state.columns);
+  //   newColumns.add(ReportFieldConfigEntity(
+  //     key: event.column.key,
+  //     title: event.column.title,
+  //     flex: event.column.flex,
+  //     align: event.column.align,
+  //     defaultValue: event.column.defaultValue,
+  //   ));
+  //   emit(state.copyWith(
+  //       columns: newColumns, status: InvoiceSettingStatus.modified));
+  // }
+  //
+  // void _onRemoveConfigColumn(
+  //     RemoveConfigColumn event, Emitter<InvoiceSettingState> emit) {
+  //   final newColumns = List<ReportFieldConfigEntity>.from(state.columns);
+  //   newColumns.remove(event.column);
+  //   emit(state.copyWith(
+  //       columns: newColumns, status: InvoiceSettingStatus.modified));
+  // }
 
-  void _onRemoveConfigColumn(
-      RemoveConfigColumn event, Emitter<InvoiceSettingState> emit) {
-    final newColumns = List<ReportColumnConfigEntity>.from(state.columns);
-    newColumns.remove(event.column);
-    emit(state.copyWith(
-        columns: newColumns, status: InvoiceSettingStatus.modified));
-  }
-
-  void _onAddNewPaymentColumn(
-      AddNewPaymentColumn event, Emitter<InvoiceSettingState> emit) {
-    final newColumns = List<ReportColumnConfigEntity>.from(state.paymentColumns);
-    newColumns.add(ReportColumnConfigEntity(
-      key: event.column.key,
-      title: event.column.title,
-      flex: event.column.flex,
-      align: event.column.align,
-      defaultValue: event.column.defaultValue,
-    ));
-    emit(state.copyWith(
-        paymentColumns: newColumns, status: InvoiceSettingStatus.modified));
-  }
-
-  void _onRemovePaymentColumn(
-      RemovePaymentColumn event, Emitter<InvoiceSettingState> emit) {
-    final newColumns = List<ReportColumnConfigEntity>.from(state.paymentColumns);
-    newColumns.remove(event.column);
-    emit(state.copyWith(
-        paymentColumns: newColumns, status: InvoiceSettingStatus.modified));
-  }
+  // void _onAddNewPaymentColumn(
+  //     AddNewPaymentColumn event, Emitter<InvoiceSettingState> emit) {
+  //   final newColumns = List<ReportFieldConfigEntity>.from(state.paymentColumns);
+  //   newColumns.add(ReportFieldConfigEntity(
+  //     key: event.column.key,
+  //     title: event.column.title,
+  //     flex: event.column.flex,
+  //     align: event.column.align,
+  //     defaultValue: event.column.defaultValue,
+  //   ));
+  //   emit(state.copyWith(
+  //       paymentColumns: newColumns, status: InvoiceSettingStatus.modified));
+  // }
+  //
+  // void _onRemovePaymentColumn(
+  //     RemovePaymentColumn event, Emitter<InvoiceSettingState> emit) {
+  //   final newColumns = List<ReportFieldConfigEntity>.from(state.paymentColumns);
+  //   newColumns.remove(event.column);
+  //   emit(state.copyWith(
+  //       paymentColumns: newColumns, status: InvoiceSettingStatus.modified));
+  // }
 
   void _onShowTaxSummary(
       ShowTaxSummary event, Emitter<InvoiceSettingState> emit) {
@@ -145,16 +142,18 @@ class InvoiceSettingBloc
       }
 
       await invoiceRepo.saveInvoiceSetting(InvoiceConfig(
-        columnConfig: state.columns,
-        paymentColumnConfig: state.paymentColumns,
-        logo: state.rawLogo != null ? 'file://$logoPath' : state.logo,
-        showTaxSummary: state.showTaxSummary,
-        showPaymentDetails: state.showPaymentDetails,
-        showTermsAndCondition: state.showTermsAndCondition,
-        termsAndCondition: state.termsAndCondition,
-        showDeclaration: state.showDeclaration,
-        declaration: state.declaration,
-      ));
+          columnConfig: state.columns,
+          paymentColumnConfig: state.paymentColumns,
+          logo: state.rawLogo != null ? 'file://$logoPath' : state.logo,
+          showTaxSummary: state.showTaxSummary,
+          showPaymentDetails: state.showPaymentDetails,
+          showTermsAndCondition: state.showTermsAndCondition,
+          termsAndCondition: state.termsAndCondition,
+          showDeclaration: state.showDeclaration,
+          declaration: state.declaration,
+          headerFieldConfig: state.headerFields,
+          shippingAddFieldConfig: state.shippingAddressFields,
+          billingAddFieldConfig: state.billingAddressFields));
     } catch (e) {
       log.severe(e);
     }
@@ -185,46 +184,178 @@ class InvoiceSettingBloc
         declaration: event.declaration, status: InvoiceSettingStatus.modified));
   }
 
-  void _onReportColumnConfigUpdate(
-      OnReportColumnConfigUpdate event, Emitter<InvoiceSettingState> emit) {
+  void _onReportFieldConfigUpdate(
+      OnReportFieldConfigUpdate event, Emitter<InvoiceSettingState> emit) {
     // Find the column from current state and update
-    final newColumns = List<ReportColumnConfigEntity>.from(state.columns);
+    var newColumns = List<ReportFieldConfigEntity>.empty();
+
+    switch (event.type) {
+      case FieldType.header:
+        newColumns = List<ReportFieldConfigEntity>.from(state.headerFields);
+        break;
+      case FieldType.billingAddress:
+        newColumns =
+            List<ReportFieldConfigEntity>.from(state.billingAddressFields);
+        break;
+      case FieldType.shippingAddress:
+        newColumns =
+            List<ReportFieldConfigEntity>.from(state.shippingAddressFields);
+        break;
+      case FieldType.payment:
+        newColumns = List<ReportFieldConfigEntity>.from(state.paymentColumns);
+        break;
+      case FieldType.item:
+        newColumns = List<ReportFieldConfigEntity>.from(state.columns);
+        break;
+    }
+
     for (var i = 0; i < newColumns.length; i++) {
-      if (newColumns[i].key == event.column.key &&
-          newColumns[i].title == event.column.title) {
-        newColumns[i] = ReportColumnConfigEntity(
-          key: event.column.key,
-          title: event.column.title,
-          align: event.column.align,
-          flex: event.column.flex,
-          defaultValue: event.column.defaultValue,
+      if (newColumns[i].key == event.field.key &&
+          newColumns[i].title == event.field.title) {
+        newColumns[i] = ReportFieldConfigEntity(
+          key: event.field.key,
+          title: event.field.title,
+          align: event.field.align,
+          flex: event.field.flex,
+          defaultValue: event.field.defaultValue,
         );
         break;
       }
     }
 
-    emit(state.copyWith(
-        columns: newColumns, status: InvoiceSettingStatus.modified));
+    switch (event.type) {
+      case FieldType.header:
+        emit(state.copyWith(
+            headerFields: newColumns, status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.billingAddress:
+        emit(state.copyWith(
+            billingAddressFields: newColumns,
+            status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.shippingAddress:
+        emit(state.copyWith(
+            shippingAddressFields: newColumns,
+            status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.payment:
+        emit(state.copyWith(
+            paymentColumns: newColumns, status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.item:
+        emit(state.copyWith(
+            columns: newColumns, status: InvoiceSettingStatus.modified));
+        break;
+    }
   }
 
-void _onReportPaymentColumnConfigUpdate(
-      OnReportPaymentColumnConfigUpdate event, Emitter<InvoiceSettingState> emit) {
+  void _onAddNewConfigField(
+      AddNewConfigField event, Emitter<InvoiceSettingState> emit) {
     // Find the column from current state and update
-    final newColumns = List<ReportColumnConfigEntity>.from(state.paymentColumns);
-    for (var i = 0; i < newColumns.length; i++) {
-      if (newColumns[i].key == event.column.key &&
-          newColumns[i].title == event.column.title) {
-        newColumns[i] = ReportColumnConfigEntity(
-          key: event.column.key,
-          title: event.column.title,
-          align: event.column.align,
-          flex: event.column.flex,
-        );
+    var newColumns = List<ReportFieldConfigEntity>.empty();
+    switch (event.type) {
+      case FieldType.header:
+        newColumns = List<ReportFieldConfigEntity>.from(state.headerFields);
         break;
-      }
+      case FieldType.billingAddress:
+        newColumns =
+            List<ReportFieldConfigEntity>.from(state.billingAddressFields);
+        break;
+      case FieldType.shippingAddress:
+        newColumns =
+            List<ReportFieldConfigEntity>.from(state.shippingAddressFields);
+        break;
+      case FieldType.payment:
+        newColumns = List<ReportFieldConfigEntity>.from(state.paymentColumns);
+        break;
+      case FieldType.item:
+        newColumns = List<ReportFieldConfigEntity>.from(state.columns);
+        break;
     }
 
-    emit(state.copyWith(
-        paymentColumns: newColumns, status: InvoiceSettingStatus.modified));
+    newColumns.add(ReportFieldConfigEntity(
+      key: event.field.key,
+      title: event.field.title,
+      flex: event.field.flex,
+      align: event.field.align,
+      defaultValue: event.field.defaultValue,
+    ));
+
+    switch (event.type) {
+      case FieldType.header:
+        emit(state.copyWith(
+            headerFields: newColumns, status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.billingAddress:
+        emit(state.copyWith(
+            billingAddressFields: newColumns,
+            status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.shippingAddress:
+        emit(state.copyWith(
+            shippingAddressFields: newColumns,
+            status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.payment:
+        emit(state.copyWith(
+            paymentColumns: newColumns, status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.item:
+        emit(state.copyWith(
+            columns: newColumns, status: InvoiceSettingStatus.modified));
+        break;
+    }
+  }
+
+  void _onRemoveConfigField(
+      RemoveConfigField event, Emitter<InvoiceSettingState> emit) {
+    // Find the column from current state and update
+    var newColumns = List<ReportFieldConfigEntity>.empty();
+    switch (event.type) {
+      case FieldType.header:
+        newColumns = List<ReportFieldConfigEntity>.from(state.headerFields);
+        break;
+      case FieldType.billingAddress:
+        newColumns =
+            List<ReportFieldConfigEntity>.from(state.billingAddressFields);
+        break;
+      case FieldType.shippingAddress:
+        newColumns =
+            List<ReportFieldConfigEntity>.from(state.shippingAddressFields);
+        break;
+      case FieldType.payment:
+        newColumns = List<ReportFieldConfigEntity>.from(state.paymentColumns);
+        break;
+      case FieldType.item:
+        newColumns = List<ReportFieldConfigEntity>.from(state.columns);
+        break;
+    }
+
+    newColumns.remove(event.field);
+
+    switch (event.type) {
+      case FieldType.header:
+        emit(state.copyWith(
+            headerFields: newColumns, status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.billingAddress:
+        emit(state.copyWith(
+            billingAddressFields: newColumns,
+            status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.shippingAddress:
+        emit(state.copyWith(
+            shippingAddressFields: newColumns,
+            status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.payment:
+        emit(state.copyWith(
+            paymentColumns: newColumns, status: InvoiceSettingStatus.modified));
+        break;
+      case FieldType.item:
+        emit(state.copyWith(
+            columns: newColumns, status: InvoiceSettingStatus.modified));
+        break;
+    }
   }
 }

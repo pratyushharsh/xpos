@@ -5,29 +5,29 @@ abstract class InvoiceSettingEvent {}
 
 class OnInitialInvoiceSettingEvent extends InvoiceSettingEvent {}
 
-class AddNewConfigColumn extends InvoiceSettingEvent {
-  final ReportColumnConfigEntity column;
-
-  AddNewConfigColumn(this.column);
-}
-
-class RemoveConfigColumn extends InvoiceSettingEvent {
-  final ReportColumnConfigEntity column;
-
-  RemoveConfigColumn(this.column);
-}
-
-class AddNewPaymentColumn extends InvoiceSettingEvent {
-  final ReportColumnConfigEntity column;
-
-  AddNewPaymentColumn(this.column);
-}
-
-class RemovePaymentColumn extends InvoiceSettingEvent {
-  final ReportColumnConfigEntity column;
-
-  RemovePaymentColumn(this.column);
-}
+// class AddNewConfigColumn extends InvoiceSettingEvent {
+//   final ReportFieldConfigEntity column;
+//
+//   AddNewConfigColumn(this.column);
+// }
+//
+// class RemoveConfigColumn extends InvoiceSettingEvent {
+//   final ReportFieldConfigEntity column;
+//
+//   RemoveConfigColumn(this.column);
+// }
+//
+// class AddNewPaymentColumn extends InvoiceSettingEvent {
+//   final ReportFieldConfigEntity column;
+//
+//   AddNewPaymentColumn(this.column);
+// }
+//
+// class RemovePaymentColumn extends InvoiceSettingEvent {
+//   final ReportFieldConfigEntity column;
+//
+//   RemovePaymentColumn(this.column);
+// }
 
 class ShowTaxSummary extends InvoiceSettingEvent {
   final bool show;
@@ -73,14 +73,35 @@ class UpdateDeclaration extends InvoiceSettingEvent {
   UpdateDeclaration(this.declaration);
 }
 
-class OnReportColumnConfigUpdate extends InvoiceSettingEvent {
-  final ReportColumnConfigEntity column;
+// class OnReportColumnConfigUpdate extends InvoiceSettingEvent {
+//   final ReportFieldConfigEntity column;
+//
+//   OnReportColumnConfigUpdate(this.column);
+// }
 
-  OnReportColumnConfigUpdate(this.column);
+// class OnReportPaymentColumnConfigUpdate extends InvoiceSettingEvent {
+//   final ReportFieldConfigEntity column;
+//
+//   OnReportPaymentColumnConfigUpdate(this.column);
+// }
+
+class AddNewConfigField extends InvoiceSettingEvent {
+  final ReportFieldConfigEntity field;
+  final FieldType type;
+
+  AddNewConfigField({required this.field, required this.type});
 }
 
-class OnReportPaymentColumnConfigUpdate extends InvoiceSettingEvent {
-  final ReportColumnConfigEntity column;
+class RemoveConfigField extends InvoiceSettingEvent {
+  final ReportFieldConfigEntity field;
+  final FieldType type;
 
-  OnReportPaymentColumnConfigUpdate(this.column);
+  RemoveConfigField({required this.field, required this.type});
+}
+
+class OnReportFieldConfigUpdate extends InvoiceSettingEvent {
+  final ReportFieldConfigEntity field;
+  final FieldType type;
+
+  OnReportFieldConfigUpdate({required this.field, required this.type});
 }

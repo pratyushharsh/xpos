@@ -5,11 +5,11 @@ import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 import '../../entity/pos/report_config_entity.dart';
 
 class MultiChoiceReportColumnConfigSelection extends StatelessWidget {
-  final List<ReportColumnConfigEntity> options;
-  final List<ReportColumnConfigEntity> selectedOptions;
-  final void Function(ReportColumnConfigEntity) onSelect;
-  final void Function(ReportColumnConfigEntity) onDeselect;
-  final void Function(ReportColumnConfigEntity) onUpdateOption;
+  final List<ReportFieldConfigEntity> options;
+  final List<ReportFieldConfigEntity> selectedOptions;
+  final void Function(ReportFieldConfigEntity) onSelect;
+  final void Function(ReportFieldConfigEntity) onDeselect;
+  final void Function(ReportFieldConfigEntity) onUpdateOption;
   final String label;
   const MultiChoiceReportColumnConfigSelection(
       {Key? key,
@@ -94,12 +94,12 @@ class MultiChoiceReportColumnConfigSelection extends StatelessWidget {
 }
 
 class SettingChoiceChip extends StatefulWidget {
-  final ReportColumnConfigEntity columnConfig;
+  final ReportFieldConfigEntity columnConfig;
   final bool selected;
   final bool canOpen;
   final void Function()? onActionTap;
   final Widget? actionIcon;
-  final void Function(ReportColumnConfigEntity) onUpdateOption;
+  final void Function(ReportFieldConfigEntity) onUpdateOption;
   const SettingChoiceChip(
       {Key? key,
       required this.columnConfig,
@@ -168,8 +168,8 @@ class _SettingChoiceChipState extends State<SettingChoiceChip> {
 }
 
 class SettingChoiceConfig extends StatelessWidget {
-  final ReportColumnConfigEntity config;
-  final void Function(ReportColumnConfigEntity) onUpdateOption;
+  final ReportFieldConfigEntity config;
+  final void Function(ReportFieldConfigEntity) onUpdateOption;
   const SettingChoiceConfig(
       {Key? key, required this.config, required this.onUpdateOption})
       : super(key: key);
@@ -187,10 +187,13 @@ class SettingChoiceConfig extends StatelessWidget {
             height: 6,
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: CustomTextField(
                   label: 'Label',
+                  minLines: 1,
+                  maxLines: 4,
                   initialValue: config.title,
                   onValueChange: (value) {
                     config.title = value;
@@ -204,6 +207,8 @@ class SettingChoiceConfig extends StatelessWidget {
               Expanded(
                 child: CustomTextField(
                   label: 'Default Value',
+                  minLines: 1,
+                  maxLines: 4,
                   labelAlign: TextAlign.end,
                   initialValue: config.defaultValue ?? '',
                   onValueChange: (value) {

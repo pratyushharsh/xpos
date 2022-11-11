@@ -19,7 +19,9 @@ enum InvoiceField {
   showDeclaration("SHOW_DECLARATION"),
   termsAndCondition("TERMS_AND_CONDITION"),
   showTermsAndCondition("SHOW_TERMS_AND_CONDITION"),
-  ;
+  headerFields("HEADER_FIELDS"),
+  shippingAddressFields("SHIPPING_ADDRESS_FIELDS"),
+  billingAddressFields("BILLING_ADDRESS_FIELDS");
 
   const InvoiceField(this.value);
 
@@ -85,6 +87,21 @@ class InvoiceRepository with DatabaseProvider {
         subtype: InvoiceField.showTermsAndCondition.value,
         boolValue: setting.showTermsAndCondition,
       ));
+      await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
+        type: "INVOICE",
+        subtype: InvoiceField.headerFields.value,
+        columnConfig: setting.headerFieldConfig,
+      ));
+      await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
+        type: "INVOICE",
+        subtype: InvoiceField.shippingAddressFields.value,
+        columnConfig: setting.shippingAddFieldConfig,
+      ));
+      await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
+        type: "INVOICE",
+        subtype: InvoiceField.billingAddressFields.value,
+        columnConfig: setting.billingAddFieldConfig,
+      ));
     });
   }
 
@@ -139,6 +156,19 @@ class InvoiceRepository with DatabaseProvider {
                   orElse: () => ReportConfigEntity(type: '', subtype: ''))
               .boolValue ??
           false,
+      headerFieldConfig: config
+          .firstWhere((e) => e.subtype == InvoiceField.headerFields.value,
+              orElse: () => ReportConfigEntity(type: '', subtype: ''))
+          .columnConfig,
+      billingAddFieldConfig: config
+          .firstWhere((e) => e.subtype == InvoiceField.billingAddressFields.value,
+              orElse: () => ReportConfigEntity(type: '', subtype: ''))
+          .columnConfig,
+      shippingAddFieldConfig: config
+          .firstWhere(
+              (e) => e.subtype == InvoiceField.shippingAddressFields.value,
+              orElse: () => ReportConfigEntity(type: '', subtype: ''))
+          .columnConfig,
     );
   }
 

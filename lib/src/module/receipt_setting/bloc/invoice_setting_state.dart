@@ -2,9 +2,14 @@ part of 'invoice_setting_bloc.dart';
 
 enum InvoiceSettingStatus { initial, preLoad, modified, saved }
 
+enum FieldType { header, billingAddress, shippingAddress, item, payment }
+
 class InvoiceSettingState {
-  final List<ReportColumnConfigEntity> columns;
-  final List<ReportColumnConfigEntity> paymentColumns;
+  final List<ReportFieldConfigEntity> columns;
+  final List<ReportFieldConfigEntity> paymentColumns;
+  final List<ReportFieldConfigEntity> headerFields;
+  final List<ReportFieldConfigEntity> billingAddressFields;
+  final List<ReportFieldConfigEntity> shippingAddressFields;
   final InvoiceSettingStatus status;
   final bool showTaxSummary;
   final bool showPaymentDetails;
@@ -18,6 +23,9 @@ class InvoiceSettingState {
   const InvoiceSettingState({
     this.columns = const [],
     this.paymentColumns = const [],
+    this.headerFields = const [],
+    this.billingAddressFields = const [],
+    this.shippingAddressFields = const [],
     this.status = InvoiceSettingStatus.initial,
     this.showTaxSummary = true,
     this.showPaymentDetails = true,
@@ -30,8 +38,11 @@ class InvoiceSettingState {
   });
 
   InvoiceSettingState copyWith({
-    List<ReportColumnConfigEntity>? columns,
-    List<ReportColumnConfigEntity>? paymentColumns,
+    List<ReportFieldConfigEntity>? columns,
+    List<ReportFieldConfigEntity>? paymentColumns,
+    List<ReportFieldConfigEntity>? headerFields,
+    List<ReportFieldConfigEntity>? billingAddressFields,
+    List<ReportFieldConfigEntity>? shippingAddressFields,
     InvoiceSettingStatus? status,
     bool? showTaxSummary,
     bool? showPaymentDetails,
@@ -45,6 +56,10 @@ class InvoiceSettingState {
     return InvoiceSettingState(
       columns: columns ?? this.columns,
       paymentColumns: paymentColumns ?? this.paymentColumns,
+      headerFields: headerFields ?? this.headerFields,
+      billingAddressFields: billingAddressFields ?? this.billingAddressFields,
+      shippingAddressFields:
+          shippingAddressFields ?? this.shippingAddressFields,
       status: status ?? this.status,
       showTaxSummary: showTaxSummary ?? this.showTaxSummary,
       showPaymentDetails: showPaymentDetails ?? this.showPaymentDetails,
@@ -52,7 +67,8 @@ class InvoiceSettingState {
       declaration: declaration ?? this.declaration,
       rawLogo: rawLogo ?? this.rawLogo,
       logo: logo ?? this.logo,
-      showTermsAndCondition: showTermsAndCondition ?? this.showTermsAndCondition,
+      showTermsAndCondition:
+          showTermsAndCondition ?? this.showTermsAndCondition,
       termsAndCondition: termsAndCondition ?? this.termsAndCondition,
     );
   }

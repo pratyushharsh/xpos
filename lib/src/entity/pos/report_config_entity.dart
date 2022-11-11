@@ -9,7 +9,7 @@ class ReportConfigEntity {
   @Index(composite: [CompositeIndex("subtype")], unique: true, replace: true)
   final String type;
   final String subtype;
-  List<ReportColumnConfigEntity> columnConfig;
+  List<ReportFieldConfigEntity> columnConfig;
   String? stringValue;
   bool? boolValue;
   int? intValue;
@@ -28,7 +28,7 @@ class ReportConfigEntity {
 }
 
 @Embedded()
-class ReportColumnConfigEntity {
+class ReportFieldConfigEntity {
   String? key;
   String? title;
   int? flex;
@@ -45,7 +45,7 @@ class ReportColumnConfigEntity {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ReportColumnConfigEntity &&
+      other is ReportFieldConfigEntity &&
           runtimeType == other.runtimeType &&
           key == other.key &&
           title == other.title;
@@ -54,14 +54,14 @@ class ReportColumnConfigEntity {
   int get hashCode =>
       key.hashCode ^ title.hashCode;
 
-  ReportColumnConfigEntity copyWith({
+  ReportFieldConfigEntity copyWith({
     String? key,
     String? title,
     int? flex,
     ColumnAlignment? align,
     String? defaultValue,
   }) {
-    return ReportColumnConfigEntity(
+    return ReportFieldConfigEntity(
       key: key ?? this.key,
       title: title ?? this.title,
       flex: flex ?? this.flex,
@@ -70,7 +70,7 @@ class ReportColumnConfigEntity {
     );
   }
 
-  ReportColumnConfigEntity(
+  ReportFieldConfigEntity(
       {this.key, this.title, this.flex, this.align, this.defaultValue});
 }
 

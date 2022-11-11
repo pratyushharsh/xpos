@@ -3,99 +3,120 @@ import 'package:receipt_generator/src/entity/pos/entity.dart';
 import 'package:pdf/widgets.dart';
 
 class InvoiceConfigConstants {
-  static List<ReportColumnConfigEntity> columnConfig = [
-    ReportColumnConfigEntity(
+  static List<ReportFieldConfigEntity> columnConfig = [
+    ReportFieldConfigEntity(
         key: 'sno', title: 'S.No', flex: 1, align: ColumnAlignment.center),
-    ReportColumnConfigEntity(key: 'desc', title: 'Description', flex: 5),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(key: 'desc', title: 'Description', flex: 5),
+    ReportFieldConfigEntity(
         key: 'hsn/sac',
         title: 'HSN/SAC',
         flex: 2,
         align: ColumnAlignment.right),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'qtyuom',
         title: 'Qty/UOM',
         flex: 2,
         align: ColumnAlignment.center),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'quantity',
         title: 'Quantity',
         flex: 2,
         align: ColumnAlignment.center),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'rate',
         title: 'Unit Price',
         flex: 2,
         align: ColumnAlignment.right),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'discountAmount',
         title: 'Discount',
         flex: 3,
         align: ColumnAlignment.right),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'tax', title: 'Tax Amount', flex: 3, align: ColumnAlignment.right),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'amount', title: 'Amount', flex: 3, align: ColumnAlignment.right),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'productId',
         title: 'Product Id',
         flex: 4,
         align: ColumnAlignment.left),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'custom',
         title: 'Custom Field',
         flex: 2,
         align: ColumnAlignment.right),
   ];
 
-  static List<ReportColumnConfigEntity> paymentColumn = [
-    ReportColumnConfigEntity(
+  static List<ReportFieldConfigEntity> paymentColumn = [
+    ReportFieldConfigEntity(
       key: 'date',
       title: 'Date',
       flex: 2,
       align: ColumnAlignment.right,
     ),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
       key: 'amount',
       title: 'Amount',
       flex: 1,
       align: ColumnAlignment.right,
     ),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
       key: 'mode',
       title: 'Mode',
       flex: 1,
       align: ColumnAlignment.right,
     ),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'remarks',
         title: 'Remarks',
         flex: 2,
         align: ColumnAlignment.right),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'currencyId',
         title: 'Currency Id',
         flex: 2,
         align: ColumnAlignment.right),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
         key: 'authCode',
         title: 'Auth Code',
         flex: 2,
         align: ColumnAlignment.right),
-    ReportColumnConfigEntity(
-        key: 'token',
-        title: 'Token',
-        flex: 2,
-        align: ColumnAlignment.right),
-    ReportColumnConfigEntity(
+    ReportFieldConfigEntity(
+        key: 'token', title: 'Token', flex: 2, align: ColumnAlignment.right),
+    ReportFieldConfigEntity(
         key: 'custom',
         title: 'Custom Field',
         flex: 2,
         align: ColumnAlignment.right),
   ];
 
-  static String getPaymentLineValue(ReportColumnConfigEntity config, TransactionHeaderEntity entity,
-      TransactionPaymentLineItemEntity line) {
+  static List<ReportFieldConfigEntity> headerAdditionalFields = [
+    ReportFieldConfigEntity(
+        key: 'custom',
+        title: 'Custom Field',
+        flex: 2,
+        align: ColumnAlignment.right),
+  ];
+
+  static List<ReportFieldConfigEntity> billingAddressFields = [
+    ReportFieldConfigEntity(
+        key: 'custom',
+        title: 'Custom Field',
+        flex: 2,
+        align: ColumnAlignment.right),
+  ];
+
+  static List<ReportFieldConfigEntity> shippingAddressFields = [
+    ReportFieldConfigEntity(
+        key: 'custom',
+        title: 'Custom Field',
+        flex: 2,
+        align: ColumnAlignment.right),
+  ];
+
+  static String getPaymentLineValue(ReportFieldConfigEntity config,
+      TransactionHeaderEntity entity, TransactionPaymentLineItemEntity line) {
     switch (config.key) {
       case 'date':
         return '${DateFormat.yMEd().format(line.beginDate!)} ${DateFormat.Hms().format(line.beginDate!)}';
@@ -116,7 +137,8 @@ class InvoiceConfigConstants {
     }
   }
 
-  static String getLineItemValue(ReportColumnConfigEntity config, TransactionLineItemEntity entity,
+  static String getLineItemValue(
+      ReportFieldConfigEntity config, TransactionLineItemEntity entity,
       {String locale = 'en_US'}) {
     switch (config.key) {
       case 'quantity':
@@ -283,8 +305,11 @@ class InvoiceColumnConfig {
 
 class InvoiceConfig {
   final String code;
-  final List<ReportColumnConfigEntity> columnConfig;
-  final List<ReportColumnConfigEntity> paymentColumnConfig;
+  final List<ReportFieldConfigEntity> columnConfig;
+  final List<ReportFieldConfigEntity> paymentColumnConfig;
+  final List<ReportFieldConfigEntity> headerFieldConfig;
+  final List<ReportFieldConfigEntity> billingAddFieldConfig;
+  final List<ReportFieldConfigEntity> shippingAddFieldConfig;
   final bool showTaxSummary;
   final bool showPaymentDetails;
   final String? logo;
@@ -298,6 +323,9 @@ class InvoiceConfig {
       required this.columnConfig,
       this.showTaxSummary = true,
       required this.paymentColumnConfig,
+        required this.headerFieldConfig,
+        required this.billingAddFieldConfig,
+        required this.shippingAddFieldConfig,
       this.showPaymentDetails = true,
       this.logo,
       this.showTermsAndCondition = false,
@@ -307,41 +335,69 @@ class InvoiceConfig {
 
   static InvoiceConfig defaultValue = InvoiceConfig(
     columnConfig: [
-      ReportColumnConfigEntity(
+      ReportFieldConfigEntity(
           key: 'sno', title: 'S.No', flex: 1, align: ColumnAlignment.center),
-      ReportColumnConfigEntity(key: 'desc', title: 'Description', flex: 5),
-      ReportColumnConfigEntity(
+      ReportFieldConfigEntity(key: 'desc', title: 'Description', flex: 5),
+      ReportFieldConfigEntity(
           key: 'hsn/sac',
           title: 'HSN/SAC',
           flex: 2,
           align: ColumnAlignment.right),
-      ReportColumnConfigEntity(
+      ReportFieldConfigEntity(
           key: 'qtyuom',
           title: 'Qty/UOM',
           flex: 2,
           align: ColumnAlignment.center),
-      ReportColumnConfigEntity(
+      ReportFieldConfigEntity(
           key: 'rate',
           title: 'Unit Price',
           flex: 2,
           align: ColumnAlignment.right),
-      ReportColumnConfigEntity(
+      ReportFieldConfigEntity(
           key: 'discountAmount',
           title: 'Discount',
           flex: 3,
           align: ColumnAlignment.right),
-      ReportColumnConfigEntity(
+      ReportFieldConfigEntity(
           key: 'tax',
           title: 'Tax Amount',
           flex: 3,
           align: ColumnAlignment.right),
-      ReportColumnConfigEntity(
+      ReportFieldConfigEntity(
           key: 'amount',
           title: 'Amount',
           flex: 3,
           align: ColumnAlignment.right),
     ],
-    paymentColumnConfig: InvoiceConfigConstants.paymentColumn,
+    paymentColumnConfig: [
+      ReportFieldConfigEntity(
+        key: 'date',
+        title: 'Date',
+        flex: 2,
+        align: ColumnAlignment.right,
+      ),
+      ReportFieldConfigEntity(
+        key: 'amount',
+        title: 'Amount',
+        flex: 1,
+        align: ColumnAlignment.right,
+      ),
+      ReportFieldConfigEntity(
+        key: 'mode',
+        title: 'Mode',
+        flex: 1,
+        align: ColumnAlignment.right,
+      ),
+      ReportFieldConfigEntity(
+        key: 'remarks',
+        title: 'Remarks',
+        flex: 2,
+        align: ColumnAlignment.right,
+      ),
+    ],
+    billingAddFieldConfig: [],
+    headerFieldConfig: [],
+    shippingAddFieldConfig: []
   );
 }
 

@@ -27,7 +27,7 @@ const ReportConfigEntitySchema = CollectionSchema(
       id: 1,
       name: r'columnConfig',
       type: IsarType.objectList,
-      target: r'ReportColumnConfigEntity',
+      target: r'ReportFieldConfigEntity',
     ),
     r'dateValue': PropertySchema(
       id: 2,
@@ -86,9 +86,7 @@ const ReportConfigEntitySchema = CollectionSchema(
     )
   },
   links: {},
-  embeddedSchemas: {
-    r'ReportColumnConfigEntity': ReportColumnConfigEntitySchema
-  },
+  embeddedSchemas: {r'ReportFieldConfigEntity': ReportFieldConfigEntitySchema},
   getId: _reportConfigEntityGetId,
   getLinks: _reportConfigEntityGetLinks,
   attach: _reportConfigEntityAttach,
@@ -103,10 +101,10 @@ int _reportConfigEntityEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.columnConfig.length * 3;
   {
-    final offsets = allOffsets[ReportColumnConfigEntity]!;
+    final offsets = allOffsets[ReportFieldConfigEntity]!;
     for (var i = 0; i < object.columnConfig.length; i++) {
       final value = object.columnConfig[i];
-      bytesCount += ReportColumnConfigEntitySchema.estimateSize(
+      bytesCount += ReportFieldConfigEntitySchema.estimateSize(
           value, offsets, allOffsets);
     }
   }
@@ -128,10 +126,10 @@ void _reportConfigEntitySerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.boolValue);
-  writer.writeObjectList<ReportColumnConfigEntity>(
+  writer.writeObjectList<ReportFieldConfigEntity>(
     offsets[1],
     allOffsets,
-    ReportColumnConfigEntitySchema.serialize,
+    ReportFieldConfigEntitySchema.serialize,
     object.columnConfig,
   );
   writer.writeDateTime(offsets[2], object.dateValue);
@@ -150,11 +148,11 @@ ReportConfigEntity _reportConfigEntityDeserialize(
 ) {
   final object = ReportConfigEntity(
     boolValue: reader.readBoolOrNull(offsets[0]),
-    columnConfig: reader.readObjectList<ReportColumnConfigEntity>(
+    columnConfig: reader.readObjectList<ReportFieldConfigEntity>(
           offsets[1],
-          ReportColumnConfigEntitySchema.deserialize,
+          ReportFieldConfigEntitySchema.deserialize,
           allOffsets,
-          ReportColumnConfigEntity(),
+          ReportFieldConfigEntity(),
         ) ??
         const [],
     dateValue: reader.readDateTimeOrNull(offsets[2]),
@@ -178,11 +176,11 @@ P _reportConfigEntityDeserializeProp<P>(
     case 0:
       return (reader.readBoolOrNull(offset)) as P;
     case 1:
-      return (reader.readObjectList<ReportColumnConfigEntity>(
+      return (reader.readObjectList<ReportFieldConfigEntity>(
             offset,
-            ReportColumnConfigEntitySchema.deserialize,
+            ReportFieldConfigEntitySchema.deserialize,
             allOffsets,
-            ReportColumnConfigEntity(),
+            ReportFieldConfigEntity(),
           ) ??
           const []) as P;
     case 2:
@@ -1328,7 +1326,7 @@ extension ReportConfigEntityQueryFilter
 extension ReportConfigEntityQueryObject
     on QueryBuilder<ReportConfigEntity, ReportConfigEntity, QFilterCondition> {
   QueryBuilder<ReportConfigEntity, ReportConfigEntity, QAfterFilterCondition>
-      columnConfigElement(FilterQuery<ReportColumnConfigEntity> q) {
+      columnConfigElement(FilterQuery<ReportFieldConfigEntity> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'columnConfig');
     });
@@ -1621,7 +1619,7 @@ extension ReportConfigEntityQueryProperty
     });
   }
 
-  QueryBuilder<ReportConfigEntity, List<ReportColumnConfigEntity>,
+  QueryBuilder<ReportConfigEntity, List<ReportFieldConfigEntity>,
       QQueryOperations> columnConfigProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'columnConfig');
@@ -1675,15 +1673,15 @@ extension ReportConfigEntityQueryProperty
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-const ReportColumnConfigEntitySchema = Schema(
-  name: r'ReportColumnConfigEntity',
-  id: 1651178666666577088,
+const ReportFieldConfigEntitySchema = Schema(
+  name: r'ReportFieldConfigEntity',
+  id: -7741328123365593586,
   properties: {
     r'align': PropertySchema(
       id: 0,
       name: r'align',
       type: IsarType.string,
-      enumMap: _ReportColumnConfigEntityalignEnumValueMap,
+      enumMap: _ReportFieldConfigEntityalignEnumValueMap,
     ),
     r'defaultValue': PropertySchema(
       id: 1,
@@ -1711,14 +1709,14 @@ const ReportColumnConfigEntitySchema = Schema(
       type: IsarType.string,
     )
   },
-  estimateSize: _reportColumnConfigEntityEstimateSize,
-  serialize: _reportColumnConfigEntitySerialize,
-  deserialize: _reportColumnConfigEntityDeserialize,
-  deserializeProp: _reportColumnConfigEntityDeserializeProp,
+  estimateSize: _reportFieldConfigEntityEstimateSize,
+  serialize: _reportFieldConfigEntitySerialize,
+  deserialize: _reportFieldConfigEntityDeserialize,
+  deserializeProp: _reportFieldConfigEntityDeserializeProp,
 );
 
-int _reportColumnConfigEntityEstimateSize(
-  ReportColumnConfigEntity object,
+int _reportFieldConfigEntityEstimateSize(
+  ReportFieldConfigEntity object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -1750,8 +1748,8 @@ int _reportColumnConfigEntityEstimateSize(
   return bytesCount;
 }
 
-void _reportColumnConfigEntitySerialize(
-  ReportColumnConfigEntity object,
+void _reportFieldConfigEntitySerialize(
+  ReportFieldConfigEntity object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -1764,14 +1762,14 @@ void _reportColumnConfigEntitySerialize(
   writer.writeString(offsets[5], object.title);
 }
 
-ReportColumnConfigEntity _reportColumnConfigEntityDeserialize(
+ReportFieldConfigEntity _reportFieldConfigEntityDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = ReportColumnConfigEntity(
-    align: _ReportColumnConfigEntityalignValueEnumMap[
+  final object = ReportFieldConfigEntity(
+    align: _ReportFieldConfigEntityalignValueEnumMap[
         reader.readStringOrNull(offsets[0])],
     defaultValue: reader.readStringOrNull(offsets[1]),
     flex: reader.readLongOrNull(offsets[2]),
@@ -1781,7 +1779,7 @@ ReportColumnConfigEntity _reportColumnConfigEntityDeserialize(
   return object;
 }
 
-P _reportColumnConfigEntityDeserializeProp<P>(
+P _reportFieldConfigEntityDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -1789,7 +1787,7 @@ P _reportColumnConfigEntityDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (_ReportColumnConfigEntityalignValueEnumMap[
+      return (_ReportFieldConfigEntityalignValueEnumMap[
           reader.readStringOrNull(offset)]) as P;
     case 1:
       return (reader.readStringOrNull(offset)) as P;
@@ -1806,22 +1804,22 @@ P _reportColumnConfigEntityDeserializeProp<P>(
   }
 }
 
-const _ReportColumnConfigEntityalignEnumValueMap = {
+const _ReportFieldConfigEntityalignEnumValueMap = {
   r'left': r'left',
   r'right': r'right',
   r'center': r'center',
   r'justify': r'justify',
 };
-const _ReportColumnConfigEntityalignValueEnumMap = {
+const _ReportFieldConfigEntityalignValueEnumMap = {
   r'left': ColumnAlignment.left,
   r'right': ColumnAlignment.right,
   r'center': ColumnAlignment.center,
   r'justify': ColumnAlignment.justify,
 };
 
-extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
-    ReportColumnConfigEntity, ReportColumnConfigEntity, QFilterCondition> {
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+extension ReportFieldConfigEntityQueryFilter on QueryBuilder<
+    ReportFieldConfigEntity, ReportFieldConfigEntity, QFilterCondition> {
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1830,7 +1828,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -1839,7 +1837,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignEqualTo(
     ColumnAlignment? value, {
     bool caseSensitive = true,
@@ -1853,7 +1851,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignGreaterThan(
     ColumnAlignment? value, {
     bool include = false,
@@ -1869,7 +1867,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignLessThan(
     ColumnAlignment? value, {
     bool include = false,
@@ -1885,7 +1883,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignBetween(
     ColumnAlignment? lower,
     ColumnAlignment? upper, {
@@ -1905,7 +1903,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -1919,7 +1917,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -1933,7 +1931,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
           QAfterFilterCondition>
       alignContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1945,7 +1943,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
           QAfterFilterCondition>
       alignMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1957,7 +1955,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1967,7 +1965,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> alignIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -1977,7 +1975,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1986,7 +1984,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -1995,7 +1993,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueEqualTo(
     String? value, {
     bool caseSensitive = true,
@@ -2009,7 +2007,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueGreaterThan(
     String? value, {
     bool include = false,
@@ -2025,7 +2023,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueLessThan(
     String? value, {
     bool include = false,
@@ -2041,7 +2039,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueBetween(
     String? lower,
     String? upper, {
@@ -2061,7 +2059,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -2075,7 +2073,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -2089,7 +2087,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
           QAfterFilterCondition>
       defaultValueContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2101,7 +2099,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
           QAfterFilterCondition>
       defaultValueMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2113,7 +2111,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2123,7 +2121,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> defaultValueIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -2133,7 +2131,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> flexIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2142,7 +2140,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> flexIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -2151,7 +2149,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> flexEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2161,7 +2159,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> flexGreaterThan(
     int? value, {
     bool include = false,
@@ -2175,7 +2173,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> flexLessThan(
     int? value, {
     bool include = false,
@@ -2189,7 +2187,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> flexBetween(
     int? lower,
     int? upper, {
@@ -2207,7 +2205,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> hashCodeEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2217,7 +2215,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> hashCodeGreaterThan(
     int value, {
     bool include = false,
@@ -2231,7 +2229,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> hashCodeLessThan(
     int value, {
     bool include = false,
@@ -2245,7 +2243,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> hashCodeBetween(
     int lower,
     int upper, {
@@ -2263,7 +2261,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2272,7 +2270,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -2281,7 +2279,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyEqualTo(
     String? value, {
     bool caseSensitive = true,
@@ -2295,7 +2293,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyGreaterThan(
     String? value, {
     bool include = false,
@@ -2311,7 +2309,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyLessThan(
     String? value, {
     bool include = false,
@@ -2327,7 +2325,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyBetween(
     String? lower,
     String? upper, {
@@ -2347,7 +2345,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -2361,7 +2359,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -2375,7 +2373,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
           QAfterFilterCondition>
       keyContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2387,7 +2385,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
           QAfterFilterCondition>
       keyMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2399,7 +2397,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2409,7 +2407,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> keyIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -2419,7 +2417,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2428,7 +2426,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -2437,7 +2435,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleEqualTo(
     String? value, {
     bool caseSensitive = true,
@@ -2451,7 +2449,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleGreaterThan(
     String? value, {
     bool include = false,
@@ -2467,7 +2465,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleLessThan(
     String? value, {
     bool include = false,
@@ -2483,7 +2481,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleBetween(
     String? lower,
     String? upper, {
@@ -2503,7 +2501,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -2517,7 +2515,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -2531,7 +2529,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
           QAfterFilterCondition>
       titleContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2543,7 +2541,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
           QAfterFilterCondition>
       titleMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2555,7 +2553,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2565,7 +2563,7 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     });
   }
 
-  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+  QueryBuilder<ReportFieldConfigEntity, ReportFieldConfigEntity,
       QAfterFilterCondition> titleIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -2576,5 +2574,5 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
   }
 }
 
-extension ReportColumnConfigEntityQueryObject on QueryBuilder<
-    ReportColumnConfigEntity, ReportColumnConfigEntity, QFilterCondition> {}
+extension ReportFieldConfigEntityQueryObject on QueryBuilder<
+    ReportFieldConfigEntity, ReportFieldConfigEntity, QFilterCondition> {}

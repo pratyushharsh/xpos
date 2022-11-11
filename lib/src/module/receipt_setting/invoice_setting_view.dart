@@ -222,11 +222,65 @@ class _InvoiceSettingInputState extends State<InvoiceSettingInput> {
         return Column(
           children: [
             const UploadViewImage(),
-            CustomTextField(
-              label: "Store Phone Number",
-              textAlign: TextAlign.start,
-              textInputType: TextInputType.phone,
-              onValueChange: (val) {},
+            MultiChoiceReportColumnConfigSelection(
+              options: InvoiceConfigConstants.headerAdditionalFields
+                  .where((e) => !state.headerFields.contains(e))
+                  .toList(),
+              selectedOptions: state.headerFields,
+              onUpdateOption: (val) {
+                BlocProvider.of<InvoiceSettingBloc>(context)
+                    .add(OnReportFieldConfigUpdate(field: val, type: FieldType.header));
+              },
+              onSelect: (val) {
+                context.read<InvoiceSettingBloc>().add(AddNewConfigField(field: val, type: FieldType.header));
+              },
+              onDeselect: (val) {
+                context.read<InvoiceSettingBloc>().add(RemoveConfigField(field: val, type: FieldType.header));
+              },
+              label: "Add custom fields at store.",
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            MultiChoiceReportColumnConfigSelection(
+              options: InvoiceConfigConstants.billingAddressFields
+                  .where((e) => !state.billingAddressFields.contains(e))
+                  .toList(),
+              selectedOptions: state.billingAddressFields,
+              onUpdateOption: (val) {
+                BlocProvider.of<InvoiceSettingBloc>(context)
+                    .add(OnReportFieldConfigUpdate(field: val, type: FieldType.billingAddress));
+              },
+              onSelect: (val) {
+                context.read<InvoiceSettingBloc>().add(AddNewConfigField(field: val, type: FieldType.billingAddress));
+              },
+              onDeselect: (val) {
+                context.read<InvoiceSettingBloc>().add(RemoveConfigField(field: val, type: FieldType.billingAddress));
+              },
+              label: "Additional Fields At Billing Address",
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            MultiChoiceReportColumnConfigSelection(
+              options: InvoiceConfigConstants.shippingAddressFields
+                  .where((e) => !state.shippingAddressFields.contains(e))
+                  .toList(),
+              selectedOptions: state.shippingAddressFields,
+              onUpdateOption: (val) {
+                BlocProvider.of<InvoiceSettingBloc>(context)
+                    .add(OnReportFieldConfigUpdate(field: val, type: FieldType.shippingAddress));
+              },
+              onSelect: (val) {
+                context.read<InvoiceSettingBloc>().add(AddNewConfigField(field: val, type: FieldType.shippingAddress));
+              },
+              onDeselect: (val) {
+                context.read<InvoiceSettingBloc>().add(RemoveConfigField(field: val, type: FieldType.shippingAddress));
+              },
+              label: "Additional Fields At Shipping Address.",
+            ),
+            const SizedBox(
+              height: 16,
             ),
             MultiChoiceReportColumnConfigSelection(
               options: InvoiceConfigConstants.columnConfig
@@ -235,15 +289,18 @@ class _InvoiceSettingInputState extends State<InvoiceSettingInput> {
               selectedOptions: state.columns,
               onUpdateOption: (val) {
                 BlocProvider.of<InvoiceSettingBloc>(context)
-                    .add(OnReportColumnConfigUpdate(val));
+                    .add(OnReportFieldConfigUpdate(field: val, type: FieldType.item));
               },
               onSelect: (val) {
-                context.read<InvoiceSettingBloc>().add(AddNewConfigColumn(val));
+                context.read<InvoiceSettingBloc>().add(AddNewConfigField(field: val, type: FieldType.item));
               },
               onDeselect: (val) {
-                context.read<InvoiceSettingBloc>().add(RemoveConfigColumn(val));
+                context.read<InvoiceSettingBloc>().add(RemoveConfigField(field: val, type: FieldType.item));
               },
               label: "Select Items Columns to display.",
+            ),
+            const SizedBox(
+              height: 16,
             ),
             Row(
               children: [
@@ -267,15 +324,18 @@ class _InvoiceSettingInputState extends State<InvoiceSettingInput> {
               selectedOptions: state.paymentColumns,
               onUpdateOption: (val) {
                 BlocProvider.of<InvoiceSettingBloc>(context)
-                    .add(OnReportPaymentColumnConfigUpdate(val));
+                    .add(OnReportFieldConfigUpdate(field: val, type: FieldType.payment));
               },
               onSelect: (val) {
-                context.read<InvoiceSettingBloc>().add(AddNewPaymentColumn(val));
+                context.read<InvoiceSettingBloc>().add(AddNewConfigField(field: val, type: FieldType.payment));
               },
               onDeselect: (val) {
-                context.read<InvoiceSettingBloc>().add(RemovePaymentColumn(val));
+                context.read<InvoiceSettingBloc>().add(RemoveConfigField(field: val, type: FieldType.payment));
               },
               label: "Select Payment Columns to display.",
+            ),
+            const SizedBox(
+              height: 16,
             ),
             Row(
               children: [
@@ -289,6 +349,9 @@ class _InvoiceSettingInputState extends State<InvoiceSettingInput> {
                     }),
                 const Text("Show Tax Summary")
               ],
+            ),
+            const SizedBox(
+              height: 16,
             ),
             Row(
               children: [
@@ -317,6 +380,9 @@ class _InvoiceSettingInputState extends State<InvoiceSettingInput> {
                       .add(UpdateTermsAnsCondition(val));
                 },
               ),
+            const SizedBox(
+              height: 16,
+            ),
             Row(
               children: [
                 Checkbox(
