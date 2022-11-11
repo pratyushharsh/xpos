@@ -4,6 +4,7 @@ enum InvoiceSettingStatus { initial, preLoad, modified, saved }
 
 class InvoiceSettingState {
   final List<ReportColumnConfigEntity> columns;
+  final List<ReportColumnConfigEntity> paymentColumns;
   final InvoiceSettingStatus status;
   final bool showTaxSummary;
   final bool showPaymentDetails;
@@ -16,6 +17,7 @@ class InvoiceSettingState {
 
   const InvoiceSettingState({
     this.columns = const [],
+    this.paymentColumns = const [],
     this.status = InvoiceSettingStatus.initial,
     this.showTaxSummary = true,
     this.showPaymentDetails = true,
@@ -29,6 +31,7 @@ class InvoiceSettingState {
 
   InvoiceSettingState copyWith({
     List<ReportColumnConfigEntity>? columns,
+    List<ReportColumnConfigEntity>? paymentColumns,
     InvoiceSettingStatus? status,
     bool? showTaxSummary,
     bool? showPaymentDetails,
@@ -41,6 +44,7 @@ class InvoiceSettingState {
   }) {
     return InvoiceSettingState(
       columns: columns ?? this.columns,
+      paymentColumns: paymentColumns ?? this.paymentColumns,
       status: status ?? this.status,
       showTaxSummary: showTaxSummary ?? this.showTaxSummary,
       showPaymentDetails: showPaymentDetails ?? this.showPaymentDetails,

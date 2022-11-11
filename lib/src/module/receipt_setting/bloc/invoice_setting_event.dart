@@ -17,6 +17,18 @@ class RemoveConfigColumn extends InvoiceSettingEvent {
   RemoveConfigColumn(this.column);
 }
 
+class AddNewPaymentColumn extends InvoiceSettingEvent {
+  final ReportColumnConfigEntity column;
+
+  AddNewPaymentColumn(this.column);
+}
+
+class RemovePaymentColumn extends InvoiceSettingEvent {
+  final ReportColumnConfigEntity column;
+
+  RemovePaymentColumn(this.column);
+}
+
 class ShowTaxSummary extends InvoiceSettingEvent {
   final bool show;
 
@@ -65,4 +77,10 @@ class OnReportColumnConfigUpdate extends InvoiceSettingEvent {
   final ReportColumnConfigEntity column;
 
   OnReportColumnConfigUpdate(this.column);
+}
+
+class OnReportPaymentColumnConfigUpdate extends InvoiceSettingEvent {
+  final ReportColumnConfigEntity column;
+
+  OnReportPaymentColumnConfigUpdate(this.column);
 }

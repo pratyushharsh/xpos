@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
+  final TextAlign? labelAlign;
   final String? helperText;
   final int minLines;
   final int maxLines;
@@ -32,13 +33,14 @@ class CustomTextField extends StatelessWidget {
       this.suffixIcon,
       this.helperText,
       required this.label,
+      this.labelAlign,
       this.maxLines = 1,
       this.minLines = 1,
       this.initialValue,
       this.onValueChange,
       this.textInputType,
       this.errorText,
-        this.inputFormatters,
+      this.inputFormatters,
       this.controller,
       this.focusNode,
       this.onTap,
@@ -50,7 +52,7 @@ class CustomTextField extends StatelessWidget {
       this.style = const TextStyle(
         fontWeight: FontWeight.w600,
       ),
-        this.crossAxisAlignment = CrossAxisAlignment.start,
+      this.crossAxisAlignment = CrossAxisAlignment.start,
       this.textAlign = TextAlign.start,
       this.prefixIconConstraint =
           const BoxConstraints(minWidth: 40, minHeight: 40)})
@@ -61,10 +63,19 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: crossAxisAlignment,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-              fontWeight: FontWeight.w400, color: Color(0xFF6B7281)),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF6B7281),
+                ),
+                textAlign: labelAlign,
+              ),
+            ),
+          ],
         ),
         if (helperText != null && helperText!.isNotEmpty)
           Text(helperText!,

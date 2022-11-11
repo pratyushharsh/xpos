@@ -40,26 +40,63 @@ class InvoiceConfigConstants {
         key: 'productId',
         title: 'Product Id',
         flex: 4,
-        align: ColumnAlignment.left)
+        align: ColumnAlignment.left),
+    ReportColumnConfigEntity(
+        key: 'custom',
+        title: 'Custom Field',
+        flex: 2,
+        align: ColumnAlignment.right),
   ];
 
   static List<ReportColumnConfigEntity> paymentColumn = [
     ReportColumnConfigEntity(
-        key: 'date', title: 'Date', flex: 2, align: ColumnAlignment.right),
+      key: 'date',
+      title: 'Date',
+      flex: 2,
+      align: ColumnAlignment.right,
+    ),
     ReportColumnConfigEntity(
-        key: 'amount', title: 'Amount', flex: 1, align: ColumnAlignment.right),
+      key: 'amount',
+      title: 'Amount',
+      flex: 1,
+      align: ColumnAlignment.right,
+    ),
     ReportColumnConfigEntity(
-        key: 'mode', title: 'Mode', flex: 1, align: ColumnAlignment.right),
+      key: 'mode',
+      title: 'Mode',
+      flex: 1,
+      align: ColumnAlignment.right,
+    ),
     ReportColumnConfigEntity(
         key: 'remarks',
         title: 'Remarks',
         flex: 2,
         align: ColumnAlignment.right),
+    ReportColumnConfigEntity(
+        key: 'currencyId',
+        title: 'Currency Id',
+        flex: 2,
+        align: ColumnAlignment.right),
+    ReportColumnConfigEntity(
+        key: 'authCode',
+        title: 'Auth Code',
+        flex: 2,
+        align: ColumnAlignment.right),
+    ReportColumnConfigEntity(
+        key: 'token',
+        title: 'Token',
+        flex: 2,
+        align: ColumnAlignment.right),
+    ReportColumnConfigEntity(
+        key: 'custom',
+        title: 'Custom Field',
+        flex: 2,
+        align: ColumnAlignment.right),
   ];
 
-  static String getPaymentLineValue(String key, TransactionHeaderEntity entity,
+  static String getPaymentLineValue(ReportColumnConfigEntity config, TransactionHeaderEntity entity,
       TransactionPaymentLineItemEntity line) {
-    switch (key) {
+    switch (config.key) {
       case 'date':
         return '${DateFormat.yMEd().format(line.beginDate!)} ${DateFormat.Hms().format(line.beginDate!)}';
       case 'amount':
@@ -68,14 +105,20 @@ class InvoiceConfigConstants {
             .format(line.amount);
       case 'mode':
         return '${line.tenderId}';
+      case 'currencyId':
+        return '${line.currencyId}';
+      case 'authCode':
+        return '${line.authCode}';
+      case 'token':
+        return '${line.token}';
       default:
-        return '';
+        return config.defaultValue ?? '';
     }
   }
 
-  static String getLineItemValue(String key, TransactionLineItemEntity entity,
+  static String getLineItemValue(ReportColumnConfigEntity config, TransactionLineItemEntity entity,
       {String locale = 'en_US'}) {
-    switch (key) {
+    switch (config.key) {
       case 'quantity':
         return entity.quantity.toString();
       case 'rate':
@@ -109,7 +152,7 @@ class InvoiceConfigConstants {
       case 'productId':
         return '${entity.itemId}';
       default:
-        return '';
+        return config.defaultValue ?? '';
     }
   }
 
@@ -288,9 +331,15 @@ class InvoiceConfig {
           flex: 3,
           align: ColumnAlignment.right),
       ReportColumnConfigEntity(
-          key: 'tax', title: 'Tax Amount', flex: 3, align: ColumnAlignment.right),
+          key: 'tax',
+          title: 'Tax Amount',
+          flex: 3,
+          align: ColumnAlignment.right),
       ReportColumnConfigEntity(
-          key: 'amount', title: 'Amount', flex: 3, align: ColumnAlignment.right),
+          key: 'amount',
+          title: 'Amount',
+          flex: 3,
+          align: ColumnAlignment.right),
     ],
     paymentColumnConfig: InvoiceConfigConstants.paymentColumn,
   );

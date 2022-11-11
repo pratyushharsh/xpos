@@ -32,6 +32,7 @@ class ReportColumnConfigEntity {
   String? key;
   String? title;
   int? flex;
+  String? defaultValue;
 
   @Enumerated(EnumType.name)
   ColumnAlignment? align;
@@ -41,22 +42,36 @@ class ReportColumnConfigEntity {
     return '$title';
   }
 
-  ReportColumnConfigEntity(
-      {this.key, this.title, this.flex, this.align});
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReportColumnConfigEntity &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          title == other.title;
+
+  @override
+  int get hashCode =>
+      key.hashCode ^ title.hashCode;
 
   ReportColumnConfigEntity copyWith({
     String? key,
     String? title,
     int? flex,
     ColumnAlignment? align,
+    String? defaultValue,
   }) {
     return ReportColumnConfigEntity(
       key: key ?? this.key,
       title: title ?? this.title,
       flex: flex ?? this.flex,
       align: align ?? this.align,
+      defaultValue: defaultValue ?? this.defaultValue,
     );
   }
+
+  ReportColumnConfigEntity(
+      {this.key, this.title, this.flex, this.align, this.defaultValue});
 }
 
 enum ColumnAlignment {

@@ -243,7 +243,7 @@ class _InvoiceSettingInputState extends State<InvoiceSettingInput> {
               onDeselect: (val) {
                 context.read<InvoiceSettingBloc>().add(RemoveConfigColumn(val));
               },
-              label: "Select Columns to display.",
+              label: "Select Items Columns to display.",
             ),
             Row(
               children: [
@@ -258,6 +258,24 @@ class _InvoiceSettingInputState extends State<InvoiceSettingInput> {
                 ),
                 const Text("Show Payment Details")
               ],
+            ),
+            if (state.showPaymentDetails)
+            MultiChoiceReportColumnConfigSelection(
+              options: InvoiceConfigConstants.paymentColumn
+                  .where((e) => !state.paymentColumns.contains(e))
+                  .toList(),
+              selectedOptions: state.paymentColumns,
+              onUpdateOption: (val) {
+                BlocProvider.of<InvoiceSettingBloc>(context)
+                    .add(OnReportPaymentColumnConfigUpdate(val));
+              },
+              onSelect: (val) {
+                context.read<InvoiceSettingBloc>().add(AddNewPaymentColumn(val));
+              },
+              onDeselect: (val) {
+                context.read<InvoiceSettingBloc>().add(RemovePaymentColumn(val));
+              },
+              label: "Select Payment Columns to display.",
             ),
             Row(
               children: [

@@ -20,7 +20,7 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
   final SyncConfigRepository syncConfigRepository;
   Timer? _timer;
   Isolate? _isolate;
-  bool isSyncEnabled = true;
+  bool isSyncEnabled = false;
 
 
   @override

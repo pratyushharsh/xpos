@@ -37,7 +37,7 @@ class _MockInvoiceViewState extends State<MockInvoiceView> {
             columnConfig: state.columns,
             showTaxSummary: state.showTaxSummary,
             showPaymentDetails: state.showPaymentDetails,
-            paymentColumnConfig: InvoiceConfigConstants.paymentColumn,
+            paymentColumnConfig: state.paymentColumns,
             logo: state.logo,
             termsAndCondition: state.termsAndCondition,
             declaration: state.declaration,

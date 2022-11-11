@@ -74,6 +74,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
               child: buildShippingAddress(context),
             )
           ]),
+          Divider(height: 0, thickness: 0.8),
         ],
       ),
     );
@@ -103,7 +104,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
                 SizedBox(height: 6),
               ],
             ),
-          buildPaymentDetails(context),
+          if (config.showPaymentDetails) buildPaymentDetails(context),
           if (config.showTaxSummary)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +119,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
                 SizedBox(height: 6),
               ],
             ),
-          buildTaxSummary(context),
+          if (config.showTaxSummary) buildTaxSummary(context),
           InvoiceFooterWidget(config: config)
         ],
       ),
@@ -175,7 +176,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 2),
               child: Text(
-                InvoiceConfigConstants.getLineItemValue(column.key!, lineItem,
+                InvoiceConfigConstants.getLineItemValue(column, lineItem,
                     locale: order.storeLocale),
                 textAlign: getColumnAlign(column.align),
               ),
@@ -291,7 +292,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
               padding: const EdgeInsets.symmetric(vertical: 2),
               child: Text(
                 InvoiceConfigConstants.getPaymentLineValue(
-                    column.key!, order, lineItem),
+                    column, order, lineItem),
                 textAlign: getColumnAlign(column.align),
               ),
             ),

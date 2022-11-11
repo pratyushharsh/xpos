@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:receipt_generator/src/config/theme_settings.dart';
+import 'package:receipt_generator/src/widgets/custom_text_field.dart';
 
 import '../../entity/pos/report_config_entity.dart';
 
@@ -49,7 +50,7 @@ class MultiChoiceReportColumnConfigSelection extends StatelessWidget {
                       .map(
                         (e) => SettingChoiceChip(
                           columnConfig: e,
-                          onTap: () {
+                          onActionTap: () {
                             onDeselect(e);
                           },
                           onUpdateOption: onUpdateOption,
@@ -69,11 +70,16 @@ class MultiChoiceReportColumnConfigSelection extends StatelessWidget {
                   children: options
                       .map(
                         (e) => SettingChoiceChip(
+                          canOpen: false,
                           columnConfig: e,
                           onUpdateOption: onUpdateOption,
-                          onTap: () {
+                          onActionTap: () {
                             onSelect(e);
                           },
+                          actionIcon: const Icon(
+                            Icons.add,
+                            size: 16,
+                          ),
                         ),
                       )
                       .toList(),
@@ -90,13 +96,17 @@ class MultiChoiceReportColumnConfigSelection extends StatelessWidget {
 class SettingChoiceChip extends StatefulWidget {
   final ReportColumnConfigEntity columnConfig;
   final bool selected;
-  final void Function()? onTap;
+  final bool canOpen;
+  final void Function()? onActionTap;
+  final Widget? actionIcon;
   final void Function(ReportColumnConfigEntity) onUpdateOption;
   const SettingChoiceChip(
       {Key? key,
       required this.columnConfig,
+      this.canOpen = true,
       this.selected = false,
-      this.onTap,
+      this.onActionTap,
+      this.actionIcon,
       required this.onUpdateOption})
       : super(key: key);
 
@@ -109,13 +119,14 @@ class _SettingChoiceChipState extends State<SettingChoiceChip> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.onTap,
-      onDoubleTap: () {
-        setState(() {
-          _open = !_open;
-        });
-      },
+    return GestureDetector(
+      onTap: widget.canOpen
+          ? () {
+              setState(() {
+                _open = !_open;
+              });
+            }
+          : null,
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: AppColor.subtitleColorPrimary),
@@ -125,7 +136,25 @@ class _SettingChoiceChipState extends State<SettingChoiceChip> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.columnConfig.toString()),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(widget.columnConfig.toString()),
+                const SizedBox(
+                  width: 12,
+                ),
+                if (widget.onActionTap != null)
+                  InkWell(
+                    onTap: widget.onActionTap,
+                    child: widget.actionIcon ??
+                        const Icon(
+                          Icons.close,
+                          size: 16,
+                        ),
+                  ),
+              ],
+            ),
             if (_open)
               SettingChoiceConfig(
                 config: widget.columnConfig,
@@ -158,109 +187,144 @@ class SettingChoiceConfig extends StatelessWidget {
             height: 6,
           ),
           Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              InkWell(
-                onTap: () {
-                  onUpdateOption(config.copyWith(align: ColumnAlignment.left));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    border: config.align == ColumnAlignment.left
-                        ? Border.all(color: Colors.grey.shade500)
-                        : const Border(),
-                  ),
-                  child: const Icon(Icons.format_align_left),
+              Expanded(
+                child: CustomTextField(
+                  label: 'Label',
+                  initialValue: config.title,
+                  onValueChange: (value) {
+                    config.title = value;
+                    onUpdateOption(config);
+                  },
                 ),
               ),
-              InkWell(
-                onTap: () {
-                  onUpdateOption(
-                      config.copyWith(align: ColumnAlignment.center));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    border: config.align == ColumnAlignment.center
-                        ? Border.all(color: Colors.grey.shade500)
-                        : const Border(),
-                  ),
-                  child: const Icon(Icons.format_align_center),
-                ),
+              const SizedBox(
+                width: 8,
               ),
-              InkWell(
-                onTap: () {
-                  onUpdateOption(config.copyWith(align: ColumnAlignment.right));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    border: config.align == ColumnAlignment.right
-                        ? Border.all(color: Colors.grey.shade500)
-                        : const Border(),
-                  ),
-                  child: const Icon(Icons.format_align_right),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  onUpdateOption(
-                      config.copyWith(align: ColumnAlignment.justify));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    border: config.align == ColumnAlignment.justify
-                        ? Border.all(color: Colors.grey.shade500)
-                        : const Border(),
-                  ),
-                  child: const Icon(Icons.format_align_justify),
+              Expanded(
+                child: CustomTextField(
+                  label: 'Default Value',
+                  labelAlign: TextAlign.end,
+                  initialValue: config.defaultValue ?? '',
+                  onValueChange: (value) {
+                    config.defaultValue = value;
+                    onUpdateOption(config);
+                  },
                 ),
               ),
             ],
           ),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    border: config.align == ColumnAlignment.right
-                        ? Border.all(color: Colors.grey.shade500)
-                        : const Border(),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      onUpdateOption(
+                          config.copyWith(align: ColumnAlignment.left));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        border: config.align == ColumnAlignment.left
+                            ? Border.all(color: Colors.grey.shade500)
+                            : const Border(),
+                      ),
+                      child: const Icon(Icons.format_align_left),
+                    ),
                   ),
-                  child: const Icon(Icons.format_bold),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    border: config.align == ColumnAlignment.right
-                        ? Border.all(color: Colors.grey.shade500)
-                        : const Border(),
+                  InkWell(
+                    onTap: () {
+                      onUpdateOption(
+                          config.copyWith(align: ColumnAlignment.center));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        border: config.align == ColumnAlignment.center
+                            ? Border.all(color: Colors.grey.shade500)
+                            : const Border(),
+                      ),
+                      child: const Icon(Icons.format_align_center),
+                    ),
                   ),
-                  child: const Icon(Icons.format_italic),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    border: config.align == ColumnAlignment.right
-                        ? Border.all(color: Colors.grey.shade500)
-                        : const Border(),
+                  InkWell(
+                    onTap: () {
+                      onUpdateOption(
+                          config.copyWith(align: ColumnAlignment.right));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        border: config.align == ColumnAlignment.right
+                            ? Border.all(color: Colors.grey.shade500)
+                            : const Border(),
+                      ),
+                      child: const Icon(Icons.format_align_right),
+                    ),
                   ),
-                  child: const Icon(Icons.format_underline),
-                ),
+                  InkWell(
+                    onTap: () {
+                      onUpdateOption(
+                          config.copyWith(align: ColumnAlignment.justify));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        border: config.align == ColumnAlignment.justify
+                            ? Border.all(color: Colors.grey.shade500)
+                            : const Border(),
+                      ),
+                      child: const Icon(Icons.format_align_justify),
+                    ),
+                  ),
+                ],
               ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () {},
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        border: config.align == ColumnAlignment.right
+                            ? Border.all(color: Colors.grey.shade500)
+                            : const Border(),
+                      ),
+                      child: const Icon(Icons.format_bold),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {},
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        border: config.align == ColumnAlignment.right
+                            ? Border.all(color: Colors.grey.shade500)
+                            : const Border(),
+                      ),
+                      child: const Icon(Icons.format_italic),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {},
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        border: config.align == ColumnAlignment.right
+                            ? Border.all(color: Colors.grey.shade500)
+                            : const Border(),
+                      ),
+                      child: const Icon(Icons.format_underline),
+                    ),
+                  ),
+                ],
+              )
             ],
-          )
+          ),
         ],
       ),
     );

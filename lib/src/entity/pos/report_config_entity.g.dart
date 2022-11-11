@@ -1685,18 +1685,28 @@ const ReportColumnConfigEntitySchema = Schema(
       type: IsarType.string,
       enumMap: _ReportColumnConfigEntityalignEnumValueMap,
     ),
-    r'flex': PropertySchema(
+    r'defaultValue': PropertySchema(
       id: 1,
+      name: r'defaultValue',
+      type: IsarType.string,
+    ),
+    r'flex': PropertySchema(
+      id: 2,
       name: r'flex',
       type: IsarType.long,
     ),
+    r'hashCode': PropertySchema(
+      id: 3,
+      name: r'hashCode',
+      type: IsarType.long,
+    ),
     r'key': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'key',
       type: IsarType.string,
     ),
     r'title': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'title',
       type: IsarType.string,
     )
@@ -1717,6 +1727,12 @@ int _reportColumnConfigEntityEstimateSize(
     final value = object.align;
     if (value != null) {
       bytesCount += 3 + value.name.length * 3;
+    }
+  }
+  {
+    final value = object.defaultValue;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
     }
   }
   {
@@ -1741,9 +1757,11 @@ void _reportColumnConfigEntitySerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.align?.name);
-  writer.writeLong(offsets[1], object.flex);
-  writer.writeString(offsets[2], object.key);
-  writer.writeString(offsets[3], object.title);
+  writer.writeString(offsets[1], object.defaultValue);
+  writer.writeLong(offsets[2], object.flex);
+  writer.writeLong(offsets[3], object.hashCode);
+  writer.writeString(offsets[4], object.key);
+  writer.writeString(offsets[5], object.title);
 }
 
 ReportColumnConfigEntity _reportColumnConfigEntityDeserialize(
@@ -1755,9 +1773,10 @@ ReportColumnConfigEntity _reportColumnConfigEntityDeserialize(
   final object = ReportColumnConfigEntity(
     align: _ReportColumnConfigEntityalignValueEnumMap[
         reader.readStringOrNull(offsets[0])],
-    flex: reader.readLongOrNull(offsets[1]),
-    key: reader.readStringOrNull(offsets[2]),
-    title: reader.readStringOrNull(offsets[3]),
+    defaultValue: reader.readStringOrNull(offsets[1]),
+    flex: reader.readLongOrNull(offsets[2]),
+    key: reader.readStringOrNull(offsets[4]),
+    title: reader.readStringOrNull(offsets[5]),
   );
   return object;
 }
@@ -1773,10 +1792,14 @@ P _reportColumnConfigEntityDeserializeProp<P>(
       return (_ReportColumnConfigEntityalignValueEnumMap[
           reader.readStringOrNull(offset)]) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
-    case 2:
       return (reader.readStringOrNull(offset)) as P;
+    case 2:
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
+      return (reader.readLong(offset)) as P;
+    case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1955,6 +1978,162 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'defaultValue',
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'defaultValue',
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'defaultValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'defaultValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'defaultValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'defaultValue',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'defaultValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'defaultValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+          QAfterFilterCondition>
+      defaultValueContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'defaultValue',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+          QAfterFilterCondition>
+      defaultValueMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'defaultValue',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'defaultValue',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> defaultValueIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'defaultValue',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
       QAfterFilterCondition> flexIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2020,6 +2199,62 @@ extension ReportColumnConfigEntityQueryFilter on QueryBuilder<
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'flex',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> hashCodeEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ReportColumnConfigEntity, ReportColumnConfigEntity,
+      QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hashCode',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
