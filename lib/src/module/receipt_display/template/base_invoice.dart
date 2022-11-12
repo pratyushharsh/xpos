@@ -9,6 +9,7 @@ import 'package:receipt_generator/src/entity/pos/business_entity.dart';
 import 'package:receipt_generator/src/entity/pos/trn_header_entity.dart';
 import 'package:receipt_generator/src/module/receipt_display/template/invoice_config.dart';
 
+import '../../../entity/pos/entity.dart';
 import 'invoice.dart';
 
 class BaseInvoice extends IInvoice with InvoiceUtil {
@@ -132,194 +133,39 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
 
   @override
   Widget buildItemBody(Context context) {
-    final rows = <TableRow>[];
-
-    final headerRow = <Widget>[];
-
-    for (var i = 0; i < config.columnConfig.length; i++) {
-      final column = config.columnConfig[i];
-      headerRow.add(
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 3),
-          child: Text(
-            column.title!,
-            textAlign: getColumnAlign(column.align),
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
-    rows.add(
-      TableRow(
-        children: headerRow,
-        repeat: true,
-        decoration: const BoxDecoration(
-          color: PdfColors.grey200,
-          border: Border.symmetric(
-            horizontal: BorderSide(
-              color: PdfColors.black,
-              width: 0.8,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    for (var i = 0; i < order.lineItems.length; i++) {
-      final lineItem = order.lineItems[i];
-      final row = <Widget>[];
-      for (var j = 0; j < config.columnConfig.length; j++) {
-        final column = config.columnConfig[j];
-        row.add(
-          Expanded(
-            flex: column.flex!,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Text(
-                InvoiceConfigConstants.getLineItemValue(column, lineItem,
-                    locale: order.storeLocale),
-                textAlign: getColumnAlign(column.align),
-              ),
-            ),
-          ),
-        );
-      }
-      rows.add(
-        TableRow(
-          children: row,
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: PdfColors.grey,
-                width: 0.5,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    // Build Table Summary
-    final summaryRow = <Widget>[];
-    for (var i = 0; i < config.columnConfig.length; i++) {
-      final column = config.columnConfig[i];
-      summaryRow.add(Expanded(
-          flex: column.flex!,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Text(
-              InvoiceConfigConstants.buildLineItemSummaryValue(
-                  column.key!, order),
-              textAlign: getColumnAlign(column.align),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          )));
-    }
-    rows.add(
-      TableRow(
-        children: summaryRow,
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: PdfColors.black,
-              width: 0.8,
-            ),
-            bottom: BorderSide(
-              color: PdfColors.black,
-              width: 0.8,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return Table(
-      children: rows,
-      // columnWidths: columnWidths,
-      defaultVerticalAlignment: TableCellVerticalAlignment.full,
+    return buildTable(
+      columnConfig: config.columnConfig,
+      data: order.lineItems,
+      displayHeader: true,
+      builder: (column, item) {
+        if (item is TransactionLineItemEntity) {
+          return InvoiceConfigConstants.getLineItemValue(
+            column,
+            item,
+            locale: order.storeLocale,
+          );
+        }
+        return '';
+      },
+      displaySummary: true,
+      summaryBuilder: (column) {
+        return InvoiceConfigConstants.buildLineItemSummaryValue(column, order);
+      },
     );
   }
 
   @override
   Widget buildPaymentDetails(Context context) {
-    final rows = <TableRow>[];
-
-    final headerRow = <Widget>[];
-
-    for (var i = 0; i < config.paymentColumnConfig.length; i++) {
-      final column = config.paymentColumnConfig[i];
-      headerRow.add(
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 3),
-          child: Text(
-            column.title!,
-            textAlign: getColumnAlign(column.align),
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
-    rows.add(
-      TableRow(
-        children: headerRow,
-        repeat: true,
-        decoration: const BoxDecoration(
-          color: PdfColors.grey200,
-          border: Border.symmetric(
-            horizontal: BorderSide(
-              color: PdfColors.black,
-              width: 0.8,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    for (var i = 0; i < order.paymentLineItems.length; i++) {
-      final lineItem = order.paymentLineItems[i];
-      final row = <Widget>[];
-      for (var j = 0; j < config.paymentColumnConfig.length; j++) {
-        final column = config.paymentColumnConfig[j];
-        row.add(
-          Expanded(
-            flex: column.flex!,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Text(
-                InvoiceConfigConstants.getPaymentLineValue(
-                    column, order, lineItem),
-                textAlign: getColumnAlign(column.align),
-              ),
-            ),
-          ),
-        );
-      }
-      rows.add(
-        TableRow(
-          children: row,
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: PdfColors.grey,
-                width: 0.5,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Table(
-      children: rows,
-      // columnWidths: columnWidths,
+    return buildTable(
+      columnConfig: config.paymentColumnConfig,
+      data: order.paymentLineItems,
+      builder: (column, item) {
+        if (item is TransactionPaymentLineItemEntity) {
+          return InvoiceConfigConstants.getPaymentLineValue(
+              column, order, item);
+        }
+        return '';
+      },
     );
   }
 
@@ -509,15 +355,15 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
           ),
         ),
         Text(
-          '${store.address?.address1} ${store.address?.address2}',
+          '${store.address?.address1 ?? ''} ${store.address?.address2 ?? ''}',
         ),
         Text(
           '${store.address?.city} ${store.address?.state}-${store.address?.zipcode}',
         ),
         Text(
-          'Phone: ${store.storeContact}',
+          'Phone: ${store.storeContact ?? ''}',
         ),
-        Text('Email:  ${store.storeEmail}'),
+        Text('Email:  ${store.storeEmail ?? ''}'),
         Text(
           'GST: ${store.gst ?? ''}',
         ),
@@ -545,7 +391,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
             ),
           ),
           Text(
-            '${order.customerName}',
+            order.customerName ?? '',
           ),
           Text(
             '${order.billingAddress?.address1} ${order.billingAddress?.address2}',
@@ -554,7 +400,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
             '${order.billingAddress?.city} ${order.billingAddress?.state}-${order.billingAddress?.zipcode}',
           ),
           Text(
-            'Ph: ${order.customerPhone}',
+            'Ph: ${order.customerPhone ?? ''}',
           ),
           ...config.billingAddFieldConfig
               .map((e) => Text(
@@ -579,7 +425,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
           ),
         ),
         Text(
-          '${order.customerName}',
+          order.customerName ?? '',
         ),
         Text(
           '${order.shippingAddress?.address1} ${order.shippingAddress?.address2}',
@@ -588,7 +434,7 @@ class BaseInvoice extends IInvoice with InvoiceUtil {
           '${order.shippingAddress?.city} ${order.shippingAddress?.state}-${order.shippingAddress?.zipcode}',
         ),
         Text(
-          'Ph: ${order.customerPhone}',
+          'Ph: ${order.customerPhone ?? ''}',
         ),
         ...config.shippingAddFieldConfig
             .map((e) => Text(

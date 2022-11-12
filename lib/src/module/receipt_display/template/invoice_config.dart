@@ -179,8 +179,8 @@ class InvoiceConfigConstants {
   }
 
   static String buildLineItemSummaryValue(
-      String key, TransactionHeaderEntity entity) {
-    switch (key) {
+      ReportFieldConfigEntity config, TransactionHeaderEntity entity) {
+    switch (config.key) {
       case 'qtyuom':
       case 'quantity':
         return entity.lineItems
