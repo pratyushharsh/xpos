@@ -52,6 +52,7 @@ class BusinessRepository with DatabaseProvider {
             storeName: resp.name,
             storeEmail: resp.email,
             storeNumber: '${resp.businessId}',
+            legalBusiness: resp.legalName,
             storeContact: resp.phone,
             address: Address(
               address1: resp.address1,

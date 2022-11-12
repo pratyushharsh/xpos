@@ -130,7 +130,7 @@ class _MyAppState extends State<MyApp> {
           ),
           RepositoryProvider(
             create: (context) =>
-                InvoiceRepository(restClient: widget.restClient),
+                InvoiceRepository(),
           ),
         ],
         child: MultiBlocProvider(providers: [
@@ -138,7 +138,9 @@ class _MyAppState extends State<MyApp> {
             lazy: false,
             create: (context) => BackgroundSyncBloc(
                 syncRepository: RepositoryProvider.of(context),
-                syncConfigRepository: RepositoryProvider.of(context)),
+                syncConfigRepository: RepositoryProvider.of(context),
+              invoiceRepository: RepositoryProvider.of(context),
+            ),
           ),
           BlocProvider(
             create: (context) => AuthenticationBloc(

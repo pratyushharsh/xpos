@@ -47,8 +47,8 @@ class ReportFieldConfigEntity {
       'key': key,
       'title': title,
       'flex': flex,
-      'defaultValue': defaultValue,
-      'align': align,
+      'default': defaultValue,
+      'align': align?.value,
     };
   }
 
@@ -57,7 +57,7 @@ class ReportFieldConfigEntity {
       key: data['key'],
       title: data['title'],
       flex: data['flex'],
-      defaultValue: data['defaultValue'],
+      defaultValue: data['default'],
       align: data['align'],
     );
   }
@@ -95,8 +95,11 @@ class ReportFieldConfigEntity {
 }
 
 enum ColumnAlignment {
-  left,
-  right,
-  center,
-  justify
+  left("left"),
+  right("right"),
+  center("center"),
+  justify("justify");
+
+  const ColumnAlignment(this.value);
+  final String value;
 }

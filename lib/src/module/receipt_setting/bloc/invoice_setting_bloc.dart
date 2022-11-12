@@ -145,6 +145,7 @@ class InvoiceSettingBloc
       }
 
       await invoiceRepo.saveInvoiceSetting(InvoiceConfig(
+          code: 'INVOICE',
           columnConfig: state.columns,
           paymentColumnConfig: state.paymentColumns,
           logo: state.rawLogo != null ? 'file://$logoPath' : state.logo,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipt_generator/src/widgets/cloud_sync_widget.dart';
 
 import '../../../locale_keys.dart';
 import '../../config/theme_settings.dart';
@@ -146,8 +147,14 @@ class TaxGroupTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(0),
             color: selected ? AppColor.formInputBorder : Colors.white,
           ),
-          child: Row(children: [
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children:
+          [
             Text(taxGroup.description),
+            CloudSyncIcon(
+              syncState: taxGroup.syncState ?? 0,
+            )
           ])),
     );
   }

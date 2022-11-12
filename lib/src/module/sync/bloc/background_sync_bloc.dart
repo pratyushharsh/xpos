@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:bloc/bloc.dart';
@@ -7,21 +8,21 @@ import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/repositories/sync_config_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_repository.dart';
 
+import '../../../repositories/invoice_repository.dart';
 import '../background_isolate_service.dart';
 
 part 'background_sync_event.dart';
 part 'background_sync_state.dart';
 
-
-class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> {
-
+class BackgroundSyncBloc
+    extends Bloc<BackgroundSyncEvent, BackgroundSyncState> {
   final log = Logger('BackgroundSyncBloc');
   final SyncRepository syncRepository;
   final SyncConfigRepository syncConfigRepository;
+  final InvoiceRepository invoiceRepository;
   Timer? _timer;
   Isolate? _isolate;
-  bool isSyncEnabled = false;
-
+  bool isSyncEnabled = true;
 
   @override
   Future<void> close() async {
@@ -31,7 +32,11 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     return super.close();
   }
 
-  BackgroundSyncBloc({required this.syncRepository, required this.syncConfigRepository}) : super(BackgroundSyncState()) {
+  BackgroundSyncBloc(
+      {required this.syncRepository,
+      required this.syncConfigRepository,
+      required this.invoiceRepository})
+      : super(BackgroundSyncState()) {
     on<StartSyncEvent>(_onStartSyncEvent);
     on<SyncAllDataEvent>(_onSyncAllDataEvent);
     on<SyncAllConfigDataEvent>(_onSyncAllConfigEvent);
@@ -41,7 +46,8 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
   }
 
   // @TODO Control Sync Using State
-  void _onStartSyncEvent(StartSyncEvent event, Emitter<BackgroundSyncState> emit) async {
+  void _onStartSyncEvent(
+      StartSyncEvent event, Emitter<BackgroundSyncState> emit) async {
     if (!isSyncEnabled) {
       return;
     }
@@ -55,7 +61,8 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     }
 
     final ReceivePort receivePort = ReceivePort();
-    _isolate = await Isolate.spawn(IsolateSyncService.isolateEntryPoint, receivePort.sendPort);
+    _isolate = await Isolate.spawn(
+        IsolateSyncService.isolateEntryPoint, receivePort.sendPort);
     SendPort sendPort = await receivePort.first;
 
     // Response Port
@@ -65,17 +72,27 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     });
 
     // Send Store Id to start the background sync.
-    sendPort.send({'storeId': event.storeId, 'sendPort': responsePort.sendPort, 'syncType': 'start'});
+    sendPort.send({
+      'storeId': event.storeId,
+      'sendPort': responsePort.sendPort,
+      'syncType': 'start'
+    });
 
     // sendPort.send(["Starting Background Sync", responsePort.sendPort]);
-    emit(state.copyWith(storeId: event.storeId, status: BackgroundSyncStatus.started));
+    emit(state.copyWith(
+        storeId: event.storeId, status: BackgroundSyncStatus.started));
     log.info("Start Sync Event");
     _timer = Timer.periodic(const Duration(seconds: 60), (t) async {
-      sendPort.send({'storeId': event.storeId, 'sendPort': responsePort.sendPort, 'syncType': 'refresh'});
+      sendPort.send({
+        'storeId': event.storeId,
+        'sendPort': responsePort.sendPort,
+        'syncType': 'refresh'
+      });
     });
   }
 
-  void _onStopSyncEvent(StopSyncEvent event, Emitter<BackgroundSyncState> emit) async {
+  void _onStopSyncEvent(
+      StopSyncEvent event, Emitter<BackgroundSyncState> emit) async {
     if (_timer != null) {
       _timer!.cancel();
     }
@@ -85,15 +102,19 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     }
   }
 
-  void _onSyncAllConfigEvent(SyncAllConfigDataEvent event, Emitter<BackgroundSyncState> emit) async {
+  void _onSyncAllConfigEvent(
+      SyncAllConfigDataEvent event, Emitter<BackgroundSyncState> emit) async {
     await syncConfigRepository.getSyncConfigDetails(forceSync: event.forceSync);
   }
 
-  void _onLoadSampleDataEvent(LoadSampleData event, Emitter<BackgroundSyncState> emit) async {
-    await syncConfigRepository.loadSampleProductAndImages(fullImport: event.fullImport);
+  void _onLoadSampleDataEvent(
+      LoadSampleData event, Emitter<BackgroundSyncState> emit) async {
+    await syncConfigRepository.loadSampleProductAndImages(
+        fullImport: event.fullImport);
   }
 
-  void _onSyncAllDataEvent(SyncAllDataEvent event, Emitter<BackgroundSyncState> emit) async {
+  void _onSyncAllDataEvent(
+      SyncAllDataEvent event, Emitter<BackgroundSyncState> emit) async {
     if (state.status == BackgroundSyncStatus.inProgress) {
       return;
     }
@@ -107,7 +128,9 @@ class BackgroundSyncBloc extends Bloc<BackgroundSyncEvent, BackgroundSyncState> 
     emit(state.copyWith(status: BackgroundSyncStatus.success));
   }
 
-  void _onExportDataEvent(ExportDataEvent event, Emitter<BackgroundSyncState> emit) async {
-    await syncRepository.exportData();
+  void _onExportDataEvent(
+      ExportDataEvent event, Emitter<BackgroundSyncState> emit) async {
+    var data = await invoiceRepository.getInvoiceSettingByName("INVOICE");
+    print(json.encode(data.toMap()));
   }
 }

@@ -210,6 +210,7 @@ class _BusinessDetailState extends State<BusinessDetail> {
           _businessEmailController.text = state.businessEmail ?? "";
           _businessGstController.text = state.businessGst;
           _businessPanController.text = state.businessPan;
+          _legalBusinessNameController.text = state.legalBusinessName;
 
           _selectedCurrency = RepositoryProvider.of<ConfigRepository>(context)
               .getCodeByCategoryAndCode('CURRENCY', state.businessCurrency);

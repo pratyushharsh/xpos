@@ -2,6 +2,7 @@ class CreateBusinessResponse {
   String? type;
   int? businessId;
   String? name;
+  String? legalName;
   String? email;
   String? address1;
   String? address2;
@@ -21,6 +22,7 @@ class CreateBusinessResponse {
       {this.type,
         this.businessId,
         this.name,
+        this.legalName,
         this.email,
         this.address1,
         this.address2,
@@ -40,6 +42,7 @@ class CreateBusinessResponse {
     type = json['Type'];
     businessId = json['business_id'];
     name = json['name'];
+    legalName = json['legal_name'];
     email = json['email'];
     address1 = json['address1'];
     address2 = json['address2'];
@@ -63,6 +66,7 @@ class CreateBusinessResponse {
     data['Type'] = type;
     data['business_id'] = businessId;
     data['name'] = name;
+    data['legal_name'] = legalName;
     data['email'] = email;
     data['address1'] = address1;
     data['address2'] = address2;

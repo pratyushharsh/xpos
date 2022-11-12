@@ -31,74 +31,70 @@ enum InvoiceField {
 class InvoiceRepository with DatabaseProvider {
   final log = Logger('InvoiceRepository');
 
-  final RestApiClient restClient;
-
-  InvoiceRepository({ required this.restClient});
-
   Future<void> saveInvoiceSetting(InvoiceConfig setting) async {
-    db.writeTxn(() async {
+    await db.writeTxn(() async {
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.item.value,
         columnConfig: setting.columnConfig,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.payment.value,
         columnConfig: setting.paymentColumnConfig,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.logo.value,
         stringValue: setting.logo,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.logo.value,
         stringValue: setting.logo,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.showTaxSummary.value,
         boolValue: setting.showTaxSummary,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.showPaymentDetails.value,
         boolValue: setting.showPaymentDetails,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.declaration.value,
         stringValue: setting.declaration,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.showDeclaration.value,
         boolValue: setting.showDeclaration,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.termsAndCondition.value,
         stringValue: setting.termsAndCondition,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.showTermsAndCondition.value,
         boolValue: setting.showTermsAndCondition,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.headerFields.value,
         columnConfig: setting.headerFieldConfig,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.shippingAddressFields.value,
         columnConfig: setting.shippingAddFieldConfig,
       ));
       await db.reportConfigEntitys.putByTypeSubtype(ReportConfigEntity(
-        type: "INVOICE",
+        type: setting.code,
         subtype: InvoiceField.billingAddressFields.value,
         columnConfig: setting.billingAddFieldConfig,
       ));
@@ -115,6 +111,7 @@ class InvoiceRepository with DatabaseProvider {
     }
 
     return InvoiceConfig(
+      code: name,
       columnConfig: config
           .firstWhere((e) => e.subtype == InvoiceField.item.value)
           .columnConfig,
