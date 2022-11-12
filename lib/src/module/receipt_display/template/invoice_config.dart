@@ -399,6 +399,42 @@ class InvoiceConfig {
     headerFieldConfig: [],
     shippingAddFieldConfig: []
   );
+
+  Map<String, dynamic> toMap() {
+    return {
+      'code': code,
+      'columnConfig': columnConfig.map((e) => e.toMap()).toList(),
+      'paymentColumnConfig': paymentColumnConfig.map((e) => e.toMap()).toList(),
+      'headerFieldConfig': headerFieldConfig.map((e) => e.toMap()).toList(),
+      'billingAddFieldConfig': billingAddFieldConfig.map((e) => e.toMap()).toList(),
+      'shippingAddFieldConfig': shippingAddFieldConfig.map((e) => e.toMap()).toList(),
+      'showTaxSummary': showTaxSummary,
+      'showPaymentDetails': showPaymentDetails,
+      'logo': logo,
+      'showTermsAndCondition': showTermsAndCondition,
+      'termsAndCondition': termsAndCondition,
+      'showDeclaration': showDeclaration,
+      'declaration': declaration,
+    };
+  }
+
+  static InvoiceConfig fromMap(Map<String, dynamic> input) {
+    return InvoiceConfig(
+      code: input['code'],
+      columnConfig: (input['columnConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
+      paymentColumnConfig: (input['paymentColumnConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
+      headerFieldConfig: (input['headerFieldConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
+      billingAddFieldConfig: (input['billingAddFieldConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
+      shippingAddFieldConfig: (input['shippingAddFieldConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
+      showTaxSummary: input['showTaxSummary'],
+      showPaymentDetails: input['showPaymentDetails'],
+      logo: input['logo'],
+      showTermsAndCondition: input['showTermsAndCondition'],
+      termsAndCondition: input['termsAndCondition'],
+      showDeclaration: input['showDeclaration'],
+      declaration: input['declaration'],
+    );
+  }
 }
 
 class TaxSummary {

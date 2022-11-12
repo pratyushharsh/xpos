@@ -32,38 +32,15 @@ mixin InvoiceUtil {
         return TextAlign.left;
     }
   }
-}
-
-typedef ColumnBuilder<T> = String Function(
-    ReportFieldConfigEntity config, T data);
-
-typedef ColumnSummaryBuilder = String Function(
-    ReportFieldConfigEntity config);
-
-abstract class IInvoice with InvoiceUtil {
-  Future<Uint8List> buildPdf(PdfPageFormat pageFormat);
-  ImageProvider? getStoreLogo(Context context);
-  Widget buildStoreDetail(Context context);
-  Widget buildShippingAddress(Context context);
-  Widget buildBillingAddress(Context context);
-  Widget buildHeader(Context context);
-  Widget buildItemBody(Context context);
-  Widget buildPaymentDetails(Context context);
-  Widget buildTaxSummary(Context context);
-  Widget buildFooter(Context context);
-  Widget buildDeclarationSignature(Context context);
-  Widget buildThankYou(Context context);
-  Widget buildTermsAndConditions(Context context);
-  Future<PageTheme> buildPageTheme(PdfPageFormat pageFormat);
 
   // Table Header
   Table buildTable(
       {required List<ReportFieldConfigEntity> columnConfig,
-      required List<dynamic> data,
-      required ColumnBuilder builder,
-      bool displayHeader = true,
-      bool displaySummary = false,
-      ColumnSummaryBuilder? summaryBuilder}) {
+        required List<dynamic> data,
+        required ColumnBuilder builder,
+        bool displayHeader = true,
+        bool displaySummary = false,
+        ColumnSummaryBuilder? summaryBuilder}) {
 
     if (displaySummary && summaryBuilder == null) {
       throw Exception('Summary builder is required');
@@ -182,4 +159,27 @@ abstract class IInvoice with InvoiceUtil {
       defaultVerticalAlignment: TableCellVerticalAlignment.full,
     );
   }
+}
+
+typedef ColumnBuilder<T> = String Function(
+    ReportFieldConfigEntity config, T data);
+
+typedef ColumnSummaryBuilder = String Function(
+    ReportFieldConfigEntity config);
+
+abstract class IInvoice with InvoiceUtil {
+  Future<Uint8List> buildPdf(PdfPageFormat pageFormat);
+  ImageProvider? getStoreLogo(Context context);
+  Widget buildStoreDetail(Context context);
+  Widget buildShippingAddress(Context context);
+  Widget buildBillingAddress(Context context);
+  Widget buildHeader(Context context);
+  Widget buildItemBody(Context context);
+  Widget buildPaymentDetails(Context context);
+  Widget buildTaxSummary(Context context);
+  Widget buildFooter(Context context);
+  Widget buildDeclarationSignature(Context context);
+  Widget buildThankYou(Context context);
+  Widget buildTermsAndConditions(Context context);
+  Future<PageTheme> buildPageTheme(PdfPageFormat pageFormat);
 }

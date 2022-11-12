@@ -5,12 +5,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
-import 'package:receipt_generator/src/entity/pos/business_entity.dart';
-import 'package:receipt_generator/src/entity/pos/trn_header_entity.dart';
-import 'package:receipt_generator/src/module/receipt_display/template/invoice_config.dart';
 
 import '../../../entity/pos/entity.dart';
 import 'invoice.dart';
+import 'invoice_config.dart';
 
 class BaseInvoice extends IInvoice with InvoiceUtil {
   final TransactionHeaderEntity order;

@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:receipt_generator/src/entity/pos/business_entity.dart';
 import 'package:receipt_generator/src/repositories/business_repository.dart';
 
@@ -107,6 +108,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       await tmp.signOut();
       await tmp.clearCachedTokens();
       await tmp.storage.removeItem("CURRENT_STORE");
+      await _deleteTheFilesFromCache();
       emit(AuthenticationState.unknown());
     } else {
       emit(AuthenticationState.unknown());
@@ -138,6 +140,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   Future<void> _loadConfigDataIfNotPresent() async {
     sync.add(SyncAllConfigDataEvent());
+  }
+
+  Future<void> _deleteTheFilesFromCache() async {
+    final dir = await getApplicationSupportDirectory();
+    final files = await dir.delete(recursive: true);
+    log.info("Deleted files from cache $files");
   }
 
   void _changeBusinessAccount(

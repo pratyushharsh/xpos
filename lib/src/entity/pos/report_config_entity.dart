@@ -42,6 +42,26 @@ class ReportFieldConfigEntity {
     return '$title';
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'key': key,
+      'title': title,
+      'flex': flex,
+      'defaultValue': defaultValue,
+      'align': align,
+    };
+  }
+
+  static ReportFieldConfigEntity fromMap(Map<String, dynamic> data) {
+    return ReportFieldConfigEntity(
+      key: data['key'],
+      title: data['title'],
+      flex: data['flex'],
+      defaultValue: data['defaultValue'],
+      align: data['align'],
+    );
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
