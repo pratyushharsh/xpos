@@ -9,22 +9,51 @@ class ReportConfigEntity {
   @Index(composite: [CompositeIndex("subtype")], unique: true, replace: true)
   final String type;
   final String subtype;
-  List<ReportFieldConfigEntity> columnConfig;
-  String? stringValue;
-  bool? boolValue;
-  int? intValue;
-  double? doubleValue;
-  DateTime? dateValue;
+
+  List<ReportColumn> columns;
+  List<ReportProperty> properties;
+
+  @Index(type: IndexType.value)
+  DateTime? lastChangedAt;
+
+  @Index(type: IndexType.value)
+  DateTime? lastSyncAt;
+
+  @Index(type: IndexType.value)
+  int? syncState;
 
   ReportConfigEntity(
       {required this.type,
       required this.subtype,
-      this.columnConfig = const [],
+      required this.columns,
+      required this.properties,
+      this.syncState,
+      this.lastSyncAt,
+      this.lastChangedAt});
+}
+
+@Embedded()
+class ReportProperty {
+  String? key;
+  String? stringValue;
+  int? intValue;
+  double? doubleValue;
+  bool? boolValue;
+
+  ReportProperty(
+      {this.key,
       this.stringValue,
-      this.boolValue,
       this.intValue,
       this.doubleValue,
-      this.dateValue});
+      this.boolValue});
+}
+
+@Embedded()
+class ReportColumn {
+  String? id;
+  List<ReportFieldConfigEntity>? fields;
+
+  ReportColumn({this.id, this.fields});
 }
 
 @Embedded()
@@ -58,21 +87,14 @@ class ReportFieldConfigEntity {
       title: data['title'],
       flex: data['flex'],
       defaultValue: data['default'],
-      align: data['align'],
+      align: data['align'] != null
+          ? ColumnAlignment.values.firstWhere(
+              (e) => e.value == data['align'],
+              orElse: () => ColumnAlignment.left,
+            )
+          : null,
     );
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ReportFieldConfigEntity &&
-          runtimeType == other.runtimeType &&
-          key == other.key &&
-          title == other.title;
-
-  @override
-  int get hashCode =>
-      key.hashCode ^ title.hashCode;
 
   ReportFieldConfigEntity copyWith({
     String? key,

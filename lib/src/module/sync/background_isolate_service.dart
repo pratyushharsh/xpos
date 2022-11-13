@@ -5,9 +5,11 @@ import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:http/http.dart' as http;
 import 'package:receipt_generator/log.dart';
+import 'package:receipt_generator/src/database/db_provider.dart';
+import 'package:receipt_generator/src/module/receipt_display/template/invoice_config.dart';
 
-import '../../entity/config/code_value_entity.dart';
 import '../../entity/pos/entity.dart';
+import '../../repositories/repository.dart';
 
 /// Syncing architecture information
 /// Pull the record from the last timestamp to the current timestamp
@@ -17,10 +19,10 @@ import '../../entity/pos/entity.dart';
 /// 4. Save the data to the local database
 /// 5. Update the last timestamp to the current timestamp
 
-class BackgroundSyncServiceFromIso {
+class BackgroundSyncServiceFromIso with DatabaseProvider {
   final log = Logger('BackgroundSyncServiceFromIso');
+  InvoiceRepository invoiceRepository = InvoiceRepository();
   final int storeId;
-  static Isar? _isar;
   String path;
 
   final String _baseUrl =
@@ -30,30 +32,23 @@ class BackgroundSyncServiceFromIso {
   static const String customerSync = 'CUSTOMER';
   static const String productSync = 'PRODUCT';
   static const String taxSync = 'TAX';
+  static const String invoiceSync = 'INVOICE';
 
-  List<String> toSyncEntity = [transactionSync, customerSync, productSync, taxSync];
+  List<String> toSyncEntity = [
+    transactionSync,
+    customerSync,
+    productSync,
+    taxSync,
+    invoiceSync
+  ];
 
   BackgroundSyncServiceFromIso(this.path, this.storeId) {
     log.info('Starting the database service for background sync: $path');
   }
 
   initIsar() async {
-    _isar = await Isar.open([
-      RetailLocationEntitySchema,
-      ContactEntitySchema,
-      EmployeeEntitySchema,
-      EmployeeRoleEntitySchema,
-      ProductEntitySchema,
-      CollectionEntitySchema,
-      SequenceEntitySchema,
-      SettingEntitySchema,
-      SyncEntitySchema,
-      TransactionHeaderEntitySchema,
-      CodeValueEntitySchema,
-      ReasonCodeEntitySchema,
-      TaxGroupEntitySchema,
-      ReportConfigEntitySchema,
-    ], inspector: false, name: storeId.toString());
+    await DatabaseProvider.ensureInitialized(
+        name: storeId.toString(), isolateInit: true);
   }
 
   Future<Map<String, dynamic>> uploadSyncData(
@@ -96,14 +91,14 @@ class BackgroundSyncServiceFromIso {
   }
 
   Future<void> syncAllData() async {
-    if (_isar == null) {
+    if (db == null) {
       log.warning('Isar is not initialized');
       await initIsar();
     }
 
     // Fetch all the SyncEntity from the database
     try {
-      var rawSyncData = await _isar!.syncEntitys.where().findAll();
+      var rawSyncData = await db.syncEntitys.where().findAll();
       // Filter the records to sync.
       // var syncEntities = rawSyncData.where((e) => toSyncEntity.contains(e.type)).toList();
 
@@ -119,8 +114,8 @@ class BackgroundSyncServiceFromIso {
         syncEntities.add(syncEntity);
       }
 
-      await _isar!.writeTxn(() async {
-        await _isar!.syncEntitys.putAllByType(syncEntities);
+      await db.writeTxn(() async {
+        await db.syncEntitys.putAllByType(syncEntities);
       });
 
       // Find the minimum lastsync time
@@ -138,7 +133,7 @@ class BackgroundSyncServiceFromIso {
       List<Map<String, dynamic>> customers = [];
       List<Map<String, dynamic>> products = [];
       List<Map<String, dynamic>> taxConfiguration = [];
-
+      List<Map<String, dynamic>> invoiceConfigurations = [];
 
       // Loading transaction from the server
       if (data['transactions'] != null &&
@@ -149,9 +144,9 @@ class BackgroundSyncServiceFromIso {
           transactions.add(tmp);
         }
       }
-      await _isar!.writeTxn(() async {
+      await db.writeTxn(() async {
         if (transactions.isNotEmpty) {
-          await _isar!.transactionHeaderEntitys.importJson(transactions);
+          await db.transactionHeaderEntitys.importJson(transactions);
         }
 
         // Find Sync Entity
@@ -160,7 +155,7 @@ class BackgroundSyncServiceFromIso {
         e.lastSyncAt =
             DateTime.fromMillisecondsSinceEpoch(data['transactions']['to']);
         e.syncStartTime = DateTime.now();
-        await _isar!.syncEntitys.putAllByType(syncEntities);
+        await db.syncEntitys.putByType(e);
       });
 
       // Loading Customer Data from server
@@ -171,18 +166,18 @@ class BackgroundSyncServiceFromIso {
           customers.add(tmp);
         }
       }
-      await _isar!.writeTxn(() async {
+      await db.writeTxn(() async {
         if (customers.isNotEmpty) {
-          await _isar!.contactEntitys.importJson(customers);
+          await db.contactEntitys.importJson(customers);
         }
 
         // Find Sync Entity
-        var e = syncEntities
-            .firstWhere((element) => element.type == customerSync);
+        var e =
+            syncEntities.firstWhere((element) => element.type == customerSync);
         e.lastSyncAt =
             DateTime.fromMillisecondsSinceEpoch(data['customers']['to']);
         e.syncStartTime = DateTime.now();
-        await _isar!.syncEntitys.putAllByType(syncEntities);
+        await db.syncEntitys.putByType(e);
       });
 
       // Loading product from server to database
@@ -193,39 +188,62 @@ class BackgroundSyncServiceFromIso {
           products.add(tmp);
         }
       }
-      await _isar!.writeTxn(() async {
+      await db.writeTxn(() async {
         if (products.isNotEmpty) {
-          await _isar!.productEntitys.importJson(products);
+          await db.productEntitys.importJson(products);
         }
         // Find Sync Entity
         var e =
-        syncEntities.firstWhere((element) => element.type == productSync);
+            syncEntities.firstWhere((element) => element.type == productSync);
         e.lastSyncAt =
             DateTime.fromMillisecondsSinceEpoch(data['products']['to']);
         e.syncStartTime = DateTime.now();
-        await _isar!.syncEntitys.putAllByType(syncEntities);
+        await db.syncEntitys.putByType(e);
       });
 
-
       // Loading tax configuration from server to database
-      if (data['config'] != null && data['config']['taxConfig'] != null && data['config']['taxConfig']['data'] != null) {
+      if (data['config'] != null &&
+          data['config']['taxConfig'] != null &&
+          data['config']['taxConfig']['data'] != null) {
         for (var tax in data['config']['taxConfig']['data']) {
           var tmp = Map<String, dynamic>.from(tax);
           tmp['syncState'] = 1000;
           taxConfiguration.add(tmp);
         }
       }
-      await _isar!.writeTxn(() async {
+      await db.writeTxn(() async {
         if (taxConfiguration.isNotEmpty) {
-          await _isar!.taxGroupEntitys.importJson(taxConfiguration);
+          await db.taxGroupEntitys.importJson(taxConfiguration);
+        }
+        // Find Sync Entity
+        var e = syncEntities.firstWhere((element) => element.type == taxSync);
+        e.lastSyncAt = DateTime.fromMillisecondsSinceEpoch(
+            data['config']['taxConfig']['to']);
+        e.syncStartTime = DateTime.now();
+        await db.syncEntitys.putByType(e);
+      });
+
+      // Loading invoice configuration from server to database
+      if (data['config'] != null &&
+          data['config']['invoiceConfig'] != null &&
+          data['config']['invoiceConfig']['data'] != null) {
+        for (var invoice in data['config']['invoiceConfig']['data']) {
+          var tmp = Map<String, dynamic>.from(invoice);
+          tmp['syncState'] = 1000;
+          invoiceConfigurations.add(tmp);
+        }
+      }
+      await db.writeTxn(() async {
+        if (invoiceConfigurations.isNotEmpty) {
+          await db.reportConfigEntitys.importJson(invoiceConfigurations);
         }
         // Find Sync Entity
         var e =
-        syncEntities.firstWhere((element) => element.type == taxSync);
-        e.lastSyncAt =
-            DateTime.fromMillisecondsSinceEpoch(data['config']['taxConfig']['to']);
+            syncEntities.firstWhere((element) => element.type == invoiceSync);
+        e.lastSyncAt = DateTime.fromMillisecondsSinceEpoch(
+            data['config']['invoiceConfig']['to']);
         e.syncStartTime = DateTime.now();
-        await _isar!.syncEntitys.putAllByType(syncEntities);
+        await db.syncEntitys.putByType(e);
       });
 
       // ***************** Import Process Start *****************
@@ -233,7 +251,7 @@ class BackgroundSyncServiceFromIso {
       // Get the unsynced data from the database and post it to the server.
 
       // Fetch all the transaction from the database
-      var transactionsToSync = await _isar!.transactionHeaderEntitys
+      var transactionsToSync = await db.transactionHeaderEntitys
           .where()
           .syncStateIsNull()
           .or()
@@ -241,7 +259,7 @@ class BackgroundSyncServiceFromIso {
           .exportJson();
 
       // Fetch all the customer from the database
-      var customerToSync = await _isar!.contactEntitys
+      var customerToSync = await db.contactEntitys
           .where()
           .syncStateIsNull()
           .or()
@@ -249,7 +267,7 @@ class BackgroundSyncServiceFromIso {
           .exportJson();
 
       // Fetch all the product from the database
-      var productToSync = await _isar!.productEntitys
+      var productToSync = await db.productEntitys
           .where()
           .syncStateIsNull()
           .or()
@@ -257,32 +275,42 @@ class BackgroundSyncServiceFromIso {
           .exportJson();
 
       // Fetch all the tax configuration from the database
-      var taxConfigurationToSync = await _isar!.taxGroupEntitys
+      var taxConfigurationToSync =
+          await db.taxGroupEntitys.where().exportJson();
+
+      // Fetch all the invoice configuration from the database
+      var invoiceConfigurationToSync = await db.reportConfigEntitys
           .where()
+          .syncStateIsNull()
+          .or()
+          .syncStateLessThan(500)
           .exportJson();
 
+      // Get the tax configuration from the database
       // Find if the last sync of the tax group updated after lastSyncAt
-      var taxSyncEntity = syncEntities.firstWhere((element) => element.type == taxSync);
       bool taxSyncRequired = false;
-      for(var tax in taxConfigurationToSync){
-        if (tax['syncState']  != null && tax['syncState'] < 500){
+      for (var tax in taxConfigurationToSync) {
+        if (tax['syncState'] != null && tax['syncState'] < 500) {
           taxSyncRequired = true;
           break;
         }
       }
 
-      // Get the tax configuration from the database
-
       Map<String, dynamic> rawRequestBody = {
         'transactions': transactionsToSync,
         'customers': customerToSync,
         'products': productToSync,
-        'config' : {
-          'taxConfig' : taxSyncRequired ? taxConfigurationToSync : []
+        'config': {
+          'taxConfig': taxSyncRequired ? taxConfigurationToSync : [],
+          'invoiceConfig': invoiceConfigurationToSync
         }
       };
 
-      if (!(transactionsToSync.isNotEmpty || customerToSync.isNotEmpty || productToSync.isNotEmpty || rawRequestBody['config']['taxConfig'].isNotEmpty)) {
+      if (!(transactionsToSync.isNotEmpty ||
+          customerToSync.isNotEmpty ||
+          productToSync.isNotEmpty ||
+          rawRequestBody['config']['taxConfig'].isNotEmpty ||
+          rawRequestBody['config']['invoiceConfig'].isNotEmpty)) {
         log.info('No data to sync');
         return;
       }
@@ -302,16 +330,15 @@ class BackgroundSyncServiceFromIso {
         return tmp;
       }).toList();
 
-      await _isar!.writeTxn(() async {
-        await _isar!.transactionHeaderEntitys
-            .importJson(transactionsToSyncResp);
+      await db.writeTxn(() async {
+        await db.transactionHeaderEntitys.importJson(transactionsToSyncResp);
 
         // Find Sync Entity
         var e = syncEntities
             .firstWhere((element) => element.type == transactionSync);
         e.lastSyncAt = syncedTime;
         e.syncEndTime = syncedTime;
-        await _isar!.syncEntitys.putAllByType(syncEntities);
+        await db.syncEntitys.putAllByType(syncEntities);
       });
 
       var customerToSyncResp = customerToSync.map((e) {
@@ -321,15 +348,15 @@ class BackgroundSyncServiceFromIso {
         return tmp;
       }).toList();
 
-      await _isar!.writeTxn(() async {
-        await _isar!.contactEntitys.importJson(customerToSyncResp);
+      await db.writeTxn(() async {
+        await db.contactEntitys.importJson(customerToSyncResp);
 
         // Find Sync Entity
         var e =
             syncEntities.firstWhere((element) => element.type == customerSync);
         e.lastSyncAt = syncedTime;
         e.syncEndTime = syncedTime;
-        await _isar!.syncEntitys.putAllByType(syncEntities);
+        await db.syncEntitys.putByType(e);
       });
 
       var productToSyncResp = productToSync.map((e) {
@@ -339,14 +366,14 @@ class BackgroundSyncServiceFromIso {
         return tmp;
       }).toList();
 
-      await _isar!.writeTxn(() async {
-        await _isar!.productEntitys.importJson(productToSyncResp);
+      await db.writeTxn(() async {
+        await db.productEntitys.importJson(productToSyncResp);
         // Find Sync Entity
         var e =
             syncEntities.firstWhere((element) => element.type == productSync);
         e.lastSyncAt = syncedTime;
         e.syncEndTime = syncedTime;
-        await _isar!.syncEntitys.putAllByType(syncEntities);
+        await db.syncEntitys.putByType(e);
       });
 
       var taxConfigurationToSyncResp = taxConfigurationToSync.map((e) {
@@ -356,16 +383,29 @@ class BackgroundSyncServiceFromIso {
         return tmp;
       }).toList();
 
-      await _isar!.writeTxn(() async {
-        await _isar!.taxGroupEntitys.importJson(taxConfigurationToSyncResp);
+      await db.writeTxn(() async {
+        await db.taxGroupEntitys.importJson(taxConfigurationToSyncResp);
         // Find Sync Entity
-        var e =
-            syncEntities.firstWhere((element) => element.type == taxSync);
+        var e = syncEntities.firstWhere((element) => element.type == taxSync);
         e.lastSyncAt = syncedTime;
         e.syncEndTime = syncedTime;
-        await _isar!.syncEntitys.putAllByType(syncEntities);
+        await db.syncEntitys.putByType(e);
       });
 
+      var invoiceConfigurationToSyncResp = invoiceConfigurationToSync.map((e) {
+        var tmp = Map<String, dynamic>.from(e);
+        tmp['syncState'] = 1000;
+        tmp['lastSyncAt'] = syncTimeInMill;
+        return tmp;
+      }).toList();
+      await db.writeTxn(() async {
+        await db.reportConfigEntitys.importJson(invoiceConfigurationToSyncResp);
+        // Find Sync Entity
+        var e = syncEntities.firstWhere((element) => element.type == invoiceSync);
+        e.lastSyncAt = syncedTime;
+        e.syncEndTime = syncedTime;
+        await db.syncEntitys.putByType(e);
+      });
     } catch (e, st) {
       log.severe('Error while syncing data: $e', e, st);
     }

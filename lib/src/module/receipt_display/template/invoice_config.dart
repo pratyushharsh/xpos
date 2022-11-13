@@ -317,88 +317,89 @@ class InvoiceConfig {
   final String? termsAndCondition;
   final bool showDeclaration;
   final String? declaration;
+  final DateTime? lastUpdateAt;
 
   InvoiceConfig(
       {this.code = "DEFAULT",
       required this.columnConfig,
       this.showTaxSummary = true,
       required this.paymentColumnConfig,
-        required this.headerFieldConfig,
-        required this.billingAddFieldConfig,
-        required this.shippingAddFieldConfig,
+      required this.headerFieldConfig,
+      required this.billingAddFieldConfig,
+      required this.shippingAddFieldConfig,
       this.showPaymentDetails = true,
       this.logo,
       this.showTermsAndCondition = false,
       this.termsAndCondition,
       this.showDeclaration = false,
-      this.declaration});
+      this.declaration,
+      this.lastUpdateAt});
 
   static InvoiceConfig defaultValue = InvoiceConfig(
-    columnConfig: [
-      ReportFieldConfigEntity(
-          key: 'sno', title: 'S.No', flex: 1, align: ColumnAlignment.center),
-      ReportFieldConfigEntity(key: 'desc', title: 'Description', flex: 5),
-      ReportFieldConfigEntity(
-          key: 'hsn/sac',
-          title: 'HSN/SAC',
+      columnConfig: [
+        ReportFieldConfigEntity(
+            key: 'sno', title: 'S.No', flex: 1, align: ColumnAlignment.center),
+        ReportFieldConfigEntity(key: 'desc', title: 'Description', flex: 5),
+        ReportFieldConfigEntity(
+            key: 'hsn/sac',
+            title: 'HSN/SAC',
+            flex: 2,
+            align: ColumnAlignment.right),
+        ReportFieldConfigEntity(
+            key: 'qtyuom',
+            title: 'Qty/UOM',
+            flex: 2,
+            align: ColumnAlignment.center),
+        ReportFieldConfigEntity(
+            key: 'rate',
+            title: 'Unit Price',
+            flex: 2,
+            align: ColumnAlignment.right),
+        ReportFieldConfigEntity(
+            key: 'discountAmount',
+            title: 'Discount',
+            flex: 3,
+            align: ColumnAlignment.right),
+        ReportFieldConfigEntity(
+            key: 'tax',
+            title: 'Tax Amount',
+            flex: 3,
+            align: ColumnAlignment.right),
+        ReportFieldConfigEntity(
+            key: 'amount',
+            title: 'Amount',
+            flex: 3,
+            align: ColumnAlignment.right),
+      ],
+      paymentColumnConfig: [
+        ReportFieldConfigEntity(
+          key: 'date',
+          title: 'Date',
           flex: 2,
-          align: ColumnAlignment.right),
-      ReportFieldConfigEntity(
-          key: 'qtyuom',
-          title: 'Qty/UOM',
-          flex: 2,
-          align: ColumnAlignment.center),
-      ReportFieldConfigEntity(
-          key: 'rate',
-          title: 'Unit Price',
-          flex: 2,
-          align: ColumnAlignment.right),
-      ReportFieldConfigEntity(
-          key: 'discountAmount',
-          title: 'Discount',
-          flex: 3,
-          align: ColumnAlignment.right),
-      ReportFieldConfigEntity(
-          key: 'tax',
-          title: 'Tax Amount',
-          flex: 3,
-          align: ColumnAlignment.right),
-      ReportFieldConfigEntity(
+          align: ColumnAlignment.right,
+        ),
+        ReportFieldConfigEntity(
           key: 'amount',
           title: 'Amount',
-          flex: 3,
-          align: ColumnAlignment.right),
-    ],
-    paymentColumnConfig: [
-      ReportFieldConfigEntity(
-        key: 'date',
-        title: 'Date',
-        flex: 2,
-        align: ColumnAlignment.right,
-      ),
-      ReportFieldConfigEntity(
-        key: 'amount',
-        title: 'Amount',
-        flex: 1,
-        align: ColumnAlignment.right,
-      ),
-      ReportFieldConfigEntity(
-        key: 'mode',
-        title: 'Mode',
-        flex: 1,
-        align: ColumnAlignment.right,
-      ),
-      ReportFieldConfigEntity(
-        key: 'remarks',
-        title: 'Remarks',
-        flex: 2,
-        align: ColumnAlignment.right,
-      ),
-    ],
-    billingAddFieldConfig: [],
-    headerFieldConfig: [],
-    shippingAddFieldConfig: []
-  );
+          flex: 1,
+          align: ColumnAlignment.right,
+        ),
+        ReportFieldConfigEntity(
+          key: 'mode',
+          title: 'Mode',
+          flex: 1,
+          align: ColumnAlignment.right,
+        ),
+        ReportFieldConfigEntity(
+          key: 'remarks',
+          title: 'Remarks',
+          flex: 2,
+          align: ColumnAlignment.right,
+        ),
+      ],
+      billingAddFieldConfig: [],
+      headerFieldConfig: [],
+      shippingAddFieldConfig: []);
 
   Map<String, dynamic> toMap() {
     return {
@@ -406,8 +407,10 @@ class InvoiceConfig {
       'columnConfig': columnConfig.map((e) => e.toMap()).toList(),
       'paymentColumnConfig': paymentColumnConfig.map((e) => e.toMap()).toList(),
       'headerFieldConfig': headerFieldConfig.map((e) => e.toMap()).toList(),
-      'billingAddFieldConfig': billingAddFieldConfig.map((e) => e.toMap()).toList(),
-      'shippingAddFieldConfig': shippingAddFieldConfig.map((e) => e.toMap()).toList(),
+      'billingAddFieldConfig':
+          billingAddFieldConfig.map((e) => e.toMap()).toList(),
+      'shippingAddFieldConfig':
+          shippingAddFieldConfig.map((e) => e.toMap()).toList(),
       'showTaxSummary': showTaxSummary,
       'showPaymentDetails': showPaymentDetails,
       'logo': logo,
@@ -415,17 +418,38 @@ class InvoiceConfig {
       'termsAndCondition': termsAndCondition,
       'showDeclaration': showDeclaration,
       'declaration': declaration,
+      'lastUpdateAt': lastUpdateAt?.millisecondsSinceEpoch,
     };
   }
 
   static InvoiceConfig fromMap(Map<String, dynamic> input) {
     return InvoiceConfig(
       code: input['code'],
-      columnConfig: (input['columnConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
-      paymentColumnConfig: (input['paymentColumnConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
-      headerFieldConfig: (input['headerFieldConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
-      billingAddFieldConfig: (input['billingAddFieldConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
-      shippingAddFieldConfig: (input['shippingAddFieldConfig'] as List).map((e) => ReportFieldConfigEntity.fromMap(e)).toList(),
+      columnConfig: input['columnConfig'] != null
+          ? (input['columnConfig'] as List)
+              .map((e) => ReportFieldConfigEntity.fromMap(e))
+              .toList()
+          : [],
+      paymentColumnConfig: input['paymentColumnConfig'] != null
+          ? (input['paymentColumnConfig'] as List)
+              .map((e) => ReportFieldConfigEntity.fromMap(e))
+              .toList()
+          : [],
+      headerFieldConfig: input['headerFieldConfig'] != null
+          ? (input['headerFieldConfig'] as List)
+              .map((e) => ReportFieldConfigEntity.fromMap(e))
+              .toList()
+          : [],
+      billingAddFieldConfig: input['billingAddFieldConfig'] != null
+          ? (input['billingAddFieldConfig'] as List)
+              .map((e) => ReportFieldConfigEntity.fromMap(e))
+              .toList()
+          : [],
+      shippingAddFieldConfig: input['shippingAddFieldConfig'] != null
+          ? (input['shippingAddFieldConfig'] as List)
+              .map((e) => ReportFieldConfigEntity.fromMap(e))
+              .toList()
+          : [],
       showTaxSummary: input['showTaxSummary'],
       showPaymentDetails: input['showPaymentDetails'],
       logo: input['logo'],
@@ -433,6 +457,9 @@ class InvoiceConfig {
       termsAndCondition: input['termsAndCondition'],
       showDeclaration: input['showDeclaration'],
       declaration: input['declaration'],
+      lastUpdateAt: input['lastUpdateAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(input['lastUpdateAt'])
+          : null,
     );
   }
 }

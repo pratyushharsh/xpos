@@ -103,7 +103,6 @@ class SettingsScreen extends StatelessWidget {
                           Navigator.of(context)
                               .pushNamed(RouteConfig.taxConfigurationScreen);
                         }),
-                    SettingsItem(text: "Receipt Config", onTap: () {}),
                   ],
                 ),
               ),

@@ -58,7 +58,8 @@ void initRootLogger() {
     }
 
     if (kDebugMode) {
-      print('$start${record.loggerName} : ${record.level} : ${record.time} : ${record.message} ${record.stackTrace != null ? '\n${record.stackTrace}' : ''}$end');
+      print(
+          '$start${record.loggerName} : ${record.level} : ${record.time} : ${record.message} ${record.stackTrace != null ? '\n${record.stackTrace}' : ''}$end');
     }
   });
 }
@@ -74,7 +75,7 @@ void initIsolateLogger() {
   recordStackTraceAtLevel = Level.WARNING;
 
   // specify the levels for lower level loggers, if desired
-  // Logger('InvoicingBlocObserver').level = Level.WARNING;
+  Logger('InvoicingBlocObserver').level = Level.WARNING;
 
   Logger.root.onRecord.listen((record) {
     if (!kDebugMode) {
@@ -100,7 +101,8 @@ void initIsolateLogger() {
     }
 
     if (kDebugMode) {
-      print('$start${record.loggerName} : ${record.level} : ${record.time} : ${record.message} ${record.stackTrace != null ? '\n${record.stackTrace}' : ''}$end');
+      print(
+          '$start${record.loggerName} : ${record.level} : ${record.time} : ${record.message} ${record.stackTrace != null ? '\n${record.stackTrace}' : ''}$end');
     }
   });
 }

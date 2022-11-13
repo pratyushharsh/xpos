@@ -12,18 +12,27 @@ mixin DatabaseProvider {
   static const defaultDbName = 'default';
   static final Map<String, Isar> _dbMap = HashMap<String, Isar>();
   static String _currentKey = defaultDbName;
+  static bool _isIsolated = false;
 
   Isar get db => _dbMap[_currentKey]!;
 
   Isar get defaultInstance => _dbMap[defaultDbName]!;
 
-  static Future<void> ensureInitialized({String name = defaultDbName}) async {
+  static Future<void> ensureInitialized({String name = defaultDbName, bool isolateInit = false}) async {
+    _isIsolated = isolateInit;
     await switchDatabase(name);
   }
 
   static Future<Isar> _openDatabase(String name) async {
-    final dir = await getApplicationSupportDirectory();
-    log.info("Creating new database connection at $dir");
+    String? path;
+    bool inspector = false;
+
+    if (!_isIsolated) {
+      path = (await getApplicationDocumentsDirectory()).path;
+      log.info("Creating new database connection at $path");
+      inspector = true;
+    }
+
     return await Isar.open([
       RetailLocationEntitySchema,
       ContactEntitySchema,
@@ -39,7 +48,7 @@ mixin DatabaseProvider {
       ReasonCodeEntitySchema,
       TaxGroupEntitySchema,
       ReportConfigEntitySchema,
-    ], inspector: true, directory: dir.path, name: name);
+    ], inspector: inspector, directory: path, name: name);
   }
 
   static Future<void> switchDatabase(String name) async {
