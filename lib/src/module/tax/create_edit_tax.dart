@@ -55,30 +55,6 @@ class CreateEditTaxView extends StatelessWidget {
                       },
                     ),
                   ),
-                  BlocBuilder<CreateEditTaxBloc, CreateEditTaxState>(
-                    builder: (context, state) {
-                      return Positioned(
-                        top: 20,
-                        right: 16,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColor.primary,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: IconButton(
-                            onPressed: () {
-                              BlocProvider.of<CreateEditTaxBloc>(context)
-                                  .add(FetchAllTaxGroupFromServer());
-                            },
-                            icon: const Icon(
-                              Icons.sync,
-                              color: AppColor.iconColor,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
                 ],
               )),
         ),

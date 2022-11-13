@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipt_generator/src/widgets/cloud_sync_widget.dart';
 
 import '../../config/theme_settings.dart';
 import '../../entity/pos/tax_group_entity.dart';
@@ -94,9 +95,17 @@ class TaxGroupCardMobile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Tax Group: ' + taxGroup.groupId,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Tax Group: ' + taxGroup.groupId,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              CloudSyncIcon(
+                syncState: taxGroup.syncState ?? 0,
+              ),
+            ],
           ),
           const SizedBox(height: 8),
           TaxRuleList(taxRules: taxGroup.taxRules),
