@@ -15,7 +15,7 @@ import 'background_product_sync.dart';
 import 'background_rptconfig_sync.dart';
 import 'background_sync.dart';
 import 'background_transaction_sync.dart';
-import 'backgrouund_taxgroup_sync.dart';
+import 'background_taxgroup_sync.dart';
 
 /// Syncing architecture information
 /// Pull the record from the last timestamp to the current timestamp
