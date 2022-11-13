@@ -32,7 +32,7 @@ class BackgroundSyncServiceFromIso with DatabaseProvider {
   String path;
 
   final String _baseUrl =
-      'https://yp4fg0z7dc.execute-api.ap-south-1.amazonaws.com/DEV';
+      'https://mr4f4gk1n3.execute-api.ap-south-1.amazonaws.com/dev';
 
   List<String> toSyncEntity = [
     transactionSync,

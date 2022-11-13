@@ -461,7 +461,7 @@ class UploadViewImage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
                       Icon(
-                        Icons.camera_alt,
+                        Icons.add_a_photo,
                         color: AppColor.primary,
                         size: 40,
                       ),

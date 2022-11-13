@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipt_generator/src/config/route_config.dart';
@@ -85,16 +86,6 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
     _productId = null;
     _priceIncludeTax = false;
     _imageUrls = [];
-
-    _fetchData();
-  }
-
-  void _fetchData() async {
-    // var taxRepo = RepositoryProvider.of<TaxRepository>(context);
-    // var _taxGroup = await taxRepo.getAllTaxGroups();
-    // setState(() {
-    //   taxGroups = _taxGroup;
-    // });
   }
 
   @override
@@ -496,10 +487,15 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
                           selectedUrl = e;
                         });
                       },
-                      child: CustomImage(
-                        url: e,
-                        height: 100,
-                        width: 100,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: AppColor.primary)),
+                        child: CustomImage(
+                          url: e,
+                          height: 100,
+                          width: 100,
+                        ),
                       ),
                     ))
                 .toList(),
@@ -515,7 +511,7 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
         selectedUrl.isNotEmpty ? CustomImage(url: selectedUrl) : Container(),
         Wrap(
           direction: Axis.horizontal,
-          children: widget.imageUrl
+          children: [...widget.imageUrl
               .map((e) => InkWell(
                     onTap: () {
                       setState(() {
@@ -525,11 +521,13 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
                     child: CustomImage(
                       url: e,
                       height: 60,
-                      width: 50,
+                      width: 60,
                     ),
                   ))
               .toList(),
-        )
+            const AddNewItemImage()
+          ],
+        ),
       ],
     );
   }
@@ -537,7 +535,38 @@ class _ProductItemsImageState extends State<ProductItemsImage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
     return size.width < 600 ? _buildVertical() : _buildHorizontal();
+  }
+}
+
+class AddNewItemImage extends StatelessWidget {
+  const AddNewItemImage({Key? key}) : super(key: key);
+
+  onImagePick(BuildContext context) async {
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.image, allowMultiple: true);
+    if (result != null) {
+      print(result.files);
+    } else {
+      // User canceled the picker
+      // print("User Cancelled");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => onImagePick(context),
+      child: Container(
+        height: 60,
+        width: 60,
+        decoration: BoxDecoration(
+            border: Border.all(color: AppColor.primary)),
+        child: const Icon(
+          Icons.add_a_photo,
+          color: AppColor.primary,
+        ),
+      ),
+    );
   }
 }

@@ -62,14 +62,14 @@ Future<void> main() {
     // 'ap-south-1_6L70C39jY',
     // '2oabjq1j5kh9nqgd5hd7qs3cbi',
     final userPool = CognitoUserPool(
-      'ap-south-1_6L70C39jY',
-      '2oabjq1j5kh9nqgd5hd7qs3cbi',
+      'ap-south-1_KO3Zrjy4Z',
+      '580li4e3he25g1858241i9u97b',
       storage: customStorage,
     );
 
     final restClient = RestApiClient(
         userPool: userPool,
-        baseUrl: "https://yp4fg0z7dc.execute-api.ap-south-1.amazonaws.com/DEV");
+        baseUrl: "https://mr4f4gk1n3.execute-api.ap-south-1.amazonaws.com/dev");
 
     runApp(
       EasyLocalization(
