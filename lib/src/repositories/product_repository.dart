@@ -18,6 +18,16 @@ class ProductRepository with DatabaseProvider {
 
   Future<void> createNewProduct(ProductEntity product) {
     product.lastChangedAt = DateTime.now();
+    product.syncState = 0;
+    return db.writeTxn(() => db.productEntitys.putByProductId(product));
+  }
+
+  Future<void> updateProduct(ProductEntity product) {
+    if (product.id == null) {
+      log.severe('Product id is null');
+      return Future.value();
+    }
+    product.lastChangedAt = DateTime.now();
     product.syncState = 200;
     return db.writeTxn(() => db.productEntitys.putByProductId(product));
   }

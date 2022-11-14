@@ -18,4 +18,11 @@ class ConfigRepository with DatabaseProvider {
     }
     return defaultInstance.codeValueEntitys.getByCategoryCodeSync(category, code);
   }
+
+  Future<CodeValueEntity?> getCodeByCategoryAndCodeAsync(String category, String? code) async {
+    if (category.isEmpty || (code == null || code.isEmpty)) {
+      return null;
+    }
+    return defaultInstance.codeValueEntitys.getByCategoryCode(category, code);
+  }
 }

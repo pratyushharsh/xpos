@@ -96,6 +96,13 @@ class TaxRepository with DatabaseProvider {
     return db.taxGroupEntitys.getByGroupIdSync(id);
   }
 
+  Future<TaxGroupEntity?> getTaxGroupIdAsync(String? id) async {
+    if (id == null) {
+      return null;
+    }
+    return db.taxGroupEntitys.getByGroupId(id);
+  }
+
   Future<List<TaxRuleEntity>> getTaxRulesByGroupId(String groupId) async {
     var taxGroup = await db.taxGroupEntitys.getByGroupId(groupId);
     if (taxGroup == null) {

@@ -54,6 +54,22 @@ class CustomImage extends StatelessWidget {
           ),
         );
       });
+    } else if (url.startsWith('fileRaw:/')) {
+      imageUrl = url.substring(9);
+      return Image.file(
+          File(imageUrl),
+          fit: BoxFit.cover,
+          height: height,
+          width: width,
+          errorBuilder: (context, obj, trace) {
+            return SizedBox(
+              height: height,
+              width: width,
+              child: const Center(
+                child: Icon(Icons.error, color: Colors.red,),
+              ),
+            );
+          });
     }
 
     return SizedBox(
