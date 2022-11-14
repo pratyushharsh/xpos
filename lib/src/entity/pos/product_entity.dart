@@ -14,18 +14,18 @@ class ProductEntity {
   String? productId;
   String? skuId;
 
-  final String displayName;
-  final String? description;
-  final double? listPrice;
-  final double? salePrice;
-  final String uom;
-  final bool enable;
-  final String? brand;
-  final String? skuCode;
-  final String? hsn;
-  final String? taxGroupId;
-  final List<String> category;
-  final List<String> imageUrl;
+  String displayName;
+  String? description;
+  double? listPrice;
+  double? salePrice;
+  String uom;
+  bool enable;
+  String? brand;
+  String? skuCode;
+  String? hsn;
+  String? taxGroupId;
+  List<String> category;
+  List<String> imageUrl;
   late DateTime createTime;
 
   @Index(type: IndexType.value)
@@ -40,23 +40,24 @@ class ProductEntity {
   @Index(type: IndexType.value, caseSensitive: false)
   List<String> get descriptionWords => Isar.splitWords(displayName);
 
-  ProductEntity(
-      {this.id,
-      this.productId,
-      required this.displayName,
-      this.description,
-      required this.listPrice,
-      required this.salePrice,
-      required this.uom,
-      required this.enable,
-      this.brand,
-      this.skuCode,
-      this.hsn,
-      this.taxGroupId,
-      this.category = const [],
-      this.imageUrl = const [],
-      required this.createTime,
-      this.syncState,
-      this.lastSyncAt,
-      this.lastChangedAt,});
+  ProductEntity({
+    this.id,
+    this.productId,
+    required this.displayName,
+    this.description,
+    required this.listPrice,
+    required this.salePrice,
+    required this.uom,
+    required this.enable,
+    this.brand,
+    this.skuCode,
+    this.hsn,
+    this.taxGroupId,
+    this.category = const [],
+    this.imageUrl = const [],
+    required this.createTime,
+    this.syncState,
+    this.lastSyncAt,
+    this.lastChangedAt,
+  });
 }

@@ -1,6 +1,11 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'dart:io';
 
+import 'package:bloc/bloc.dart';
+import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../../config/constants.dart';
 import '../../../entity/config/code_value_entity.dart';
 import '../../../entity/pos/entity.dart';
 import '../../../repositories/repository.dart';
@@ -9,12 +14,14 @@ part 'add_new_item_event.dart';
 part 'add_new_item_state.dart';
 
 class AddNewItemBloc extends Bloc<AddNewItemEvent, AddNewItemState> {
-
+  final log = Logger('AddNewItemBloc');
 
   final ProductRepository productRepository;
   final ConfigRepository configRepository;
   final TaxRepository taxRepository;
   final SequenceRepository sequenceRepository;
+
+  var uuid = const Uuid();
 
   AddNewItemBloc({ required this.productRepository, required this.configRepository, required this.taxRepository, required this.sequenceRepository }) : super(AddNewItemState()) {
     on<LoadExistingProduct>(_onLoadExistingProduct);
@@ -174,6 +181,7 @@ class AddNewItemBloc extends Bloc<AddNewItemEvent, AddNewItemState> {
           createTime: state.existingProduct!.createTime,
           lastChangedAt: DateTime.now(),
         );
+        product = await _uploadImageToStagingArea(product);
         await productRepository.updateProduct(product);
         emit(state.copyWith(status: AddNewItemStatus.addingSuccess, existingProduct: product));
       } else {
@@ -198,12 +206,36 @@ class AddNewItemBloc extends Bloc<AddNewItemEvent, AddNewItemState> {
           imageUrl: state.imageUrl,
           createTime: DateTime.now(),
         );
+        product = await _uploadImageToStagingArea(product);
         await productRepository.createNewProduct(product);
         emit(state.copyWith(
             status: AddNewItemStatus.addingSuccess, existingProduct: product));
       }
-    } catch (e) {
+    } catch (e, st) {
+      log.severe('Error while adding new product', e, st);
       emit(state.copyWith(status: AddNewItemStatus.addingFailure));
     }
+  }
+
+  Future<ProductEntity> _uploadImageToStagingArea(ProductEntity product) async {
+    var imageUrls = <String>[];
+    for (var url in product.imageUrl) {
+      if (url.startsWith('fileRaw:/')) {
+        var filePath = '${Constants.baseImagePath}${product.productId}';
+        if(!Directory(filePath).existsSync()) {
+          await Directory(filePath).create(recursive: true);
+        }
+
+        var fileName = '${product.productId}/${uuid.v1()}.jpg';
+        var file = File(url.replaceFirst('fileRaw:/', ''));
+        await file.copy('${Constants.baseImagePath}$fileName');
+        log.info('File copied to ${Constants.baseImagePath}$fileName');
+        imageUrls.add('file:/$fileName');
+      } else  {
+        imageUrls.add(url);
+      }
+    }
+    product.imageUrl = imageUrls;
+    return product;
   }
 }
