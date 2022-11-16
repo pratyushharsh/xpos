@@ -1,9 +1,15 @@
+import 'dart:io';
+
+import 'package:archive/archive_io.dart';
 import 'package:isar/isar.dart';
+import 'package:logging/logging.dart';
 import 'package:receipt_generator/src/entity/pos/entity.dart';
 
 import 'background_sync.dart';
 
 class BackgroundProductSync extends BackgroundEntitySync {
+  static Logger log = Logger('BackgroundProductSync');
+
   @override
   Future<List<Map<String, dynamic>>> exportData() async {
     return await db.productEntitys
@@ -33,4 +39,35 @@ class BackgroundProductSync extends BackgroundEntitySync {
 
   @override
   String get type => productSync;
+
+  Future<void> createZipForProductImages(List<Map<String, dynamic>> products,
+      String imageDir, String tmpDirPath) async {
+    // Get all the products;
+    // create a file and move to tmp location.
+    Directory x = Directory(tmpDirPath);
+    var tmpDir = await x.createTemp('image_export');
+    log.info('Exporting Data to $tmpDir');
+    log.info('Products: $products');
+    for (var product in products) {
+      if (product['imageUrl'] != null) {
+        List<String> productImages = List.from(product['imageUrl']);
+        var urls = productImages
+            .where((e) => e.startsWith('file:/'))
+            .map((e) => '$imageDir${e.substring(6)}')
+            .toList();
+        for (var url in urls) {
+          var fileName = '${product['productId']}/${url.split('/').last}';
+          var sourceFile = File(url);
+          var destFile = File('${tmpDir.path}/$fileName');
+          if (!await destFile.exists()) {
+            await destFile.create(recursive: true);
+          }
+          await sourceFile.copy('${tmpDir.path}/$fileName');
+        }
+      }
+    }
+    var encoder = ZipFileEncoder();
+    encoder.zipDirectory(tmpDir, filename: '$tmpDirPath/log_iso.zip');
+    await tmpDir.delete(recursive: true);
+  }
 }

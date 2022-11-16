@@ -5,11 +5,17 @@ class Constants {
   static const print = "PRINT";
   static const cancel = "CANCEL";
   static String baseImagePath = "";
+  static String basePath = "";
 
   static Future<String> getImageBasePath() async {
     final appDoc = await getApplicationSupportDirectory();
     baseImagePath = appDoc.path + "/images/";
     return baseImagePath;
+  }
+
+  static Future<String> getTmpPath() async {
+    final appDoc = await getTemporaryDirectory();
+    return appDoc.path;
   }
 }
 

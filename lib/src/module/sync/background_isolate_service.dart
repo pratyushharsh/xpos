@@ -29,7 +29,8 @@ class BackgroundSyncServiceFromIso with DatabaseProvider {
   final log = Logger('BackgroundSyncServiceFromIso');
   InvoiceRepository invoiceRepository = InvoiceRepository();
   final int storeId;
-  String path;
+  String tmpDir;
+  String imageDir;
 
   final String _baseUrl =
       'https://mr4f4gk1n3.execute-api.ap-south-1.amazonaws.com/dev';
@@ -48,9 +49,8 @@ class BackgroundSyncServiceFromIso with DatabaseProvider {
   BackgroundTaxGroupSync bckTaxSync = BackgroundTaxGroupSync();
   BackgroundReportConfigSync bckRptSync = BackgroundReportConfigSync();
 
-  BackgroundSyncServiceFromIso(this.path, this.storeId) {
-    log.info('Starting the database service for background sync: $path');
-  }
+  BackgroundSyncServiceFromIso(
+      {required this.storeId, required this.tmpDir, required this.imageDir});
 
   initIsar() async {
     await DatabaseProvider.ensureInitialized(
@@ -206,6 +206,10 @@ class BackgroundSyncServiceFromIso with DatabaseProvider {
       await bckProdSync.importData(unsyncedProducts, syncTimeInMicroseconds);
       await bckTaxSync.importData(unsyncedTaxGroups, syncTimeInMicroseconds);
       await bckRptSync.importData(unsyncedReportConfig, syncTimeInMicroseconds);
+
+      // Get all the image to upload.
+      await bckProdSync.createZipForProductImages(unsyncedProducts, imageDir, tmpDir);
+      // Upload the image
     } catch (e, st) {
       log.severe('Error while syncing data: $e', e, st);
     }
@@ -235,7 +239,9 @@ class IsolateSyncService {
         if (message['syncType'] == 'start') {
           log.info('Starting Sync Service');
           syncDb = BackgroundSyncServiceFromIso(
-              '${message['storeId']}', message['storeId']);
+              storeId: message['storeId'],
+              tmpDir: message['tmpDir'],
+              imageDir: message['imageDir']);
           await syncDb!.initIsar();
           await executeSync(syncDb!);
         } else if (message['syncType'] == 'refresh') {

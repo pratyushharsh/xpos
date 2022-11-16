@@ -9,11 +9,74 @@ class CustomImage extends StatelessWidget {
   final String url;
   final double width;
   final double height;
-  const CustomImage({Key? key, required this.url, this.height = 70, this.width = 70}) : super(key: key);
+  const CustomImage(
+      {Key? key, required this.url, this.height = 70, this.width = 70})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          _CustomImage(url: url, width: width, height: height),
+          if (url.startsWith('http:/'))
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                child: Icon(
+                  Icons.cloud_done_outlined,
+                  size: 12,
+                  color: Colors.green.withOpacity(0.4),
+                ),
+              ),
+            ),
+          if (url.startsWith('file:/'))
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                child: Icon(
+                  Icons.file_present,
+                  size: 14,
+                  color: Colors.black87.withOpacity(0.4),
+                ),
+              ),
+            ),
+          if (url.startsWith('fileRaw:/'))
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                child: Icon(
+                  Icons.image,
+                  size: 15,
+                  color: Colors.black.withOpacity(0.4),
+                ),
+              ),
+            )
+        ],
+      ),
+    );
+  }
+}
 
+class _CustomImage extends StatelessWidget {
+  final String url;
+  final double width;
+  final double height;
+  const _CustomImage(
+      {Key? key, required this.url, this.height = 70, this.width = 70})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     late String imageUrl;
     // Check if url is file image or network image
     if (url.startsWith('http:') || url.startsWith('https:')) {
@@ -33,50 +96,58 @@ class CustomImage extends StatelessWidget {
             height: height,
             width: width,
             child: const Center(
-              child: Icon(Icons.error, color: Colors.red,),
+              child: Icon(
+                Icons.error,
+                color: Colors.red,
+              ),
             ),
           );
         },
       );
     } else if (url.startsWith('file:')) {
       imageUrl = Constants.baseImagePath + url.substring(6);
-      return Image.file(
-          File(imageUrl),
+      return Image.file(File(imageUrl),
           fit: BoxFit.cover,
           height: height,
-          width: width,
-          errorBuilder: (context, obj, trace) {
+          width: width, errorBuilder: (context, obj, trace) {
         return SizedBox(
           height: height,
           width: width,
           child: const Center(
-            child: Icon(Icons.error, color: Colors.red,),
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
           ),
         );
       });
     } else if (url.startsWith('fileRaw:/')) {
       imageUrl = url.substring(9);
-      return Image.file(
-          File(imageUrl),
+      return Image.file(File(imageUrl),
           fit: BoxFit.cover,
           height: height,
+          width: width, errorBuilder: (context, obj, trace) {
+        return SizedBox(
+          height: height,
           width: width,
-          errorBuilder: (context, obj, trace) {
-            return SizedBox(
-              height: height,
-              width: width,
-              child: const Center(
-                child: Icon(Icons.error, color: Colors.red,),
-              ),
-            );
-          });
+          child: const Center(
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
+          ),
+        );
+      });
     }
 
     return SizedBox(
       height: height,
       width: width,
       child: const Center(
-        child: Icon(Icons.warning, color: Colors.orange,),
+        child: Icon(
+          Icons.warning,
+          color: Colors.orange,
+        ),
       ),
     );
   }

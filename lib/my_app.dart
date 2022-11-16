@@ -140,6 +140,7 @@ class _MyAppState extends State<MyApp> {
                 syncRepository: RepositoryProvider.of(context),
                 syncConfigRepository: RepositoryProvider.of(context),
               invoiceRepository: RepositoryProvider.of(context),
+              productRepository: RepositoryProvider.of(context),
             ),
           ),
           BlocProvider(

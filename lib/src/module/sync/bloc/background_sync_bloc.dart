@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:isolate';
 
+import 'package:archive/archive_io.dart';
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:receipt_generator/src/repositories/sync_config_repository.dart';
 import 'package:receipt_generator/src/repositories/sync_repository.dart';
 
+import '../../../config/constants.dart';
 import '../../../repositories/invoice_repository.dart';
+import '../../../repositories/product_repository.dart';
 import '../background_isolate_service.dart';
 
 part 'background_sync_event.dart';
@@ -20,9 +24,11 @@ class BackgroundSyncBloc
   final SyncRepository syncRepository;
   final SyncConfigRepository syncConfigRepository;
   final InvoiceRepository invoiceRepository;
+  final ProductRepository productRepository;
+
   Timer? _timer;
   Isolate? _isolate;
-  bool isSyncEnabled = false;
+  bool isSyncEnabled = true;
 
   @override
   Future<void> close() async {
@@ -35,7 +41,7 @@ class BackgroundSyncBloc
   BackgroundSyncBloc(
       {required this.syncRepository,
       required this.syncConfigRepository,
-      required this.invoiceRepository})
+      required this.invoiceRepository, required this.productRepository})
       : super(BackgroundSyncState()) {
     on<StartSyncEvent>(_onStartSyncEvent);
     on<SyncAllDataEvent>(_onSyncAllDataEvent);
@@ -75,18 +81,20 @@ class BackgroundSyncBloc
     sendPort.send({
       'storeId': event.storeId,
       'sendPort': responsePort.sendPort,
-      'syncType': 'start'
+      'syncType': 'start',
+      'tmpDir': await Constants.getTmpPath(),
+      'imageDir': Constants.baseImagePath
     });
 
     // sendPort.send(["Starting Background Sync", responsePort.sendPort]);
     emit(state.copyWith(
         storeId: event.storeId, status: BackgroundSyncStatus.started));
     log.info("Start Sync Event");
-    _timer = Timer.periodic(const Duration(seconds: 600), (t) async {
+    _timer = Timer.periodic(const Duration(seconds: 60), (t) async {
       sendPort.send({
         'storeId': event.storeId,
         'sendPort': responsePort.sendPort,
-        'syncType': 'refresh'
+        'syncType': 'refresh',
       });
     });
   }
@@ -125,12 +133,33 @@ class BackgroundSyncBloc
     // DateTime end = DateTime.now();
     // Duration diff = end.difference(start);
     // log.info("${diff.inSeconds} Seconds elapsed in syncing the data");
-    emit(state.copyWith(status: BackgroundSyncStatus.success));
+    // emit(state.copyWith(status: BackgroundSyncStatus.success));
   }
 
   void _onExportDataEvent(
       ExportDataEvent event, Emitter<BackgroundSyncState> emit) async {
-    var data = await invoiceRepository.getInvoiceSettingByName("INVOICE");
-    print(json.encode(data.toMap()));
+    // Get all the products;
+    final products = await productRepository.getAllProducts();
+    var tmpPath = await Constants.getTmpPath();
+    // create a file and move to tmp location.
+    Directory x = Directory(tmpPath);
+    var tmpDir = await x.createTemp('image_export');
+
+    log.info('Exporting Data to $tmpPath');
+    for (var product in products) {
+      var urls = product.imageUrl.where((e) => e.startsWith('file:/')).map((e) => '${Constants.baseImagePath}${e.substring(6)}').toList();
+      for (var url in urls) {
+        var fileName = '${product.productId}/${url.split('/').last}';
+        var sourceFile = File(url);
+        var destFile = File('${tmpDir.path}/$fileName');
+        if (!await destFile.exists()) {
+          await destFile.create(recursive: true);
+        }
+        await sourceFile.copy('${tmpDir.path}/$fileName');
+      }
+    }
+
+    var encoder = ZipFileEncoder();
+    encoder.zipDirectory(tmpDir, filename: '$tmpPath/log.zip');
   }
 }

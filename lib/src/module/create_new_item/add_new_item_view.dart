@@ -579,10 +579,8 @@ class AddNewItemImage extends StatelessWidget {
     FilePickerResult? result = await FilePicker.platform
         .pickFiles(type: FileType.image, allowMultiple: true);
     if (result != null) {
-      print(result.files);
       List<String> urls =
           result.files.map((e) => 'fileRaw:/${e.path!}').toList();
-      print(urls);
       BlocProvider.of<AddNewItemBloc>(context).add(AddImageUrlsEvent(urls));
     } else {
       // User canceled the picker

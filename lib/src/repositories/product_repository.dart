@@ -41,4 +41,8 @@ class ProductRepository with DatabaseProvider {
         .limit(limit)
         .findAll();
   }
+
+  Future<List<ProductEntity>> getAllProducts() async {
+    return db.productEntitys.where().findAll();
+  }
 }
