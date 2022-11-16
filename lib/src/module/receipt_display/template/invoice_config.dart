@@ -260,6 +260,50 @@ class InvoiceConfigConstants {
     }
     return gstTaxSummary;
   }
+
+  static List<dynamic> buildTaxSummary(String type, List<TransactionLineItemEntity> entity) {
+
+    Map<String, List<TransactionLineItemTaxModifier>> taxSummary = {};
+
+    switch(type) {
+      case "taxGroup":
+        for (var item in entity) {
+          if (item.isVoid) {
+            continue;
+          }
+
+          for (var taxModifier in item.taxModifiers) {
+            if (!taxSummary.containsKey(taxModifier.taxGroupId)) {
+              taxSummary[taxModifier.taxGroupId ?? "Default"] = [];
+            }
+            taxSummary[taxModifier.taxGroupId]!.add(taxModifier);
+          }
+        }
+        break;
+        case "taxRule":
+        for (var item in entity) {
+          if (item.isVoid) {
+            continue;
+          }
+
+          for (var taxModifier in item.taxModifiers) {
+            if (!taxSummary.containsKey(taxModifier.taxRuleId)) {
+              taxSummary[taxModifier.taxRuleId ?? "Default"] = [];
+            }
+            taxSummary[taxModifier.taxRuleId]!.add(taxModifier);
+          }
+        }
+        break;
+    }
+
+
+    // Based on the data build the TaxSummary
+
+    // Building tax summary header.
+
+
+    return [];
+  }
 }
 
 class InvoiceColumnConfig {
@@ -458,7 +502,7 @@ class InvoiceConfig {
       showDeclaration: input['showDeclaration'],
       declaration: input['declaration'],
       lastUpdateAt: input['lastUpdateAt'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(input['lastUpdateAt'])
+          ? DateTime.fromMicrosecondsSinceEpoch(input['lastUpdateAt'])
           : null,
     );
   }
@@ -477,3 +521,18 @@ class TaxSummary {
     this.totalAmount = 0.00,
   });
 }
+
+
+// class TaxSummary {
+//   List<String> header;
+//   List<Map<String, dynamic>> rows;
+//
+//   TaxSummary({required this.header, required this.rows});
+// }
+
+
+/// Group By Tax Rule, Tax Rate
+/// Group By Tax Group
+/// Group By Tax Rule
+///
+/// Group By HSN Create Different Widget

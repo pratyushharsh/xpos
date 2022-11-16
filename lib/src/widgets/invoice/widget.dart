@@ -48,12 +48,24 @@ class MultiChoiceReportColumnConfigSelection extends StatelessWidget {
                   runSpacing: 8,
                   children: selectedOptions
                       .map(
-                        (e) => SettingChoiceChip(
-                          columnConfig: e,
-                          onActionTap: () {
-                            onDeselect(e);
-                          },
-                          onUpdateOption: onUpdateOption,
+                        (e) => Draggable<ReportFieldConfigEntity>(
+                          data: e,
+                          feedback: Material(
+                            child: SettingChoiceChip(
+                              columnConfig: e,
+                              onActionTap: () {
+
+                              },
+                              onUpdateOption: (val) {},
+                            ),
+                          ),
+                          child: SettingChoiceChip(
+                            columnConfig: e,
+                            onActionTap: () {
+                              onDeselect(e);
+                            },
+                            onUpdateOption: onUpdateOption,
+                          ),
                         ),
                       )
                       .toList(),

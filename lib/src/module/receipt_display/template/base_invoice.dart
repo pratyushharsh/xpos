@@ -573,26 +573,6 @@ class TermsAndConditionWidget extends StatelessWidget {
   }
 }
 
-// class PaymentDetailsWidget extends StatelessWidget with InvoiceUtil {
-//   final TransactionHeaderEntity order;
-//   final RetailLocationEntity store;
-//   final InvoiceConfig config;
-//
-//   PaymentDetailsWidget(
-//       {required this.order, required this.store, required this.config})
-//       : super();
-//
-//   @override
-//   Widget build(Context context) {
-//
-//   }
-//
-//   @override
-//   bool get canSpan {
-//     return true;
-//   }
-// }
-
 class InvoiceFooterWidget extends StatelessWidget {
   final InvoiceConfig config;
 
