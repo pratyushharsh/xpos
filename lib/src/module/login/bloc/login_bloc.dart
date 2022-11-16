@@ -70,11 +70,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } else {
         emit(state.copyWith(status: LoginStatus.failure, error: 'Invalid Authentication Method'));
       }
-    } catch (e) {
-      if (state.retryCount == 0) {
+    } on CognitoClientException catch (e) {
+      if (e.code == "UserNotFoundException") {
         _signUpUser(event.phoneNumber);
       }
+    } catch (e) {
       log.severe(e);
+      emit(state.copyWith(status: LoginStatus.failure, error: e.toString()));
     }
   }
 
